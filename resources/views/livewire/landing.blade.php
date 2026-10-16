@@ -1,7 +1,20 @@
 <div>
 
     {{-- ══════════════════ HERO ══════════════════ --}}
-    <section class="pb-4 pt-14 md:pt-20">
+    <section class="relative isolate overflow-hidden -mt-[73px] pb-4 pt-[calc(73px+4rem)] md:pt-[calc(73px+6rem)]">
+        {{-- Foto ruang sangrai asli sebagai latar. Dua lapis gelap:
+             satu dari kiri supaya teks terbaca, satu dari bawah supaya
+             kromatogram duduk di atas warna yang sama dengan sisa halaman. --}}
+        <picture class="absolute inset-0 -z-20">
+            <source media="(max-width: 767px)" srcset="{{ asset('images/hero-roastery-sm.webp') }}" type="image/webp">
+            <source srcset="{{ asset('images/hero-roastery.webp') }}" type="image/webp">
+            <img src="{{ asset('images/hero-roastery.jpg') }}" alt=""
+                 width="1920" height="1280" fetchpriority="high" decoding="async"
+                 class="h-full w-full object-cover object-[68%_50%] md:object-[60%_45%]">
+        </picture>
+        <div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(18,18,18,.95)_0%,rgba(18,18,18,.86)_46%,rgba(18,18,18,.42)_78%,rgba(18,18,18,.55)_100%)] max-md:bg-[linear-gradient(180deg,rgba(18,18,18,.82)_0%,rgba(18,18,18,.72)_55%,rgba(18,18,18,1)_100%)]"></div>
+        <div class="absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-gradient-to-b from-transparent via-charcoal/80 to-charcoal"></div>
+
         <div class="mx-auto max-w-[1180px] px-6">
             <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div class="max-w-3xl">
@@ -9,7 +22,7 @@
                     Disangrai setelah<br>pesanan masuk.
                 </h1>
 
-                <p class="mt-7 max-w-[54ch] text-[15px] leading-relaxed text-kraft/80">
+                <p class="mt-7 max-w-[54ch] text-[15px] leading-relaxed text-kraft">
                     Kami tidak menyimpan kopi yang sudah disangrai. Biji mentahnya
                     menunggu di gudang sampai kamu memilih level sangrai dan
                     ukuran gilingannya — baru mesinnya dinyalakan.

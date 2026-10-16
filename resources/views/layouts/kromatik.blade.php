@@ -21,8 +21,11 @@
         Lewati ke isi
     </a>
 
-    <header x-data="{ open: false }"
-            class="sticky top-0 z-40 border-b border-kraft/12 bg-charcoal/85 backdrop-blur-md">
+    <header x-data="{ open: false, top: true }"
+            x-init="top = window.scrollY < 24"
+            @scroll.window.passive="top = window.scrollY < 24"
+            :class="top && !open ? 'border-transparent bg-gradient-to-b from-charcoal/90 to-transparent' : 'border-kraft/12 bg-charcoal/90 backdrop-blur-md'"
+            class="sticky top-0 z-40 border-b transition-colors duration-300 [background-origin:border-box]">
         <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-6 py-4">
 
             <a href="{{ route('landing') }}" class="flex items-center gap-3">
