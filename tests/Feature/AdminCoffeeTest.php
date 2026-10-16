@@ -50,7 +50,7 @@ it('creates a coffee with traceability and profiles', function () {
         ->set('farmer', 'Koperasi Uji')->set('region', 'Takengon')->set('altitude', '1450')
         ->set('varietal', 'Ateng')->set('process', 'Honey')
         ->set('profiles.light.on', true)->set('profiles.light.price', '42000')->set('profiles.light.notes', 'Honey, Peach')
-        ->call('save')->assertHasNoErrors()->assertRedirect(route('admin.coffees'));
+        ->call('save')->assertHasNoErrors()->assertDispatched('coffee-saved');
 
     $c = Coffee::where('slug', 'gayo-honey-test')->first();
     expect($c)->not->toBeNull()
@@ -122,4 +122,26 @@ it('computes revenue only from paid, non-cancelled orders in range', function ()
     expect($d->get('kpis')['revenue']['value'])->toBe(150000)
         ->and($d->get('kpis')['orders']['value'])->toBe(2)
         ->and($d->get('kpis')['aov']['value'])->toBe(75000);
+});
+
+
+it('opens the modal form from the index and closes it after saving', function () {
+    $c = Coffee::first();
+    $idx = Livewire::actingAs($this->admin)->test(CoffeeIndex::class)
+        ->assertSet('form', null)
+        ->call('openForm')->assertSet('form', 'new')
+        ->call('openForm', $c->slug)->assertSet('form', $c->slug)->assertSee($c->name)
+        ->call('saved', 'Kopi Uji', true)->assertSet('form', null);
+    expect($idx->get('notice'))->toContain('Kopi Uji');
+
+    $this->actingAs($this->admin)->get(route('admin.coffees', ['form' => $c->slug]))
+        ->assertOk()->assertSee('Ubah kopi');
+});
+
+it('filters coffees by search and visibility', function () {
+    $c = Coffee::first();
+    Livewire::actingAs($this->admin)->test(CoffeeIndex::class)
+        ->set('search', $c->name)->assertSee($c->name)
+        ->set('search', 'tidak-ada-kopi-ini')->assertSee('Tidak ada kopi yang cocok')
+        ->set('search', '')->set('show', 'hidden')->assertDontSee($c->name);
 });

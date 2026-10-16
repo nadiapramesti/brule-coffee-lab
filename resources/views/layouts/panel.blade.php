@@ -15,8 +15,6 @@
     ];
     $crumbs = match (true) {
         request()->routeIs('admin.dashboard') => ['Dashboard'],
-        request()->routeIs('admin.coffees.create') => [__('Kelola kopi'), __('Kopi baru')],
-        request()->routeIs('admin.coffees.edit') => [__('Kelola kopi'), __('Ubah kopi')],
         request()->routeIs('admin.coffees') => [__('Kelola kopi')],
         request()->routeIs('roastery') => [__('Antrian roastery')],
         default => [],

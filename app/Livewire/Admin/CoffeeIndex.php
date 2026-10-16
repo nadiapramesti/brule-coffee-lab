@@ -5,7 +5,9 @@ namespace App\Livewire\Admin;
 use App\Models\Coffee;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
@@ -17,10 +19,68 @@ class CoffeeIndex extends Component
 
     public ?string $notice = null;
 
+    #[Url(as: 'q')]
+    public string $search = '';
+
+    /** '', active, hidden */
+    #[Url(as: 'tampil')]
+    public string $show = '';
+
+    /** Modal form: 'new' untuk kopi baru, atau slug kopi yang diubah. */
+    #[Url(as: 'form')]
+    public ?string $form = null;
+
     #[Computed]
     public function coffees()
     {
-        return Coffee::withCount('roastProfiles')->orderByDesc('is_active')->orderBy('name')->get();
+        $q = trim($this->search);
+
+        return Coffee::with(['traceability', 'roastProfiles:id,coffee_id,price_per_100g'])->withCount('roastProfiles')
+            ->when($this->show === 'active', fn ($x) => $x->where('is_active', true))
+            ->when($this->show === 'hidden', fn ($x) => $x->where('is_active', false))
+            ->when($q !== '', fn ($x) => $x->where(fn ($w) => $w
+                ->where('name', 'like', "%{$q}%")->orWhere('slug', 'like', "%{$q}%")
+                ->orWhereHas('traceability', fn ($t) => $t->where('region', 'like', "%{$q}%")->orWhere('varietal', 'like', "%{$q}%"))))
+            ->orderByDesc('is_active')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function counts(): array
+    {
+        return ['' => Coffee::count(), 'active' => Coffee::where('is_active', true)->count(), 'hidden' => Coffee::where('is_active', false)->count()];
+    }
+
+    #[Computed]
+    public function editing(): ?Coffee
+    {
+        return ($this->form && $this->form !== 'new') ? Coffee::where('slug', $this->form)->first() : null;
+    }
+
+    #[Computed]
+    public function formOpen(): bool
+    {
+        return $this->form === 'new' || $this->editing !== null;
+    }
+
+    public function openForm(?string $slug = null): void
+    {
+        $this->form = $slug ?: 'new';
+        unset($this->editing, $this->formOpen);
+    }
+
+    #[On('close-coffee-form')]
+    public function closeForm(): void
+    {
+        $this->form = null;
+        unset($this->editing, $this->formOpen);
+    }
+
+    #[On('coffee-saved')]
+    public function saved(string $name, bool $created): void
+    {
+        $this->closeForm();
+        unset($this->coffees, $this->counts);
+        $this->notice = $created ? __(':n ditambahkan.', ['n' => $name]) : __(':n disimpan.', ['n' => $name]);
     }
 
     public function addStock(int $id): void
@@ -41,7 +101,7 @@ class CoffeeIndex extends Component
     {
         $coffee = Coffee::findOrFail($id);
         $coffee->update(['is_active' => ! $coffee->is_active]);
-        unset($this->coffees);
+        unset($this->coffees, $this->counts);
         $this->notice = $coffee->is_active ? __('Kopi ditampilkan di toko.') : __('Kopi disembunyikan dari toko.');
     }
 
@@ -57,7 +117,7 @@ class CoffeeIndex extends Component
         }
 
         $coffee->delete();
-        unset($this->coffees);
+        unset($this->coffees, $this->counts);
         $this->notice = __('Kopi dihapus.');
     }
 

@@ -17,8 +17,6 @@ Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');
     Route::get('/kopi', \App\Livewire\Admin\CoffeeIndex::class)->name('admin.coffees');
-    Route::get('/kopi/baru', \App\Livewire\Admin\CoffeeForm::class)->name('admin.coffees.create');
-    Route::get('/kopi/{coffee}/ubah', \App\Livewire\Admin\CoffeeForm::class)->name('admin.coffees.edit');
 });
 
 Route::middleware('guest')->group(function () {

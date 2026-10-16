@@ -237,3 +237,11 @@ header[data-site-header] { view-transition-name: krm-header; }
 .krm-auth h2.text-lg { font-family: "IBM Plex Sans Condensed", system-ui, sans-serif; font-size: 1.3rem; font-weight: 600; letter-spacing: -.01em; }
 .krm-auth h2.text-lg + p { color: rgba(216, 197, 166, .7); }
 .krm-auth section header p { font-size: 14px; line-height: 1.6; }
+
+
+/* Modal form admin: muncul dari bawah (HP) / sedikit membesar (desktop) */
+@keyframes krm-pop { from { opacity: 0; transform: translateY(14px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes krm-fade { from { opacity: 0; } to { opacity: 1; } }
+.krm-pop { animation: krm-pop .24s cubic-bezier(.2,.8,.2,1) both; }
+.krm-fade { animation: krm-fade .2s ease-out both; }
+@media (prefers-reduced-motion: reduce) { .krm-pop, .krm-fade { animation: none; } }

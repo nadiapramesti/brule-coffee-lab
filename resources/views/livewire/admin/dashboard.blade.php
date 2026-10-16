@@ -240,7 +240,7 @@
                         <p class="truncate text-[13.5px]">{{ $c->name }}</p>
                         <p class="krm-readout text-[12px] text-[#F2A266]">{{ number_format($c->stock_green_bean_gram) }} g</p>
                     </div>
-                    <a href="{{ route('admin.coffees.edit', $c) }}" wire:navigate class="shrink-0 rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Isi stok') }}</a>
+                    <a href="{{ route('admin.coffees', ['form' => $c->slug]) }}" wire:navigate class="shrink-0 rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Isi stok') }}</a>
                 </div>
             @empty
                 <p class="mt-6 text-[13px] text-kraft/55">{{ __('Semua stok aman.') }}</p>

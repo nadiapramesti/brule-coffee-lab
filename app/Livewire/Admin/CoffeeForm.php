@@ -8,12 +8,8 @@ use App\Models\Traceability;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.panel')]
-#[Title('Form kopi - KROMATIK')]
 class CoffeeForm extends Component
 {
     public const FLAVORS = ['floral', 'citrus', 'berry', 'chocolate', 'nutty', 'spice'];
@@ -158,6 +154,8 @@ class CoffeeForm extends Component
             }
         }
 
+        $wasNew = $this->coffeeId === null;
+
         $coffee = DB::transaction(function () use ($chosen) {
             $coffee = Coffee::updateOrCreate(['id' => $this->coffeeId], [
                 'slug' => $this->slug,
@@ -195,8 +193,7 @@ class CoffeeForm extends Component
             return $coffee;
         });
 
-        session()->flash('notice', __('Kopi disimpan.'));
-        $this->redirectRoute('admin.coffees', navigate: true);
+        $this->dispatch('coffee-saved', name: $coffee->name, created: $wasNew);
     }
 
     public function render()

@@ -305,5 +305,18 @@
     "Berikutnya": "Next",
     "Diperbarui otomatis tiap 15 detik": "Refreshes every 15 seconds",
     "Berat antrian": "Queue weight",
-    "Cari kode / nama, cth: Sinta": "Search code / name, e.g. Sinta"
+    "Cari kode / nama, cth: Sinta": "Search code / name, e.g. Sinta",
+    "Tambah, ubah, atur stok, dan tampilkan/sembunyikan kopi di toko.": "Add, edit, manage stock, and show/hide coffees in the shop.",
+    ":n ditambahkan.": ":n added.",
+    ":n disimpan.": ":n saved.",
+    "Cari kopi": "Search coffees",
+    "Cari nama / daerah, cth: Gayo": "Search name / region, e.g. Gayo",
+    "Stok (g)": "Stock (g)",
+    "Level & harga": "Levels & price",
+    "Aksi": "Actions",
+    "Tambah": "Add",
+    "level": "levels",
+    "Tidak ada kopi yang cocok.": "No coffees match.",
+    "Tutup": "Close",
+    "Level yang sudah pernah dipesan tidak bisa dimatikan.": "Levels that have been ordered can't be turned off."
 }
