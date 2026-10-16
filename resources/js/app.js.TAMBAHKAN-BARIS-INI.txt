@@ -1,0 +1,17 @@
+Buka resources/js/app.js, tambahkan SATU baris ini di paling bawah:
+
+    import './flavor-wheel';
+
+
+Jadi isi app.js kira-kira seperti ini:
+
+    import './bootstrap';
+    import './flavor-wheel';
+
+(kalau ada baris lain yang sudah ada, biarkan saja - cukup tambahkan
+ baris import './flavor-wheel'; di bawahnya)
+
+
+JANGAN LUPA install D3 kalau belum:
+
+    npm install d3
