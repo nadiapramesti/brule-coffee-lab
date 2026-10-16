@@ -128,16 +128,21 @@
                                 <input id="roast" type="range" min="0" max="{{ $this->levels->count() - 1 }}" step="1"
                                        wire:model.live="levelIndex" class="krm-slider mt-6">
 
-                                <div class="mt-3 flex justify-between gap-1">
+                                {{-- Titik harus sejajar dengan posisi thumb slider: thumb 18px, jadi pusatnya
+                                     bergerak dari 9px sampai (lebar - 9px), bukan dari tepi ke tepi. --}}
+                                @php $last = max(1, $this->levels->count() - 1); @endphp
+                                <div class="relative mt-2 h-11">
                                     @foreach ($this->levels as $i => $lv)
-                                        <button type="button" wire:click="setLevel({{ $i }})"
-                                                class="flex min-w-0 flex-1 flex-col items-center gap-1.5 text-[11px] transition-colors
-                                                       {{ $i === $this->levelIndex ? 'text-labwhite' : 'text-kraft/50 hover:text-kraft' }}
-                                                       first:items-start last:items-end">
-                                            <span class="h-2.5 w-2.5 rounded-full border border-white/20"
+                                        @php $x = "calc(9px + (100% - 18px) * {$i} / {$last})"; $on = $i === $this->levelIndex; @endphp
+                                        <button type="button" wire:click="setLevel({{ $i }})" aria-label="{{ $lv->level_label }}"
+                                                class="absolute top-0 h-11 w-11 -translate-x-1/2" style="left: {{ $x }}">
+                                            <span class="absolute left-1/2 top-[7px] h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-white/20 transition-transform duration-300 {{ $on ? 'scale-125' : '' }}"
                                                   style="background: {{ $this->beanColor($lv->agtron) }}"></span>
-                                            <span class="truncate">{{ $lv->level_label }}</span>
                                         </button>
+                                        <span class="pointer-events-none absolute top-[22px] whitespace-nowrap text-[11px] transition-colors
+                                                     {{ $on ? 'text-labwhite' : 'text-kraft/50' }}
+                                                     {{ $loop->first ? 'left-0' : ($loop->last ? 'right-0' : '-translate-x-1/2') }}"
+                                              @unless ($loop->first || $loop->last) style="left: {{ $x }}" @endunless>{{ $lv->level_label }}</span>
                                     @endforeach
                                 </div>
                             </div>
