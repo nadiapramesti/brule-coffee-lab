@@ -72,7 +72,7 @@ class Orders extends Component
     #[Computed]
     public function orders()
     {
-        return Order::with(['user:id,name', 'items:id,order_id,coffee_name_snapshot,grams'])
+        return Order::with(['user:id,name', 'items:id,order_id,roast_profile_id,coffee_name_snapshot,roast_level_snapshot,grind,grams,line_total'])
             ->adminFilter($this->tab, $this->search, $this->from, $this->to)
             ->latest()->paginate(12);
     }

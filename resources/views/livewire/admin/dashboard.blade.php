@@ -162,7 +162,7 @@
                         <tr wire:key="o-{{ $o->id }}" class="transition-colors hover:bg-labwhite/[.025]">
                             <td class="px-5 py-3"><a href="{{ route('admin.orders', ['order' => $o->order_code]) }}" wire:navigate class="krm-readout text-[12.5px] underline-offset-4 hover:underline">{{ $o->order_code }}</a></td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $o->user?->name ?? $o->recipient_name }}</td>
-                            <td class="max-w-[240px] truncate px-3 py-3 text-kraft/65">{{ $o->items->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g')->implode(', ') }}</td>
+                            <td class="max-w-[240px] truncate px-3 py-3 text-kraft/65">{{ $o->groupedItems()->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g' . ($i->qty > 1 ? ' ×' . $i->qty : ''))->implode(', ') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $o->created_at->translatedFormat('j M, H:i') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-right">{{ $rp($o->total) }}</td>
                             <td class="px-5 py-3"><span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $statusTone($o->status) }}">{{ $o->status_label }}</span></td>

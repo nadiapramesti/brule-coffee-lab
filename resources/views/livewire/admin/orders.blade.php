@@ -60,7 +60,7 @@
                         <tr wire:key="r-{{ $row->id }}" wire:click="show('{{ $row->order_code }}')" class="cursor-pointer transition-colors hover:bg-labwhite/[.03] {{ $open === $row->order_code ? 'bg-bluelab/10' : '' }}">
                             <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}</td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $row->user?->name ?? $row->recipient_name }}</td>
-                            <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->items->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g')->implode(', ') }}</td>
+                            <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->groupedItems()->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g' . ($i->qty > 1 ? ' ×' . $i->qty : ''))->implode(', ') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $row->created_at->translatedFormat('j M, H:i') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-right">{{ $rp($row->total) }}</td>
                             <td class="px-4 py-3"><span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $row->statusTone() }}">{{ $row->status_label }}</span></td>
@@ -195,11 +195,11 @@
                     <section class="rounded border border-kraft/20">
                         <h3 class="px-4 pt-4 text-[12.5px] font-semibold">{{ __('Item') }}</h3>
                         <ul class="divide-y divide-kraft/10 px-4">
-                            @foreach ($o->items as $it)
+                            @foreach ($o->groupedItems() as $it)
                                 <li class="flex items-start justify-between gap-4 py-3">
                                     <div class="min-w-0">
                                         <p class="text-[13.5px] font-semibold">{{ $it->coffee_name_snapshot }}</p>
-                                        <p class="text-[12px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · <span class="krm-readout">{{ number_format($it->grams) }} g</span></p>
+                                        <p class="text-[12px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · <span class="krm-readout">{{ number_format($it->grams) }} g{{ $it->qty > 1 ? ' × '.$it->qty : '' }}</span></p>
                                     </div>
                                     <span class="krm-readout shrink-0 text-[13px]">{{ $rp($it->line_total) }}</span>
                                 </li>

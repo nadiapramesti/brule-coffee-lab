@@ -165,3 +165,23 @@ it('blocks checkout in the cart when qty exceeds stock', function () {
 
     expect(Livewire::test(Cart::class)->instance()->problem)->not->toBeNull();
 });
+
+it('groups identical items for display while keeping one row per pack', function () {
+    $o = Order::placeMany($this->customer, [
+        ['profile' => $this->p1, 'grams' => 200, 'grind' => 'v60'],
+        ['profile' => $this->p1, 'grams' => 200, 'grind' => 'v60'],
+        ['profile' => $this->p1, 'grams' => 200, 'grind' => 'v60'],
+        ['profile' => $this->p1, 'grams' => 500, 'grind' => 'v60'],
+    ], $this->ship)->fresh();
+
+    $g = $o->groupedItems();
+    expect($o->items)->toHaveCount(4)
+        ->and($g)->toHaveCount(2)
+        ->and($g[0]->qty)->toBe(3)->and($g[0]->line_total)->toBe($this->p1->priceFor(200) * 3)
+        ->and($g[1]->qty)->toBe(1)
+        ->and($o->itemSummary())->toContain('× 3')->toContain('+1');
+
+    $admin = User::where('email', 'admin@kromatik.test')->first();
+    Livewire::actingAs($admin)->test(\App\Livewire\Admin\Orders::class)->assertSee('×3')->call('show', $o->order_code)->assertSee('× 3');
+    Livewire::actingAs($this->customer)->test(\App\Livewire\Track::class, ['code' => $o->order_code])->assertSee('× 3');
+});

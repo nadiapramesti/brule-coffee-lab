@@ -60,10 +60,10 @@
             @endif
 
             <div class="border-t border-kraft/15 p-6">
-                @foreach ($o->items as $item)
+                @foreach ($o->groupedItems() as $item)
                     <div class="flex flex-wrap items-baseline justify-between gap-x-4 text-[14px]">
                         <span>{{ $item->coffee_name_snapshot }}</span>
-                        <span class="krm-readout text-[13px] text-kraft/70">{{ $item->level_label }} · {{ __($item->grind_label) }} · {{ number_format($item->grams) }} g</span>
+                        <span class="krm-readout text-[13px] text-kraft/70">{{ $item->level_label }} · {{ __($item->grind_label) }} · {{ number_format($item->grams) }} g{{ $item->qty > 1 ? ' × '.$item->qty : '' }}</span>
                     </div>
                 @endforeach
             </div>

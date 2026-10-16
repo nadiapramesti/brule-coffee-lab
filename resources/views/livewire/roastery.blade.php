@@ -33,9 +33,9 @@
                                 <p class="krm-readout truncate text-[10.5px] text-kraft/50">{{ $o->order_code }}</p>
                                 <p class="krm-readout shrink-0 text-[12.5px]">{{ number_format($o->items->sum('grams')) }} g</p>
                             </div>
-                            @foreach ($o->items as $it)
+                            @foreach ($o->groupedItems() as $it)
                                 <p class="mt-1 truncate text-[12.5px] font-semibold leading-snug">{{ $it->coffee_name_snapshot }}</p>
-                                <p class="truncate text-[11.5px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · {{ number_format($it->grams) }} g</p>
+                                <p class="truncate text-[11.5px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · {{ number_format($it->grams) }} g{{ $it->qty > 1 ? ' × '.$it->qty : '' }}</p>
                             @endforeach
                             <p class="mt-0.5 truncate text-[11px] text-kraft/40">{{ $o->recipient_name }}</p>
 

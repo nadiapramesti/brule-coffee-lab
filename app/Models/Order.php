@@ -339,17 +339,41 @@ class Order extends Model
         return true;
     }
 
-    /** Ringkasan satu baris isi pesanan, mis. "Gayo · Medium 250 g" atau "Gayo · Medium 200 g +1 lainnya". */
+    /**
+     * Item yang identik (kopi, level, gilingan, berat) digabung untuk tampilan.
+     * Di database tetap satu baris per bungkus supaya tiap bungkus punya jurnal sangrai sendiri.
+     *
+     * @return \Illuminate\Support\Collection<int,object{coffee_name_snapshot:string,level_label:string,grind_label:string,grams:int,qty:int,line_total:int,total_grams:int}>
+     */
+    public function groupedItems(): \Illuminate\Support\Collection
+    {
+        return $this->items->groupBy(fn ($i) => implode('|', [$i->roast_profile_id, $i->coffee_name_snapshot, $i->roast_level_snapshot, $i->grind, $i->grams]))
+            ->map(function ($g) {
+                $f = $g->first();
+
+                return (object) [
+                    'coffee_name_snapshot' => $f->coffee_name_snapshot,
+                    'level_label' => $f->level_label,
+                    'grind_label' => $f->grind_label,
+                    'grams' => $f->grams,
+                    'qty' => $g->count(),
+                    'line_total' => (int) $g->sum('line_total'),
+                    'total_grams' => (int) $g->sum('grams'),
+                ];
+            })->values();
+    }
+
+    /** Ringkasan satu baris isi pesanan, mis. "Gayo · Medium 200 g × 3 +1 lainnya". */
     public function itemSummary(): string
     {
-        $items = $this->items()->get();
-        $i = $items->first();
+        $groups = $this->groupedItems();
+        $i = $groups->first();
         if (! $i) {
             return '';
         }
 
-        $text = "{$i->coffee_name_snapshot} · {$i->roast_level_snapshot} {$i->grams} g";
+        $text = "{$i->coffee_name_snapshot} · {$i->level_label} {$i->grams} g".($i->qty > 1 ? " × {$i->qty}" : '');
 
-        return $items->count() > 1 ? $text.' '.__('+:n lainnya', ['n' => $items->count() - 1]) : $text;
+        return $groups->count() > 1 ? $text.' '.__('+:n lainnya', ['n' => $groups->count() - 1]) : $text;
     }
 }
