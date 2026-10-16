@@ -18,3 +18,10 @@ const watchReveals = () =>
 
 document.addEventListener('DOMContentLoaded', watchReveals);
 document.addEventListener('livewire:navigated', watchReveals);
+
+// Sidebar admin yang diciutkan: pulihkan setelah wire:navigate mengganti <html>.
+document.addEventListener('livewire:navigated', () => {
+    try {
+        document.documentElement.classList.toggle('mini', localStorage.getItem('krm-mini') === '1');
+    } catch (e) {}
+});
