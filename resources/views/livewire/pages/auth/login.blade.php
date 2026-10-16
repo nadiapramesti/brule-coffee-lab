@@ -27,6 +27,8 @@ new #[Layout('layouts.guest')] class extends Component
 <div>
     <x-auth-session-status class="mb-5" :status="session('status')" />
 
+    <x-social-login />
+
     <form wire:submit="login" class="space-y-5">
         <div>
             <label for="email">{{ __('Email') }}</label>
@@ -34,7 +36,7 @@ new #[Layout('layouts.guest')] class extends Component
             <x-input-error :messages="$errors->get('form.email')" class="mt-1.5" />
         </div>
 
-        <x-auth-password id="password" model="form.password" :label="__('Password')" :error="$errors->get('form.password')">
+        <x-auth-password id="password" model="form.password" :label="__('Password')" :placeholder="__('Password akunmu')" :error="$errors->get('form.password')">
             <x-slot name="aside">
                 <a href="{{ route('password.request') }}" wire:navigate class="text-[12.5px]">{{ __('Lupa password?') }}</a>
             </x-slot>

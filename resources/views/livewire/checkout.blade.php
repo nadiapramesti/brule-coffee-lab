@@ -11,12 +11,12 @@
             @endif
 
             @foreach ([
-                ['name', __('Nama penerima'), 'text', 'name'],
-                ['phone', __('Nomor WhatsApp'), 'tel', 'tel'],
-            ] as [$field, $label, $type, $ac])
+                ['name', __('Nama penerima'), 'text', 'name', 'Budi Santoso'],
+                ['phone', __('Nomor WhatsApp'), 'tel', 'tel', '081234567890'],
+            ] as [$field, $label, $type, $ac, $ph])
                 <div>
                     <label for="{{ $field }}" class="text-[13px] text-kraft/75">{{ $label }}</label>
-                    <input id="{{ $field }}" type="{{ $type }}" autocomplete="{{ $ac }}" wire:model="{{ $field }}"
+                    <input id="{{ $field }}" type="{{ $type }}" autocomplete="{{ $ac }}" placeholder="{{ $ph }}" wire:model="{{ $field }}"
                            class="mt-2 w-full rounded border border-kraft/25 bg-transparent px-4 py-3.5 text-[15px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
                     @error($field)<p class="mt-1.5 text-[12.5px] text-red-300">{{ $message }}</p>@enderror
                 </div>
@@ -25,7 +25,7 @@
             <div>
                 <label for="address" class="text-[13px] text-kraft/75">{{ __('Alamat lengkap') }}</label>
                 <textarea id="address" rows="4" wire:model="address" autocomplete="street-address"
-                          placeholder="{{ __('Jalan, nomor, kelurahan, kota, kode pos') }}"
+                          placeholder="{{ __('Contoh: Jl. Dago No. 25, Coblong, Kota Bandung 40135') }}"
                           class="mt-2 w-full rounded border border-kraft/25 bg-transparent px-4 py-3.5 text-[15px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40"></textarea>
                 @error('address')<p class="mt-1.5 text-[12.5px] text-red-300">{{ $message }}</p>@enderror
             </div>

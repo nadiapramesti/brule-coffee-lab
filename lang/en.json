@@ -177,5 +177,16 @@
     "opsional": "optional",
     "Minimal 8 karakter.": "At least 8 characters.",
     "Memproses...": "Processing...",
-    "Minimal 8 karakter": "At least 8 characters"
+    "Minimal 8 karakter": "At least 8 characters",
+    "Password akunmu": "Your password",
+    "Ulangi password": "Repeat password",
+    "Contoh: Jl. Dago No. 25, Coblong, Kota Bandung 40135": "Example: Jl. Dago No. 25, Coblong, Bandung 40135",
+    "Contoh: JNE1234567890": "Example: JNE1234567890",
+    "atau pakai email": "or use email",
+    "Login :provider belum dikonfigurasi di server ini.": "Login with :provider is not configured on this server.",
+    "Login dibatalkan.": "Login cancelled.",
+    "Sesi login kedaluwarsa. Coba lagi.": "Login session expired. Try again.",
+    "Gagal menghubungi :provider. Coba lagi.": "Could not reach :provider. Try again.",
+    "Akun :provider kamu tidak membagikan email yang terverifikasi.": "Your :provider account did not share a verified email.",
+    "Akun tim roastery masuk dengan email dan password.": "Roastery team accounts log in with email and password."
 }

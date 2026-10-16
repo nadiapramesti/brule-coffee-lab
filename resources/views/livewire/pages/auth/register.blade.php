@@ -39,10 +39,12 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <form wire:submit="register" class="grid gap-3.5 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-4" novalidate>
+    <x-social-login />
+
+    <form wire:submit="register" class="grid gap-3 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-3" novalidate>
         <div>
             <div class="flex items-baseline justify-between"><label for="name">{{ __('Name') }}</label><span class="invisible text-[11.5px]">.</span></div>
-            <input wire:model="name" id="name" class="mt-1" type="text" name="name" required autofocus autocomplete="name">
+            <input wire:model="name" id="name" class="mt-1" type="text" name="name" required autofocus autocomplete="name" placeholder="Budi Santoso">
             <x-input-error :messages="$errors->get('name')" class="mt-1" />
         </div>
 
@@ -59,7 +61,7 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
 
         <x-auth-password id="password" model="password" :label="__('Password')" :placeholder="__('Minimal 8 karakter')" autocomplete="new-password" :error="$errors->get('password')" />
-        <x-auth-password id="password_confirmation" model="password_confirmation" :label="__('Confirm Password')" autocomplete="new-password" :error="$errors->get('password_confirmation')" />
+        <x-auth-password id="password_confirmation" model="password_confirmation" :label="__('Confirm Password')" :placeholder="__('Ulangi password')" autocomplete="new-password" :error="$errors->get('password_confirmation')" />
 
         <button type="submit" wire:loading.attr="disabled" class="w-full disabled:opacity-60 sm:col-span-2">
             <span wire:loading.remove wire:target="register">{{ __('Buat akun') }}</span>

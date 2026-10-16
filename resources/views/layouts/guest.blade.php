@@ -40,8 +40,8 @@
 
             <div class="mt-4 rounded-[14px] border border-kraft/20 bg-[#141414]/90 p-5 shadow-[0_30px_60px_-30px_rgba(0,0,0,.9)] sm:mt-5 sm:p-7">
                 <h1 class="font-display text-[1.65rem] font-bold leading-tight tracking-[-0.01em]">{{ $copy[0] }}</h1>
-                @if ($copy[1])<p class="mt-1.5 text-[14px] leading-relaxed text-kraft/70 {{ $route === 'register' ? 'max-sm:hidden' : '' }}">{{ $copy[1] }}</p>@endif
-                <div class="mt-5 sm:mt-7">
+                @if ($copy[1])<p class="mt-1.5 text-[14px] leading-relaxed text-kraft/70 {{ $route === 'register' ? 'hidden' : '' }}">{{ $copy[1] }}</p>@endif
+                <div class="{{ $route === 'register' ? 'mt-4' : 'mt-5 sm:mt-7' }}">
                     {{ $slot }}
                 </div>
             </div>

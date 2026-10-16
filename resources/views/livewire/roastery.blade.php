@@ -36,7 +36,7 @@
 
                             @if ($status === 'packing')
                                 <label class="sr-only" for="resi-{{ $o->id }}">{{ __('Nomor resi') }}</label>
-                                <input id="resi-{{ $o->id }}" wire:model="tracking.{{ $o->id }}" placeholder="{{ __('Nomor resi') }}"
+                                <input id="resi-{{ $o->id }}" wire:model="tracking.{{ $o->id }}" placeholder="{{ __('Contoh: JNE1234567890') }}"
                                        class="krm-readout mt-3 w-full rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
                                 @error("tracking.$o->id")<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
                                 <button wire:click="ship({{ $o->id }})" class="mt-2.5 w-full rounded bg-bluelab py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Kirim') }} &rarr;</button>

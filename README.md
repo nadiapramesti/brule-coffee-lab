@@ -56,3 +56,15 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Login Google / Facebook (opsional)
+
+Tombolnya selalu tampil; tanpa kunci, klik akan menampilkan pesan "belum dikonfigurasi".
+
+1. **Google** — console.cloud.google.com → APIs & Services → Credentials → *Create OAuth client ID* (Web application).
+   Authorized redirect URI: `http://127.0.0.1:8000/auth/google/callback` (ganti host saat deploy).
+2. **Facebook** — developers.facebook.com → Create App → *Facebook Login*. Valid OAuth Redirect URI: `http://127.0.0.1:8000/auth/facebook/callback`.
+3. Isi `.env`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, lalu `php artisan config:clear`.
+4. Jalankan `php artisan migrate` (menambah kolom `provider` dan `provider_id`).
+
+Akun tim roastery/admin sengaja tidak bisa masuk lewat login sosial.
