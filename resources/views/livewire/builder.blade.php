@@ -27,7 +27,7 @@
                         <button type="button"
                                 wire:click="selectCoffee({{ $bean->id }})"
                                 aria-pressed="{{ $this->coffeeId === $bean->id ? 'true' : 'false' }}"
-                                class="rounded border p-4 text-left transition-colors
+                                class="flex flex-col items-start justify-start rounded border p-4 text-left transition-colors
                                        {{ $this->coffeeId === $bean->id
                                             ? 'border-bluelab bg-bluelab/10'
                                             : 'border-kraft/20 hover:border-kraft/45' }}">

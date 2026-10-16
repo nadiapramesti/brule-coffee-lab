@@ -105,66 +105,110 @@
             lengkap, kopinya tidak kami jual.
         </p>
 
-        <div class="mt-12">
+        @php
+            $processes = $this->coffees->map(fn ($c) => $c->traceability?->process)->filter()->unique()->values();
+        @endphp
+
+        <div class="mt-10" x-data="{ f: 'semua' }">
+
+            {{-- Saringan proses. Di gudang beneran, orang memilah lot
+                 berdasarkan cara pengolahannya dulu. --}}
+            <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Saring berdasarkan proses">
+                <span class="mr-2 text-[12px] text-kraft/50">Proses</span>
+                <button type="button" @click="f = 'semua'"
+                        :aria-pressed="f === 'semua'"
+                        :class="f === 'semua' ? 'border-bluelab bg-bluelab text-labwhite' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
+                        class="rounded border px-3.5 py-1.5 text-[13px] transition-colors">
+                    Semua <span class="krm-readout ml-1 text-[11px] opacity-70">{{ $this->coffees->count() }}</span>
+                </button>
+                @foreach ($processes as $proc)
+                    <button type="button" @click="f = @js($proc)"
+                            :aria-pressed="f === @js($proc)"
+                            :class="f === @js($proc) ? 'border-bluelab bg-bluelab text-labwhite' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
+                            class="rounded border px-3.5 py-1.5 text-[13px] transition-colors">
+                        {{ $proc }}
+                        <span class="krm-readout ml-1 text-[11px] opacity-70">{{ $this->coffees->filter(fn ($c) => $c->traceability?->process === $proc)->count() }}</span>
+                    </button>
+                @endforeach
+            </div>
+
+            {{-- Kepala kolom, hanya di layar lebar --}}
+            <div class="mt-8 hidden grid-cols-[minmax(0,1fr)_150px_96px_64px_28px] gap-6 border-b border-kraft/15 pb-3 text-[12px] text-kraft/50 md:grid">
+                <span>Lot</span><span>Proses</span><span>Ketinggian</span><span>Skor</span><span></span>
+            </div>
+
             @foreach ($this->coffees as $bean)
-                @php $t = $bean->traceability; @endphp
+                @php $t = $bean->traceability; $sig = $bean->signatureProfile(); @endphp
 
-                <article class="grid gap-7 border-t border-kraft/15 py-9 md:grid-cols-[minmax(0,1fr)_minmax(0,360px)] md:gap-12">
+                <article x-data="{ open: false }"
+                         x-show="f === 'semua' || f === @js($t?->process)"
+                         class="border-b border-kraft/15">
 
-                    <div>
-                        <div class="flex items-baseline gap-4">
-                            <h3 class="krm-h3 font-semibold">
-                                {{ $bean->name }}
-                            </h3>
-                            <span class="shrink-0 text-[12px] text-kraft/55">
-                                skor
-                                <span class="krm-readout ml-1 text-[13px] text-bluelab">{{ number_format($bean->cupping_score, 1) }}</span>
-                            </span>
+                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
+                            aria-controls="lot-{{ $bean->id }}"
+                            class="group grid w-full grid-cols-[minmax(0,1fr)_28px] items-center gap-x-6 gap-y-1 py-5 text-left md:grid-cols-[minmax(0,1fr)_150px_96px_64px_28px]">
+
+                        <span class="min-w-0">
+                            <span class="krm-h3 block font-semibold leading-tight transition-colors group-hover:text-bluelab/90">{{ $bean->name }}</span>
+                            <span class="mt-1 block truncate text-[13px] text-kraft/60">{{ $t?->region }}</span>
+                        </span>
+
+                        <span class="hidden text-[14px] text-labwhite md:block">{{ $t?->process ?? '—' }}</span>
+                        <span class="krm-readout hidden text-[13px] text-labwhite md:block">{{ $t?->altitude ? number_format($t->altitude) . ' m' : '—' }}</span>
+                        <span class="krm-readout hidden text-[13px] text-bluelab md:block">{{ number_format($bean->cupping_score, 1) }}</span>
+
+                        <svg viewBox="0 0 12 12" class="h-3 w-3 shrink-0 justify-self-end text-kraft/60 transition-transform duration-200"
+                             :class="open && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                            <path d="M2 4.5l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+
+                        {{-- Ringkasan untuk layar sempit, kolom di atas disembunyikan --}}
+                        <span class="col-span-2 mt-1 flex flex-wrap gap-x-4 gap-y-1 text-[12.5px] text-kraft/70 md:hidden">
+                            <span>{{ $t?->process }}</span>
+                            <span class="krm-readout">{{ $t?->altitude ? number_format($t->altitude) . ' m' : '' }}</span>
+                            <span>skor <span class="krm-readout text-bluelab">{{ number_format($bean->cupping_score, 1) }}</span></span>
+                        </span>
+                    </button>
+
+                    <div id="lot-{{ $bean->id }}" x-show="open" x-cloak x-collapse
+                         class="grid gap-7 pb-8 md:grid-cols-[minmax(0,1fr)_minmax(0,340px)] md:gap-12">
+                        <div>
+                            <p class="max-w-[56ch] text-[14px] leading-relaxed text-kraft/75">{{ $bean->story }}</p>
+
+                            @if ($sig?->tasting_notes)
+                                <p class="mt-5 text-[14px] leading-relaxed text-labwhite/90">
+                                    {{ implode(', ', $sig->tasting_notes) }}
+                                    <span class="text-kraft/55">— pada sangrai {{ strtolower($sig->level_label) }}</span>
+                                </p>
+                            @endif
+
+                            <a href="{{ route('builder', ['kopi' => $bean->slug]) }}"
+                               class="mt-6 inline-block rounded border border-kraft/35 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">
+                                Racik kopi ini
+                            </a>
                         </div>
 
-                        <p class="mt-3 max-w-[56ch] text-[14px] leading-relaxed text-kraft/70">
-                            {{ $bean->story }}
-                        </p>
-
-                        @php $sig = $bean->signatureProfile(); @endphp
-                        @if ($sig?->tasting_notes)
-                            <p class="mt-5 text-[14px] leading-relaxed text-labwhite/90">
-                                {{ implode(', ', $sig->tasting_notes) }}
-                                <span class="text-kraft/55">— pada sangrai {{ strtolower($sig->level_label) }}</span>
-                            </p>
-                        @endif
+                        <dl class="grid grid-cols-2 gap-x-8 gap-y-5 self-start text-[13px]">
+                            <div>
+                                <dt class="text-kraft/55">Varietas</dt>
+                                <dd class="mt-1 text-labwhite">{{ $t?->varietal ?? '—' }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-kraft/55">Panen</dt>
+                                <dd class="krm-readout mt-1 text-labwhite">{{ $t?->harvest_date?->format('m.Y') ?? '—' }}</dd>
+                            </div>
+                            <div class="col-span-2">
+                                <dt class="text-kraft/55">Petani</dt>
+                                <dd class="mt-1 text-labwhite">{{ $t?->farmer ?? '—' }}</dd>
+                            </div>
+                            <div class="col-span-2">
+                                <dt class="text-kraft/55">Dinilai oleh</dt>
+                                <dd class="mt-1 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd>
+                            </div>
+                        </dl>
                     </div>
-
-                    <dl class="grid grid-cols-2 gap-x-8 gap-y-5 self-start text-[13px]">
-                        <div>
-                            <dt class="text-kraft/55">Ketinggian</dt>
-                            <dd class="krm-readout mt-1 text-labwhite">{{ $t?->altitude ? number_format($t->altitude) . " mdpl" : "—" }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-kraft/55">Proses</dt>
-                            <dd class="mt-1 text-labwhite">{{ $t?->process ?? "—" }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-kraft/55">Varietas</dt>
-                            <dd class="mt-1 text-labwhite">{{ $t?->varietal ?? "—" }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-kraft/55">Panen</dt>
-                            <dd class="krm-readout mt-1 text-labwhite">{{ $t->harvest_date?->format('m.Y') }}</dd>
-                        </div>
-                        <div class="col-span-2">
-                            <dt class="text-kraft/55">Petani</dt>
-                            <dd class="mt-1 text-labwhite">{{ $t?->farmer ?? "—" }}</dd>
-                        </div>
-                        <div class="col-span-2">
-                            <dt class="text-kraft/55">Dinilai oleh</dt>
-                            <dd class="mt-1 text-labwhite">{{ $t?->q_grader ?? "—" }}</dd>
-                        </div>
-                    </dl>
                 </article>
             @endforeach
-
-            <div class="border-t border-kraft/15"></div>
         </div>
     </section>
 

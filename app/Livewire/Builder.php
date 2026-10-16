@@ -26,7 +26,10 @@ class Builder extends Component
 
     public function mount(): void
     {
-        $first = Coffee::active()->orderBy('id')->first();
+        $first = Coffee::active()
+            ->when(request()->query('kopi'), fn ($q, $slug) => $q->where('slug', $slug))
+            ->orderBy('id')->first()
+            ?? Coffee::active()->orderBy('id')->first();
 
         $this->coffeeId = $first?->id;
         $this->levelIndex = (int) floor(max(0, $this->levels->count() - 1) / 2);
