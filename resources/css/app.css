@@ -134,10 +134,6 @@
 }
 .js [data-reveal].is-in { opacity: 1; transform: none; }
 
-/* Bar waktu di bagian tahapan */
-.krm-protocol-bar { transform: scaleX(0); }
-.krm-protocol-bar.is-running { animation: krm-fill 5s linear forwards; }
-@keyframes krm-fill { to { transform: scaleX(1); } }
 
 /* Pindah halaman: isi menyilang pudar, header tidak ikut berkedip */
 @view-transition { navigation: auto; }
@@ -149,6 +145,5 @@ header[data-site-header] { view-transition-name: krm-header; }
 
 @media (prefers-reduced-motion: reduce) {
     .js [data-reveal] { opacity: 1; transform: none; transition: none; }
-    .krm-protocol-bar.is-running { animation: none; transform: scaleX(1); }
     ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }

@@ -229,72 +229,27 @@
                      class="hidden w-[104px] shrink-0 opacity-70 lg:block">
             </div>
 
-            {{-- Satu foto, lima langkah. Tiap langkah berjalan sendiri 5 detik
-                 (bar tipis di bawah judulnya), berhenti kalau disentuh atau
-                 keluar layar, dan tidak jalan sendiri kalau pengguna minta
-                 gerak dikurangi. Klik langkah mana pun untuk melompat. --}}
-            <div class="mt-10 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:items-start lg:gap-16"
-                 data-reveal
-                 x-data="{
-                     i: 0,
-                     n: {{ count($this->stages) }},
-                     hold: false,
-                     seen: false,
-                     calm: window.matchMedia('(prefers-reduced-motion: reduce)').matches,
-                     next() { this.i = (this.i + 1) % this.n },
-                     go(k) { this.i = k },
-                 }"
-                 x-intersect:enter="seen = true"
-                 x-intersect:leave="seen = false"
-                 @mouseenter="hold = true" @mouseleave="hold = false"
-                 @focusin="hold = true" @focusout="hold = false">
-
-                {{-- Foto: ditumpuk, ganti dengan cross-fade --}}
-                <div class="relative order-first aspect-[4/3] overflow-hidden rounded border border-charcoal/25 bg-[#e8e5df] lg:order-last lg:aspect-[4/5]">
-                    @foreach ($this->stages as $k => $stage)
-                        <img src="{{ asset('images/stage-' . ($k + 1) . '.webp') }}"
-                             alt="{{ $stage['name'] }}" width="586" height="1060"
-                             loading="{{ $k === 0 ? 'eager' : 'lazy' }}" decoding="async"
-                             class="absolute inset-0 h-full w-full object-cover object-[50%_58%] transition-[opacity,transform] duration-[900ms] ease-[cubic-bezier(.2,.7,.2,1)]"
-                             :class="i === {{ $k }} ? 'scale-100 opacity-100' : 'scale-[1.04] opacity-0'"
-                             :aria-hidden="i === {{ $k }} ? 'false' : 'true'">
-                    @endforeach
-
-                    <span class="krm-readout absolute bottom-3 left-3 rounded-[2px] bg-charcoal/90 px-2 py-1 text-[11.5px] text-labwhite">
-                        <span x-text="String(i + 1).padStart(2, '0')">01</span> / {{ str_pad(count($this->stages), 2, '0', STR_PAD_LEFT) }}
-                    </span>
-                </div>
-
-                {{-- Daftar langkah --}}
-                <ol class="border-t border-charcoal/20">
-                    @foreach ($this->stages as $k => $stage)
-                        <li class="border-b border-charcoal/20">
-                            <button type="button" @click="go({{ $k }})"
-                                    :aria-current="i === {{ $k }} ? 'step' : 'false'"
-                                    class="group relative block w-full py-4 text-left">
-                                <span class="flex items-baseline gap-4">
-                                    <span class="krm-readout w-6 shrink-0 text-[12px] transition-colors duration-300"
-                                          :class="i === {{ $k }} ? 'text-bluelab' : 'text-charcoal/40'">{{ str_pad($k + 1, 2, '0', STR_PAD_LEFT) }}</span>
-                                    <span class="font-display text-[1.25rem] font-semibold transition-[color,transform] duration-300 group-hover:text-charcoal"
-                                          :class="i === {{ $k }} ? 'translate-x-1 text-charcoal' : 'text-charcoal/45'">{{ $stage['name'] }}</span>
-                                </span>
-
-                                <span x-show="i === {{ $k }}" x-collapse x-cloak class="block">
-                                    <span class="mt-2 block max-w-[46ch] pl-10 text-[14px] leading-relaxed text-kraftink">{{ $stage['note'] }}</span>
-                                </span>
-
-                                {{-- Bar waktu: selesai = pindah ke langkah berikutnya --}}
-                                <span class="absolute inset-x-0 bottom-0 h-[2px] bg-charcoal/10" x-show="i === {{ $k }}" x-cloak>
-                                    <span class="krm-protocol-bar block h-full origin-left bg-bluelab"
-                                          :class="{ 'is-running': seen && !calm }"
-                                          :style="hold ? 'animation-play-state: paused' : ''"
-                                          @animationend="next()"></span>
-                                </span>
-                            </button>
-                        </li>
-                    @endforeach
-                </ol>
-            </div>
+            {{-- Lima kartu: foto 3:4 di atas, teks di bawah. Fotonya gelap
+                 (kayu tua) supaya kontras dengan kertas kraft. Di HP kartu
+                 digeser ke samping (scroll-snap), bukan ditumpuk 5 layar. --}}
+            <ol class="-mx-6 mt-10 flex scroll-px-6 snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
+                @foreach ($this->stages as $k => $stage)
+                    <li class="w-[64%] shrink-0 snap-start sm:w-auto" data-reveal style="--d: {{ $k * 90 }}ms">
+                        <div class="relative aspect-[3/4] overflow-hidden border-t border-white/20 bg-charcoal">
+                            <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}"
+                                 width="900" height="1200" loading="lazy" decoding="async"
+                                 class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]">
+                            {{-- Vinyet hangat: menggelapkan tepi, menjaga tengah --}}
+                            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_52%,rgba(40,22,8,.5)_100%)]"></div>
+                            <span class="krm-readout absolute left-3 top-3 rounded-[2px] bg-charcoal/80 px-1.5 py-0.5 text-[11px] text-labwhite">
+                                {{ str_pad($k + 1, 2, '0', STR_PAD_LEFT) }}
+                            </span>
+                        </div>
+                        <h3 class="mt-4 text-[1.15rem] font-semibold">{{ $stage['name'] }}</h3>
+                        <p class="mt-1.5 text-[13px] leading-relaxed text-kraftink">{{ $stage['note'] }}</p>
+                    </li>
+                @endforeach
+            </ol>
         </div>
     </section>
 
