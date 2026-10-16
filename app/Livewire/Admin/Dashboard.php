@@ -12,15 +12,75 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Attributes\Url;
 use Livewire\Component;
+use Livewire\WithPagination;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.panel')]
 #[Title('Dashboard admin - KROMATIK')]
 class Dashboard extends Component
 {
+    use WithPagination;
+
     public const LOW_STOCK_GRAM = 5000;
 
     #[Url(as: 'hari')]
     public int $days = 14;
+
+    /** '', unpaid, production, shipped, completed, cancelled */
+    #[Url]
+    public string $tab = '';
+
+    #[Url(as: 'q')]
+    public string $search = '';
+
+    public const TABS = [
+        '' => ['Semua', null],
+        'unpaid' => ['Menunggu bayar', ['pending_payment']],
+        'production' => ['Produksi', ['queued', 'roasting', 'grinding', 'packing']],
+        'shipped' => ['Dikirim', ['shipped']],
+        'completed' => ['Selesai', ['completed']],
+        'cancelled' => ['Batal', ['cancelled']],
+    ];
+
+    public function updatingTab(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatingSearch(): void
+    {
+        $this->resetPage();
+    }
+
+    public function setTab(string $tab): void
+    {
+        $this->tab = array_key_exists($tab, self::TABS) ? $tab : '';
+        $this->resetPage();
+    }
+
+    #[Computed]
+    public function tabCounts(): array
+    {
+        $counts = Order::selectRaw('status, count(*) as n')->groupBy('status')->pluck('n', 'status');
+
+        return collect(self::TABS)->map(fn ($t) => $t[1] === null
+            ? (int) $counts->sum()
+            : (int) collect($t[1])->sum(fn ($s) => $counts[$s] ?? 0))->all();
+    }
+
+    #[Computed]
+    public function orders()
+    {
+        $statuses = self::TABS[$this->tab][1] ?? null;
+        $q = trim($this->search);
+
+        return Order::with(['user:id,name', 'items:id,order_id,coffee_name_snapshot,grams'])
+            ->when($statuses, fn ($x) => $x->whereIn('status', $statuses))
+            ->when($q !== '', fn ($x) => $x->where(fn ($w) => $w
+                ->where('order_code', 'like', "%{$q}%")
+                ->orWhere('recipient_name', 'like', "%{$q}%")
+                ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$q}%"))))
+            ->latest()->paginate(8);
+    }
 
     public function updatedDays(): void
     {
@@ -69,18 +129,19 @@ class Dashboard extends Component
         return $before > 0 ? round(($now - $before) / $before * 100) : null;
     }
 
-    /** @return array<int,array{date:\Carbon\CarbonImmutable,total:int}> */
+    /** @return array<int,array{date:\Carbon\CarbonImmutable,total:int,count:int}> */
     #[Computed]
     public function daily(): array
     {
         $byDay = $this->paid($this->start(), CarbonImmutable::tomorrow())->get(['paid_at', 'total'])
-            ->groupBy(fn ($o) => $o->paid_at->toDateString())
-            ->map(fn ($g) => (int) $g->sum('total'));
+            ->groupBy(fn ($o) => $o->paid_at->toDateString());
 
         return collect(range($this->days - 1, 0))->map(function ($ago) use ($byDay) {
             $d = CarbonImmutable::today()->subDays($ago);
 
-            return ['date' => $d, 'total' => $byDay[$d->toDateString()] ?? 0];
+            $g = $byDay->get($d->toDateString(), collect());
+
+            return ['date' => $d, 'total' => (int) $g->sum('total'), 'count' => $g->count()];
         })->all();
     }
 
@@ -127,12 +188,6 @@ class Dashboard extends Component
             'toShip' => Order::where('status', 'packing')->count(),
             'low' => $this->lowStock->count(),
         ];
-    }
-
-    #[Computed]
-    public function recent()
-    {
-        return Order::with('user:id,name')->latest()->limit(8)->get();
     }
 
     public function render()

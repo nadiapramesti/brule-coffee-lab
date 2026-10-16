@@ -8,7 +8,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.panel')]
 #[Title('Kelola kopi - KROMATIK')]
 class CoffeeIndex extends Component
 {

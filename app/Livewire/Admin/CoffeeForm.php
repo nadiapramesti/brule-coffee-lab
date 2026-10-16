@@ -12,7 +12,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.panel')]
 #[Title('Form kopi - KROMATIK')]
 class CoffeeForm extends Component
 {
