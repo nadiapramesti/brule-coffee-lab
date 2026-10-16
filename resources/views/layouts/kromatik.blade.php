@@ -146,7 +146,7 @@
                         <li><a href="{{ route('landing') }}#biji" class="transition-colors hover:text-labwhite">{{ __('Biji') }}</a></li>
                         <li><a href="{{ route('builder') }}" class="transition-colors hover:text-labwhite">Roast builder</a></li>
                         <li><a href="{{ route('track') }}" class="transition-colors hover:text-labwhite">{{ __('Lacak pesanan') }}</a></li>
-                        <li><a href="{{ route('landing') }}#tahapan" class="transition-colors hover:text-labwhite">FAQ</a></li>
+                        <li><a href="{{ route('help') }}" class="transition-colors hover:text-labwhite">FAQ</a></li>
                     </ul>
                 </nav>
 
@@ -168,6 +168,11 @@
 
             <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-labwhite/10 pt-6 text-[12.5px] text-kraft/50">
                 <p>&copy; {{ date('Y') }} {{ \App\Models\Setting::get('store_name') }} &bull; {{ \App\Models\Setting::get('store_tagline') }} &bull; {{ \App\Models\Setting::get('store_city') }}</p>
+                <nav aria-label="{{ __('Kebijakan') }}" class="flex flex-wrap gap-x-5 gap-y-2">
+                    <a href="{{ route('policy.shipping') }}" class="transition-colors hover:text-labwhite">{{ __('Pengiriman & Pengembalian') }}</a>
+                    <a href="{{ route('policy.terms') }}" class="transition-colors hover:text-labwhite">{{ __('Syarat & Ketentuan') }}</a>
+                    <a href="{{ route('policy.privacy') }}" class="transition-colors hover:text-labwhite">{{ __('Kebijakan Privasi') }}</a>
+                </nav>
                 <x-lang-switch class="flex" />
             </div>
         </div>

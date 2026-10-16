@@ -109,6 +109,7 @@
                             class="mt-4 hidden w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] disabled:opacity-60 lg:block">
                         {{ __('Buat pesanan') }}
                     </button>
+                    <p class="text-center text-[12px] leading-relaxed text-kraft/50">{{ __('Dengan membuat pesanan, kamu menyetujui') }} <a href="{{ route('policy.terms') }}" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-labwhite">{{ __('Syarat & Ketentuan') }}</a>.</p>
                     <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">
                         @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ $payment === 'cod' ? __('COD: siapkan uang tunai sebesar total saat paket tiba.') : __('Pembayaran disimulasikan di halaman berikutnya.') }}
                     </p>

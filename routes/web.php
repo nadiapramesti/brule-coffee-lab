@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Landing::class)->name('landing');
 Route::get('/builder', Builder::class)->name('builder');
 
+Route::get('/bantuan', \App\Livewire\StaticPage::class)->defaults('page', 'faq')->name('help');
+Route::get('/pengiriman-pengembalian', \App\Livewire\StaticPage::class)->defaults('page', 'shipping')->name('policy.shipping');
+Route::get('/syarat-ketentuan', \App\Livewire\StaticPage::class)->defaults('page', 'terms')->name('policy.terms');
+Route::get('/kebijakan-privasi', \App\Livewire\StaticPage::class)->defaults('page', 'privacy')->name('policy.privacy');
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/lacak/{code?}', Track::class)->name('track');

@@ -709,5 +709,14 @@
     "Pembayaran": "Payment",
     "Terima pembayaran COD (bayar di tempat)": "Accept COD (cash on delivery)",
     "Batas total COD (Rp)": "COD total limit (Rp)",
-    "Isi 0 untuk tanpa batas. Pesanan di atas batas hanya bisa bayar online. Pesanan yang sudah dibuat tidak berubah.": "Enter 0 for no limit. Orders above the limit can only pay online. Existing orders are unchanged."
+    "Isi 0 untuk tanpa batas. Pesanan di atas batas hanya bisa bayar online. Pesanan yang sudah dibuat tidak berubah.": "Enter 0 for no limit. Orders above the limit can only pay online. Existing orders are unchanged.",
+    "Gratis ongkir untuk belanja mulai Rp:n.": "Free shipping on orders from Rp:n.",
+    "COD tersedia untuk pesanan sampai Rp:n.": "COD is available for orders up to Rp:n.",
+    "COD tersedia untuk semua pesanan.": "COD is available for all orders.",
+    "Halaman lain": "Other pages",
+    "Kebijakan": "Policies",
+    "Pengiriman & Pengembalian": "Shipping & Returns",
+    "Syarat & Ketentuan": "Terms & Conditions",
+    "Kebijakan Privasi": "Privacy Policy",
+    "Dengan membuat pesanan, kamu menyetujui": "By placing an order you agree to the"
 }
