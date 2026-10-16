@@ -19,7 +19,7 @@ export default {
                 bluelab:  '#2A5DB0',
             },
             borderRadius: {
-                DEFAULT: '3px',
+                DEFAULT: '10px',
             },
             fontFamily: {
                 display: ['IBM Plex Sans Condensed', 'system-ui', 'sans-serif'],

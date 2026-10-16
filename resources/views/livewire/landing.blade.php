@@ -241,7 +241,7 @@
                                  class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]">
                             {{-- Vinyet hangat: menggelapkan tepi, menjaga tengah --}}
                             <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_52%,rgba(40,22,8,.5)_100%)]"></div>
-                            <span class="krm-readout absolute left-3 top-3 rounded-[2px] bg-charcoal/80 px-1.5 py-0.5 text-[11px] text-labwhite">
+                            <span class="krm-readout absolute left-3 top-3 rounded-[6px] bg-charcoal/80 px-1.5 py-0.5 text-[11px] text-labwhite">
                                 {{ str_pad($k + 1, 2, '0', STR_PAD_LEFT) }}
                             </span>
                         </div>
