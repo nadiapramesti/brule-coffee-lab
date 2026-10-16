@@ -1,7 +1,7 @@
 <div>
 
     {{-- ══════════════════ HERO ══════════════════ --}}
-    <section class="relative isolate overflow-hidden -mt-[73px] pb-4 pt-[calc(73px+4rem)] md:pt-[calc(73px+6rem)]">
+    <section class="relative isolate overflow-hidden -mt-[73px] pb-2 pt-[calc(73px+3rem)] md:pt-[calc(73px+4.5rem)]">
         {{-- Foto ruang sangrai asli sebagai latar. Dua lapis gelap:
              satu dari kiri supaya teks terbaca, satu dari bawah supaya
              kromatogram duduk di atas warna yang sama dengan sisa halaman. --}}
@@ -64,14 +64,14 @@
 
         {{-- Kromatogram: melintas penuh dari tepi ke tepi, persis
              seperti waveform di stempel logo. --}}
-        <div class="mt-10"
+        <div class="mt-6"
              x-data="chromatogram(@js($this->peaks))">
             <div x-ref="trace" class="w-full"></div>
         </div>
 
         {{-- Tiga janji, ditulis sebagai angka yang bisa dicek --}}
-        <div class="mx-auto mt-8 max-w-[1180px] px-6">
-            <dl class="grid gap-8 border-t border-kraft/15 pt-8 sm:grid-cols-3">
+        <div class="mx-auto mt-4 max-w-[1180px] px-6">
+            <dl class="grid gap-5 border-t border-kraft/15 pt-5 sm:grid-cols-3 sm:gap-8">
                 <div>
                     <dt class="krm-readout text-[1.6rem] font-medium text-labwhite">1,2 kg</dt>
                     <dd class="mt-1.5 text-[13px] leading-relaxed text-kraft/70">
@@ -96,7 +96,7 @@
 
 
     {{-- ══════════════════ BIJI / LOGBOOK ══════════════════ --}}
-    <section id="biji" class="mx-auto max-w-[1180px] px-6 pt-24">
+    <section id="biji" class="mx-auto max-w-[1180px] px-6 pt-16 md:pt-20">
         <h2 class="krm-h2 font-semibold">
             Biji yang sedang ada di gudang
         </h2>
@@ -214,7 +214,7 @@
 
 
     {{-- ══════════════════ TAHAPAN (kertas kraft) ══════════════════ --}}
-    <section class="mt-24 bg-kraft py-20 text-charcoal">
+    <section class="mt-16 bg-kraft py-14 text-charcoal md:mt-20">
         <div class="mx-auto max-w-[1180px] px-6">
             <div class="flex items-start justify-between gap-10">
                 <div>
@@ -234,12 +234,12 @@
                      class="hidden w-[128px] shrink-0 opacity-70 lg:block">
             </div>
 
-            <ol class="mt-14 grid gap-10 border-t border-charcoal/20 pt-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
+            <ol class="mt-8 grid gap-6 border-t border-charcoal/20 pt-6 sm:grid-cols-2 lg:grid-cols-5 lg:gap-5">
                 @foreach ($this->stages as $i => $stage)
                     <li class="relative flex gap-5 sm:block">
                         <img src="{{ asset('images/stage-' . ($i + 1) . '.webp') }}" alt="{{ $stage['name'] }}"
                              width="586" height="1060" loading="lazy" decoding="async"
-                             class="aspect-[4/5] w-[104px] shrink-0 self-start rounded border border-charcoal/15 object-cover sm:mb-5 sm:w-full">
+                             class="aspect-square w-[88px] shrink-0 self-start rounded border border-charcoal/15 object-cover object-[50%_62%] sm:mb-4 sm:w-full">
                         <div>
                         <span class="krm-readout block text-[12px] text-charcoal/45">
                             {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
@@ -257,17 +257,18 @@
 
 
     {{-- ══════════════════ PENUTUP ══════════════════ --}}
-    <section class="mx-auto max-w-[1180px] px-6 py-24">
-        <div class="max-w-[46ch]">
-            <h2 class="krm-h2 font-semibold">
-                Mulai dari rasa, bukan dari nama kopinya
-            </h2>
-            <p class="mt-4 text-[15px] leading-relaxed text-kraft/75">
-                Geser level sangrainya dan lihat profil rasanya bergerak.
-                Kalau sudah ketemu yang kamu mau, pesan di situ juga.
-            </p>
+    <section class="mx-auto max-w-[1180px] px-6 py-14 md:py-16">
+        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
+            <div class="max-w-[40ch]">
+                <h2 class="krm-h2 font-semibold">
+                    Mulai dari rasa, bukan dari nama kopinya
+                </h2>
+                <p class="mt-3 text-[15px] leading-relaxed text-kraft/75">
+                    Geser level sangrainya, lihat profil rasanya bergerak, lalu pesan di situ juga.
+                </p>
+            </div>
             <a href="{{ route('builder') }}"
-               class="mt-8 inline-block rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+               class="self-start rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94] md:self-auto">
                 Buka roast builder
             </a>
         </div>
