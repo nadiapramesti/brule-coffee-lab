@@ -678,5 +678,10 @@
     "Stok :n tidak cukup untuk jumlah yang kamu pilih.": "Not enough :n in stock for the amount you chose.",
     "+:n lainnya": "+:n more",
     "Jumlah": "Quantity",
-    "Total berat": "Total weight"
+    "Total berat": "Total weight",
+    "Barang": "Item",
+    "Qty": "Qty",
+    "Harga satuan": "Unit price",
+    "Isi paket": "Parcel contents",
+    "bungkus": "pack(s)"
 }

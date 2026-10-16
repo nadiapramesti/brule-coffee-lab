@@ -36,14 +36,19 @@
     </div>
 
     <table>
-        <thead><tr><th>{{ __('Item') }}</th><th>{{ __('Level') }}</th><th>{{ __('Gilingan') }}</th><th class="r">{{ __('Berat') }}</th><th class="r">{{ __('Harga') }}</th></tr></thead>
+        <thead><tr><th>{{ __('Barang') }}</th><th class="r">{{ __('Qty') }}</th><th class="r">{{ __('Berat') }}</th><th class="r">{{ __('Harga satuan') }}</th><th class="r">{{ __('Subtotal') }}</th></tr></thead>
         <tbody>
         @foreach ($order->groupedItems() as $i)
-            <tr><td>{{ $i->coffee_name_snapshot }}</td><td>{{ $i->level_label }}</td><td>{{ __($i->grind_label) }}</td><td class="r">{{ number_format($i->total_grams, 0, ',', '.') }} g</td><td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td></tr>
+            <tr>
+                <td>{{ $i->coffee_name_snapshot }}<div class="muted">{{ $i->level_label }} · {{ __($i->grind_label) }}</div></td>
+                <td class="r">{{ $i->qty }}</td>
+                <td class="r">{{ number_format($i->grams, 0, ',', '.') }} g</td>
+                <td class="r">Rp {{ number_format($i->unit_price, 0, ',', '.') }}</td>
+                <td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td>
+            </tr>
         @endforeach
         </tbody>
         <tfoot>
-            <tr><td colspan="3" class="r muted">{{ __('Total berat') }}</td><td class="r">{{ number_format($order->items->sum('grams'), 0, ',', '.') }} g</td><td></td></tr>
             <tr><td colspan="4" class="r muted">{{ __('Subtotal') }}</td><td class="r">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</td></tr>
             @if ($order->discount ?? 0)<tr><td colspan="4" class="r muted">{{ __('Diskon') }}@if ($order->voucher_code) ({{ $order->voucher_code }})@endif</td><td class="r">- Rp {{ number_format($order->discount, 0, ',', '.') }}</td></tr>@endif
             <tr><td colspan="4" class="r muted">{{ __('Ongkir') }}</td><td class="r">{{ $order->shipping_cost ? 'Rp ' . number_format($order->shipping_cost, 0, ',', '.') : __('Gratis') }}</td></tr>
@@ -55,7 +60,8 @@
         <div class="muted">{{ __('Kirim ke') }}</div>
         <b>{{ $order->recipient_name }}</b> · {{ $order->recipient_phone }}<br>
         {{ $order->shipping_address }}
-        @if ($order->tracking_number)<div class="muted" style="margin-top:8px">{{ __('Resi') }}: <b style="color:#111">{{ $order->tracking_number }}</b></div>@endif
+        <div class="muted" style="margin-top:8px">{{ __('Isi paket') }}: <b style="color:#111">{{ $order->items->count() }} {{ __('bungkus') }} · {{ number_format($order->items->sum('grams'), 0, ',', '.') }} g</b></div>
+        @if ($order->tracking_number)<div class="muted" style="margin-top:4px">{{ __('Resi') }}: <b style="color:#111">{{ $order->tracking_number }}</b></div>@endif
     </div>
     <p class="muted" style="margin-top:22px">{{ __('Disangrai setelah pesanan masuk. Terima kasih sudah memilih KROMATIK.') }}</p>
 </div>

@@ -343,7 +343,7 @@ class Order extends Model
      * Item yang identik (kopi, level, gilingan, berat) digabung untuk tampilan.
      * Di database tetap satu baris per bungkus supaya tiap bungkus punya jurnal sangrai sendiri.
      *
-     * @return \Illuminate\Support\Collection<int,object{coffee_name_snapshot:string,level_label:string,grind_label:string,grams:int,qty:int,line_total:int,total_grams:int}>
+     * @return \Illuminate\Support\Collection<int,object{coffee_name_snapshot:string,level_label:string,grind_label:string,grams:int,qty:int,unit_price:int,line_total:int,total_grams:int}>
      */
     public function groupedItems(): \Illuminate\Support\Collection
     {
@@ -357,6 +357,7 @@ class Order extends Model
                     'grind_label' => $f->grind_label,
                     'grams' => $f->grams,
                     'qty' => $g->count(),
+                    'unit_price' => (int) $f->line_total,
                     'line_total' => (int) $g->sum('line_total'),
                     'total_grams' => (int) $g->sum('grams'),
                 ];
