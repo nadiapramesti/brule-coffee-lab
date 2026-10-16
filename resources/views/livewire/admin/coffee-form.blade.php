@@ -53,6 +53,35 @@
                     @error('cupping')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
             </div>
+            <div class="mt-3">
+                <span class="{{ $lb }}">{{ __('Foto produk') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></span>
+                @php($shown = $photo ? $photo->temporaryUrl() : $this->currentImageUrl())
+                <div class="mt-1.5 flex items-start gap-4">
+                    <div class="w-28 shrink-0 overflow-hidden rounded border border-kraft/15 bg-surface">
+                        @if ($shown)
+                            <img src="{{ $shown }}" alt="{{ $name ?: __('Foto produk') }}" class="aspect-[4/5] w-full object-cover">
+                        @else
+                            <x-coffee-bag :coffee="new \App\Models\Coffee(['name' => $name ?: 'Kopi'])" />
+                        @endif
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <label for="photo" class="inline-flex cursor-pointer items-center rounded border border-kraft/30 px-3 py-2 text-[13px] text-labwhite transition hover:bg-kraft/10 focus-within:ring-2 focus-within:ring-bluelab/40">
+                                {{ $shown ? __('Ganti foto') : __('Pilih foto') }}
+                                <input id="photo" type="file" wire:model="photo" accept="image/jpeg,image/png,image/webp" class="sr-only">
+                            </label>
+                            @if ($shown)
+                                <button type="button" wire:click="clearPhoto" class="rounded px-3 py-2 text-[13px] text-redtext transition hover:bg-red-500/10">
+                                    {{ $photo ? __('Batal pilih') : __('Hapus foto') }}
+                                </button>
+                            @endif
+                            <span wire:loading wire:target="photo" class="text-[12px] text-kraft/60">{{ __('Mengunggah…') }}</span>
+                        </div>
+                        <p class="mt-2 text-[12px] leading-relaxed text-kraft/55">{{ __('JPG, PNG, atau WebP. Maks 3 MB. Rasio 4:5 (portrait) paling pas. Tanpa foto, toko menampilkan kantong SVG.') }}</p>
+                        @error('photo')<p class="{{ $er }}">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+            </div>
             <label class="mt-3 flex cursor-pointer items-center gap-3 text-[14px]">
                 <input type="checkbox" wire:model="is_active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
                 {{ __('Tampilkan di toko') }}

@@ -652,5 +652,16 @@
     "Ganti tema": "Switch theme",
     "Unduh": "Download",
     "Hapus voucher ini?": "Delete this voucher?",
-    "Hapus voucher": "Delete voucher"
+    "Hapus voucher": "Delete voucher",
+    "Foto produk": "Product photo",
+    "Pilih foto": "Choose photo",
+    "Ganti foto": "Replace photo",
+    "Hapus foto": "Remove photo",
+    "Batal pilih": "Cancel selection",
+    "Mengunggah…": "Uploading…",
+    "JPG, PNG, atau WebP. Maks 3 MB. Rasio 4:5 (portrait) paling pas. Tanpa foto, toko menampilkan kantong SVG.": "JPG, PNG or WebP. Max 3 MB. 4:5 portrait fits best. Without a photo the shop shows the SVG pouch.",
+    "File harus berupa gambar.": "File must be an image.",
+    "Format harus JPG, PNG, atau WebP.": "Format must be JPG, PNG or WebP.",
+    "Ukuran foto maksimal 3 MB.": "Photo must be 3 MB or less.",
+    "Upload gagal. Cek ukuran (maks 3 MB) lalu coba lagi.": "Upload failed. Check the size (max 3 MB) and try again."
 }

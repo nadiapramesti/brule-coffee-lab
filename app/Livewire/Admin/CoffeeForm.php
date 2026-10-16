@@ -6,12 +6,16 @@ use App\Models\Coffee;
 use App\Models\RoastProfile;
 use App\Models\Traceability;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 
 class CoffeeForm extends Component
 {
+    use WithFileUploads;
+
     public const FLAVORS = ['floral', 'citrus', 'berry', 'chocolate', 'nutty', 'spice'];
     public const PROCESSES = ['Washed', 'Honey', 'Natural', 'Anaerobic', 'Wet-Hulled'];
 
@@ -24,6 +28,12 @@ class CoffeeForm extends Component
     public string $stock = '0';
     public string $cupping = '';
     public bool $is_active = true;
+
+    /** Foto baru yang baru dipilih (belum disimpan). */
+    public $photo = null;
+    /** Path/URL foto yang tersimpan sekarang. */
+    public ?string $currentImage = null;
+    public bool $removePhoto = false;
 
     public string $farmer = '';
     public string $region = '';
@@ -58,6 +68,7 @@ class CoffeeForm extends Component
         $this->stock = (string) $coffee->stock_green_bean_gram;
         $this->cupping = $coffee->cupping_score !== null ? (string) $coffee->cupping_score : '';
         $this->is_active = $coffee->is_active;
+        $this->currentImage = $coffee->image;
 
         if ($t = $coffee->traceability) {
             $this->farmer = $t->farmer;
@@ -78,6 +89,41 @@ class CoffeeForm extends Component
                 'notes' => implode(', ', $p->tasting_notes ?? []),
             ];
         }
+    }
+
+    public function updatedPhoto(): void
+    {
+        $this->removePhoto = false;
+        try {
+            $this->validateOnly('photo');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // File invalid tidak boleh nyangkut sebagai preview.
+            $this->photo = null;
+            throw $e;
+        }
+    }
+
+    public function clearPhoto(): void
+    {
+        // Batal pilih foto baru; kalau tidak ada foto baru, tandai foto lama untuk dihapus saat simpan.
+        if ($this->photo) {
+            $this->photo = null;
+            $this->resetErrorBag('photo');
+
+            return;
+        }
+        $this->removePhoto = $this->currentImage !== null;
+    }
+
+    public function currentImageUrl(): ?string
+    {
+        if (! $this->currentImage || $this->removePhoto) {
+            return null;
+        }
+
+        return Str::startsWith($this->currentImage, ['http://', 'https://', '/'])
+            ? $this->currentImage
+            : asset('storage/'.ltrim($this->currentImage, '/'));
     }
 
     public function updatedName(): void
@@ -103,6 +149,7 @@ class CoffeeForm extends Component
             'process' => ['required', Rule::in(self::PROCESSES)],
             'harvest_date' => ['nullable', 'date'],
             'q_grader' => ['nullable', 'string', 'max:120'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072'],
         ];
 
         foreach (array_keys(RoastProfile::LEVELS) as $level) {
@@ -127,6 +174,10 @@ class CoffeeForm extends Component
             'numeric' => __('Harus berupa angka.'),
             'between' => __('Nilai di luar rentang yang diizinkan.'),
             'max' => __('Terlalu panjang.'),
+            'photo.image' => __('File harus berupa gambar.'),
+            'photo.mimes' => __('Format harus JPG, PNG, atau WebP.'),
+            'photo.max' => __('Ukuran foto maksimal 3 MB.'),
+            'photo.uploaded' => __('Upload gagal. Cek ukuran (maks 3 MB) lalu coba lagi.'),
         ];
     }
 
@@ -156,7 +207,15 @@ class CoffeeForm extends Component
 
         $wasNew = $this->coffeeId === null;
 
-        $coffee = DB::transaction(function () use ($chosen, $wasNew) {
+        $oldImage = $this->currentImage;
+        $newImage = $oldImage;
+        if ($this->photo) {
+            $newImage = $this->photo->store('coffees', 'public');
+        } elseif ($this->removePhoto) {
+            $newImage = null;
+        }
+
+        $coffee = DB::transaction(function () use ($chosen, $wasNew, $newImage) {
             $coffee = Coffee::updateOrCreate(['id' => $this->coffeeId], [
                 'slug' => $this->slug,
                 'name' => trim($this->name),
@@ -164,6 +223,7 @@ class CoffeeForm extends Component
                 'story_en' => trim($this->story_en) ?: null,
                 'cupping_score' => $this->cupping === '' ? null : (float) $this->cupping,
                 'is_active' => $this->is_active,
+                'image' => $newImage,
             ]);
 
             // Stok tidak diset langsung: selisihnya dicatat sebagai pergerakan.
@@ -197,6 +257,14 @@ class CoffeeForm extends Component
 
             return $coffee;
         });
+
+        // Hapus file lama hanya yang ada di disk kita (bukan URL eksternal).
+        if ($oldImage && $oldImage !== $newImage && ! Str::startsWith($oldImage, ['http://', 'https://', '/'])) {
+            Storage::disk('public')->delete($oldImage);
+        }
+        $this->currentImage = $newImage;
+        $this->photo = null;
+        $this->removePhoto = false;
 
         \App\Models\ActivityLog::record($wasNew ? 'coffee.created' : 'coffee.updated', $coffee, $wasNew ? 'Kopi :n ditambahkan' : 'Kopi :n diperbarui', ['n' => $coffee->name]);
 
