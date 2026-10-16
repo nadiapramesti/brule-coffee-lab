@@ -5,8 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ $title ?? 'KROMATIK — Specialty Coffee Lab' }}</title>
-    <meta name="description" content="{{ __('Kopi specialty yang disangrai setelah pesanan masuk. Pilih bijinya, level sangrainya, dan ukuran gilingannya.') }}">
+    @php
+        $seoTitle = $title ?? 'KROMATIK — Specialty Coffee Lab';
+        $seoDesc = $description ?? __('Kopi specialty yang disangrai setelah pesanan masuk. Pilih bijinya, level sangrainya, dan ukuran gilingannya.');
+        $seoUrl = url()->current();
+    @endphp
+    <title>{{ $seoTitle }}</title>
+    <meta name="description" content="{{ $seoDesc }}">
+    <link rel="canonical" href="{{ $seoUrl }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KROMATIK">
+    <meta property="og:title" content="{{ $seoTitle }}">
+    <meta property="og:description" content="{{ $seoDesc }}">
+    <meta property="og:url" content="{{ $seoUrl }}">
+    <meta property="og:locale" content="{{ app()->getLocale() === 'en' ? 'en_US' : 'id_ID' }}">
+    <meta property="og:image" content="{{ asset('images/hero-roastery.jpg') }}">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ $seoTitle }}">
+    <meta name="twitter:description" content="{{ $seoDesc }}">
+    <meta name="twitter:image" content="{{ asset('images/hero-roastery.jpg') }}">
+    @if (request()->routeIs('track', 'cart', 'checkout', 'profile'))<meta name="robots" content="noindex">@endif
 
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
@@ -22,6 +40,14 @@
     <a href="#isi" class="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-4 focus:z-50 focus:bg-bluelab focus:px-4 focus:py-2">
         {{ __('Lewati ke isi') }}
     </a>
+
+    @php $freeFrom = \App\Models\Setting::int('free_shipping_from'); @endphp
+    @if ($freeFrom > 0)
+        <div class="krm-dark bg-bluelab px-6 py-2 text-center text-[12.5px] text-paper" data-promo-bar>
+            {{ __('Gratis ongkir untuk belanja mulai Rp:n', ['n' => number_format($freeFrom, 0, ',', '.')]) }}
+            <span class="hidden sm:inline"><span class="mx-2 opacity-50" aria-hidden="true">•</span>{{ __('Disangrai setelah pesanan masuk') }}</span>
+        </div>
+    @endif
 
     <header data-site-header x-data="{ open: false, top: true, hero: {{ request()->routeIs('landing', 'builder') ? 'true' : 'false' }}, land: {{ request()->routeIs('landing') ? 'true' : 'false' }}, build: {{ request()->routeIs('builder') ? 'true' : 'false' }} }"
             x-init="top = window.scrollY < 24"

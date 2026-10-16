@@ -15,6 +15,14 @@ Route::get('/bantuan', \App\Livewire\StaticPage::class)->defaults('page', 'faq')
 Route::get('/pengiriman-pengembalian', \App\Livewire\StaticPage::class)->defaults('page', 'shipping')->name('policy.shipping');
 Route::get('/syarat-ketentuan', \App\Livewire\StaticPage::class)->defaults('page', 'terms')->name('policy.terms');
 Route::get('/kebijakan-privasi', \App\Livewire\StaticPage::class)->defaults('page', 'privacy')->name('policy.privacy');
+Route::get('/sitemap.xml', function () {
+    $urls = collect([
+        route('landing'), route('builder'), route('track'), route('help'),
+        route('policy.shipping'), route('policy.terms'), route('policy.privacy'),
+    ])->merge(\App\Models\Coffee::active()->orderBy('id')->pluck('slug')->map(fn ($s) => route('builder', ['kopi' => $s])));
+
+    return response()->view('sitemap', ['urls' => $urls])->header('Content-Type', 'application/xml');
+})->name('sitemap');
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/lacak/{code?}', Track::class)->name('track');

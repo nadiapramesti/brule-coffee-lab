@@ -125,6 +125,36 @@ class Coffee extends Model
             ?? $sorted->get(intdiv(max(0, $sorted->count() - 1), 2));
     }
 
+    /** Foto produk yang diupload admin; null kalau belum ada (tampilannya jatuh ke ilustrasi kantong). */
+    public function imageUrl(): ?string
+    {
+        if (! $this->image) {
+            return null;
+        }
+
+        return \Illuminate\Support\Str::startsWith($this->image, ['http://', 'https://', '/'])
+            ? $this->image
+            : asset('storage/'.ltrim($this->image, '/'));
+    }
+
+    /** Harga termurah untuk kemasan terkecil (200 g), buat label "mulai dari" di katalog. */
+    public function startingPrice(int $gram = 200): ?int
+    {
+        $min = $this->roastProfiles->min('price_per_100g');
+
+        return $min === null ? null : (int) round($min * ($gram / 100));
+    }
+
+    /** soldout | low | ok, dipakai badge stok di katalog. */
+    public function stockState(): string
+    {
+        if (! $this->hasStockFor(200)) {
+            return 'soldout';
+        }
+
+        return $this->stock_green_bean_gram < Setting::int('low_stock_gram') ? 'low' : 'ok';
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
