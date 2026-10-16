@@ -47,6 +47,7 @@
             <div class="hidden items-center gap-3 md:flex"><x-lang-switch class="flex" /><x-theme-toggle /></div>
 
             <div class="hidden items-center gap-3 sm:flex">
+                <livewire:cart-badge />
                 @auth
                     <livewire:notifications />
                     <div class="relative" x-data="{ menu: false }" @click.outside="menu = false" @keydown.escape.window="menu = false">
@@ -84,6 +85,7 @@
 
             <div class="flex items-center gap-2 md:hidden">
                 <x-theme-toggle />
+                <livewire:cart-badge />
                 @auth<div class="sm:hidden"><livewire:notifications /></div>@endauth
             {{-- Tombol menu, hanya di layar sempit --}}
             <button type="button"

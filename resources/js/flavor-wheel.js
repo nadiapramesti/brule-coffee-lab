@@ -69,6 +69,7 @@ export default function flavorWheel(initialValues = {}, labels = {}) {
 
         draw() {
             const el   = this.$refs.wheel;
+            if (!el) return;
             const size = Math.min(el.clientWidth || 420, 420);
 
             this.center = size / 2;

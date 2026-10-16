@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Order;
 use App\Models\OrderItem;
-use App\Models\RoastProfile;
+use App\Support\Cart;
 use App\Models\Voucher;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -16,9 +16,9 @@ use Livewire\Component;
 #[Title('Checkout - KROMATIK')]
 class Checkout extends Component
 {
-    #[Locked] public int $profileId = 0;
-    #[Locked] public int $grams = 200;
-    #[Locked] public string $grind = 'whole_bean';
+    /** Baris yang dibeli: dari keranjang, atau satu baris langsung bila datang lewat ?p=&g=&grind=. */
+    #[Locked] public array $raw = [];
+    #[Locked] public bool $direct = false;
 
     public string $name = '';
     public string $phone = '';
@@ -28,30 +28,43 @@ class Checkout extends Component
     #[Locked] public ?string $voucher = null;
     public ?string $voucherError = null;
 
-    public function mount(): void
+    public function mount()
     {
-        $this->profileId = (int) request()->query('p');
-        $this->grams = in_array((int) request()->query('g'), [200, 500, 1000], true) ? (int) request()->query('g') : 200;
-        $g = (string) request()->query('grind');
-        $this->grind = array_key_exists($g, OrderItem::GRINDS) ? $g : 'whole_bean';
+        if (request()->query('p')) {
+            $g = (int) request()->query('g');
+            $grind = (string) request()->query('grind');
+            $this->direct = true;
+            $this->raw = [[
+                'id' => 'direct',
+                'profile_id' => (int) request()->query('p'),
+                'grams' => in_array($g, Cart::GRAMS, true) ? $g : 200,
+                'grind' => array_key_exists($grind, OrderItem::GRINDS) ? $grind : 'whole_bean',
+            ]];
+        } else {
+            $this->raw = Cart::raw();
+        }
 
-        abort_unless($this->profile, 404);
+        if ($this->lines->isEmpty()) {
+            return $this->redirectRoute('cart', navigate: true);
+        }
 
         $user = auth()->user();
         $this->name = $user->name;
         $this->phone = (string) ($user->phone ?? '');
+
+        return null;
     }
 
     #[Computed]
-    public function profile(): ?RoastProfile
+    public function lines()
     {
-        return RoastProfile::with('coffee')->find($this->profileId);
+        return Cart::lines($this->raw);
     }
 
     #[Computed]
     public function subtotal(): int
     {
-        return $this->profile->priceFor($this->grams);
+        return (int) $this->lines->sum('price');
     }
 
     #[Computed]
@@ -108,14 +121,20 @@ class Checkout extends Component
             'address.min'  => __('Alamat terlalu pendek. Tulis jalan, nomor, kota, dan kode pos.'),
         ]);
 
+        $lines = $this->lines->map(fn ($l) => ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind])->all();
+
         try {
-            $order = Order::place(auth()->user(), $this->profile, $this->grams, $this->grind, $data, $this->voucher);
+            $order = Order::placeMany(auth()->user(), $lines, $data, $this->voucher);
         } catch (\RuntimeException $e) {
             $this->error = $e->getMessage();
             $this->voucher = null;
             unset($this->discount);
 
             return null;
+        }
+
+        if (! $this->direct) {
+            Cart::clear();
         }
 
         return $this->redirectRoute('track', ['code' => $order->order_code], navigate: true);

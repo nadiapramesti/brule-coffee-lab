@@ -259,10 +259,11 @@
                     </div>
 
                     @if ($this->stockOk)
-                        <button type="button" wire:click="order"
+                        <button type="button" wire:click="addToCart"
                                 class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] hover:shadow-[0_10px_28px_-10px_rgba(42,93,176,.9)] active:scale-[.99]">
-                            {{ __('Pesan dan sangrai') }}
+                            {{ __('Tambah ke keranjang') }}
                         </button>
+                        @error('cart')<p class="mt-3 text-center text-[12.5px] text-redtext">{{ $message }}</p>@enderror
                         <p class="mt-3 text-center text-[12px] leading-relaxed text-kraft/55">
                             {{ __('Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.') }}
                         </p>
@@ -285,7 +286,7 @@
                     <p class="truncate text-[12px] text-kraft/60">{{ $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>
                     <p class="krm-readout text-[1.15rem] leading-tight">Rp{{ number_format($this->price, 0, ',', '.') }}</p>
                 </div>
-                <button type="button" wire:click="order" class="shrink-0 rounded bg-bluelab px-5 py-3 font-display text-[14px] font-semibold">{{ __('Pesan dan sangrai') }}</button>
+                <button type="button" wire:click="addToCart" class="shrink-0 rounded bg-bluelab px-5 py-3 font-display text-[14px] font-semibold">{{ __('Tambah ke keranjang') }}</button>
             </div>
         </div>
     @endif

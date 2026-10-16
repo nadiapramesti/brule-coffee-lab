@@ -146,63 +146,89 @@ class Order extends Model
         return $free > 0 && $subtotal >= $free ? 0 : Setting::int('shipping_flat');
     }
 
-    /**
-     * Buat pesanan satu item. Harga dihitung ulang di sini dari database,
-     * bukan dipercaya dari browser, dan stok biji mentah dikunci selama
-     * transaksi supaya dua pembeli tidak bisa mengambil stok yang sama.
-     *
-     * @throws \RuntimeException bila stok tidak cukup
-     */
+    /** Pesanan satu item; pintasan untuk placeMany. */
     public static function place(User $user, RoastProfile $profile, int $grams, string $grind, array $ship, ?string $voucherCode = null): self
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $profile, $grams, $grind, $ship, $voucherCode) {
-            $coffee = Coffee::whereKey($profile->coffee_id)->lockForUpdate()->firstOrFail();
+        return self::placeMany($user, [['profile' => $profile, 'grams' => $grams, 'grind' => $grind]], $ship, $voucherCode);
+    }
 
-            if (! $coffee->is_active || ! $coffee->hasStockFor($grams)) {
-                throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
+    /**
+     * Buat satu pesanan berisi banyak item. Harga dihitung ulang di sini dari
+     * database, bukan dipercaya dari browser, dan stok biji mentah dikunci
+     * selama transaksi supaya dua pembeli tidak bisa mengambil stok yang sama.
+     * Item dari kopi yang sama dijumlahkan dulu sebelum stok dicek.
+     *
+     * @param  array<int,array{profile:RoastProfile,grams:int,grind:string}>  $lines
+     * @throws \RuntimeException bila stok tidak cukup atau keranjang kosong
+     */
+    public static function placeMany(User $user, array $lines, array $ship, ?string $voucherCode = null): self
+    {
+        if ($lines === []) {
+            throw new \RuntimeException(__('Keranjangmu masih kosong.'));
+        }
+
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $lines, $ship, $voucherCode) {
+            // Kunci kopi berurutan berdasarkan id supaya dua transaksi tidak saling tunggu (deadlock).
+            $coffees = Coffee::whereIn('id', collect($lines)->map(fn ($l) => $l['profile']->coffee_id)->unique())
+                ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
+
+            $need = [];
+            foreach ($lines as $l) {
+                $c = $coffees[$l['profile']->coffee_id] ?? null;
+                if (! $c || ! $c->is_active) {
+                    throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
+                }
+                $need[$c->id] = ($need[$c->id] ?? 0) + $c->greenBeanNeeded($l['grams']);
+            }
+            foreach ($need as $id => $gram) {
+                if ($coffees[$id]->stock_green_bean_gram < $gram) {
+                    throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
+                }
             }
 
-            $line = $profile->priceFor($grams);
-            $shipping = self::shippingFor($line);
+            $subtotal = (int) collect($lines)->sum(fn ($l) => $l['profile']->priceFor($l['grams']));
+            $shipping = self::shippingFor($subtotal);
 
             // Voucher dikunci & divalidasi ulang di sini, bukan dipercaya dari browser.
             $voucher = null;
             $discount = 0;
             if ($voucherCode !== null && $voucherCode !== '') {
                 $voucher = Voucher::where('code', Voucher::normalize($voucherCode))->lockForUpdate()->first();
-                $problem = $voucher ? $voucher->problemFor($line, $user) : __('Kode voucher tidak ditemukan.');
+                $problem = $voucher ? $voucher->problemFor($subtotal, $user) : __('Kode voucher tidak ditemukan.');
                 if ($problem) {
                     throw new \RuntimeException($problem);
                 }
-                $discount = $voucher->discountFor($line);
+                $discount = $voucher->discountFor($subtotal);
             }
 
             $order = self::create([
                 'order_code'       => self::generateCode(),
                 'user_id'          => $user->id,
                 'status'           => 'pending_payment',
-                'subtotal'         => $line,
+                'subtotal'         => $subtotal,
                 'shipping_cost'    => $shipping,
                 'discount'         => $discount,
                 'voucher_id'       => $voucher?->id,
                 'voucher_code'     => $voucher?->code,
-                'total'            => $line + $shipping - $discount,
+                'total'            => $subtotal + $shipping - $discount,
                 'recipient_name'   => $ship['name'],
                 'recipient_phone'  => $ship['phone'],
                 'shipping_address' => $ship['address'],
             ]);
 
-            $order->items()->create([
-                'roast_profile_id'        => $profile->id,
-                'grams'                   => $grams,
-                'grind'                   => $grind,
-                'coffee_name_snapshot'    => $coffee->name,
-                'roast_level_snapshot'    => $profile->level_label,
-                'price_per_100g_snapshot' => $profile->price_per_100g,
-                'line_total'              => $line,
-            ]);
-
-            $coffee->reduceStock($grams, $order);
+            foreach ($lines as $l) {
+                $profile = $l['profile'];
+                $order->items()->create([
+                    'roast_profile_id'        => $profile->id,
+                    'grams'                   => $l['grams'],
+                    'grind'                   => $l['grind'],
+                    'coffee_name_snapshot'    => $coffees[$profile->coffee_id]->name,
+                    'roast_level_snapshot'    => $profile->level_label,
+                    'price_per_100g_snapshot' => $profile->price_per_100g,
+                    'line_total'              => $profile->priceFor($l['grams']),
+                ]);
+                $coffees[$profile->coffee_id]->reduceStock($l['grams'], $order);
+            }
             $voucher?->increment('used_count');
 
             ActivityLog::record('order.created', $order, 'Pesanan dibuat oleh :n', ['n' => $user->name]);
@@ -313,11 +339,17 @@ class Order extends Model
         return true;
     }
 
-    /** Ringkasan satu baris isi pesanan, mis. "Gayo · Medium 250 g". */
+    /** Ringkasan satu baris isi pesanan, mis. "Gayo · Medium 250 g" atau "Gayo · Medium 200 g +1 lainnya". */
     public function itemSummary(): string
     {
-        $i = $this->items()->first();
+        $items = $this->items()->get();
+        $i = $items->first();
+        if (! $i) {
+            return '';
+        }
 
-        return $i ? "{$i->coffee_name_snapshot} · {$i->roast_level_snapshot} {$i->grams} g" : '';
+        $text = "{$i->coffee_name_snapshot} · {$i->roast_level_snapshot} {$i->grams} g";
+
+        return $items->count() > 1 ? $text.' '.__('+:n lainnya', ['n' => $items->count() - 1]) : $text;
     }
 }

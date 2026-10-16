@@ -140,14 +140,18 @@ class Builder extends Component
         $this->pushToWheel();
     }
 
-    /** Lanjut ke checkout. Harga tidak ikut dikirim; halaman berikutnya menghitung ulang. */
-    public function order()
+    /** Masukkan racikan ini ke keranjang. Harga tidak disimpan; keranjang menghitung ulang dari database. */
+    public function addToCart()
     {
         abort_unless($this->profile && $this->stockOk, 422);
 
-        return $this->redirectRoute('checkout', [
-            'p' => $this->profile->id, 'g' => $this->grams, 'grind' => $this->grind,
-        ], navigate: true);
+        if (! \App\Support\Cart::add($this->profile->id, $this->grams, $this->grind)) {
+            $this->addError('cart', __('Keranjang penuh (maks :n item). Selesaikan checkout dulu.', ['n' => \App\Support\Cart::MAX_LINES]));
+
+            return null;
+        }
+
+        return $this->redirectRoute('cart', navigate: true);
     }
 
     public function setLevel(int $index): void

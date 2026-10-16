@@ -1,9 +1,9 @@
 <div class="mx-auto max-w-[1080px] px-6 pb-20 pt-12 md:pt-16">
-    <a href="{{ route('builder') }}" wire:navigate class="krm-readout text-[12px] text-kraft/60 transition-colors hover:text-labwhite">&larr; {{ __('Kembali ke builder') }}</a>
+    <a href="{{ $direct ? route('builder') : route('cart') }}" wire:navigate class="krm-readout text-[12px] text-kraft/60 transition-colors hover:text-labwhite">&larr; {{ $direct ? __('Kembali ke builder') : __('Kembali ke keranjang') }}</a>
     <h1 class="krm-h2 mt-4 font-bold" data-reveal>Checkout</h1>
     <p class="mt-3 max-w-[52ch] text-[14.5px] text-kraft/75">{{ __('Satu langkah lagi. Kamu mengisi alamat, kami menimbang biji mentahnya.') }}</p>
 
-    <div class="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
+    <div class="mt-10 grid grid-cols-[minmax(0,1fr)] gap-10 lg:grid-cols-[minmax(0,1fr)_380px]">
 
         <form wire:submit="submit" class="space-y-6" novalidate>
             @if ($error)
@@ -38,13 +38,23 @@
 
         <aside class="lg:sticky lg:top-24 lg:self-start">
             <div class="overflow-hidden rounded border border-kraft/25 bg-surface">
-                <div class="flex items-center gap-5 p-6">
-                    <x-coffee-bag :coffee="$this->profile->coffee" :level="$this->profile->level" class="h-[92px] shrink-0" />
-                    <div class="min-w-0">
-                        <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN PESANAN') }}</p>
-                        <h2 class="mt-2 font-display text-[1.25rem] font-semibold leading-snug">{{ $this->profile->coffee->name }}</h2>
-                        <p class="mt-1 text-[13.5px] text-kraft/70">{{ $this->profile->level_label }} · {{ __(\App\Models\OrderItem::GRINDS[$grind]) }} · {{ number_format($grams) }} g</p>
-                    </div>
+                <div class="p-6">
+                    <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN PESANAN') }}</p>
+                    <ul class="mt-4 space-y-4">
+                        @foreach ($this->lines as $l)
+                            <li class="flex items-center gap-4">
+                                <x-coffee-bag :coffee="$l->profile->coffee" :level="$l->profile->level" class="h-[64px] w-[52px] shrink-0" />
+                                <div class="min-w-0 flex-1">
+                                    <p class="truncate font-display text-[1rem] font-semibold leading-snug">{{ $l->profile->coffee->name }}</p>
+                                    <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ $l->profile->level_label }} · {{ __(\App\Models\OrderItem::GRINDS[$l->grind]) }} · {{ number_format($l->grams) }} g</p>
+                                </div>
+                                <span class="krm-readout shrink-0 text-[13px]">Rp{{ number_format($l->price, 0, ',', '.') }}</span>
+                            </li>
+                        @endforeach
+                    </ul>
+                    @if (! $direct)
+                        <a href="{{ route('cart') }}" wire:navigate class="mt-4 inline-block text-[12.5px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Ubah isi keranjang') }}</a>
+                    @endif
                 </div>
                 <div class="border-t border-dashed border-kraft/30 bg-surface px-6 pt-5">
                     <label for="voucher" class="text-[12.5px] text-kraft/70">{{ __('Punya kode voucher?') }}</label>

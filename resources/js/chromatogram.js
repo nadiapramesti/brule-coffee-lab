@@ -38,6 +38,7 @@ export default function chromatogram(peaks = [], text = {}) {
 
         render(animate = true) {
             const host = this.$refs.trace;
+            if (!host) return; // listener resize bisa hidup setelah wire:navigate
             host.innerHTML = '';
 
             const width  = host.clientWidth || 1200;

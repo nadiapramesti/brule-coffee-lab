@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Builder;
+use App\Livewire\Cart;
 use App\Livewire\Checkout;
 use App\Livewire\Roastery;
 use App\Livewire\Track;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', Landing::class)->name('landing');
 Route::get('/builder', Builder::class)->name('builder');
 
+Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
