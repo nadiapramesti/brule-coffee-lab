@@ -121,12 +121,7 @@
             <div class="ml-auto flex items-center gap-2 sm:gap-3">
                 <span class="krm-readout hidden text-[12px] text-kraft/50 md:block">{{ now()->translatedFormat('D, j M Y') }}</span>
                 <x-lang-switch class="flex" />
-                @if ($u->isAdmin())
-                    <a href="{{ route('admin.orders', ['tab' => 'unpaid']) }}" wire:navigate class="relative grid h-9 w-9 place-items-center rounded border border-kraft/20 text-kraft/75 transition-colors hover:border-kraft/50 hover:text-labwhite" aria-label="{{ __('Menunggu bayar') }}: {{ $unpaid }}" title="{{ __('Menunggu bayar') }}">
-                        <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1112 0c0 5 2 6 2 6H4s2-1 2-6zM10 19a2 2 0 004 0"/></svg>
-                        @if ($unpaid)<span class="krm-readout absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#E8782A] px-1 text-[10.5px] font-semibold text-charcoal">{{ $unpaid }}</span>@endif
-                    </a>
-                @endif
+                <livewire:notifications />
                 <div class="relative" x-data="{ o: false }" @click.outside="o = false" @keydown.escape.window="o = false">
                     <button type="button" @click="o = !o" :aria-expanded="o ? 'true' : 'false'" class="flex items-center gap-2.5 rounded border border-kraft/20 py-1 pl-1 pr-2.5 transition-colors hover:border-kraft/50" aria-haspopup="menu">
                         <span class="grid h-7 w-7 place-items-center rounded-full bg-bluelab font-display text-[12.5px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>

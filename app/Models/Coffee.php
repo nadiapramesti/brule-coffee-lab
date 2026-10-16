@@ -78,7 +78,9 @@ class Coffee extends Model
      */
     public function moveStock(string $type, int $grams, ?string $reason = null, ?Order $order = null): StockMovement
     {
+        $before = (int) $this->stock_green_bean_gram;
         $this->increment('stock_green_bean_gram', $grams);
+        $this->warnIfLow($before);
 
         return $this->stockMovements()->create([
             'user_id' => auth()->id(),
@@ -88,6 +90,18 @@ class Coffee extends Model
             'balance_after' => $this->stock_green_bean_gram,
             'reason' => $reason,
         ]);
+    }
+
+    /** Kabari admin sekali saat stok baru saja melewati batas menipis (bukan tiap penjualan). */
+    private function warnIfLow(int $before): void
+    {
+        $limit = Setting::int('low_stock_gram');
+
+        if ($before >= $limit && $this->stock_green_bean_gram < $limit) {
+            Notice::send(Notice::admins(), 'stock', 'Stok menipis', ':n tersisa :kg kg', [
+                'n' => $this->name, 'kg' => number_format($this->stock_green_bean_gram / 1000, 1, ',', '.'),
+            ], route('admin.stock', [], false), skip: auth()->id());
+        }
     }
 
     public function stockMovements(): HasMany

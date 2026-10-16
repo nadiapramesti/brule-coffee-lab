@@ -47,6 +47,7 @@
 
             <div class="hidden items-center gap-3 sm:flex">
                 @auth
+                    <livewire:notifications />
                     <div class="relative" x-data="{ menu: false }" @click.outside="menu = false" @keydown.escape.window="menu = false">
                         <button type="button" @click="menu = !menu" :aria-expanded="menu ? 'true' : 'false'" aria-haspopup="true"
                                 class="flex items-center gap-2.5 rounded border border-kraft/30 py-1.5 pl-1.5 pr-3 transition-colors hover:border-kraft/60">
@@ -79,18 +80,21 @@
                 </a>
             </div>
 
+            <div class="flex items-center gap-2 md:hidden">
+                @auth<div class="sm:hidden"><livewire:notifications /></div>@endauth
             {{-- Tombol menu, hanya di layar sempit --}}
             <button type="button"
                     @click="open = !open"
                     :aria-expanded="open ? 'true' : 'false'"
                     aria-controls="menu-utama"
-                    class="-mr-2 flex h-10 w-10 items-center justify-center md:hidden">
+                    class="-mr-2 flex h-10 w-10 items-center justify-center">
                 <span class="sr-only">{{ __('Buka menu') }}</span>
                 <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                     <path x-show="!open" d="M2 5h16M2 10h16M2 15h16" stroke-linecap="round"/>
                     <path x-show="open" x-cloak d="M4 4l12 12M16 4L4 16" stroke-linecap="round"/>
                 </svg>
             </button>
+            </div>
         </div>
 
         <nav id="menu-utama" x-show="open" x-cloak @click="open = false"

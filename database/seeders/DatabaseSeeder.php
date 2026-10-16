@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
             OrderSeeder::class,
             StockMovementSeeder::class,
             VoucherSeeder::class,
+            NoticeSeeder::class,
         ]);
     }
 }

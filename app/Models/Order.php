@@ -206,6 +206,9 @@ class Order extends Model
             $voucher?->increment('used_count');
 
             ActivityLog::record('order.created', $order, 'Pesanan dibuat oleh :n', ['n' => $user->name]);
+            Notice::send(Notice::admins(), 'order', 'Pesanan baru masuk', ':code · :n · Rp :t', [
+                'code' => $order->order_code, 'n' => $user->name, 't' => number_format($order->total, 0, ',', '.'),
+            ], route('admin.orders', ['order' => $order->order_code], false), skip: auth()->id());
 
             return $order;
         });
@@ -220,6 +223,13 @@ class Order extends Model
 
         $this->update(['status' => 'queued', 'paid_at' => now()]);
         ActivityLog::record('order.paid', $this, 'Pembayaran dikonfirmasi');
+
+        $p = ['code' => $this->order_code, 'item' => $this->itemSummary()];
+        Notice::send($this->user, 'order', 'Pembayaran diterima', 'Pesanan :code masuk antrian sangrai.', $p, route('track', $this->order_code, false));
+        foreach (Notice::staff() as $staff) {
+            Notice::send($staff, 'queue', 'Pesanan masuk antrian', ':code · :item', $p,
+                $staff->isAdmin() ? route('admin.orders', ['order' => $this->order_code], false) : route('roastery', [], false), skip: auth()->id());
+        }
 
         return true;
     }
@@ -243,6 +253,11 @@ class Order extends Model
             'a' => __(self::STATUS_LABELS[$from]), 'b' => __(self::STATUS_LABELS[$next]),
         ]);
 
+        $titles = ['roasting' => 'Kopimu mulai disangrai', 'grinding' => 'Kopimu sedang digiling', 'packing' => 'Kopimu sedang dikemas'];
+        if (isset($titles[$next])) {
+            Notice::send($this->user, 'status', $titles[$next], ':code · :item', ['code' => $this->order_code, 'item' => $this->itemSummary()], route('track', $this->order_code, false));
+        }
+
         return true;
     }
 
@@ -257,6 +272,7 @@ class Order extends Model
 
         $this->update(['status' => 'shipped', 'tracking_number' => $tracking, 'shipped_at' => now()]);
         ActivityLog::record('order.shipped', $this, 'Dikirim dengan resi :r', ['r' => $tracking]);
+        Notice::send($this->user, 'ship', 'Pesananmu dikirim', ':code · resi :r', ['code' => $this->order_code, 'r' => $tracking], route('track', $this->order_code, false));
 
         return true;
     }
@@ -269,6 +285,7 @@ class Order extends Model
 
         $this->update(['status' => 'completed', 'completed_at' => now()]);
         ActivityLog::record('order.completed', $this, 'Pesanan ditandai selesai');
+        Notice::send($this->user, 'status', 'Pesanan selesai', 'Pesanan :code selesai. Selamat menyeduh!', ['code' => $this->order_code], route('track', $this->order_code, false));
 
         return true;
     }
@@ -290,8 +307,17 @@ class Order extends Model
             }
             $this->update(['status' => 'cancelled', 'cancelled_at' => now()]);
             ActivityLog::record('order.cancelled', $this, $reason ? 'Pesanan dibatalkan: :r' : 'Pesanan dibatalkan', ['r' => $reason]);
+            Notice::send($this->user, 'cancel', 'Pesanan dibatalkan', $reason ? ':code · :r' : 'Pesanan :code dibatalkan.', ['code' => $this->order_code, 'r' => $reason], route('track', $this->order_code, false));
         });
 
         return true;
+    }
+
+    /** Ringkasan satu baris isi pesanan, mis. "Gayo · Medium 250 g". */
+    public function itemSummary(): string
+    {
+        $i = $this->items()->first();
+
+        return $i ? "{$i->coffee_name_snapshot} · {$i->roast_level_snapshot} {$i->grams} g" : '';
     }
 }
