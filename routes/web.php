@@ -27,7 +27,7 @@ Route::get('dashboard', fn () => redirect()->route(auth()->user()->isRoaster() ?
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
-Route::view('profile', 'profile')
+Route::get('profile', \App\Livewire\Profile::class)
     ->middleware(['auth'])
     ->name('profile');
 

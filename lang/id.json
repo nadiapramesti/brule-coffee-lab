@@ -18,5 +18,21 @@
     "Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn't receive the email, we will gladly send you another.": "Terima kasih sudah mendaftar! Verifikasi emailmu lewat tautan yang baru kami kirim. Belum menerimanya? Kami kirim ulang.",
     "This is a secure area of the application. Please confirm your password before continuing.": "Ini area aman. Konfirmasi passwordmu sebelum melanjutkan.",
     "Dashboard": "Dasbor",
-    "Profile": "Profil"
+    "Profile": "Profil",
+    "Update your account's profile information and email address.": "Perbarui nama dan alamat email akunmu.",
+    "A new verification link has been sent to your email address.": "Tautan verifikasi baru sudah dikirim ke emailmu.",
+    "Are you sure you want to delete your account?": "Yakin mau menghapus akunmu?",
+    "Cancel": "Batal",
+    "Click here to re-send the verification email.": "Klik di sini untuk kirim ulang email verifikasi.",
+    "Current Password": "Password saat ini",
+    "Delete Account": "Hapus akun",
+    "Ensure your account is using a long, random password to stay secure.": "Pakai password yang panjang dan acak supaya akunmu aman.",
+    "New Password": "Password baru",
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": "Setelah akun dihapus, semua data dan pesananmu hilang permanen. Simpan dulu data yang ingin kamu pertahankan.",
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": "Setelah akun dihapus, semua data dan pesananmu hilang permanen. Masukkan passwordmu untuk mengonfirmasi.",
+    "Profile Information": "Informasi profil",
+    "Save": "Simpan",
+    "Saved.": "Tersimpan.",
+    "Update Password": "Ubah password",
+    "Your email address is unverified.": "Emailmu belum terverifikasi."
 }

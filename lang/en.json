@@ -163,5 +163,7 @@
     "Password": "Password",
     "Name": "Name",
     "Pesanan": "Orders",
-    "Keluar": "Log out"
+    "Keluar": "Log out",
+    "AKUN": "ACCOUNT",
+    "Profil": "Profile"
 }

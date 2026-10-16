@@ -43,6 +43,7 @@
                 <a href="{{ route('builder') }}" class="text-kraft/80 transition-colors hover:text-labwhite">Roast builder</a>
                 @auth
                     <a href="{{ route('dashboard') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                    <a href="{{ route('profile') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Profil') }}</a>
                     <form method="POST" action="{{ route('logout') }}">@csrf
                         <button class="text-kraft/60 transition-colors hover:text-labwhite">{{ __('Keluar') }}</button>
                     </form>
@@ -78,6 +79,7 @@
             <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                <a href="{{ route('profile') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Profil') }}</a>
                 <form method="POST" action="{{ route('logout') }}">@csrf<button class="block w-full py-2.5 text-left text-[15px] text-kraft/60">{{ __('Keluar') }}</button></form>
             @else
                 <a href="{{ route('login') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Masuk') }}</a>

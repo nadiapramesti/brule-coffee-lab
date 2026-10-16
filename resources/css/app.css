@@ -222,3 +222,18 @@ header[data-site-header] { view-transition-name: krm-header; }
 .krm-auth .text-red-600 { color: #fca5a5; }
 .krm-auth .text-green-600 { color: #86efac; }
 .krm-auth form button[type=submit] { white-space: nowrap; }
+
+/* Profil: elemen Breeze yang masih membawa warna terang */
+.krm-auth .text-gray-900, .krm-auth .text-gray-800 { color: #FFFBF2; }
+.krm-auth button[type=submit].bg-red-600 { background: #B4372F; }
+.krm-auth button[type=submit].bg-red-600:hover { background: #C9443B; box-shadow: 0 10px 28px -10px rgba(180, 55, 47, .9); }
+.krm-auth button.bg-white {
+    background: transparent; color: #D8C5A6; border: 1px solid rgba(216, 197, 166, .35); border-radius: 10px;
+    padding: .9rem 1.4rem; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; box-shadow: none;
+}
+.krm-auth button.bg-white:hover { background: rgba(255, 255, 255, .05); }
+.krm-auth div.bg-white { background: #161616; border: 1px solid rgba(216, 197, 166, .25); border-radius: 10px; color: #FFFBF2; }
+.krm-auth .bg-gray-500 { background: #000; }
+.krm-auth h2.text-lg { font-family: "IBM Plex Sans Condensed", system-ui, sans-serif; font-size: 1.3rem; font-weight: 600; letter-spacing: -.01em; }
+.krm-auth h2.text-lg + p { color: rgba(216, 197, 166, .7); }
+.krm-auth section header p { font-size: 14px; line-height: 1.6; }
