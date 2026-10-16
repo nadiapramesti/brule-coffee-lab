@@ -198,7 +198,7 @@ header[data-site-header] { view-transition-name: krm-header; }
     color: #FFFBF2;
     border: 1px solid rgba(216, 197, 166, .28);
     border-radius: 10px;
-    padding: .85rem 1rem;
+    padding: .72rem 1rem;
     font-size: 15px;
     box-shadow: none;
     transition: border-color .2s, box-shadow .2s;

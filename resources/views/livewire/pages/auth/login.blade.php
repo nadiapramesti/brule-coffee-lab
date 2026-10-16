@@ -41,7 +41,7 @@ new #[Layout('layouts.guest')] class extends Component
         </x-auth-password>
 
         <label for="remember" class="flex cursor-pointer items-center gap-2.5">
-            <input wire:model="form.remember" id="remember" type="checkbox" name="remember" class="!w-auto">
+            <input wire:model="form.remember" id="remember" type="checkbox" name="remember">
             <span>{{ __('Ingat saya') }}</span>
         </label>
 

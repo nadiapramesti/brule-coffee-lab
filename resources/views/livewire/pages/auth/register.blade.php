@@ -39,37 +39,35 @@ new #[Layout('layouts.guest')] class extends Component
 }; ?>
 
 <div>
-    <form wire:submit="register" class="space-y-5" novalidate>
+    <form wire:submit="register" class="grid gap-3.5 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-4" novalidate>
         <div>
-            <label for="name">{{ __('Name') }}</label>
-            <input wire:model="name" id="name" class="mt-1.5" type="text" name="name" required autofocus autocomplete="name">
-            <x-input-error :messages="$errors->get('name')" class="mt-1.5" />
+            <div class="flex items-baseline justify-between"><label for="name">{{ __('Name') }}</label><span class="invisible text-[11.5px]">.</span></div>
+            <input wire:model="name" id="name" class="mt-1" type="text" name="name" required autofocus autocomplete="name">
+            <x-input-error :messages="$errors->get('name')" class="mt-1" />
         </div>
 
         <div>
+            <div class="flex items-baseline justify-between"><label for="phone">{{ __('Nomor WhatsApp') }}</label><span class="text-[11.5px] text-kraft/45">{{ __('opsional') }}</span></div>
+            <input wire:model="phone" id="phone" class="mt-1" type="tel" name="phone" autocomplete="tel" placeholder="0812xxxxxxxx">
+            <x-input-error :messages="$errors->get('phone')" class="mt-1" />
+        </div>
+
+        <div class="sm:col-span-2">
             <label for="email">{{ __('Email') }}</label>
-            <input wire:model="email" id="email" class="mt-1.5" type="email" name="email" required autocomplete="username" placeholder="nama@email.com">
-            <x-input-error :messages="$errors->get('email')" class="mt-1.5" />
+            <input wire:model="email" id="email" class="mt-1" type="email" name="email" required autocomplete="username" placeholder="nama@email.com">
+            <x-input-error :messages="$errors->get('email')" class="mt-1" />
         </div>
 
-        <div>
-            <div class="flex items-baseline justify-between"><label for="phone">{{ __('Nomor WhatsApp') }}</label><span class="text-[12px] text-kraft/45">{{ __('opsional') }}</span></div>
-            <input wire:model="phone" id="phone" class="mt-1.5" type="tel" name="phone" autocomplete="tel" placeholder="0812xxxxxxxx">
-            <x-input-error :messages="$errors->get('phone')" class="mt-1.5" />
-        </div>
-
-        <x-auth-password id="password" model="password" :label="__('Password')" autocomplete="new-password" :error="$errors->get('password')" />
-        <p class="-mt-3 text-[12px] text-kraft/50">{{ __('Minimal 8 karakter.') }}</p>
-
+        <x-auth-password id="password" model="password" :label="__('Password')" :placeholder="__('Minimal 8 karakter')" autocomplete="new-password" :error="$errors->get('password')" />
         <x-auth-password id="password_confirmation" model="password_confirmation" :label="__('Confirm Password')" autocomplete="new-password" :error="$errors->get('password_confirmation')" />
 
-        <button type="submit" wire:loading.attr="disabled" class="w-full disabled:opacity-60">
+        <button type="submit" wire:loading.attr="disabled" class="w-full disabled:opacity-60 sm:col-span-2">
             <span wire:loading.remove wire:target="register">{{ __('Buat akun') }}</span>
             <span wire:loading wire:target="register">{{ __('Memproses...') }}</span>
         </button>
     </form>
 
-    <p class="mt-6 text-center text-[13.5px] text-kraft/65">
+    <p class="mt-4 text-center text-[13.5px] text-kraft/65">
         {{ __('Already registered?') }}
         <a href="{{ route('login') }}" wire:navigate class="font-medium underline underline-offset-4">{{ __('Masuk') }}</a>
     </p>

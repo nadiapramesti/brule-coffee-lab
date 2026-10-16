@@ -21,7 +21,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="krm-auth krm-grid min-h-screen bg-charcoal text-labwhite antialiased">
-<div class="flex min-h-screen flex-col px-6 py-6">
+<div class="flex min-h-screen flex-col px-6 py-4 sm:py-5">
 
     <div class="flex items-center justify-between">
         <a href="{{ route('landing') }}" wire:navigate class="inline-flex items-center gap-1.5 text-[13px] text-kraft/70 transition-colors hover:text-labwhite">
@@ -31,22 +31,22 @@
         <x-lang-switch class="flex" />
     </div>
 
-    <main class="flex flex-1 items-center justify-center py-10">
-        <div class="w-full max-w-[420px]" data-reveal>
-            <a href="{{ route('landing') }}" wire:navigate class="flex flex-col items-center gap-3 text-center">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="48" height="48" class="h-12 w-12">
+    <main class="flex flex-1 items-center justify-center py-3 sm:py-6">
+        <div class="w-full {{ $route === 'register' ? 'max-w-[560px]' : 'max-w-[420px]' }}" data-reveal>
+            <a href="{{ route('landing') }}" wire:navigate class="flex items-center justify-center gap-3">
+                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="h-9 w-9">
                 <span class="font-display text-[15px] font-semibold tracking-[0.24em]">KROMATIK</span>
             </a>
 
-            <div class="mt-8 rounded-[14px] border border-kraft/20 bg-[#141414]/90 p-7 shadow-[0_30px_60px_-30px_rgba(0,0,0,.9)] sm:p-9">
+            <div class="mt-4 rounded-[14px] border border-kraft/20 bg-[#141414]/90 p-5 shadow-[0_30px_60px_-30px_rgba(0,0,0,.9)] sm:mt-5 sm:p-7">
                 <h1 class="font-display text-[1.65rem] font-bold leading-tight tracking-[-0.01em]">{{ $copy[0] }}</h1>
-                @if ($copy[1])<p class="mt-2 text-[14px] leading-relaxed text-kraft/70">{{ $copy[1] }}</p>@endif
-                <div class="mt-7">
+                @if ($copy[1])<p class="mt-1.5 text-[14px] leading-relaxed text-kraft/70 {{ $route === 'register' ? 'max-sm:hidden' : '' }}">{{ $copy[1] }}</p>@endif
+                <div class="mt-5 sm:mt-7">
                     {{ $slot }}
                 </div>
             </div>
 
-            <p class="mt-6 text-center text-[12px] text-kraft/45">{{ __('Disangrai setelah pesanan masuk.') }}</p>
+            <p class="mt-5 text-center text-[12px] text-kraft/45 max-sm:hidden {{ $route === 'register' ? 'hidden' : '' }}">{{ __('Disangrai setelah pesanan masuk.') }}</p>
         </div>
     </main>
 </div>
