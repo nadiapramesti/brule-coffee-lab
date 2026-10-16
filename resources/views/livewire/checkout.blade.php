@@ -38,10 +38,13 @@
 
         <aside class="lg:sticky lg:top-24 lg:self-start">
             <div class="overflow-hidden rounded border border-kraft/25 bg-surface">
-                <div class="p-6">
-                    <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN PESANAN') }}</p>
-                    <h2 class="mt-3 font-display text-[1.25rem] font-semibold leading-snug">{{ $this->profile->coffee->name }}</h2>
-                    <p class="mt-1 text-[13.5px] text-kraft/70">{{ $this->profile->level_label }} · {{ __(\App\Models\OrderItem::GRINDS[$grind]) }} · {{ number_format($grams) }} g</p>
+                <div class="flex items-center gap-5 p-6">
+                    <x-coffee-bag :coffee="$this->profile->coffee" :level="$this->profile->level" class="h-[92px] shrink-0" />
+                    <div class="min-w-0">
+                        <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN PESANAN') }}</p>
+                        <h2 class="mt-2 font-display text-[1.25rem] font-semibold leading-snug">{{ $this->profile->coffee->name }}</h2>
+                        <p class="mt-1 text-[13.5px] text-kraft/70">{{ $this->profile->level_label }} · {{ __(\App\Models\OrderItem::GRINDS[$grind]) }} · {{ number_format($grams) }} g</p>
+                    </div>
                 </div>
                 <div class="border-t border-dashed border-kraft/30 bg-surface px-6 pt-5">
                     <label for="voucher" class="text-[12.5px] text-kraft/70">{{ __('Punya kode voucher?') }}</label>

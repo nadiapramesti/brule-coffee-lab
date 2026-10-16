@@ -198,7 +198,9 @@
                             </a>
                         </div>
 
-                        <dl class="grid grid-cols-2 gap-x-8 gap-y-5 self-start text-[13px]">
+                        <div class="flex items-start gap-6 self-start">
+                        <x-coffee-bag :coffee="$bean" :level="$sig?->level ?? 'medium'" class="hidden w-[92px] shrink-0 sm:block" />
+                        <dl class="grid min-w-0 flex-1 grid-cols-2 gap-x-6 gap-y-5 text-[13px]">
                             <div>
                                 <dt class="text-kraft/55">{{ __('Varietas') }}</dt>
                                 <dd class="mt-1 text-labwhite">{{ $t?->varietal ?? '—' }}</dd>
@@ -216,6 +218,7 @@
                                 <dd class="mt-1 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd>
                             </div>
                         </dl>
+                        </div>
                     </div>
                 </article>
             @endforeach

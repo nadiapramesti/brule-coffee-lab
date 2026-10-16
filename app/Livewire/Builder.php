@@ -42,7 +42,7 @@ class Builder extends Component
     #[Computed]
     public function coffees(): Collection
     {
-        return Coffee::active()->orderBy('id')->get();
+        return Coffee::active()->with('traceability')->orderBy('id')->get();
     }
 
     #[Computed]

@@ -67,7 +67,8 @@
                                     <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.4 2.4 4.6-5"/></svg>
                                 </span>
                             </span>
-                            <span class="mt-4 block font-display text-[15.5px] font-semibold leading-snug text-labwhite">
+                            <x-coffee-bag :coffee="$bean" class="mx-auto mt-3 h-[128px] transition-transform duration-300 group-hover:-translate-y-0.5" />
+                            <span class="mt-3 block font-display text-[15.5px] font-semibold leading-snug text-labwhite">
                                 {{ \Illuminate\Support\Str::of($bean->name)->replace([' Washed',' Natural',' Honey',' Wet-Hulled',' Anaerobic'], '') }}
                             </span>
                             <span class="mt-1.5 block text-[12.5px] leading-snug text-kraft/65">
@@ -242,6 +243,9 @@
 
                 {{-- Bagian "struk": dipisah garis putus-putus seperti tiket lab --}}
                 <div class="border-t border-dashed border-kraft/30 bg-surface p-6">
+                    @if ($this->coffee)
+                        <x-coffee-bag :coffee="$this->coffee" :level="$this->profile?->level ?? 'medium'" class="mx-auto mb-5 h-[120px]" />
+                    @endif
                     <dl class="krm-settling space-y-2.5 text-[13px]" wire:loading.delay.class="opacity-50">
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Biji kopi') }}</dt><dd class="text-right">{{ $this->coffee?->name }}</dd></div>
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Sangrai') }}</dt><dd class="text-right">{{ $this->profile?->level_label }}</dd></div>

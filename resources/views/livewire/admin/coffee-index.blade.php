@@ -49,9 +49,12 @@
                 @endphp
                 <li wire:key="c-{{ $c->id }}" class="grid items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-labwhite/[.02] {{ $cols }} {{ $c->is_active ? '' : 'opacity-60' }}">
                     <div class="flex min-w-0 items-start justify-between gap-3 max-md:col-span-2 md:block">
-                        <div class="min-w-0">
+                        <div class="flex min-w-0 items-center gap-3">
+                          <x-coffee-bag :coffee="$c" class="h-[42px] shrink-0" />
+                          <div class="min-w-0">
                             <p class="truncate text-[13.5px] font-semibold">{{ $c->name }}</p>
                             <p class="krm-readout truncate text-[10.5px] text-kraft/45">{{ $c->slug }}@if ($c->cupping_score) · {{ $c->cupping_score }}@endif</p>
+                          </div>
                         </div>
                         <button type="button" role="switch" aria-checked="{{ $c->is_active ? 'true' : 'false' }}" aria-label="{{ __('Tampilkan di toko') }}" wire:click="toggle({{ $c->id }})"
                                 class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors md:hidden {{ $c->is_active ? 'bg-bluelab' : 'bg-labwhite/25' }}">
