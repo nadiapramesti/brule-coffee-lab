@@ -173,6 +173,15 @@
                                 {{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}
                             </p>
 
+                            <p class="mt-2 flex items-center gap-2 text-[12.5px] text-kraft/60">
+                                @if ($bean->reviews_count)
+                                    <x-stars :value="$bean->reviews_avg" size="h-3.5 w-3.5" />
+                                    <span><span class="krm-readout text-labwhite">{{ number_format($bean->reviews_avg, 1) }}</span> · {{ trans_choice(':n ulasan|:n ulasan', $bean->reviews_count, ['n' => $bean->reviews_count]) }}</span>
+                                @else
+                                    <span class="text-kraft/45">{{ __('Belum ada ulasan') }}</span>
+                                @endif
+                            </p>
+
                             @if ($sig?->tasting_notes)
                                 <p class="mt-3 text-[14px] leading-snug text-labwhite/90">{{ implode(', ', $sig->tasting_notes) }}</p>
                             @endif
@@ -211,6 +220,22 @@
                                         <div><dt class="text-kraft/55">{{ __('Petani') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->farmer ?? '—' }}</dd></div>
                                         <div><dt class="text-kraft/55">{{ __('Dinilai oleh') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd></div>
                                     </dl>
+
+                                    <div class="mt-5 border-t border-kraft/15 pt-4">
+                                        <p class="krm-readout text-[11px] tracking-[0.14em] text-kraft/55">{{ __('ULASAN PEMBELI') }}</p>
+                                        @forelse ($bean->visibleReviews->take(3) as $rv)
+                                            <figure class="mt-3">
+                                                <figcaption class="flex flex-wrap items-center gap-x-2 text-[12.5px] text-kraft/65">
+                                                    <x-stars :value="$rv->rating" size="h-3 w-3" />
+                                                    <span class="text-labwhite">{{ $rv->displayName() }}</span>
+                                                    <span class="rounded-[6px] border border-kraft/30 px-1.5 text-[10.5px]">{{ __('Pembeli terverifikasi') }}</span>
+                                                </figcaption>
+                                                @if ($rv->body)<blockquote class="mt-1 text-[13px] leading-relaxed text-kraft/75">{{ $rv->body }}</blockquote>@endif
+                                            </figure>
+                                        @empty
+                                            <p class="mt-2 text-[13px] text-kraft/55">{{ __('Belum ada yang mengulas. Ulasan hanya bisa ditulis pembeli yang pesanannya sudah selesai.') }}</p>
+                                        @endforelse
+                                    </div>
                                 </div>
                             </div>
                         </div>

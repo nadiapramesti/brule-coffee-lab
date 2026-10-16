@@ -46,6 +46,45 @@
                     </div>
                     <p class="krm-readout text-[1.15rem]">Rp{{ number_format($o->total, 0, ',', '.') }}</p>
                 </div>
+                @foreach ($this->reviewable($o) as $rc)
+                    <div class="border-t border-dashed border-kraft/25 px-5 py-3.5" wire:key="rv-{{ $o->id }}-{{ $rc->coffee->id }}">
+                        @if ($reviewCoffee === $rc->coffee->id)
+                            <form wire:submit="saveReview" class="space-y-3">
+                                <p class="text-[13.5px] font-semibold">{{ __('Ulasanmu untuk :n', ['n' => $rc->coffee->name]) }}</p>
+                                <div class="flex items-center gap-1" role="radiogroup" aria-label="{{ __('Jumlah bintang') }}">
+                                    @for ($i = 1; $i <= 5; $i++)
+                                        <button type="button" wire:click="$set('rating', {{ $i }})" role="radio" aria-checked="{{ $rating === $i ? 'true' : 'false' }}" aria-label="{{ $i }}"
+                                                class="rounded p-0.5 text-[#D9A441] transition-transform hover:scale-110 focus-visible:outline focus-visible:outline-2 focus-visible:outline-bluelab">
+                                            <svg viewBox="0 0 20 20" class="h-7 w-7" aria-hidden="true"><path d="M10 1.8l2.4 5.2 5.7.6-4.2 3.9 1.2 5.6L10 14.2l-5.1 2.9 1.2-5.6L1.9 7.6l5.7-.6L10 1.8z" fill="{{ $rating >= $i ? 'currentColor' : 'none' }}" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>
+                                        </button>
+                                    @endfor
+                                </div>
+                                @error('rating')<p class="text-[12.5px] text-redtext">{{ $message }}</p>@enderror
+                                <div>
+                                    <label for="rb-{{ $o->id }}" class="sr-only">{{ __('Tulis ulasan') }}</label>
+                                    <textarea id="rb-{{ $o->id }}" rows="3" wire:model="reviewBody" maxlength="600"
+                                              placeholder="{{ __('Contoh: Aromanya wangi, rasa buah beri terasa jelas di seduhan V60.') }}"
+                                              class="w-full rounded border border-kraft/25 bg-transparent px-4 py-3 text-[14px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40"></textarea>
+                                    @error('reviewBody')<p class="mt-1 text-[12.5px] text-redtext">{{ $message }}</p>@enderror
+                                </div>
+                                <div class="flex gap-3">
+                                    <button type="submit" class="rounded bg-bluelab px-4 py-2 font-display text-[13.5px] font-semibold text-paper transition-colors hover:bg-[#234E94]">{{ __('Kirim ulasan') }}</button>
+                                    <button type="button" wire:click="cancelReview" class="rounded border border-kraft/30 px-4 py-2 text-[13.5px] text-kraft/80 transition-colors hover:border-kraft/60">{{ __('Batal') }}</button>
+                                </div>
+                            </form>
+                        @else
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <p class="flex min-w-0 items-center gap-2 text-[13.5px] text-kraft/80">
+                                    @if ($rc->review)<x-stars :value="$rc->review->rating" size="h-3.5 w-3.5" />@endif
+                                    <span class="truncate">{{ $rc->coffee->name }}</span>
+                                </p>
+                                <button type="button" wire:click="openReview({{ $rc->coffee->id }})" class="text-[13px] font-semibold text-bluetext underline-offset-4 hover:underline">
+                                    {{ $rc->review ? __('Ubah ulasan') : __('Beri ulasan') }}
+                                </button>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
                 <div class="flex flex-wrap gap-3 border-t border-dashed border-kraft/25 px-5 py-3.5">
                     <a href="{{ route('track', $o->order_code) }}" wire:navigate class="rounded border border-kraft/35 px-4 py-2 font-display text-[13.5px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">
                         {{ $o->status === 'pending_payment' ? __('Bayar / lacak') : __('Lacak') }}

@@ -3,7 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Address;
+use App\Models\Coffee;
 use App\Models\Order;
+use App\Models\Review;
 use App\Support\Cart;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -31,6 +33,10 @@ class Account extends Component
     public string $address = '';
     public ?string $notice = null;
 
+    public ?int $reviewCoffee = null;
+    public int $rating = 0;
+    public string $reviewBody = '';
+
     public function mount(): void
     {
         $this->tab = in_array($this->tab, ['pesanan', 'alamat'], true) ? $this->tab : 'pesanan';
@@ -45,7 +51,7 @@ class Account extends Component
     #[Computed]
     public function orders()
     {
-        return auth()->user()->orders()->with('items')
+        return auth()->user()->orders()->with('items.roastProfile.coffee')
             ->when($this->filter === 'aktif', fn ($q) => $q->whereNotIn('status', ['completed', 'cancelled']))
             ->when($this->filter === 'selesai', fn ($q) => $q->where('status', 'completed'))
             ->when($this->filter === 'batal', fn ($q) => $q->where('status', 'cancelled'))
@@ -76,6 +82,58 @@ class Account extends Component
         }
 
         return $this->redirectRoute('cart', navigate: true);
+    }
+
+    // ===== Ulasan =====
+
+    /** Kopi di pesanan selesai ini, lengkap dengan ulasan milik user kalau sudah ada. */
+    public function reviewable(Order $o): \Illuminate\Support\Collection
+    {
+        if ($o->status !== 'completed') {
+            return collect();
+        }
+        $coffees = $o->items->map(fn ($i) => $i->roastProfile?->coffee)->filter()->unique('id')->values();
+        $mine = auth()->user()->reviews()->whereIn('coffee_id', $coffees->pluck('id'))->get()->keyBy('coffee_id');
+
+        return $coffees->map(fn ($c) => (object) ['coffee' => $c, 'review' => $mine->get($c->id)]);
+    }
+
+    public function openReview(int $coffeeId): void
+    {
+        $coffee = Coffee::findOrFail($coffeeId);
+        abort_unless(Review::eligibleOrder(auth()->user(), $coffee), 403);
+
+        $r = auth()->user()->reviews()->where('coffee_id', $coffeeId)->first();
+        $this->reviewCoffee = $coffeeId;
+        $this->rating = $r?->rating ?? 0;
+        $this->reviewBody = (string) ($r?->body ?? '');
+        $this->resetErrorBag();
+    }
+
+    public function cancelReview(): void
+    {
+        $this->reset(['reviewCoffee', 'rating', 'reviewBody']);
+        $this->resetErrorBag();
+    }
+
+    public function saveReview(): void
+    {
+        $this->validate([
+            'rating' => ['required', 'integer', 'between:1,5'],
+            'reviewBody' => ['nullable', 'string', 'max:600'],
+        ], ['rating.between' => __('Pilih jumlah bintang dulu.'), 'rating.required' => __('Pilih jumlah bintang dulu.')]);
+
+        $coffee = Coffee::findOrFail((int) $this->reviewCoffee);
+        $order = Review::eligibleOrder(auth()->user(), $coffee);
+        abort_unless($order, 403);
+
+        Review::updateOrCreate(
+            ['user_id' => auth()->id(), 'coffee_id' => $coffee->id],
+            ['order_id' => $order->id, 'rating' => $this->rating, 'body' => trim($this->reviewBody) ?: null],
+        );
+
+        $this->notice = __('Terima kasih, ulasanmu untuk :n sudah tampil.', ['n' => $coffee->name]);
+        $this->cancelReview();
     }
 
     // ===== Buku alamat =====

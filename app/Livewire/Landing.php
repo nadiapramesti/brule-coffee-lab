@@ -17,7 +17,9 @@ class Landing extends Component
     public function coffees(): Collection
     {
         return Coffee::active()
-            ->with(['traceability', 'roastProfiles'])
+            ->with(['traceability', 'roastProfiles', 'visibleReviews.user:id,name'])
+            ->withAvg('visibleReviews as reviews_avg', 'rating')
+            ->withCount('visibleReviews as reviews_count')
             ->orderBy('id')
             ->get();
     }

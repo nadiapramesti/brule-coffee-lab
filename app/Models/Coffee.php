@@ -48,6 +48,17 @@ class Coffee extends Model
         return $this->hasMany(RoastProfile::class);
     }
 
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /** Ulasan yang tidak disembunyikan admin, terbaru dulu. */
+    public function visibleReviews(): HasMany
+    {
+        return $this->hasMany(Review::class)->where('is_hidden', false)->latest('id');
+    }
+
     public function journals(): HasMany
     {
         return $this->hasMany(RoastJournal::class);
