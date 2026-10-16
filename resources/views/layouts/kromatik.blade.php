@@ -15,6 +15,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>[x-cloak]{display:none!important}</style>
 </head>
 <body class="krm-grid min-h-screen bg-charcoal text-labwhite">
 
@@ -22,7 +23,8 @@
         Lewati ke isi
     </a>
 
-    <header class="sticky top-0 z-40 border-b border-kraft/12 bg-charcoal/90 backdrop-blur">
+    <header x-data="{ open: false }"
+            class="sticky top-0 z-40 border-b border-kraft/12 bg-charcoal/85 backdrop-blur-md">
         <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-6 py-4">
 
             <a href="{{ route('landing') }}" class="flex items-center gap-3">
@@ -40,10 +42,30 @@
             </nav>
 
             <a href="{{ route('builder') }}"
-               class="bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+               class="hidden rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-labwhite transition-colors hover:bg-[#234E94] sm:inline-block">
                 Racik kopimu
             </a>
+
+            {{-- Tombol menu, hanya di layar sempit --}}
+            <button type="button"
+                    @click="open = !open"
+                    :aria-expanded="open ? 'true' : 'false'"
+                    aria-controls="menu-utama"
+                    class="-mr-2 flex h-10 w-10 items-center justify-center md:hidden">
+                <span class="sr-only">Buka menu</span>
+                <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                    <path x-show="!open" d="M2 5h16M2 10h16M2 15h16" stroke-linecap="round"/>
+                    <path x-show="open" x-cloak d="M4 4l12 12M16 4L4 16" stroke-linecap="round"/>
+                </svg>
+            </button>
         </div>
+
+        <nav id="menu-utama" x-show="open" x-cloak @click="open = false"
+             class="border-t border-kraft/12 px-6 py-3 md:hidden">
+            <a href="{{ route('landing') }}#biji" class="block py-2.5 text-[15px] text-kraft/85">Biji</a>
+            <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
+            <a href="{{ route('builder') }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">Racik kopimu</a>
+        </nav>
     </header>
 
     <main id="isi">

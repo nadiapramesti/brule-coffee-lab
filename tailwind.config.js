@@ -18,6 +18,9 @@ export default {
                 kraftink: '#5C4B33',
                 bluelab:  '#2A5DB0',
             },
+            borderRadius: {
+                DEFAULT: '3px',
+            },
             fontFamily: {
                 display: ['IBM Plex Sans Condensed', 'system-ui', 'sans-serif'],
                 sans:    ['IBM Plex Sans', 'system-ui', 'sans-serif'],

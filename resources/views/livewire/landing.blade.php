@@ -4,7 +4,7 @@
     <section class="pt-20 pb-4 md:pt-28">
         <div class="mx-auto max-w-[1180px] px-6">
             <div class="max-w-3xl">
-                <h1 class="text-[2.75rem] font-bold leading-[1.02] tracking-[-0.015em] md:text-[4.25rem]">
+                <h1 class="krm-h1 font-bold">
                     Disangrai setelah<br>pesanan masuk.
                 </h1>
 
@@ -16,11 +16,11 @@
 
                 <div class="mt-9 flex flex-wrap items-center gap-3">
                     <a href="{{ route('builder') }}"
-                       class="bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+                       class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
                         Racik kopimu
                     </a>
                     <a href="#biji"
-                       class="border border-kraft/35 px-7 py-3.5 font-display text-[15px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">
+                       class="rounded border border-kraft/35 px-7 py-3.5 font-display text-[15px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">
                         Lihat biji yang ada
                     </a>
                 </div>
@@ -63,7 +63,7 @@
 
     {{-- ══════════════════ BIJI / LOGBOOK ══════════════════ --}}
     <section id="biji" class="mx-auto max-w-[1180px] px-6 pt-24">
-        <h2 class="text-[2rem] font-semibold tracking-[-0.01em] md:text-[2.5rem]">
+        <h2 class="krm-h2 font-semibold">
             Biji yang sedang ada di gudang
         </h2>
         <p class="mt-3 max-w-[58ch] text-[15px] leading-relaxed text-kraft/75">
@@ -79,7 +79,7 @@
 
                     <div>
                         <div class="flex items-baseline gap-4">
-                            <h3 class="text-[1.65rem] font-semibold leading-tight">
+                            <h3 class="krm-h3 font-semibold">
                                 {{ $bean->name }}
                             </h3>
                             <span class="krm-readout shrink-0 text-[13px] text-bluelab">
@@ -137,7 +137,7 @@
         <div class="mx-auto max-w-[1180px] px-6">
             <div class="flex items-start justify-between gap-10">
                 <div>
-                    <h2 class="max-w-[20ch] text-[2rem] font-semibold leading-tight tracking-[-0.01em] md:text-[2.5rem]">
+                    <h2 class="krm-h2 max-w-[20ch] font-semibold">
                         Yang terjadi setelah kamu bayar
                     </h2>
                     <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-kraftink">
@@ -173,7 +173,7 @@
     {{-- ══════════════════ PENUTUP ══════════════════ --}}
     <section class="mx-auto max-w-[1180px] px-6 py-24">
         <div class="max-w-[46ch]">
-            <h2 class="text-[2rem] font-semibold leading-tight tracking-[-0.01em] md:text-[2.5rem]">
+            <h2 class="krm-h2 font-semibold">
                 Mulai dari rasa, bukan dari nama kopinya
             </h2>
             <p class="mt-4 text-[15px] leading-relaxed text-kraft/75">
@@ -181,7 +181,7 @@
                 Kalau sudah ketemu yang kamu mau, pesan di situ juga.
             </p>
             <a href="{{ route('builder') }}"
-               class="mt-8 inline-block bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+               class="mt-8 inline-block rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
                 Buka roast builder
             </a>
         </div>

@@ -1,7 +1,7 @@
 <div class="mx-auto max-w-[1180px] px-6 py-16">
 
     <div class="max-w-2xl">
-        <h1 class="text-[2.25rem] font-bold leading-tight tracking-[-0.015em] md:text-[3rem]">
+        <h1 class="krm-h2 font-bold">
             Roast builder
         </h1>
         <p class="mt-4 max-w-[56ch] text-[15px] leading-relaxed text-kraft/80">
@@ -17,7 +17,7 @@
 
             {{-- Langkah 1 --}}
             <section>
-                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">01</span>
                     Pilih biji
                 </h2>
@@ -27,7 +27,7 @@
                         <button type="button"
                                 wire:click="selectCoffee({{ $bean->id }})"
                                 aria-pressed="{{ $this->coffeeId === $bean->id ? 'true' : 'false' }}"
-                                class="border p-4 text-left transition-colors
+                                class="rounded border p-4 text-left transition-colors
                                        {{ $this->coffeeId === $bean->id
                                             ? 'border-bluelab bg-bluelab/10'
                                             : 'border-kraft/20 hover:border-kraft/45' }}">
@@ -53,13 +53,13 @@
 
             {{-- Langkah 2 --}}
             <section>
-                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">02</span>
                     Level sangrai
                 </h2>
 
                 @if ($this->levels->isNotEmpty())
-                    <div class="mt-5 border border-kraft/20 p-6">
+                    <div class="mt-5 rounded border border-kraft/20 p-6">
                         <div class="flex items-baseline justify-between gap-4">
                             <p class="font-display text-[1.6rem] font-semibold">
                                 {{ $this->profile?->level_label }}
@@ -76,9 +76,7 @@
                                max="{{ $this->levels->count() - 1 }}"
                                step="1"
                                wire:model.live="levelIndex"
-                               class="mt-6 h-1 w-full cursor-pointer appearance-none rounded-full
-                                      bg-gradient-to-r from-[#E4D6BB] via-[#9A6B42] to-[#3B2316]
-                                      accent-bluelab">
+                               class="krm-slider mt-5">
 
                         <div class="mt-3 flex justify-between gap-2 text-[11.5px] text-kraft/55">
                             @foreach ($this->levels as $lv)
@@ -99,7 +97,7 @@
 
             {{-- Langkah 3 --}}
             <section>
-                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">03</span>
                     Ukuran gilingan
                 </h2>
@@ -109,7 +107,7 @@
                         <button type="button"
                                 wire:click="setGrind('{{ $key }}')"
                                 aria-pressed="{{ $grind === $key ? 'true' : 'false' }}"
-                                class="border px-4 py-2.5 text-[13.5px] transition-colors
+                                class="rounded border px-4 py-2.5 text-[13.5px] transition-colors
                                        {{ $grind === $key
                                             ? 'border-bluelab bg-bluelab/10 text-labwhite'
                                             : 'border-kraft/20 text-kraft/80 hover:border-kraft/45' }}">
@@ -121,7 +119,7 @@
 
             {{-- Langkah 4 --}}
             <section>
-                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">04</span>
                     Berat
                 </h2>
@@ -131,7 +129,7 @@
                         <button type="button"
                                 wire:click="setGrams({{ $g }})"
                                 aria-pressed="{{ $grams === $g ? 'true' : 'false' }}"
-                                class="border py-5 transition-colors
+                                class="rounded border py-5 transition-colors
                                        {{ $grams === $g
                                             ? 'border-bluelab bg-bluelab/10'
                                             : 'border-kraft/20 hover:border-kraft/45' }}">
@@ -149,7 +147,7 @@
 
         {{-- ─────────── PANEL RASA ─────────── --}}
         <div class="lg:sticky lg:top-24 lg:self-start">
-            <div class="border border-kraft/20 p-6">
+            <div class="rounded border border-kraft/20 p-6">
 
                 <h2 class="text-[1.1rem] font-semibold">Profil rasa</h2>
                 <p class="mt-1 text-[13px] text-kraft/60">
@@ -171,7 +169,8 @@
                     </p>
                 @endif
 
-                <dl class="mt-6 space-y-2.5 border-t border-kraft/15 pt-5 text-[13px]">
+                <dl class="krm-settling mt-6 space-y-2.5 border-t border-kraft/15 pt-5 text-[13px]"
+                    wire:loading.delay.class="opacity-50">
                     <div class="flex justify-between gap-4">
                         <dt class="text-kraft/60">Biji</dt>
                         <dd class="text-right">{{ $this->coffee?->name }}</dd>
@@ -190,7 +189,8 @@
                     </div>
                 </dl>
 
-                <div class="mt-5 flex items-end justify-between gap-4 border-t border-kraft/15 pt-5">
+                <div class="krm-settling mt-5 flex items-end justify-between gap-4 border-t border-kraft/15 pt-5"
+                     wire:loading.delay.class="opacity-50">
                     <span class="text-[13px] text-kraft/60">Total</span>
                     <span class="krm-readout text-[1.75rem] font-medium">
                         Rp{{ number_format($this->price, 0, ',', '.') }}
@@ -199,14 +199,14 @@
 
                 @if ($this->stockOk)
                     <button type="button"
-                            class="mt-6 w-full bg-bluelab py-4 font-display text-[15px] font-semibold transition-colors hover:bg-[#234E94]">
+                            class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-colors hover:bg-[#234E94]">
                         Pesan dan sangrai
                     </button>
                     <p class="mt-3 text-center text-[12px] leading-relaxed text-kraft/55">
                         Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.
                     </p>
                 @else
-                    <p class="mt-6 border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/70">
+                    <p class="mt-6 rounded border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/70">
                         Stok biji mentahnya tidak cukup untuk berat ini.
                         Coba ukuran yang lebih kecil.
                     </p>

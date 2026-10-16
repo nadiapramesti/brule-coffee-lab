@@ -69,7 +69,7 @@ export default function flavorWheel(initialValues = {}) {
             const size = Math.min(el.clientWidth || 420, 460);
 
             this.center = size / 2;
-            this.radius = size / 2 - 46; // sisakan ruang buat label
+            this.radius = size / 2 - 52; // sisakan ruang buat label
 
             const svg = d3.select(el)
                 .append('svg')
@@ -105,7 +105,7 @@ export default function flavorWheel(initialValues = {}) {
 
                 g.append('text')
                     .attr('x', lx)
-                    .attr('y', ly)
+                    .attr('y', ly - 6)
                     .attr('text-anchor', 'middle')
                     .attr('dominant-baseline', 'middle')
                     .attr('fill', LABWHITE)
@@ -113,6 +113,20 @@ export default function flavorWheel(initialValues = {}) {
                     .attr('font-weight', 600)
                     .attr('font-family', "'IBM Plex Sans Condensed', sans-serif")
                     .text(axis.label);
+
+                // Angkanya ikut ditulis: radar tanpa skala cuma bentuk,
+                // dengan angka jadi bacaan alat ukur.
+                g.append('text')
+                    .attr('class', 'krm-axis-value')
+                    .attr('data-key', axis.key)
+                    .attr('x', lx)
+                    .attr('y', ly + 9)
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', BLUE)
+                    .attr('font-size', 11)
+                    .attr('font-family', "'IBM Plex Mono', monospace")
+                    .text(Math.round(this.values[axis.key] ?? 0));
             });
 
             // poligon rasa
@@ -153,6 +167,18 @@ export default function flavorWheel(initialValues = {}) {
                 .ease(d3.easeCubicOut)
                 .attr('cx', (a, i) => this.point(i, this.values[a.key] ?? 0)[0])
                 .attr('cy', (a, i) => this.point(i, this.values[a.key] ?? 0)[1]);
+
+            const self = this;
+            this.svg.selectAll('text.krm-axis-value')
+                .transition()
+                .duration(420)
+                .tween('angka', function () {
+                    const key  = this.getAttribute('data-key');
+                    const from = +this.textContent || 0;
+                    const to   = Math.round(self.values[key] ?? 0);
+                    const i    = d3.interpolateNumber(from, to);
+                    return (t) => { this.textContent = Math.round(i(t)); };
+                });
         },
     };
 }

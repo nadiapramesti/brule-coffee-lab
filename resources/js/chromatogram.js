@@ -73,11 +73,17 @@ export default function chromatogram(peaks = []) {
             // --- label tiap puncak ---
             const labels = svg.append('g');
 
-            this.peaks.forEach((p) => {
+            // Di layar sempit label saling tabrakan, jadi hanya
+            // puncak tertinggi yang diberi nama.
+            const shown = width < 680
+                ? [...this.peaks].sort((a, b) => b.height - a.height).slice(0, 3)
+                : this.peaks;
+
+            shown.forEach((p) => {
                 const x    = p.at * width;
                 const apex = baselineY - signal(p.at) * span;
 
-                if (x < 64 || x > width - 64) return; // jangan terpotong tepi
+                if (x < 56 || x > width - 56) return; // jangan terpotong tepi
 
                 const g = labels.append('g').attr('opacity', animate ? 0 : 1);
 
