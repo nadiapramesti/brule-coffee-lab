@@ -35,6 +35,7 @@ class MoreCoffeeSeeder extends Seeder
                 [
                     'name'                  => $row['name'],
                     'story'                 => $row['story'],
+                    'story_en'              => $row['story_en'] ?? null,
                     'stock_green_bean_gram' => $row['stock'],
                     'cupping_score'         => $row['cupping'],
                     'is_active'             => true,
@@ -90,6 +91,7 @@ class MoreCoffeeSeeder extends Seeder
                 'story' => 'Ditanam petani kecil di sekitar Takengon, dataran tinggi '
                          . 'Gayo. Proses giling basah khas Sumatra memberi body tebal '
                          . 'dan karakter herbal manis yang tidak ada di kopi washed.',
+                'story_en' => "Grown by smallholders around Takengon in the Gayo highlands. The Sumatran wet-hulled process gives a thick body and a sweet herbal character you won't find in washed coffees.",
                 'stock' => 22_000, 'cupping' => 85.8, 'price' => 40_000,
                 'traceability' => [
                     'farmer' => 'Kelompok Tani Bukit Pepanyi', 'region' => 'Takengon, Aceh Tengah, Indonesia',
@@ -111,6 +113,7 @@ class MoreCoffeeSeeder extends Seeder
                          . 'yang subur. Hasilnya kopi yang manis seperti karamel dengan '
                          . 'asam jeruk yang lembut. Cocok untuk yang baru mulai suka '
                          . 'kopi specialty.',
+                'story_en' => 'Grown on the slopes of Mount Inerie in Bajawa, on fertile volcanic soil. The result is a caramel-sweet cup with soft citrus acidity. A good first step into specialty coffee.',
                 'stock' => 15_000, 'cupping' => 85.5, 'price' => 46_000,
                 'traceability' => [
                     'farmer' => 'Yohanes Nggoro', 'region' => 'Bajawa, Ngada, Flores, Indonesia',
@@ -131,6 +134,7 @@ class MoreCoffeeSeeder extends Seeder
                 'story' => 'Dari desa Sapan di pegunungan Tana Toraja. Kebunnya '
                          . 'dirawat turun-temurun dan dipanen dengan tangan. Rasanya '
                          . 'dalam dan berempah, dengan manis rempah yang lama tertinggal.',
+                'story_en' => 'From the village of Sapan in the Tana Toraja mountains. The farms are tended across generations and picked by hand. The cup is deep and spiced, with a sweet spice that lingers.',
                 'stock' => 12_000, 'cupping' => 85.2, 'price' => 44_000,
                 'traceability' => [
                     'farmer' => 'Koperasi Kopi Sapan Mandiri', 'region' => 'Sapan, Tana Toraja, Indonesia',
@@ -152,6 +156,7 @@ class MoreCoffeeSeeder extends Seeder
                          . 'difermentasi dalam tangki tertutup tanpa oksigen sebelum '
                          . 'dijemur, sehingga rasa buahnya jauh lebih pekat dan '
                          . 'eksperimental dibanding kopi natural biasa.',
+                'story_en' => 'From a farm in the Preanger highlands of West Java. The cherries ferment in sealed tanks without oxygen before drying, so the fruit flavors are far more intense and experimental than an ordinary natural.',
                 'stock' => 8_000, 'cupping' => 86.9, 'price' => 54_000,
                 'traceability' => [
                     'farmer' => 'Ujang Sudrajat', 'region' => 'Pangalengan, Bandung, Jawa Barat, Indonesia',
@@ -173,6 +178,7 @@ class MoreCoffeeSeeder extends Seeder
                          . 'Biji grade AA yang besar dan padat, dicuci dua kali. '
                          . 'Asamnya tajam seperti blackcurrant, kopi paling "terang" '
                          . 'di gudang kami.',
+                'story_en' => 'From a small cooperative on the slopes of Mount Kenya, Nyeri. Large, dense AA-grade beans washed twice. The acidity is sharp like blackcurrant: the brightest coffee in our warehouse.',
                 'stock' => 10_000, 'cupping' => 87.4, 'price' => 58_000,
                 'traceability' => [
                     'farmer' => 'Mathenge Cooperative Society', 'region' => 'Nyeri, Central Province, Kenya',

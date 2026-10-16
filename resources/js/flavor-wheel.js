@@ -17,7 +17,10 @@ const BLUE     = '#2A5DB0';
 const KRAFT    = '#D8C5A6';
 const LABWHITE = '#FFFBF2';
 
-export default function flavorWheel(initialValues = {}) {
+export default function flavorWheel(initialValues = {}, labels = {}) {
+    // Label sumbu mengikuti bahasa halaman; nilai awalnya Indonesia.
+    AXES.forEach((a) => { a.label = labels[a.key] ?? a.label; });
+
     return {
         values: { ...initialValues },
         svg: null,

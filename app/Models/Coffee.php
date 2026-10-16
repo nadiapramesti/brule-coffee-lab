@@ -12,9 +12,17 @@ class Coffee extends Model
     use HasFactory;
 
     protected $fillable = [
-        'slug', 'name', 'story', 'image',
+        'slug', 'name', 'story', 'story_en', 'image',
         'stock_green_bean_gram', 'cupping_score', 'is_active',
     ];
+
+    /** Cerita kopi sesuai bahasa aktif; jatuh ke Indonesia kalau terjemahannya kosong. */
+    public function localizedStory(): ?string
+    {
+        return app()->getLocale() === 'en' && $this->story_en
+            ? $this->story_en
+            : $this->story;
+    }
 
     protected function casts(): array
     {

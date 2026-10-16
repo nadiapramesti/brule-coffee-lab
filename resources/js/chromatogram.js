@@ -22,7 +22,7 @@ const MINOR = [
     [0.938, .04, .0030], [0.962, .08, .0036],
 ];
 
-export default function chromatogram(peaks = []) {
+export default function chromatogram(peaks = [], text = {}) {
     return {
         peaks,
 
@@ -55,7 +55,7 @@ export default function chromatogram(peaks = []) {
                 .attr('viewBox', `0 0 ${width} ${height}`)
                 .attr('role', 'img')
                 .attr('aria-label',
-                      'Kromatogram aroma kopi: ' +
+                      (text.aria ?? 'Kromatogram aroma kopi: ') +
                       this.peaks.map((p) => p.reads).join(', '));
 
             const all = [
@@ -109,7 +109,7 @@ export default function chromatogram(peaks = []) {
                     .attr('fill', '#D8C5A6').attr('fill-opacity', .45)
                     .attr('font-family', "'IBM Plex Mono', monospace")
                     .attr('font-size', 10)
-                    .text('waktu retensi (menit)');
+                    .text(text.axis ?? 'waktu retensi (menit)');
             }
 
             const path = svg.append('path')

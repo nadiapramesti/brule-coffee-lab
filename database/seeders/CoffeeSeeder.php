@@ -15,6 +15,7 @@ class CoffeeSeeder extends Seeder
                 [
                     'name'                  => $row['name'],
                     'story'                 => $row['story'],
+                    'story_en'              => $row['story_en'] ?? null,
                     'stock_green_bean_gram' => $row['stock_green_bean_gram'],
                     'cupping_score'         => $row['cupping_score'],
                     'is_active'             => true,
@@ -66,6 +67,7 @@ class CoffeeSeeder extends Seeder
                          . 'gula buah, menyisakan karakter asli biji: floral, '
                          . 'bersih, dan terang seperti teh. Ini kopi yang '
                          . 'paling jujur menunjukkan asal-usulnya.',
+                'story_en' => "Picked on small farms in the highlands of Yirgacheffe, Gedeo. The washed process rinses away the fruit sugars and leaves the bean's own character: floral, clean and bright like tea. This is the coffee that shows its origin most honestly.",
                 'stock_green_bean_gram' => 18_000,
                 'cupping_score'         => 88.2,
                 'traceability' => [
@@ -136,6 +138,7 @@ class CoffeeSeeder extends Seeder
                          . 'lendir buah menempel saat dijemur, menghasilkan '
                          . 'manis karamel yang tebal tanpa kehilangan '
                          . 'keasaman jeruknya.',
+                'story_en' => 'Huila is a volcanic valley with warm days and cold nights. The honey process leaves part of the fruit mucilage on the bean while it dries, giving a thick caramel sweetness without losing the citrus acidity.',
                 'stock_green_bean_gram' => 24_000,
                 'cupping_score'         => 86.5,
                 'traceability' => [
@@ -214,9 +217,10 @@ class CoffeeSeeder extends Seeder
                 'name'  => 'Sumatra Mandheling Natural',
                 'story' => 'Dari lereng Bukit Barisan, Sumatera Utara. '
                          . 'Dijemur utuh bersama buahnya selama berminggu-minggu, '
-                         . 'menghasilkan body paling tebal di antara ketiganya. '
+                         . 'menghasilkan body paling tebal di antara kopi kami. '
                          . 'Earthy, rempah, dan berat — karakter Indonesia '
                          . 'yang tidak bisa ditiru daerah lain.',
+                'story_en' => 'From the slopes of the Bukit Barisan range in North Sumatra. Dried whole inside the fruit for weeks, it gives the heaviest body in our lineup. Earthy, spicy and deep: an Indonesian character no other region can copy.',
                 'stock_green_bean_gram' => 21_000,
                 'cupping_score'         => 85.0,
                 'traceability' => [

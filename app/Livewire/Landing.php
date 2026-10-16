@@ -34,13 +34,23 @@ class Landing extends Component
     public function peaks(): array
     {
         return [
-            ['at' => 0.109, 'height' => 0.30, 'width' => 0.0042, 'rt' => 1.42,  'compound' => 'asetaldehida',    'reads' => 'Segar'],
-            ['at' => 0.236, 'height' => 0.74, 'width' => 0.0052, 'rt' => 3.07,  'compound' => 'limonena',        'reads' => 'Jeruk'],
-            ['at' => 0.358, 'height' => 0.41, 'width' => 0.0046, 'rt' => 4.65,  'compound' => 'etil butanoat',   'reads' => 'Beri'],
-            ['at' => 0.483, 'height' => 0.63, 'width' => 0.0050, 'rt' => 6.28,  'compound' => 'linalool',        'reads' => 'Melati'],
-            ['at' => 0.624, 'height' => 0.97, 'width' => 0.0068, 'rt' => 8.11,  'compound' => 'furfuriltiol',    'reads' => 'Kakao'],
-            ['at' => 0.749, 'height' => 0.52, 'width' => 0.0048, 'rt' => 9.74,  'compound' => 'pirazina',        'reads' => 'Kacang'],
-            ['at' => 0.915, 'height' => 0.36, 'width' => 0.0056, 'rt' => 11.90, 'compound' => '4-vinilguaiakol', 'reads' => 'Cengkeh'],
+            ['at' => 0.109, 'height' => 0.30, 'width' => 0.0042, 'rt' => 1.42,  'compound' => 'asetaldehida',    'reads' => __('Segar')],
+            ['at' => 0.236, 'height' => 0.74, 'width' => 0.0052, 'rt' => 3.07,  'compound' => 'limonena',        'reads' => __('Jeruk')],
+            ['at' => 0.358, 'height' => 0.41, 'width' => 0.0046, 'rt' => 4.65,  'compound' => 'etil butanoat',   'reads' => __('Beri')],
+            ['at' => 0.483, 'height' => 0.63, 'width' => 0.0050, 'rt' => 6.28,  'compound' => 'linalool',        'reads' => __('Melati')],
+            ['at' => 0.624, 'height' => 0.97, 'width' => 0.0068, 'rt' => 8.11,  'compound' => 'furfuriltiol',    'reads' => __('Kakao')],
+            ['at' => 0.749, 'height' => 0.52, 'width' => 0.0048, 'rt' => 9.74,  'compound' => 'pirazina',        'reads' => __('Kacang')],
+            ['at' => 0.915, 'height' => 0.36, 'width' => 0.0056, 'rt' => 11.90, 'compound' => '4-vinilguaiakol', 'reads' => __('Cengkeh')],
+        ];
+    }
+
+    /** Teks yang digambar JS (bukan Blade), diterjemahkan di sini. */
+    #[Computed]
+    public function chromatogramText(): array
+    {
+        return [
+            'axis' => __('waktu retensi (menit)'),
+            'aria' => __('Kromatogram aroma kopi: '),
         ];
     }
 
@@ -49,11 +59,11 @@ class Landing extends Component
     public function stages(): array
     {
         return [
-            ['name' => 'Antrian',   'note' => 'Pesanan masuk papan roastery, biji mentah ditimbang.'],
-            ['name' => 'Sangrai',   'note' => 'Satu batch untuk satu pesanan, mengikuti kurva yang kamu pilih.'],
-            ['name' => 'Giling',    'note' => 'Digiling di ukuran alat seduhmu. Pilih biji utuh kalau punya grinder.'],
-            ['name' => 'Kemas',     'note' => 'Masuk kantong berkatup, tanggal sangrai dicetak hari itu juga.'],
-            ['name' => 'Kirim',     'note' => 'Berangkat maksimal 24 jam setelah biji keluar dari mesin.'],
+            ['name' => __('Antrian'),   'note' => __('Pesanan masuk papan roastery, biji mentah ditimbang.')],
+            ['name' => __('Sangrai'),   'note' => __('Satu batch untuk satu pesanan, mengikuti kurva yang kamu pilih.')],
+            ['name' => __('Giling'),    'note' => __('Digiling di ukuran alat seduhmu. Pilih biji utuh kalau punya grinder.')],
+            ['name' => __('Kemas'),     'note' => __('Masuk kantong berkatup, tanggal sangrai dicetak hari itu juga.')],
+            ['name' => __('Kirim'),     'note' => __('Berangkat maksimal 24 jam setelah biji keluar dari mesin.')],
         ];
     }
 

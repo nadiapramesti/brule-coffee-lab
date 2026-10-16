@@ -98,6 +98,20 @@ class Builder extends Component
         return (bool) $this->coffee?->hasStockFor($this->grams);
     }
 
+    /** Nama sumbu flavor wheel dalam bahasa aktif (digambar D3). */
+    #[Computed]
+    public function wheelLabels(): array
+    {
+        return [
+            'citrus'    => __('Jeruk'),
+            'floral'    => __('Bunga'),
+            'berry'     => __('Beri'),
+            'chocolate' => __('Cokelat'),
+            'nutty'     => __('Kacang'),
+            'spice'     => __('Rempah'),
+        ];
+    }
+
     #[Computed]
     public function grindOptions(): array
     {

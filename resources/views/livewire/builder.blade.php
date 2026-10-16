@@ -5,8 +5,7 @@
             Roast builder
         </h1>
         <p class="mt-4 max-w-[56ch] text-[15px] leading-relaxed text-kraft/80">
-            Pilih bijinya, lalu geser level sangrainya. Profil rasa di sebelah
-            kanan bergerak mengikuti pilihanmu, dan harganya ikut dihitung.
+            {{ __('Pilih bijinya, lalu geser level sangrainya. Profil rasa di sebelah kanan bergerak mengikuti pilihanmu, dan harganya ikut dihitung.') }}
         </p>
     </div>
 
@@ -19,7 +18,7 @@
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">01</span>
-                    Pilih biji
+                    {{ __('Pilih biji') }}
                 </h2>
 
                 <div class="mt-5 grid gap-3 sm:grid-cols-3">
@@ -46,7 +45,7 @@
 
                 @if ($this->coffee?->story)
                     <p class="mt-5 max-w-[60ch] border-l-2 border-bluelab/60 pl-4 text-[14px] leading-relaxed text-kraft/75">
-                        {{ $this->coffee->story }}
+                        {{ $this->coffee->localizedStory() }}
                     </p>
                 @endif
             </section>
@@ -55,7 +54,7 @@
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">02</span>
-                    Level sangrai
+                    {{ __('Level sangrai') }}
                 </h2>
 
                 @if ($this->levels->isNotEmpty())
@@ -69,7 +68,7 @@
                             </p>
                         </div>
 
-                        <label for="roast" class="sr-only">Level sangrai</label>
+                        <label for="roast" class="sr-only">{{ __('Level sangrai') }}</label>
                         <input id="roast"
                                type="range"
                                min="0"
@@ -86,9 +85,7 @@
 
                         @if ($this->levels->count() < 5)
                             <p class="mt-5 max-w-[52ch] text-[13px] leading-relaxed text-kraft/60">
-                                Biji ini berhenti sebelum level paling gelap. Disangrai
-                                lebih jauh, karakter aslinya hilang dan yang tersisa
-                                cuma rasa gosong.
+                                {{ __('Biji ini berhenti sebelum level paling gelap. Disangrai lebih jauh, karakter aslinya hilang dan yang tersisa cuma rasa gosong.') }}
                             </p>
                         @endif
                     </div>
@@ -99,7 +96,7 @@
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">03</span>
-                    Ukuran gilingan
+                    {{ __('Ukuran gilingan') }}
                 </h2>
 
                 <div class="mt-5 flex flex-wrap gap-2.5">
@@ -111,7 +108,7 @@
                                        {{ $grind === $key
                                             ? 'border-bluelab bg-bluelab/10 text-labwhite'
                                             : 'border-kraft/20 text-kraft/80 hover:border-kraft/45' }}">
-                            {{ $label }}
+                            {{ __($label) }}
                         </button>
                     @endforeach
                 </div>
@@ -121,7 +118,7 @@
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
                     <span class="krm-readout text-[12px] text-kraft/45">04</span>
-                    Berat
+                    {{ __('Berat') }}
                 </h2>
 
                 <div class="mt-5 grid max-w-md grid-cols-3 gap-3">
@@ -137,7 +134,7 @@
                                 {{ $g >= 1000 ? '1' : $g }}
                             </span>
                             <span class="mt-0.5 block text-[12px] text-kraft/65">
-                                {{ $g >= 1000 ? 'kilogram' : 'gram' }}
+                                {{ $g >= 1000 ? __('kilogram') : __('gram') }}
                             </span>
                         </button>
                     @endforeach
@@ -149,9 +146,9 @@
         <div class="lg:sticky lg:top-24 lg:self-start">
             <div class="rounded border border-kraft/20 p-6">
 
-                <h2 class="text-[1.1rem] font-semibold">Profil rasa</h2>
+                <h2 class="text-[1.1rem] font-semibold">{{ __('Profil rasa') }}</h2>
                 <p class="mt-1 text-[13px] text-kraft/60">
-                    Bergerak tiap kali pilihanmu berubah.
+                    {{ __('Bergerak tiap kali pilihanmu berubah.') }}
                 </p>
 
                 {{-- wire:ignore: isi div ini digambar D3, bukan Blade.
@@ -160,7 +157,7 @@
                      class="mt-6"
                      {{-- Alpine memanggil init() sendiri; menuliskannya lagi
                           di x-init membuat grafiknya tergambar dua kali. --}}
-                     x-data="flavorWheel(@js($this->flavorValues))">
+                     x-data="flavorWheel(@js($this->flavorValues), @js($this->wheelLabels))">
                     <div x-ref="wheel" class="flex justify-center"></div>
                 </div>
 
@@ -173,26 +170,26 @@
                 <dl class="krm-settling mt-6 space-y-2.5 border-t border-kraft/15 pt-5 text-[13px]"
                     wire:loading.delay.class="opacity-50">
                     <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">Biji</dt>
+                        <dt class="text-kraft/60">{{ __('Biji kopi') }}</dt>
                         <dd class="text-right">{{ $this->coffee?->name }}</dd>
                     </div>
                     <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">Sangrai</dt>
+                        <dt class="text-kraft/60">{{ __('Sangrai') }}</dt>
                         <dd class="text-right">{{ $this->profile?->level_label }}</dd>
                     </div>
                     <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">Gilingan</dt>
-                        <dd class="text-right">{{ $this->grindOptions[$grind] }}</dd>
+                        <dt class="text-kraft/60">{{ __('Gilingan') }}</dt>
+                        <dd class="text-right">{{ __($this->grindOptions[$grind]) }}</dd>
                     </div>
                     <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">Berat</dt>
+                        <dt class="text-kraft/60">{{ __('Berat') }}</dt>
                         <dd class="krm-readout text-right">{{ number_format($grams) }} g</dd>
                     </div>
                 </dl>
 
                 <div class="krm-settling mt-5 flex items-end justify-between gap-4 border-t border-kraft/15 pt-5"
                      wire:loading.delay.class="opacity-50">
-                    <span class="text-[13px] text-kraft/60">Total</span>
+                    <span class="text-[13px] text-kraft/60">{{ __('Total') }}</span>
                     <span class="krm-readout text-[1.75rem] font-medium">
                         Rp{{ number_format($this->price, 0, ',', '.') }}
                     </span>
@@ -201,15 +198,14 @@
                 @if ($this->stockOk)
                     <button type="button"
                             class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-colors hover:bg-[#234E94]">
-                        Pesan dan sangrai
+                        {{ __('Pesan dan sangrai') }}
                     </button>
                     <p class="mt-3 text-center text-[12px] leading-relaxed text-kraft/55">
-                        Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.
+                        {{ __('Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.') }}
                     </p>
                 @else
                     <p class="mt-6 rounded border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/70">
-                        Stok biji mentahnya tidak cukup untuk berat ini.
-                        Coba ukuran yang lebih kecil.
+                        {{ __('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.') }}
                     </p>
                 @endif
             </div>

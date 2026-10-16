@@ -13,6 +13,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->string('name');
             $table->text('story')->nullable();
+            $table->text('story_en')->nullable(); // terjemahan Inggris dari story
             $table->string('image')->nullable();
             $table->unsignedInteger('stock_green_bean_gram')->default(0);
             $table->decimal('cupping_score', 4, 1)->nullable(); // 88.2
