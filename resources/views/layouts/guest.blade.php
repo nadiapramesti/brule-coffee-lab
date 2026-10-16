@@ -20,49 +20,34 @@
     <script>document.documentElement.classList.add('js')</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="krm-auth min-h-screen bg-charcoal text-labwhite antialiased">
-<div class="grid min-h-screen lg:grid-cols-[minmax(0,1.05fr)_minmax(0,1fr)]">
+<body class="krm-auth krm-grid min-h-screen bg-charcoal text-labwhite antialiased">
+<div class="flex min-h-screen flex-col px-6 py-6">
 
-    {{-- Panel foto: hanya di layar lebar --}}
-    <aside class="relative isolate hidden overflow-hidden lg:block">
-        <picture class="krm-kenburns absolute inset-0 -z-20">
-            <img src="{{ asset('images/hero-roastery.webp') }}" alt="" width="1920" height="1280" decoding="async"
-                 class="h-full w-full object-cover object-[62%_50%]">
-        </picture>
-        <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(18,18,18,.55)_0%,rgba(18,18,18,.35)_40%,rgba(18,18,18,.92)_100%)]"></div>
-        <div class="flex h-full flex-col justify-between p-12">
-            <a href="{{ route('landing') }}" wire:navigate class="inline-flex items-center gap-3">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="40" height="40" class="h-10 w-10">
-                <span class="font-display text-[18px] font-semibold tracking-[0.22em]">KROMATIK</span>
+    <div class="flex items-center justify-between">
+        <a href="{{ route('landing') }}" wire:navigate class="inline-flex items-center gap-1.5 text-[13px] text-kraft/70 transition-colors hover:text-labwhite">
+            <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5L4 6l3.5 3.5"/></svg>
+            <span class="max-[420px]:hidden">{{ __('Kembali ke beranda') }}</span><span class="min-[421px]:hidden">{{ __('Beranda') }}</span>
+        </a>
+        <x-lang-switch class="flex" />
+    </div>
+
+    <main class="flex flex-1 items-center justify-center py-10">
+        <div class="w-full max-w-[420px]" data-reveal>
+            <a href="{{ route('landing') }}" wire:navigate class="flex flex-col items-center gap-3 text-center">
+                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="48" height="48" class="h-12 w-12">
+                <span class="font-display text-[15px] font-semibold tracking-[0.24em]">KROMATIK</span>
             </a>
-            <div>
-                <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/70">{{ __('SPECIALTY COFFEE LAB') }}</p>
-                <p class="mt-4 max-w-[16ch] font-display text-[2.6rem] font-bold leading-[1.02] tracking-[-0.02em]">
-                    {{ __('Disangrai setelah pesanan masuk.') }}
-                </p>
+
+            <div class="mt-8 rounded-[14px] border border-kraft/20 bg-[#141414]/90 p-7 shadow-[0_30px_60px_-30px_rgba(0,0,0,.9)] sm:p-9">
+                <h1 class="font-display text-[1.65rem] font-bold leading-tight tracking-[-0.01em]">{{ $copy[0] }}</h1>
+                @if ($copy[1])<p class="mt-2 text-[14px] leading-relaxed text-kraft/70">{{ $copy[1] }}</p>@endif
+                <div class="mt-7">
+                    {{ $slot }}
+                </div>
             </div>
+
+            <p class="mt-6 text-center text-[12px] text-kraft/45">{{ __('Disangrai setelah pesanan masuk.') }}</p>
         </div>
-    </aside>
-
-    <main class="relative flex min-h-screen flex-col px-6 py-8 sm:px-12">
-        <div class="flex items-center justify-between">
-            <a href="{{ route('landing') }}" wire:navigate class="inline-flex items-center gap-2.5 lg:invisible">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="32" height="32" class="h-8 w-8">
-                <span class="font-display text-[15px] font-semibold tracking-[0.2em]">KROMATIK</span>
-            </a>
-            <x-lang-switch class="flex" />
-        </div>
-
-        <div class="mx-auto flex w-full max-w-[400px] flex-1 flex-col justify-center py-10">
-            <h1 class="krm-h2 font-bold" data-reveal>{{ $copy[0] }}</h1>
-            @if ($copy[1])<p class="mt-3 text-[14.5px] leading-relaxed text-kraft/75" data-reveal style="--d:80ms">{{ $copy[1] }}</p>@endif
-
-            <div class="mt-8" data-reveal style="--d:160ms">
-                {{ $slot }}
-            </div>
-        </div>
-
-        <a href="{{ route('landing') }}" wire:navigate class="text-center text-[12.5px] text-kraft/50 transition-colors hover:text-labwhite">&larr; {{ __('Kembali ke beranda') }}</a>
     </main>
 </div>
 </body>
