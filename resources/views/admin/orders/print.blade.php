@@ -39,7 +39,7 @@
         <thead><tr><th>{{ __('Item') }}</th><th>{{ __('Level') }}</th><th>{{ __('Gilingan') }}</th><th class="r">{{ __('Berat') }}</th><th class="r">{{ __('Harga') }}</th></tr></thead>
         <tbody>
         @foreach ($order->groupedItems() as $i)
-            <tr><td>{{ $i->coffee_name_snapshot }}@if ($i->qty > 1) × {{ $i->qty }}@endif</td><td>{{ $i->level_label }}</td><td>{{ __($i->grind_label) }}</td><td class="r">{{ number_format($i->grams) }} g</td><td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td></tr>
+            <tr><td>{{ $i->coffee_name_snapshot }}</td><td>{{ $i->level_label }}</td><td>{{ __($i->grind_label) }}</td><td class="r">{{ number_format($i->grams) }} g{{ $i->qty > 1 ? ' × '.$i->qty : '' }}</td><td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td></tr>
         @endforeach
         </tbody>
         <tfoot>
