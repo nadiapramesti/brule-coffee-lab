@@ -245,3 +245,7 @@ header[data-site-header] { view-transition-name: krm-header; }
 .krm-pop { animation: krm-pop .24s cubic-bezier(.2,.8,.2,1) both; }
 .krm-fade { animation: krm-fade .2s ease-out both; }
 @media (prefers-reduced-motion: reduce) { .krm-pop, .krm-fade { animation: none; } }
+
+@keyframes krm-slide { from { transform: translateX(32px); opacity: 0; } to { transform: none; opacity: 1; } }
+.krm-slide { animation: krm-slide .26s cubic-bezier(.2,.8,.2,1) both; }
+@media (prefers-reduced-motion: reduce) { .krm-slide { animation: none; } }

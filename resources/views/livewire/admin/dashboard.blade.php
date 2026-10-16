@@ -34,7 +34,7 @@
 
     {{-- Perlu tindakan --}}
     @php $todo = array_filter([
-        [$att['unpaid'], __('menunggu pembayaran'), route('admin.dashboard', ['tab' => 'unpaid']) . '#pesanan'],
+        [$att['unpaid'], __('menunggu pembayaran'), route('admin.orders', ['tab' => 'unpaid'])],
         [$att['toShip'], __('siap dikirim (isi resi)'), route('roastery')],
         [$att['low'], __('kopi stok menipis'), route('admin.coffees')],
     ], fn ($t) => $t[0] > 0); @endphp
@@ -133,7 +133,7 @@
     {{-- Tabel pesanan --}}
     <section id="pesanan" class="mt-4 scroll-mt-20 rounded border border-kraft/20 bg-[#121212]">
         <div class="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
-            <h2 class="font-display text-[1rem] font-semibold">{{ __('Pesanan') }}</h2>
+            <div class="flex items-baseline gap-3"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pesanan') }}</h2><a href="{{ route('admin.orders') }}" wire:navigate class="text-[12.5px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Lihat semua') }} &rarr;</a></div>
             <div class="relative w-full sm:w-80">
                 <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
                 <label class="sr-only" for="q">{{ __('Cari pesanan') }}</label>
@@ -160,7 +160,7 @@
                 <tbody class="divide-y divide-kraft/10">
                     @foreach ($orders as $o)
                         <tr wire:key="o-{{ $o->id }}" class="transition-colors hover:bg-white/[.025]">
-                            <td class="px-5 py-3"><a href="{{ route('track', $o->order_code) }}" class="krm-readout text-[12.5px] underline-offset-4 hover:underline">{{ $o->order_code }}</a></td>
+                            <td class="px-5 py-3"><a href="{{ route('admin.orders', ['order' => $o->order_code]) }}" wire:navigate class="krm-readout text-[12.5px] underline-offset-4 hover:underline">{{ $o->order_code }}</a></td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $o->user?->name ?? $o->recipient_name }}</td>
                             <td class="max-w-[240px] truncate px-3 py-3 text-kraft/65">{{ $o->items->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g')->implode(', ') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $o->created_at->translatedFormat('j M, H:i') }}</td>
@@ -175,7 +175,7 @@
                 @foreach ($orders as $o)
                     <li wire:key="m-{{ $o->id }}" class="px-5 py-3.5">
                         <div class="flex items-center justify-between gap-3">
-                            <a href="{{ route('track', $o->order_code) }}" class="krm-readout text-[12.5px]">{{ $o->order_code }}</a>
+                            <a href="{{ route('admin.orders', ['order' => $o->order_code]) }}" wire:navigate class="krm-readout text-[12.5px]">{{ $o->order_code }}</a>
                             <span class="rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $statusTone($o->status) }}">{{ $o->status_label }}</span>
                         </div>
                         <p class="mt-1 truncate text-[13.5px]">{{ $o->user?->name ?? $o->recipient_name }}</p>

@@ -6,16 +6,20 @@
         __('Utama') => [
             ['admin.dashboard', route('admin.dashboard'), 'Dashboard', 'M4 13h6V4H4v9zm0 7h6v-5H4v5zm10 0h6v-9h-6v9zm0-16v5h6V4h-6z', true, null],
         ],
-        __('Operasional') => [
-            ['roastery', route('roastery'), __('Antrian roastery'), 'M4 6h16M4 12h16M4 18h10', false, $queueCount ?: null],
+        __('Penjualan') => [
+            ['admin.orders', route('admin.orders'), __('Pesanan'), 'M6 6h15l-1.5 9h-12zM6 6L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zM18 20a1 1 0 100-2 1 1 0 000 2z', true, $unpaid ?: null],
         ],
         __('Katalog') => [
             ['admin.coffees*', route('admin.coffees'), __('Kelola kopi'), 'M5 8h11v6a5 5 0 01-5 5H10a5 5 0 01-5-5V8zM16 9h2a2 2 0 010 4h-2M8 3v2M12 3v2', true, null],
+        ],
+        __('Operasional') => [
+            ['roastery', route('roastery'), __('Antrian roastery'), 'M4 6h16M4 12h16M4 18h10', false, $queueCount ?: null],
         ],
     ];
     $crumbs = match (true) {
         request()->routeIs('admin.dashboard') => ['Dashboard'],
         request()->routeIs('admin.coffees') => [__('Kelola kopi')],
+        request()->routeIs('admin.orders') => [__('Pesanan')],
         request()->routeIs('roastery') => [__('Antrian roastery')],
         default => [],
     };
@@ -109,7 +113,7 @@
                 <span class="krm-readout hidden text-[12px] text-kraft/50 md:block">{{ now()->translatedFormat('D, j M Y') }}</span>
                 <x-lang-switch class="flex" />
                 @if ($u->isAdmin())
-                    <a href="{{ route('admin.dashboard', ['tab' => 'unpaid']) }}#pesanan" wire:navigate class="relative grid h-9 w-9 place-items-center rounded border border-kraft/20 text-kraft/75 transition-colors hover:border-kraft/50 hover:text-labwhite" aria-label="{{ __('Menunggu bayar') }}: {{ $unpaid }}" title="{{ __('Menunggu bayar') }}">
+                    <a href="{{ route('admin.orders', ['tab' => 'unpaid']) }}" wire:navigate class="relative grid h-9 w-9 place-items-center rounded border border-kraft/20 text-kraft/75 transition-colors hover:border-kraft/50 hover:text-labwhite" aria-label="{{ __('Menunggu bayar') }}: {{ $unpaid }}" title="{{ __('Menunggu bayar') }}">
                         <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 1112 0c0 5 2 6 2 6H4s2-1 2-6zM10 19a2 2 0 004 0"/></svg>
                         @if ($unpaid)<span class="krm-readout absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#E8782A] px-1 text-[10.5px] font-semibold text-charcoal">{{ $unpaid }}</span>@endif
                     </a>

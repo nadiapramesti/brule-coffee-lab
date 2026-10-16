@@ -45,19 +45,7 @@ class Roastery extends Component
 
     public function advance(int $id): void
     {
-        $order = Order::findOrFail($id);
-        $next = $order->nextStatus();
-
-        // packing -> shipped lewat ship() karena butuh nomor resi.
-        if (! $next || ! in_array($order->status, ['queued', 'roasting', 'grinding'], true)) {
-            return;
-        }
-
-        $order->update([
-            'status' => $next,
-            'roaster_id' => $order->roaster_id ?? auth()->id(),
-            'roasted_at' => $next === 'roasting' ? now() : $order->roasted_at,
-        ]);
+        Order::findOrFail($id)->advance();
         unset($this->columns, $this->stats);
     }
 
@@ -68,13 +56,9 @@ class Roastery extends Component
             "tracking.$id.min" => __('Nomor resi terlalu pendek.'),
         ]);
 
-        $order = Order::findOrFail($id);
-        if ($order->status !== 'packing') {
-            return;
+        if (Order::findOrFail($id)->ship($this->tracking[$id])) {
+            unset($this->tracking[$id], $this->columns, $this->stats);
         }
-
-        $order->update(['status' => 'shipped', 'tracking_number' => trim($this->tracking[$id]), 'shipped_at' => now()]);
-        unset($this->tracking[$id], $this->columns, $this->stats);
     }
 
     public function render()

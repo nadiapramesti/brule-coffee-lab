@@ -32,14 +32,7 @@ class Dashboard extends Component
     #[Url(as: 'q')]
     public string $search = '';
 
-    public const TABS = [
-        '' => ['Semua', null],
-        'unpaid' => ['Menunggu bayar', ['pending_payment']],
-        'production' => ['Produksi', ['queued', 'roasting', 'grinding', 'packing']],
-        'shipped' => ['Dikirim', ['shipped']],
-        'completed' => ['Selesai', ['completed']],
-        'cancelled' => ['Batal', ['cancelled']],
-    ];
+    public const TABS = Order::TABS;
 
     public function updatingTab(): void
     {
@@ -70,16 +63,8 @@ class Dashboard extends Component
     #[Computed]
     public function orders()
     {
-        $statuses = self::TABS[$this->tab][1] ?? null;
-        $q = trim($this->search);
-
         return Order::with(['user:id,name', 'items:id,order_id,coffee_name_snapshot,grams'])
-            ->when($statuses, fn ($x) => $x->whereIn('status', $statuses))
-            ->when($q !== '', fn ($x) => $x->where(fn ($w) => $w
-                ->where('order_code', 'like', "%{$q}%")
-                ->orWhere('recipient_name', 'like', "%{$q}%")
-                ->orWhereHas('user', fn ($u) => $u->where('name', 'like', "%{$q}%"))))
-            ->latest()->paginate(8);
+            ->adminFilter($this->tab, $this->search)->latest()->paginate(8);
     }
 
     public function updatedDays(): void
