@@ -17,6 +17,7 @@ Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');
     Route::get('/pesanan', \App\Livewire\Admin\Orders::class)->name('admin.orders');
+    Route::get('/pengaturan', \App\Livewire\Admin\StoreSettings::class)->name('admin.settings');
     Route::get('/voucher', \App\Livewire\Admin\Vouchers::class)->name('admin.vouchers');
     Route::get('/stok', \App\Livewire\Admin\Stock::class)->name('admin.stock');
     Route::get('/pelanggan', \App\Livewire\Admin\Customers::class)->name('admin.customers');

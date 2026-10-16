@@ -17,7 +17,6 @@ class Stock extends Component
 {
     use WithPagination;
 
-    public const LOW = Dashboard::LOW_STOCK_GRAM;
 
     #[Url] public string $tab = 'overview';
     #[Url(as: 'kopi')] public ?int $coffeeFilter = null;
@@ -60,7 +59,7 @@ class Stock extends Component
                 'used' => $used,
                 'perDay' => $perDay,
                 'daysLeft' => $perDay > 0 ? (int) floor($c->stock_green_bean_gram / $perDay) : null,
-                'status' => $c->stock_green_bean_gram <= 0 ? 'out' : ($c->stock_green_bean_gram < self::LOW ? 'low' : 'ok'),
+                'status' => $c->stock_green_bean_gram <= 0 ? 'out' : ($c->stock_green_bean_gram < \App\Models\Setting::int('low_stock_gram') ? 'low' : 'ok'),
             ];
         });
     }

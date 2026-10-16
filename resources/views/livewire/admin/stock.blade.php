@@ -18,7 +18,7 @@
         @foreach ([
             [__('Total biji mentah'), number_format($t['kg'], 1, ',', '.') . ' kg', null, false],
             [__('Setara hasil sangrai'), number_format($t['roasted'], 1, ',', '.') . ' kg', __('susut ±15%'), false],
-            [__('Stok menipis'), $t['low'], '< ' . $n(\App\Livewire\Admin\Stock::LOW) . ' g', $t['low'] > 0],
+            [__('Stok menipis'), $t['low'], '< ' . $n(\App\Models\Setting::int('low_stock_gram')) . ' g', $t['low'] > 0],
             [__('Stok habis'), $t['out'], null, $t['out'] > 0],
         ] as [$l, $v, $sub, $warn])
             <div class="rounded border px-4 py-3 {{ $warn ? 'border-[#E8782A]/45 bg-[#E8782A]/[.06]' : 'border-kraft/20 bg-[#121212]' }}">

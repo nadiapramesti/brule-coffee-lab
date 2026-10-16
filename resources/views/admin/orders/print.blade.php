@@ -26,7 +26,7 @@
 <div class="bar"><button onclick="window.print()">{{ __('Cetak') }}</button></div>
 <div class="sheet">
     <div class="row">
-        <div><h1>KROMATIK</h1><div class="muted">Specialty Coffee Lab · Bandung</div></div>
+        <div><h1>{{ \App\Models\Setting::get('store_name') }}</h1><div class="muted">{{ \App\Models\Setting::get('store_tagline') }} · {{ \App\Models\Setting::get('store_city') }}</div></div>
         <div style="text-align:right"><b>{{ __('Invoice') }}</b><br>{{ $order->order_code }}<div class="muted">{{ $order->created_at->translatedFormat('j F Y, H:i') }}</div></div>
     </div>
 

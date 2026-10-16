@@ -138,12 +138,12 @@ class Order extends Model
         return $query->whereIn('status', ['queued', 'roasting', 'grinding', 'packing']);
     }
 
-    public const FREE_SHIPPING_FROM = 500000;
-    public const SHIPPING_FLAT = 15000;
-
+    /** Ongkir flat dan batas gratis ongkir diatur admin di Pengaturan (0 = tanpa gratis ongkir). */
     public static function shippingFor(int $subtotal): int
     {
-        return $subtotal >= self::FREE_SHIPPING_FROM ? 0 : self::SHIPPING_FLAT;
+        $free = Setting::int('free_shipping_from');
+
+        return $free > 0 && $subtotal >= $free ? 0 : Setting::int('shipping_flat');
     }
 
     /**

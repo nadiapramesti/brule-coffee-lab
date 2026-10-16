@@ -127,8 +127,7 @@
                         <span class="font-display text-[17px] font-semibold tracking-[0.22em]">KROMATIK</span>
                     </a>
                     <address class="mt-5 text-[14px] not-italic leading-relaxed text-kraft/75">
-                        {{ __('Roastery Kromatik') }}<br>
-                        {{ __('Bandung, Jawa Barat') }}
+                        {{ \App\Models\Setting::get('store_address') }}
                     </address>
                     <p class="mt-3 text-[13px] text-kraft/55">{{ __('Disangrai setelah pesanan masuk') }}</p>
                 </div>
@@ -143,15 +142,15 @@
                 </nav>
 
                 <div class="flex gap-3 text-kraft/80 md:justify-self-end" aria-label="{{ __('Kontak') }}">
-                    <a href="https://instagram.com/kromatik.lab" target="_blank" rel="noopener" aria-label="Instagram"
+                    <a href="https://instagram.com/{{ \App\Models\Setting::get('instagram') }}" target="_blank" rel="noopener" aria-label="Instagram"
                        class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>
                     </a>
-                    <a href="https://wa.me/6281200000000" target="_blank" rel="noopener" aria-label="WhatsApp"
+                    <a href="{{ \App\Models\Setting::whatsappUrl() }}" target="_blank" rel="noopener" aria-label="WhatsApp"
                        class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3l-4.5 1.2z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-.9.8c-1-.4-1.9-1.3-2.3-2.300l.8-.9-1-2L9 8.5z" stroke-width="1"/></svg>
                     </a>
-                    <a href="mailto:halo@kromatik.test" aria-label="Email"
+                    <a href="mailto:{{ \App\Models\Setting::get('contact_email') }}" aria-label="Email"
                        class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.500L20.5 7"/></svg>
                     </a>
@@ -159,7 +158,7 @@
             </div>
 
             <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/10 pt-6 text-[12.5px] text-kraft/50">
-                <p>&copy; {{ date('Y') }} KROMATIK &bull; Specialty Coffee Lab &bull; Bandung</p>
+                <p>&copy; {{ date('Y') }} {{ \App\Models\Setting::get('store_name') }} &bull; {{ \App\Models\Setting::get('store_tagline') }} &bull; {{ \App\Models\Setting::get('store_city') }}</p>
                 <x-lang-switch class="flex" />
             </div>
         </div>

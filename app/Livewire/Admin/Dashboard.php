@@ -20,7 +20,6 @@ class Dashboard extends Component
 {
     use WithPagination;
 
-    public const LOW_STOCK_GRAM = 5000;
 
     #[Url(as: 'hari')]
     public int $days = 14;
@@ -161,7 +160,7 @@ class Dashboard extends Component
     #[Computed]
     public function lowStock()
     {
-        return Coffee::active()->where('stock_green_bean_gram', '<', self::LOW_STOCK_GRAM)->orderBy('stock_green_bean_gram')->get();
+        return Coffee::active()->where('stock_green_bean_gram', '<', \App\Models\Setting::int('low_stock_gram'))->orderBy('stock_green_bean_gram')->get();
     }
 
     #[Computed]

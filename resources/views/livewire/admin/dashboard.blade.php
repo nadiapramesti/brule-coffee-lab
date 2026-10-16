@@ -232,7 +232,7 @@
         <section class="rounded border border-kraft/20 bg-[#121212] p-5">
             <div class="flex items-baseline justify-between gap-3">
                 <h2 class="font-display text-[1rem] font-semibold">{{ __('Stok menipis') }}</h2>
-                <span class="krm-readout text-[11.5px] text-kraft/50">&lt; {{ number_format(\App\Livewire\Admin\Dashboard::LOW_STOCK_GRAM) }} g</span>
+                <span class="krm-readout text-[11.5px] text-kraft/50">&lt; {{ number_format(\App\Models\Setting::int('low_stock_gram')) }} g</span>
             </div>
             @forelse ($this->lowStock as $c)
                 <div class="mt-4 flex items-center justify-between gap-3">

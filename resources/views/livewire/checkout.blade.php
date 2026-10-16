@@ -76,7 +76,7 @@
                         {{ __('Buat pesanan') }}
                     </button>
                     <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">
-                        {{ __('Gratis ongkir mulai Rp500.000. Pembayaran disimulasikan di halaman berikutnya.') }}
+                        @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ __('Pembayaran disimulasikan di halaman berikutnya.') }}
                     </p>
                 </div>
             </div>

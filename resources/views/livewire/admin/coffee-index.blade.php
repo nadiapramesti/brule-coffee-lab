@@ -44,7 +44,7 @@
             @forelse ($this->coffees as $c)
                 @php
                     $pct = min(100, round($c->stock_green_bean_gram / 20000 * 100));
-                    $low = $c->stock_green_bean_gram < \App\Livewire\Admin\Dashboard::LOW_STOCK_GRAM;
+                    $low = $c->stock_green_bean_gram < \App\Models\Setting::int('low_stock_gram');
                     $prices = $c->roastProfiles->pluck('price_per_100g');
                 @endphp
                 <li wire:key="c-{{ $c->id }}" class="grid items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-white/[.02] {{ $cols }} {{ $c->is_active ? '' : 'opacity-60' }}">
