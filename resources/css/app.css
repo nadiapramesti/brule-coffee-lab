@@ -159,3 +159,30 @@ header[data-site-header] { view-transition-name: krm-header; }
     opacity: .03;
     pointer-events: none;
 }
+
+
+/* ───────── Hero ───────── */
+.krm-kenburns img { animation: krm-kb 28s ease-in-out infinite alternate; transform-origin: 62% 48%; }
+@keyframes krm-kb { from { transform: scale(1.02); } to { transform: scale(1.12) translate3d(-1.2%, -1%, 0); } }
+
+/* Judul naik dari balik garis, baris demi baris */
+.krm-line { overflow: hidden; padding-bottom: .12em; margin-bottom: -.12em; }
+.krm-line > span { display: inline-block; }
+.js .krm-line > span { transform: translateY(110%); animation: krm-rise 1s cubic-bezier(.16,1,.3,1) forwards; animation-delay: calc(120ms + var(--d, 0ms)); }
+@keyframes krm-rise { to { transform: none; } }
+
+/* Baris kedua seperti logam yang baru keluar dari drum */
+.krm-ember-text {
+    background: linear-gradient(100deg, #FFFBF2 0%, #F2D3A0 38%, #E8A04C 70%, #E8782A 100%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: krm-rise 1s cubic-bezier(.16,1,.3,1) forwards, krm-heat 6s ease-in-out 1.2s infinite alternate;
+}
+.js .krm-ember-text { animation-delay: calc(120ms + var(--d, 0ms)), 1.2s; }
+@keyframes krm-heat { to { background-position: 100% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+    .krm-kenburns img { animation: none; }
+    .js .krm-line > span, .krm-ember-text { animation: none; transform: none; }
+}

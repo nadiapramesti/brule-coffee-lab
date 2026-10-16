@@ -5,7 +5,7 @@
         {{-- Foto ruang sangrai asli sebagai latar. Dua lapis gelap:
              satu dari kiri supaya teks terbaca, satu dari bawah supaya
              kromatogram duduk di atas warna yang sama dengan sisa halaman. --}}
-        <picture class="absolute inset-0 -z-20">
+        <picture class="krm-kenburns absolute inset-0 -z-20">
             <source media="(max-width: 767px)" srcset="{{ asset('images/hero-roastery-sm.webp') }}" type="image/webp">
             <source srcset="{{ asset('images/hero-roastery.webp') }}" type="image/webp">
             <img src="{{ asset('images/hero-roastery.jpg') }}" alt=""
@@ -14,12 +14,22 @@
         </picture>
         <div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(18,18,18,.95)_0%,rgba(18,18,18,.86)_46%,rgba(18,18,18,.42)_78%,rgba(18,18,18,.55)_100%)] max-md:bg-[linear-gradient(180deg,rgba(18,18,18,.82)_0%,rgba(18,18,18,.72)_55%,rgba(18,18,18,1)_100%)]"></div>
         <div class="absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-gradient-to-b from-transparent via-charcoal/80 to-charcoal"></div>
+        <div class="absolute inset-0 -z-10" x-data="embers" aria-hidden="true"><canvas x-ref="canvas" class="h-full w-full"></canvas></div>
 
         <div class="mx-auto max-w-[1180px] px-6">
             <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div class="max-w-3xl">
-                <h1 class="krm-h1 font-bold" data-reveal>
-                    {{ __('Disangrai setelah') }}<br>{{ __('pesanan masuk.') }}
+                <p class="mb-6 inline-flex items-center gap-3 rounded-full border border-white/15 bg-charcoal/50 py-1.5 pl-3 pr-4 text-[12px] backdrop-blur-[2px]"
+                   x-data="roastClock" data-reveal>
+                    <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8782A] opacity-70"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-[#E8782A]"></span></span>
+                    <span class="krm-readout tracking-[0.12em] text-kraft/80">{{ __('SEDANG DISANGRAI') }}</span>
+                    <span class="krm-readout text-labwhite"><span x-text="temp.toFixed(1)">210.0</span>&deg;C</span>
+                    <span class="krm-readout text-kraft/60" x-text="clock">09:42</span>
+                </p>
+
+                <h1 class="krm-h1 font-bold">
+                    <span class="krm-line block"><span style="--d:0ms">{{ __('Disangrai setelah') }}</span></span>
+                    <span class="krm-line block"><span class="krm-ember-text" style="--d:140ms">{{ __('pesanan masuk.') }}</span></span>
                 </h1>
 
                 <p class="mt-7 max-w-[54ch] text-[15px] leading-relaxed text-kraft" data-reveal style="--d:120ms">

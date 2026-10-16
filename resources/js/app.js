@@ -1,5 +1,6 @@
 import './chromatogram';
 import './flavor-wheel';
+import './embers';
 
 // Muncul saat masuk layar. Elemen yang sudah terlihat waktu halaman dibuka
 // ikut dianimasikan, jadi hero punya pembuka tanpa kode tambahan.
