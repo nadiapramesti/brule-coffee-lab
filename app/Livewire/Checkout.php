@@ -82,6 +82,13 @@ class Checkout extends Component
         return $v && ! $v->problemFor($this->subtotal, auth()->user()) ? $v->discountFor($this->subtotal) : 0;
     }
 
+    /** Alasan COD tidak tersedia untuk total saat ini (dimatikan admin / melebihi batas), atau null. */
+    #[Computed]
+    public function codProblem(): ?string
+    {
+        return Order::codProblem($this->subtotal + $this->shipping - $this->discount);
+    }
+
     public function applyVoucher(): void
     {
         $this->voucherError = null;
@@ -101,14 +108,14 @@ class Checkout extends Component
         }
         $this->voucher = $v->code;
         $this->voucherInput = '';
-        unset($this->discount);
+        unset($this->discount, $this->codProblem);
     }
 
     public function removeVoucher(): void
     {
         $this->voucher = null;
         $this->voucherError = null;
-        unset($this->discount);
+        unset($this->discount, $this->codProblem);
     }
 
     public function submit()
@@ -131,7 +138,7 @@ class Checkout extends Component
         } catch (\RuntimeException $e) {
             $this->error = $e->getMessage();
             $this->voucher = null;
-            unset($this->discount);
+            unset($this->discount, $this->codProblem);
 
             return null;
         }
@@ -145,6 +152,10 @@ class Checkout extends Component
 
     public function render()
     {
+        if ($this->payment === 'cod' && $this->codProblem) {
+            $this->payment = 'online';
+        }
+
         return view('livewire.checkout');
     }
 }

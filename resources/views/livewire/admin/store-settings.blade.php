@@ -97,6 +97,23 @@
             </div>
         </section>
 
+        {{-- Pembayaran --}}
+        <section class="rounded border border-kraft/20 bg-charcoal">
+            <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pembayaran') }}</h2></header>
+            <div class="space-y-4 p-5">
+                <label class="flex cursor-pointer items-center gap-3 text-[14px]">
+                    <input type="checkbox" wire:model.live="codEnabled" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                    {{ __('Terima pembayaran COD (bayar di tempat)') }}
+                </label>
+                <div class="sm:max-w-[260px] {{ $codEnabled ? '' : 'opacity-50' }}">
+                    <label for="cm" class="text-[12.5px] text-kraft/75">{{ __('Batas total COD (Rp)') }}</label>
+                    <input id="cm" type="number" inputmode="numeric" wire:model="codMax" @disabled(! $codEnabled) placeholder="500000" class="{{ $inp }} krm-readout mt-1.5">
+                    @error('codMax')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                </div>
+                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Isi 0 untuk tanpa batas. Pesanan di atas batas hanya bisa bayar online. Pesanan yang sudah dibuat tidak berubah.') }}</p>
+            </div>
+        </section>
+
         {{-- Stok --}}
         <section class="rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Stok') }}</h2></header>

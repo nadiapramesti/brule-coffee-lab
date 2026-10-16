@@ -22,6 +22,8 @@ class StoreSettings extends Component
     public string $shippingFlat = '';
     public string $freeFrom = '';
     public string $lowStock = '';
+    public bool $codEnabled = true;
+    public string $codMax = '0';
     public ?string $notice = null;
 
     public function mount(): void
@@ -34,6 +36,7 @@ class StoreSettings extends Component
             'instagram' => Setting::get('instagram'),
             'shippingFlat' => Setting::get('shipping_flat'), 'freeFrom' => Setting::get('free_shipping_from'),
             'lowStock' => Setting::get('low_stock_gram'),
+            'codEnabled' => (bool) Setting::int('cod_enabled'), 'codMax' => Setting::get('cod_max'),
         ]);
     }
 
@@ -56,6 +59,8 @@ class StoreSettings extends Component
             'shippingFlat' => ['required', 'integer', 'min:0', 'max:1000000'],
             'freeFrom' => ['required', 'integer', 'min:0', 'max:100000000'],
             'lowStock' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'codEnabled' => ['boolean'],
+            'codMax' => ['required', 'integer', 'min:0', 'max:100000000'],
         ], [
             'required' => __('Wajib diisi.'),
             'email.email' => __('Format email belum benar. Contoh: halo@kromatik.id'),
@@ -71,6 +76,7 @@ class StoreSettings extends Component
             'store_address' => trim($d['address']), 'contact_email' => trim($d['email']),
             'contact_whatsapp' => '62' . substr($d['whatsapp'], 1), 'instagram' => $d['instagram'],
             'shipping_flat' => (int) $d['shippingFlat'], 'free_shipping_from' => (int) $d['freeFrom'], 'low_stock_gram' => (int) $d['lowStock'],
+            'cod_enabled' => $d['codEnabled'] ? 1 : 0, 'cod_max' => (int) $d['codMax'],
         ]);
         ActivityLog::record('settings.updated', null, 'Pengaturan toko diperbarui');
 

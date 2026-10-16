@@ -68,3 +68,27 @@ it('does not count COD revenue until the parcel is completed', function () {
     $o->advance(); $o->advance(); $o->advance(); $o->ship('JNE1'); $o->complete();
     expect(Order::whereNotNull('paid_at')->count())->toBe(1);
 });
+
+it('lets admin switch COD off or cap its total, enforced on the server', function () {
+    \App\Models\Setting::put(['cod_enabled' => 0]);
+    app()->forgetInstance('krm.settings');
+    expect(fn () => Order::placeMany($this->customer, [['profile' => $this->profile, 'grams' => 200, 'grind' => 'v60']], $this->ship, null, 'cod'))
+        ->toThrow(RuntimeException::class, 'COD');
+
+    \App\Models\Setting::put(['cod_enabled' => 1, 'cod_max' => 100000]);
+    app()->forgetInstance('krm.settings');
+    expect(fn () => Order::placeMany($this->customer, [['profile' => $this->profile, 'grams' => 1000, 'grind' => 'v60']], $this->ship, null, 'cod'))
+        ->toThrow(RuntimeException::class, 'sampai');
+    expect(Order::count())->toBe(0);
+
+    \App\Models\Setting::put(['cod_max' => 0]);
+    app()->forgetInstance('krm.settings');
+    expect(Order::placeMany($this->customer, [['profile' => $this->profile, 'grams' => 200, 'grind' => 'v60']], $this->ship, null, 'cod')->isCod())->toBeTrue();
+});
+
+it('saves COD settings from the admin settings page', function () {
+    Livewire::actingAs($this->admin)->test(\App\Livewire\Admin\StoreSettings::class)
+        ->set('codEnabled', false)->set('codMax', '750000')->call('save')->assertHasNoErrors();
+    app()->forgetInstance('krm.settings');
+    expect(\App\Models\Setting::int('cod_enabled'))->toBe(0)->and(\App\Models\Setting::int('cod_max'))->toBe(750000);
+});

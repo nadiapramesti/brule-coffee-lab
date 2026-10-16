@@ -25,6 +25,8 @@ class Setting extends Model
         'shipping_flat' => '15000',
         'free_shipping_from' => '500000',
         'low_stock_gram' => '5000',
+        'cod_enabled' => '1',
+        'cod_max' => '0',
     ];
 
     /** Dimuat sekali per request/test (hidup di container, jadi ikut reset antar test). */

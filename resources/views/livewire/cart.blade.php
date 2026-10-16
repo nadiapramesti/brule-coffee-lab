@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-[1080px] px-6 pb-24 pt-12 md:pt-16">
+<div class="mx-auto max-w-[1080px] px-6 pb-32 pt-12 md:pt-16 lg:pb-24">
     <h1 class="krm-h2 font-bold" data-reveal>{{ __('Keranjang') }}</h1>
 
     @if ($this->lines->isEmpty())
@@ -59,13 +59,28 @@
                     </div>
                     @if ($this->problem)
                         <p class="rounded border border-redtext/40 bg-redtext/10 px-3 py-2.5 text-[13px] text-redtext">{{ $this->problem }}</p>
-                        <span class="mt-3 block w-full cursor-not-allowed rounded bg-bluelab py-4 text-center font-display text-[15px] font-semibold text-paper opacity-50" aria-disabled="true">{{ __('Checkout') }}</span>
+                        <span class="mt-3 hidden w-full cursor-not-allowed rounded bg-bluelab py-4 text-center font-display text-[15px] font-semibold text-paper opacity-50 lg:block" aria-disabled="true">{{ __('Checkout') }}</span>
                     @else
-                        <a href="{{ route('checkout') }}" wire:navigate class="mt-3 block w-full rounded bg-bluelab py-4 text-center font-display text-[15px] font-semibold text-paper transition-all hover:bg-[#234E94]">{{ __('Checkout') }}</a>
+                        <a href="{{ route('checkout') }}" wire:navigate class="mt-3 hidden w-full rounded bg-bluelab py-4 text-center font-display text-[15px] font-semibold text-paper transition-all hover:bg-[#234E94] lg:block">{{ __('Checkout') }}</a>
                     @endif
                     <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">{{ __('Voucher dipakai di langkah checkout.') }}</p>
                 </div>
             </aside>
+        </div>
+
+        {{-- Mobile: total dan tombol checkout menempel di bawah layar. Di desktop tombolnya ada di ringkasan. --}}
+        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-surface/95 px-4 py-3 backdrop-blur lg:hidden">
+            <div class="mx-auto flex max-w-[1080px] items-center justify-between gap-4">
+                <div class="min-w-0">
+                    <p class="text-[12px] text-kraft/60">{{ __('Total') }} · {{ $this->lines->sum('qty') }} {{ __('bungkus') }}</p>
+                    <p class="krm-readout text-[1.15rem] leading-tight">Rp{{ number_format($this->subtotal + $this->shipping, 0, ',', '.') }}</p>
+                </div>
+                @if ($this->problem)
+                    <span class="shrink-0 cursor-not-allowed rounded bg-bluelab px-6 py-3 font-display text-[14px] font-semibold text-paper opacity-50" aria-disabled="true">{{ __('Checkout') }}</span>
+                @else
+                    <a href="{{ route('checkout') }}" wire:navigate class="shrink-0 rounded bg-bluelab px-6 py-3 font-display text-[14px] font-semibold text-paper">{{ __('Checkout') }}</a>
+                @endif
+            </div>
         </div>
     @endif
 </div>

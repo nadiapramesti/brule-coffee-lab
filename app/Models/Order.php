@@ -172,6 +172,19 @@ class Order extends Model
         return $free > 0 && $subtotal >= $free ? 0 : Setting::int('shipping_flat');
     }
 
+    /** Alasan COD tidak boleh dipakai untuk total ini, atau null bila boleh. Diatur admin di Pengaturan. */
+    public static function codProblem(int $total): ?string
+    {
+        if (! Setting::int('cod_enabled')) {
+            return __('COD sedang tidak tersedia.');
+        }
+        $max = Setting::int('cod_max');
+
+        return $max > 0 && $total > $max
+            ? __('COD hanya untuk pesanan sampai Rp:n.', ['n' => number_format($max, 0, ',', '.')])
+            : null;
+    }
+
     /** Pesanan satu item; pintasan untuk placeMany. */
     public static function place(User $user, RoastProfile $profile, int $grams, string $grind, array $ship, ?string $voucherCode = null): self
     {
@@ -227,6 +240,10 @@ class Order extends Model
                     throw new \RuntimeException($problem);
                 }
                 $discount = $voucher->discountFor($subtotal);
+            }
+
+            if ($payment === 'cod' && ($problem = self::codProblem($subtotal + $shipping - $discount))) {
+                throw new \RuntimeException($problem);
             }
 
             $order = self::create([

@@ -703,5 +703,11 @@
     "Tagihan dibayar penerima ke kurir": "Amount to be paid by recipient to courier",
     "Sudah dibayar": "Already paid",
     "COD · Lunas": "COD · Paid",
-    "Pembayaran COD diterima": "COD payment received"
+    "Pembayaran COD diterima": "COD payment received",
+    "COD sedang tidak tersedia.": "COD is currently unavailable.",
+    "COD hanya untuk pesanan sampai Rp:n.": "COD is only available for orders up to Rp:n.",
+    "Pembayaran": "Payment",
+    "Terima pembayaran COD (bayar di tempat)": "Accept COD (cash on delivery)",
+    "Batas total COD (Rp)": "COD total limit (Rp)",
+    "Isi 0 untuk tanpa batas. Pesanan di atas batas hanya bisa bayar online. Pesanan yang sudah dibuat tidak berubah.": "Enter 0 for no limit. Orders above the limit can only pay online. Existing orders are unchanged."
 }

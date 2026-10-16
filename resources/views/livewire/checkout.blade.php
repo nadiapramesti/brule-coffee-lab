@@ -35,10 +35,12 @@
                 <div class="mt-2 grid gap-3 sm:grid-cols-2">
                     @foreach ([
                         'online' => [__('Bayar online'), __('Bayar sekarang, pesanan langsung masuk antrian setelah lunas.')],
-                        'cod' => [__('COD (bayar di tempat)'), __('Bayar tunai ke kurir saat paket tiba. Pesanan langsung diproses.')],
+                        'cod' => [__('COD (bayar di tempat)'), $this->codProblem ?? __('Bayar tunai ke kurir saat paket tiba. Pesanan langsung diproses.')],
                     ] as $key => [$title, $hint])
-                        <label class="flex cursor-pointer gap-3 rounded border p-4 transition-colors has-[:checked]:border-bluelab has-[:checked]:bg-bluelab/10 {{ $payment === $key ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 hover:border-kraft/50' }}">
-                            <input type="radio" name="payment" value="{{ $key }}" wire:model.live="payment" class="mt-1 h-4 w-4 shrink-0 border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                        @continue($key === 'cod' && ! \App\Models\Setting::int('cod_enabled'))
+                        @php($off = $key === 'cod' && $this->codProblem)
+                        <label class="flex gap-3 rounded border p-4 transition-colors {{ $off ? 'cursor-not-allowed opacity-50' : 'cursor-pointer has-[:checked]:border-bluelab has-[:checked]:bg-bluelab/10' }} {{ $payment === $key ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 '.($off ? '' : 'hover:border-kraft/50') }}">
+                            <input type="radio" name="payment" value="{{ $key }}" wire:model.live="payment" @disabled($off) class="mt-1 h-4 w-4 shrink-0 border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
                             <span class="min-w-0">
                                 <span class="block text-[14.5px] font-semibold">{{ $title }}</span>
                                 <span class="mt-0.5 block text-[12.5px] leading-relaxed text-kraft/65">{{ $hint }}</span>
