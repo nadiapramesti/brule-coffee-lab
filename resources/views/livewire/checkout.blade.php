@@ -22,6 +22,19 @@
                 </div>
             @endforeach
 
+            @if (auth()->user()->addresses()->count())
+                <div>
+                    <label for="saved" class="text-[13px] text-kraft/75">{{ __('Alamat tersimpan') }}</label>
+                    <select id="saved" wire:change="useAddress($event.target.value)"
+                            class="mt-2 w-full rounded border border-kraft/25 bg-transparent px-4 py-3.5 text-[15px] text-labwhite focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
+                        <option value="" class="text-charcoal">{{ __('Isi manual') }}</option>
+                        @foreach (auth()->user()->addresses as $a)
+                            <option value="{{ $a->id }}" @selected($savedId === $a->id) class="text-charcoal">{{ $a->label }} — {{ \Illuminate\Support\Str::limit($a->address, 40) }}</option>
+                        @endforeach
+                    </select>
+                </div>
+            @endif
+
             <div>
                 <label for="address" class="text-[13px] text-kraft/75">{{ __('Alamat lengkap') }}</label>
                 <textarea id="address" rows="4" wire:model="address" autocomplete="street-address"
@@ -29,6 +42,13 @@
                           class="mt-2 w-full rounded border border-kraft/25 bg-transparent px-4 py-3.5 text-[15px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40"></textarea>
                 @error('address')<p class="mt-1.5 text-[12.5px] text-redtext">{{ $message }}</p>@enderror
             </div>
+
+            @if (! $savedId)
+                <label class="flex items-center gap-3 text-[13.5px] text-kraft/80">
+                    <input type="checkbox" wire:model="saveAddress" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                    {{ __('Simpan alamat ini untuk pesanan berikutnya') }}
+                </label>
+            @endif
 
             <fieldset>
                 <legend class="text-[13px] text-kraft/75">{{ __('Metode pembayaran') }}</legend>

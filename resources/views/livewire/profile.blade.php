@@ -11,7 +11,7 @@
             <p class="truncate text-[13px] text-kraft/65">{{ $u->email }}</p>
         </div>
         <span class="krm-readout rounded-[6px] border border-kraft/25 px-2 py-0.5 text-[11px] uppercase tracking-wider text-kraft/70">{{ $u->role }}</span>
-        <a href="{{ route('dashboard') }}" wire:navigate class="text-[13.5px] underline-offset-4 hover:underline">{{ $u->isRoaster() ? __('Antrian') : __('Pesanan') }} &rarr;</a>
+        <a href="{{ route('dashboard') }}" wire:navigate class="text-[13.5px] underline-offset-4 hover:underline">{{ $u->isRoaster() ? __('Antrian') : __('Akun saya') }} &rarr;</a>
     </div>
 
     <div class="mt-6 space-y-5">

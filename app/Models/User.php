@@ -26,6 +26,11 @@ class User extends Authenticatable
         ];
     }
 
+    public function addresses(): HasMany
+    {
+        return $this->hasMany(Address::class)->orderByDesc('is_default')->orderBy('id');
+    }
+
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);

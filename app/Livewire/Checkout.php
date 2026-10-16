@@ -24,6 +24,8 @@ class Checkout extends Component
     public string $phone = '';
     public string $address = '';
     public string $payment = 'online';
+    public ?int $savedId = null;
+    public bool $saveAddress = false;
     public ?string $error = null;
     public string $voucherInput = '';
     #[Locked] public ?string $voucher = null;
@@ -53,7 +55,30 @@ class Checkout extends Component
         $this->name = $user->name;
         $this->phone = (string) ($user->phone ?? '');
 
+        $default = $user->addresses()->first();
+        if ($default) {
+            $this->useAddress($default->id);
+        } else {
+            $this->saveAddress = true;
+        }
+
         return null;
+    }
+
+    /** Isi form dari alamat tersimpan milik user ini. */
+    public function useAddress(?int $id): void
+    {
+        $this->savedId = $id ?: null;
+        if (! $id) {
+            return;
+        }
+        $a = auth()->user()->addresses()->find($id);
+        if ($a) {
+            $this->name = $a->recipient;
+            $this->phone = $a->phone;
+            $this->address = $a->address;
+            $this->saveAddress = false;
+        }
     }
 
     #[Computed]
@@ -147,7 +172,27 @@ class Checkout extends Component
             Cart::clear();
         }
 
+        $this->rememberAddress($data);
+
         return $this->redirectRoute('track', ['code' => $order->order_code], navigate: true);
+    }
+
+    private function rememberAddress(array $d): void
+    {
+        $user = auth()->user();
+        if (! $this->saveAddress || $user->addresses()->count() >= \App\Models\Address::MAX_PER_USER) {
+            return;
+        }
+        if ($user->addresses()->where('address', $d['address'])->exists()) {
+            return;
+        }
+        $a = $user->addresses()->create([
+            'label' => $user->addresses()->count() === 0 ? __('Rumah') : __('Alamat :n', ['n' => $user->addresses()->count() + 1]),
+            'recipient' => $d['name'], 'phone' => $d['phone'], 'address' => $d['address'], 'is_default' => false,
+        ]);
+        if ($user->addresses()->count() === 1) {
+            $a->makeDefault();
+        }
     }
 
     public function render()

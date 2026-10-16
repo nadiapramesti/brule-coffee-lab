@@ -108,6 +108,6 @@ it('shows the tracking page to anyone with the code', function () {
 });
 
 it('sends each role to its own home from /dashboard', function () {
-    $this->actingAs($this->customer)->get('/dashboard')->assertRedirect(route('track'));
+    $this->actingAs($this->customer)->get('/dashboard')->assertRedirect(route('account'));
     $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())->get('/dashboard')->assertRedirect(route('roastery'));
 });

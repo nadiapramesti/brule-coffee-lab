@@ -25,6 +25,7 @@ Route::get('/sitemap.xml', function () {
 })->name('sitemap');
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
+Route::get('/akun', \App\Livewire\Account::class)->middleware('auth')->name('account');
 Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
 
@@ -61,7 +62,7 @@ Route::get('/bahasa/{locale}', function (string $locale) {
 Route::get('dashboard', fn () => redirect()->route(match (true) {
     auth()->user()->isAdmin() => 'admin.dashboard',
     auth()->user()->isRoaster() => 'roastery',
-    default => 'track',
+    default => 'account',
 }))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');

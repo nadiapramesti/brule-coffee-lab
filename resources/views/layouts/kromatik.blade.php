@@ -85,7 +85,7 @@
                         </button>
                         <div x-show="menu" x-cloak x-transition.opacity.duration.150ms
                              class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-surface py-1.5 shadow-[0_18px_40px_-12px_rgb(var(--shadow)/.8)]">
-                            <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan')) }}</a>
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Akun saya')) }}</a>
                             @if (auth()->user()->isAdmin())
                                 <a href="{{ route('roastery') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Antrian') }}</a>
                                 <a href="{{ route('admin.coffees') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Kelola kopi') }}</a>
@@ -133,7 +133,7 @@
             <a href="{{ route('landing') }}#biji" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Biji') }}</a>
             <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
             @auth
-                <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan')) }}</a>
+                <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Akun saya')) }}</a>
                 @if (auth()->user()->isAdmin())
                     <a href="{{ route('roastery') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Antrian') }}</a>
                     <a href="{{ route('admin.coffees') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Kelola kopi') }}</a>
