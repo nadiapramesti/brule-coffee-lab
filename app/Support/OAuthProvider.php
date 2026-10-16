@@ -27,18 +27,28 @@ class OAuthProvider
             && filled(config("services.{$this->name}.client_secret"));
     }
 
+    /**
+     * Alamat balik dibuat dari alamat yang sedang dibuka di browser, jadi
+     * otomatis cocok dengan yang didaftarkan (127.0.0.1:8000 saat lokal,
+     * domain asli saat deploy). GOOGLE_REDIRECT_URI hanya untuk menimpa.
+     */
+    private function redirectUri(): string
+    {
+        return config("services.{$this->name}.redirect") ?: route('social.callback', $this->name);
+    }
+
     public function authorizationUrl(string $state): string
     {
         $c = config("services.{$this->name}");
 
         return match ($this->name) {
             'google' => 'https://accounts.google.com/o/oauth2/v2/auth?'.http_build_query([
-                'client_id' => $c['client_id'], 'redirect_uri' => $c['redirect'],
+                'client_id' => $c['client_id'], 'redirect_uri' => $this->redirectUri(),
                 'response_type' => 'code', 'scope' => 'openid email profile',
                 'state' => $state, 'prompt' => 'select_account',
             ]),
             'facebook' => 'https://www.facebook.com/v19.0/dialog/oauth?'.http_build_query([
-                'client_id' => $c['client_id'], 'redirect_uri' => $c['redirect'],
+                'client_id' => $c['client_id'], 'redirect_uri' => $this->redirectUri(),
                 'response_type' => 'code', 'scope' => 'email,public_profile', 'state' => $state,
             ]),
         };
@@ -56,7 +66,7 @@ class OAuthProvider
         if ($this->name === 'google') {
             $token = Http::asForm()->post('https://oauth2.googleapis.com/token', [
                 'code' => $code, 'client_id' => $c['client_id'], 'client_secret' => $c['client_secret'],
-                'redirect_uri' => $c['redirect'], 'grant_type' => 'authorization_code',
+                'redirect_uri' => $this->redirectUri(), 'grant_type' => 'authorization_code',
             ])->throw()->json('access_token');
 
             $p = Http::withToken($token)->get('https://openidconnect.googleapis.com/v1/userinfo')->throw()->json();
@@ -71,7 +81,7 @@ class OAuthProvider
 
         $token = Http::get('https://graph.facebook.com/v19.0/oauth/access_token', [
             'client_id' => $c['client_id'], 'client_secret' => $c['client_secret'],
-            'redirect_uri' => $c['redirect'], 'code' => $code,
+            'redirect_uri' => $this->redirectUri(), 'code' => $code,
         ])->throw()->json('access_token');
 
         $p = Http::get('https://graph.facebook.com/v19.0/me', [

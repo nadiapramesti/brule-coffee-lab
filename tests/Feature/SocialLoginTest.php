@@ -6,9 +6,9 @@ use Illuminate\Support\Facades\Http;
 beforeEach(function () {
     config([
         'services.google.client_id' => 'gid', 'services.google.client_secret' => 'gsecret',
-        'services.google.redirect' => 'http://localhost/auth/google/callback',
+        'services.google.redirect' => null,
         'services.facebook.client_id' => 'fid', 'services.facebook.client_secret' => 'fsecret',
-        'services.facebook.redirect' => 'http://localhost/auth/facebook/callback',
+        'services.facebook.redirect' => null,
     ]);
 });
 
@@ -88,4 +88,11 @@ it('logs in through facebook', function () {
 it('shows social buttons on login and register', function () {
     $this->get('/login')->assertSee('Google')->assertSee('Facebook');
     $this->get('/register')->assertSee('Google')->assertSee('Facebook');
+});
+
+it('builds the redirect uri from the current host, not APP_URL', function () {
+    config(['app.url' => 'http://localhost']);
+    $r = $this->get('http://127.0.0.1:8000/auth/google/redirect');
+    parse_str(parse_url($r->headers->get('Location'), PHP_URL_QUERY), $q);
+    expect($q['redirect_uri'])->toBe('http://127.0.0.1:8000/auth/google/callback');
 });
