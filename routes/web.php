@@ -15,6 +15,7 @@ Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');
     Route::get('/kopi', \App\Livewire\Admin\CoffeeIndex::class)->name('admin.coffees');
     Route::get('/kopi/baru', \App\Livewire\Admin\CoffeeForm::class)->name('admin.coffees.create');
     Route::get('/kopi/{coffee}/ubah', \App\Livewire\Admin\CoffeeForm::class)->name('admin.coffees.edit');
@@ -34,7 +35,11 @@ Route::get('/bahasa/{locale}', function (string $locale) {
 })->where('locale', 'id|en')->name('locale');
 
 // Tidak ada dasbor generik: tiap peran punya tempat kerjanya sendiri.
-Route::get('dashboard', fn () => redirect()->route(auth()->user()->isRoaster() ? 'roastery' : 'track'))
+Route::get('dashboard', fn () => redirect()->route(match (true) {
+    auth()->user()->isAdmin() => 'admin.dashboard',
+    auth()->user()->isRoaster() => 'roastery',
+    default => 'track',
+}))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 

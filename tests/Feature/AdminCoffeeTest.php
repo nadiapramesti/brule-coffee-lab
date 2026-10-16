@@ -93,3 +93,33 @@ it('refuses to delete a coffee that has orders', function () {
     Livewire::actingAs($this->admin)->test(CoffeeIndex::class)->call('delete', $free->id);
     expect(Coffee::find($free->id))->toBeNull();
 });
+
+it('sends admins to the admin dashboard and shows the numbers', function () {
+    $this->seed([\Database\Seeders\MoreCoffeeSeeder::class, \Database\Seeders\OrderSeeder::class]);
+
+    $this->actingAs($this->admin)->get(route('dashboard'))->assertRedirect(route('admin.dashboard'));
+    $this->actingAs($this->admin)->get(route('admin.dashboard'))
+        ->assertOk()->assertSee('Dashboard admin')->assertSee('Omzet')->assertSee('Kopi terlaris');
+
+    $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())
+        ->get(route('admin.dashboard'))->assertForbidden();
+});
+
+it('computes revenue only from paid, non-cancelled orders in range', function () {
+    $c = User::where('email', 'customer@kromatik.test')->first();
+    $mk = fn ($status, $paid, $total) => \App\Models\Order::create([
+        'order_code' => 'T-'.uniqid(), 'user_id' => $c->id, 'status' => $status, 'subtotal' => $total,
+        'total' => $total, 'recipient_name' => 'x', 'recipient_phone' => '08', 'shipping_address' => 'y',
+        'paid_at' => $paid,
+    ]);
+    $mk('queued', now(), 100000);
+    $mk('completed', now()->subDays(2), 50000);
+    $mk('cancelled', now(), 999999);
+    $mk('pending_payment', null, 777777);
+    $mk('queued', now()->subDays(40), 888888);
+
+    $d = Livewire::actingAs($this->admin)->test(\App\Livewire\Admin\Dashboard::class);
+    expect($d->get('kpis')['revenue']['value'])->toBe(150000)
+        ->and($d->get('kpis')['orders']['value'])->toBe(2)
+        ->and($d->get('kpis')['aov']['value'])->toBe(75000);
+});

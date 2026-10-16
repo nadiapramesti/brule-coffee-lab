@@ -1,4 +1,4 @@
-<div class="mx-auto max-w-[1100px] px-6 pb-24 pt-12 md:pt-14">
+<x-admin-shell active="coffees">
     <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
             <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/60">{{ __('ADMIN') }}</p>
@@ -52,4 +52,4 @@
             </li>
         @endforeach
     </ul>
-</div>
+</x-admin-shell>

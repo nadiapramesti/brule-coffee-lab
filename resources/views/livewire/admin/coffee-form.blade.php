@@ -4,7 +4,8 @@
     $er = 'mt-1.5 text-[12.5px] text-red-300';
     $card = 'rounded border border-kraft/20 bg-[#121212] p-5 sm:p-7';
 @endphp
-<div class="mx-auto max-w-[860px] px-6 pb-24 pt-12 md:pt-14">
+<x-admin-shell active="coffees">
+<div class="max-w-[860px]">
     <a href="{{ route('admin.coffees') }}" wire:navigate class="text-[13.5px] text-kraft/70 underline-offset-4 hover:underline">&larr; {{ __('Kembali ke daftar') }}</a>
     <p class="krm-readout mt-5 text-[12px] tracking-[0.18em] text-kraft/60">{{ __('ADMIN') }}</p>
     <h1 class="krm-h2 mt-2 font-bold">{{ $coffeeId ? __('Ubah kopi') : __('Kopi baru') }}</h1>
@@ -134,3 +135,4 @@
         </div>
     </form>
 </div>
+</x-admin-shell>
