@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\RoastProfile;
+use App\Models\Voucher;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Locked;
@@ -23,6 +24,9 @@ class Checkout extends Component
     public string $phone = '';
     public string $address = '';
     public ?string $error = null;
+    public string $voucherInput = '';
+    #[Locked] public ?string $voucher = null;
+    public ?string $voucherError = null;
 
     public function mount(): void
     {
@@ -56,6 +60,43 @@ class Checkout extends Component
         return Order::shippingFor($this->subtotal);
     }
 
+    #[Computed]
+    public function discount(): int
+    {
+        $v = $this->voucher ? Voucher::findByCode($this->voucher) : null;
+
+        return $v && ! $v->problemFor($this->subtotal, auth()->user()) ? $v->discountFor($this->subtotal) : 0;
+    }
+
+    public function applyVoucher(): void
+    {
+        $this->voucherError = null;
+        $code = Voucher::normalize($this->voucherInput);
+        if ($code === '') {
+            $this->voucherError = __('Ketik kode voucher dulu.');
+
+            return;
+        }
+        $v = Voucher::findByCode($code);
+        $problem = $v ? $v->problemFor($this->subtotal, auth()->user()) : __('Kode voucher tidak ditemukan.');
+        if ($problem) {
+            $this->voucher = null;
+            $this->voucherError = $problem;
+
+            return;
+        }
+        $this->voucher = $v->code;
+        $this->voucherInput = '';
+        unset($this->discount);
+    }
+
+    public function removeVoucher(): void
+    {
+        $this->voucher = null;
+        $this->voucherError = null;
+        unset($this->discount);
+    }
+
     public function submit()
     {
         $data = $this->validate([
@@ -68,9 +109,11 @@ class Checkout extends Component
         ]);
 
         try {
-            $order = Order::place(auth()->user(), $this->profile, $this->grams, $this->grind, $data);
+            $order = Order::place(auth()->user(), $this->profile, $this->grams, $this->grind, $data, $this->voucher);
         } catch (\RuntimeException $e) {
             $this->error = $e->getMessage();
+            $this->voucher = null;
+            unset($this->discount);
 
             return null;
         }

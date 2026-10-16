@@ -39,7 +39,7 @@ class Order extends Model
 
     protected $fillable = [
         'order_code', 'user_id', 'status',
-        'subtotal', 'shipping_cost', 'total',
+        'subtotal', 'shipping_cost', 'discount', 'voucher_id', 'voucher_code', 'total',
         'recipient_name', 'recipient_phone', 'shipping_address',
         'tracking_number', 'admin_note', 'roaster_id',
         'paid_at', 'roasted_at', 'shipped_at', 'completed_at', 'cancelled_at',
@@ -153,9 +153,9 @@ class Order extends Model
      *
      * @throws \RuntimeException bila stok tidak cukup
      */
-    public static function place(User $user, RoastProfile $profile, int $grams, string $grind, array $ship): self
+    public static function place(User $user, RoastProfile $profile, int $grams, string $grind, array $ship, ?string $voucherCode = null): self
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $profile, $grams, $grind, $ship) {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $profile, $grams, $grind, $ship, $voucherCode) {
             $coffee = Coffee::whereKey($profile->coffee_id)->lockForUpdate()->firstOrFail();
 
             if (! $coffee->is_active || ! $coffee->hasStockFor($grams)) {
@@ -165,13 +165,28 @@ class Order extends Model
             $line = $profile->priceFor($grams);
             $shipping = self::shippingFor($line);
 
+            // Voucher dikunci & divalidasi ulang di sini, bukan dipercaya dari browser.
+            $voucher = null;
+            $discount = 0;
+            if ($voucherCode !== null && $voucherCode !== '') {
+                $voucher = Voucher::where('code', Voucher::normalize($voucherCode))->lockForUpdate()->first();
+                $problem = $voucher ? $voucher->problemFor($line, $user) : __('Kode voucher tidak ditemukan.');
+                if ($problem) {
+                    throw new \RuntimeException($problem);
+                }
+                $discount = $voucher->discountFor($line);
+            }
+
             $order = self::create([
                 'order_code'       => self::generateCode(),
                 'user_id'          => $user->id,
                 'status'           => 'pending_payment',
                 'subtotal'         => $line,
                 'shipping_cost'    => $shipping,
-                'total'            => $line + $shipping,
+                'discount'         => $discount,
+                'voucher_id'       => $voucher?->id,
+                'voucher_code'     => $voucher?->code,
+                'total'            => $line + $shipping - $discount,
                 'recipient_name'   => $ship['name'],
                 'recipient_phone'  => $ship['phone'],
                 'shipping_address' => $ship['address'],
@@ -188,6 +203,7 @@ class Order extends Model
             ]);
 
             $coffee->reduceStock($grams, $order);
+            $voucher?->increment('used_count');
 
             ActivityLog::record('order.created', $order, 'Pesanan dibuat oleh :n', ['n' => $user->name]);
 
@@ -268,6 +284,9 @@ class Order extends Model
             foreach ($this->items()->with('roastProfile.coffee')->get() as $item) {
                 $coffee = $item->roastProfile?->coffee;
                 $coffee?->moveStock('cancel', $coffee->greenBeanNeeded($item->grams), null, $this);
+            }
+            if ($this->voucher_id) {
+                Voucher::where('id', $this->voucher_id)->where('used_count', '>', 0)->decrement('used_count');
             }
             $this->update(['status' => 'cancelled', 'cancelled_at' => now()]);
             ActivityLog::record('order.cancelled', $this, $reason ? 'Pesanan dibatalkan: :r' : 'Pesanan dibatalkan', ['r' => $reason]);

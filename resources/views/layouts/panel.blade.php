@@ -10,6 +10,7 @@
         __('Penjualan') => [
             ['admin.orders', route('admin.orders'), __('Pesanan'), 'M6 6h15l-1.5 9h-12zM6 6L5 3H2M9 20a1 1 0 100-2 1 1 0 000 2zM18 20a1 1 0 100-2 1 1 0 000 2z', true, $unpaid ?: null],
             ['admin.customers', route('admin.customers'), __('Pelanggan'), 'M16 20v-1a4 4 0 00-4-4H8a4 4 0 00-4 4v1M10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM20 20v-1a4 4 0 00-3-3.9M16 4.2a3.5 3.5 0 010 6.6', true, null],
+            ['admin.vouchers', route('admin.vouchers'), __('Voucher'), 'M3 9a2 2 0 002-2h14a2 2 0 002 2v1a2 2 0 000 4v1a2 2 0 00-2 2H5a2 2 0 00-2-2v-1a2 2 0 000-4V9zM14 7v10', true, null],
         ],
         __('Katalog') => [
             ['admin.coffees*', route('admin.coffees'), __('Kelola kopi'), 'M5 8h11v6a5 5 0 01-5 5H10a5 5 0 01-5-5V8zM16 9h2a2 2 0 010 4h-2M8 3v2M12 3v2', true, null],
@@ -25,6 +26,7 @@
         request()->routeIs('admin.orders') => [__('Pesanan')],
         request()->routeIs('admin.customers') => [__('Pelanggan')],
         request()->routeIs('admin.stock') => [__('Stok')],
+        request()->routeIs('admin.vouchers') => [__('Voucher')],
         request()->routeIs('roastery') => [__('Antrian roastery')],
         default => [],
     };
