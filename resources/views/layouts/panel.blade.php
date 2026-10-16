@@ -87,35 +87,17 @@
             </a>
         </nav>
 
-        <div class="shrink-0 border-t border-kraft/15 p-3 lg:[.mini_&]:px-2">
-            <div class="flex items-center gap-3 px-2 py-2 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0" title="{{ $u->name }}">
-                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-bluelab font-display text-[14px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
-                <div class="min-w-0 flex-1 lg:[.mini_&]:hidden">
-                    <p class="truncate text-[13.5px] font-medium">{{ $u->name }}</p>
-                    <p class="krm-readout text-[10.5px] uppercase tracking-wider text-kraft/50">{{ $u->role }}</p>
-                </div>
-            </div>
-            <div class="mt-1 flex items-center justify-between gap-2 px-2 lg:[.mini_&]:hidden">
-                <a href="{{ route('profile') }}" class="text-[12.5px] text-kraft/65 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Profil') }}</a>
-                <form method="POST" action="{{ route('logout') }}">@csrf
-                    <button class="text-[12.5px] text-kraft/65 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Keluar') }}</button>
-                </form>
-            </div>
-            <div class="mt-1 hidden flex-col items-center gap-1 lg:[.mini_&]:flex">
-                <a href="{{ route('profile') }}" title="{{ __('Profil') }}" class="grid h-9 w-9 place-items-center rounded text-kraft/65 hover:bg-white/[.05] hover:text-labwhite"><svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg></a>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button title="{{ __('Keluar') }}" aria-label="{{ __('Keluar') }}" class="grid h-9 w-9 place-items-center rounded text-kraft/65 hover:bg-white/[.05] hover:text-labwhite"><svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg></button></form>
-            </div>
-            <button type="button" x-data @click="const m = document.documentElement.classList.toggle('mini'); try { localStorage.setItem('krm-mini', m ? '1' : '0') } catch (e) {}"
-                    class="mt-2 hidden h-9 w-full items-center justify-center gap-2 rounded border border-kraft/15 text-[12px] text-kraft/60 transition-colors hover:border-kraft/40 hover:text-labwhite lg:flex" aria-label="{{ __('Ciutkan menu') }}" title="{{ __('Ciutkan menu') }}">
-                <svg viewBox="0 0 24 24" class="h-4 w-4 transition-transform duration-300 lg:[.mini_&]:rotate-180" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg><span class="lg:[.mini_&]:hidden">{{ __('Ciutkan') }}</span>
-            </button>
-        </div>
     </aside>
 
     <div class="transition-[padding] duration-300 ease-out lg:pl-[248px] lg:[.mini_&]:pl-[72px]">
         <header class="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-kraft/15 bg-charcoal/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
             <button type="button" @click="nav = true" class="-ml-2 grid h-10 w-10 place-items-center lg:hidden" :aria-expanded="nav ? 'true' : 'false'" aria-label="{{ __('Buka menu') }}">
                 <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 5h16M2 10h16M2 15h16"/></svg>
+            </button>
+
+            <button type="button" x-data @click="const m = document.documentElement.classList.toggle('mini'); try { localStorage.setItem('krm-mini', m ? '1' : '0') } catch (e) {}"
+                    class="-ml-2 hidden h-10 w-10 place-items-center rounded text-kraft/70 transition-colors hover:bg-white/[.06] hover:text-labwhite lg:grid" aria-label="{{ __('Ciutkan menu') }}" title="{{ __('Ciutkan menu') }}">
+                <svg viewBox="0 0 24 24" class="h-[19px] w-[19px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9.5 4.5v15"/></svg>
             </button>
 
             <nav aria-label="breadcrumb" class="flex min-w-0 items-center gap-2 text-[13.5px]">
@@ -135,6 +117,31 @@
                         @if ($unpaid)<span class="krm-readout absolute -right-1.5 -top-1.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-[#E8782A] px-1 text-[10.5px] font-semibold text-charcoal">{{ $unpaid }}</span>@endif
                     </a>
                 @endif
+                <div class="relative" x-data="{ o: false }" @click.outside="o = false" @keydown.escape.window="o = false">
+                    <button type="button" @click="o = !o" :aria-expanded="o ? 'true' : 'false'" class="flex items-center gap-2.5 rounded border border-kraft/20 py-1 pl-1 pr-2.5 transition-colors hover:border-kraft/50" aria-haspopup="menu">
+                        <span class="grid h-7 w-7 place-items-center rounded-full bg-bluelab font-display text-[12.5px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
+                        <span class="hidden text-left leading-tight sm:block">
+                            <span class="block max-w-[130px] truncate text-[12.5px] font-medium">{{ $u->name }}</span>
+                            <span class="krm-readout block text-[9.5px] uppercase tracking-wider text-[#9DBBEF]">{{ $u->role }}</span>
+                        </span>
+                        <svg viewBox="0 0 20 20" class="hidden h-3.5 w-3.5 text-kraft/55 transition-transform sm:block" :class="o && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
+                    </button>
+                    <div x-show="o" x-cloak x-transition.opacity.duration.150ms role="menu" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[220px] overflow-hidden rounded-[10px] border border-kraft/25 bg-[#141414] shadow-[0_20px_50px_-15px_rgba(0,0,0,.9)]">
+                        <div class="border-b border-kraft/15 px-4 py-3">
+                            <p class="truncate text-[13.5px] font-medium">{{ $u->name }}</p>
+                            <p class="truncate text-[12px] text-kraft/55">{{ $u->email }}</p>
+                            <span class="krm-readout mt-2 inline-block rounded-[6px] border border-bluelab/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-[#9DBBEF]">{{ $u->role }}</span>
+                        </div>
+                        <a href="{{ route('profile') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-[13.5px] text-kraft/80 transition-colors hover:bg-white/[.05] hover:text-labwhite">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>{{ __('Profil') }}
+                        </a>
+                        <form method="POST" action="{{ route('logout') }}">@csrf
+                            <button role="menuitem" class="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[13.5px] text-kraft/80 transition-colors hover:bg-white/[.05] hover:text-labwhite">
+                                <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>{{ __('Keluar') }}
+                            </button>
+                        </form>
+                    </div>
+                </div>
             </div>
         </header>
 
