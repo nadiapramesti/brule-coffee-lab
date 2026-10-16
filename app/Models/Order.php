@@ -187,7 +187,7 @@ class Order extends Model
                 'line_total'              => $line,
             ]);
 
-            $coffee->reduceStock($grams);
+            $coffee->reduceStock($grams, $order);
 
             ActivityLog::record('order.created', $order, 'Pesanan dibuat oleh :n', ['n' => $user->name]);
 
@@ -267,7 +267,7 @@ class Order extends Model
         \Illuminate\Support\Facades\DB::transaction(function () use ($reason) {
             foreach ($this->items()->with('roastProfile.coffee')->get() as $item) {
                 $coffee = $item->roastProfile?->coffee;
-                $coffee?->increment('stock_green_bean_gram', $coffee->greenBeanNeeded($item->grams));
+                $coffee?->moveStock('cancel', $coffee->greenBeanNeeded($item->grams), null, $this);
             }
             $this->update(['status' => 'cancelled', 'cancelled_at' => now()]);
             ActivityLog::record('order.cancelled', $this, $reason ? 'Pesanan dibatalkan: :r' : 'Pesanan dibatalkan', ['r' => $reason]);

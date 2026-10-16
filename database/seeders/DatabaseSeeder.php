@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
             CoffeeSeeder::class,
             MoreCoffeeSeeder::class,
             OrderSeeder::class,
+            StockMovementSeeder::class,
         ]);
     }
 }

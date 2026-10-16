@@ -156,16 +156,21 @@ class CoffeeForm extends Component
 
         $wasNew = $this->coffeeId === null;
 
-        $coffee = DB::transaction(function () use ($chosen) {
+        $coffee = DB::transaction(function () use ($chosen, $wasNew) {
             $coffee = Coffee::updateOrCreate(['id' => $this->coffeeId], [
                 'slug' => $this->slug,
                 'name' => trim($this->name),
                 'story' => trim($this->story),
                 'story_en' => trim($this->story_en) ?: null,
-                'stock_green_bean_gram' => (int) $this->stock,
                 'cupping_score' => $this->cupping === '' ? null : (float) $this->cupping,
                 'is_active' => $this->is_active,
             ]);
+
+            // Stok tidak diset langsung: selisihnya dicatat sebagai pergerakan.
+            $delta = (int) $this->stock - (int) $coffee->stock_green_bean_gram;
+            if ($delta !== 0) {
+                $coffee->moveStock($wasNew ? 'initial' : 'adjustment', $delta, $wasNew ? null : __('Diubah lewat form kopi'));
+            }
 
             Traceability::updateOrCreate(['coffee_id' => $coffee->id], [
                 'farmer' => trim($this->farmer),

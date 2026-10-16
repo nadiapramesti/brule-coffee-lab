@@ -66,9 +66,33 @@ class Coffee extends Model
         return (int) ceil($roastedGram / 0.85);
     }
 
-    public function reduceStock(int $roastedGram): void
+    public function reduceStock(int $roastedGram, ?Order $order = null): void
     {
-        $this->decrement('stock_green_bean_gram', $this->greenBeanNeeded($roastedGram));
+        $this->moveStock('sale', -$this->greenBeanNeeded($roastedGram), null, $order);
+    }
+
+    /**
+     * Satu-satunya pintu perubahan stok. Mengubah saldo dan mencatat
+     * pergerakannya dalam satu langkah, supaya riwayat selalu cocok dengan saldo.
+     * $grams bertanda: positif masuk, negatif keluar (gram biji mentah).
+     */
+    public function moveStock(string $type, int $grams, ?string $reason = null, ?Order $order = null): StockMovement
+    {
+        $this->increment('stock_green_bean_gram', $grams);
+
+        return $this->stockMovements()->create([
+            'user_id' => auth()->id(),
+            'order_id' => $order?->id,
+            'type' => $type,
+            'grams' => $grams,
+            'balance_after' => $this->stock_green_bean_gram,
+            'reason' => $reason,
+        ]);
+    }
+
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(StockMovement::class);
     }
 
     /**

@@ -1,6 +1,7 @@
 @php
     $u = auth()->user();
     $queueCount = \App\Models\Order::inProduction()->count();
+    $lowStock = $u->isAdmin() ? \App\Models\Coffee::active()->where('stock_green_bean_gram', '<', \App\Livewire\Admin\Dashboard::LOW_STOCK_GRAM)->count() : 0;
     $unpaid = $u->isAdmin() ? \App\Models\Order::where('status', 'pending_payment')->count() : 0;
     $groups = [
         __('Utama') => [
@@ -12,6 +13,7 @@
         ],
         __('Katalog') => [
             ['admin.coffees*', route('admin.coffees'), __('Kelola kopi'), 'M5 8h11v6a5 5 0 01-5 5H10a5 5 0 01-5-5V8zM16 9h2a2 2 0 010 4h-2M8 3v2M12 3v2', true, null],
+            ['admin.stock', route('admin.stock'), __('Stok'), 'M3 8l9-5 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8', true, $lowStock ?: null],
         ],
         __('Operasional') => [
             ['roastery', route('roastery'), __('Antrian roastery'), 'M4 6h16M4 12h16M4 18h10', false, $queueCount ?: null],
@@ -22,6 +24,7 @@
         request()->routeIs('admin.coffees') => [__('Kelola kopi')],
         request()->routeIs('admin.orders') => [__('Pesanan')],
         request()->routeIs('admin.customers') => [__('Pelanggan')],
+        request()->routeIs('admin.stock') => [__('Stok')],
         request()->routeIs('roastery') => [__('Antrian roastery')],
         default => [],
     };

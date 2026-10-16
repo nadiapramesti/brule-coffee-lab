@@ -92,7 +92,7 @@ class CoffeeIndex extends Component
             "restock.$id.max" => __('Terlalu besar, maksimal 1.000.000 gram.'),
         ]);
 
-        Coffee::findOrFail($id)->increment('stock_green_bean_gram', (int) $this->restock[$id]);
+        Coffee::findOrFail($id)->moveStock('restock', (int) $this->restock[$id], __('Tambah cepat dari daftar kopi'));
         unset($this->restock[$id], $this->coffees);
         $this->notice = __('Stok ditambahkan.');
     }

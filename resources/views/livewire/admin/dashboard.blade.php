@@ -36,7 +36,7 @@
     @php $todo = array_filter([
         [$att['unpaid'], __('menunggu pembayaran'), route('admin.orders', ['tab' => 'unpaid'])],
         [$att['toShip'], __('siap dikirim (isi resi)'), route('roastery')],
-        [$att['low'], __('kopi stok menipis'), route('admin.coffees')],
+        [$att['low'], __('kopi stok menipis'), route('admin.stock')],
     ], fn ($t) => $t[0] > 0); @endphp
     <div class="mt-5 flex flex-wrap items-center gap-2 rounded border border-kraft/20 bg-[#121212] px-4 py-3 text-[13px]">
         <span class="krm-readout mr-1 text-[11px] uppercase tracking-[0.16em] text-kraft/50">{{ __('Perlu tindakan') }}</span>
@@ -240,7 +240,7 @@
                         <p class="truncate text-[13.5px]">{{ $c->name }}</p>
                         <p class="krm-readout text-[12px] text-[#F2A266]">{{ number_format($c->stock_green_bean_gram) }} g</p>
                     </div>
-                    <a href="{{ route('admin.coffees', ['form' => $c->slug]) }}" wire:navigate class="shrink-0 rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Isi stok') }}</a>
+                    <a href="{{ route('admin.stock') }}" wire:navigate class="shrink-0 rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Isi stok') }}</a>
                 </div>
             @empty
                 <p class="mt-6 text-[13px] text-kraft/55">{{ __('Semua stok aman.') }}</p>
