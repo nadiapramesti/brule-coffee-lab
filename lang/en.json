@@ -321,7 +321,6 @@
     "Level yang sudah pernah dipesan tidak bisa dimatikan.": "Levels that have been ordered can't be turned off.",
     "Penjualan": "Sales",
     "Semua pesanan toko. Klik baris untuk melihat detail dan mengubah status.": "All shop orders. Click a row to see details and change status.",
-    "Ekspor CSV": "Export CSV",
     "Kode, nama, telepon, atau resi": "Code, name, phone or tracking no.",
     "Dari tanggal": "From date",
     "Sampai tanggal": "To date",
@@ -448,5 +447,10 @@
     "Terjual": "Sold",
     "Pesanan batal": "Order cancelled",
     "Susut / rusak": "Waste / damaged",
-    "Saldo awal saat fitur stok diaktifkan": "Opening balance when stock tracking was enabled"
+    "Saldo awal saat fitur stok diaktifkan": "Opening balance when stock tracking was enabled",
+    "Unduh Excel": "Download Excel",
+    "Unduh PDF": "Download PDF",
+    "Daftar pesanan": "Order list",
+    "Penerima": "Recipient",
+    "Tanggal": "Date"
 }

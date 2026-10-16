@@ -105,15 +105,31 @@ it('opens an order from a deep link', function () {
         ->assertOk()->assertSee('Catatan internal')->assertSee('Cetak invoice');
 });
 
-it('exports csv following the filters and neutralises formulas', function () {
+it('exports xlsx following the filters, with formulas kept as plain text', function () {
     $a = newOrder($this);
     $b = newOrder($this); $b->update(['recipient_name' => '=HYPERLINK("x")']); $b->markPaid();
 
-    $r = $this->actingAs($this->admin)->get(route('admin.orders.export', ['tab' => 'production']));
+    $r = $this->actingAs($this->admin)->get(route('admin.orders.export', ['tab' => 'production', 'format' => 'xlsx']));
     $r->assertOk();
-    $csv = $r->streamedContent();
-    expect($csv)->toContain($b->order_code)->not->toContain($a->order_code)
-        ->and($csv)->toContain("'=HYPERLINK")->and($csv)->toContain('Kode,Tanggal');
+    expect($r->headers->get('content-disposition'))->toContain('.xlsx');
+
+    $tmp = tempnam(sys_get_temp_dir(), 't'); file_put_contents($tmp, $r->getContent());
+    $zip = new ZipArchive; expect($zip->open($tmp))->toBeTrue();
+    $sheet = $zip->getFromName('xl/worksheets/sheet1.xml');
+    expect($sheet)->toContain($b->order_code)->not->toContain($a->order_code)
+        ->and($sheet)->toContain('=HYPERLINK')->not->toContain('<f>')
+        ->and(simplexml_load_string($sheet))->not->toBeFalse();
+});
+
+it('exports a valid pdf', function () {
+    $o = newOrder($this);
+    $r = $this->actingAs($this->admin)->get(route('admin.orders.export', ['format' => 'pdf']));
+    $r->assertOk();
+    $pdf = $r->getContent();
+    expect($r->headers->get('content-type'))->toContain('application/pdf')
+        ->and($pdf)->toStartWith('%PDF-1.4')->toContain($o->order_code)->toContain('%%EOF');
+    preg_match('/startxref\n(\d+)/', $pdf, $m);
+    expect(substr($pdf, (int) $m[1], 4))->toBe('xref');
 });
 
 it('renders a printable invoice', function () {
