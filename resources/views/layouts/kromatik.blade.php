@@ -8,6 +8,9 @@
     <title>{{ $title ?? 'KROMATIK — Specialty Coffee Lab' }}</title>
     <meta name="description" content="Kopi specialty yang disangrai setelah pesanan masuk. Pilih bijinya, level sangrainya, dan ukuran gilingannya.">
 
+    <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
@@ -23,18 +26,10 @@
         <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-6 py-4">
 
             <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                @if (file_exists(public_path('images/logo-kromatik-white.png')))
-                    <img src="{{ asset('images/logo-kromatik-white.png') }}"
-                         alt="" class="h-10 w-10 object-contain">
-                @else
-                    {{-- Tanda sementara. Taruh stempel aslinya di
-                         public/images/logo-kromatik-white.png untuk menggantinya. --}}
-                    <svg viewBox="0 0 40 20" class="h-5 w-10 shrink-0" aria-hidden="true">
-                        <path d="M0 18 L6 18 L8 10 L10 18 L13 18 L15 4 L17.5 18 L20 18 L22 12 L24 18 L27 18 L29 7 L31.5 18 L40 18"
-                              fill="none" stroke="#2A5DB0" stroke-width="1.6"
-                              stroke-linejoin="round" stroke-linecap="round"/>
-                    </svg>
-                @endif
+                {{-- Tanda ringkas (K + kromatogram). Stempel penuhnya terlalu
+                     rapat untuk dibaca di ukuran header; dipakai di footer. --}}
+                <img src="{{ asset('images/mark-kromatik-white.png') }}"
+                     alt="" width="40" height="40" class="h-10 w-10 shrink-0">
                 <span class="font-display text-[1.05rem] font-bold tracking-[0.2em]">KROMATIK</span>
                 <span class="sr-only">Specialty Coffee Lab</span>
             </a>
@@ -56,10 +51,15 @@
     </main>
 
     <footer class="border-t border-kraft/12">
-        <div class="mx-auto flex max-w-[1180px] flex-col gap-4 px-6 py-10 sm:flex-row sm:items-end sm:justify-between">
-            <p class="font-display text-[1.1rem] font-semibold text-kraft">
-                Roasted after you order, not before.
-            </p>
+        <div class="mx-auto flex max-w-[1180px] flex-col gap-6 px-6 py-12 sm:flex-row sm:items-end sm:justify-between">
+            <div class="flex items-center gap-5">
+                <img src="{{ asset('images/logo-kromatik-white.png') }}"
+                     alt="Kromatik Specialty Coffee Lab"
+                     width="84" height="84" class="w-[84px] shrink-0 opacity-90">
+                <p class="font-display text-[1.1rem] font-semibold leading-snug text-kraft">
+                    Roasted after you order,<br>not before.
+                </p>
+            </div>
             <p class="text-[13px] text-kraft/50">
                 &copy; {{ date('Y') }} Kromatik Specialty Coffee Lab
             </p>

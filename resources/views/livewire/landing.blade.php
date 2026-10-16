@@ -135,13 +135,23 @@
     {{-- ══════════════════ TAHAPAN (kertas kraft) ══════════════════ --}}
     <section class="mt-24 bg-kraft py-20 text-charcoal">
         <div class="mx-auto max-w-[1180px] px-6">
-            <h2 class="max-w-[20ch] text-[2rem] font-semibold leading-tight tracking-[-0.01em] md:text-[2.5rem]">
-                Yang terjadi setelah kamu bayar
-            </h2>
-            <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-kraftink">
-                Lima tahap, dan kamu bisa melihat pesananmu ada di tahap mana
-                lewat halaman lacak.
-            </p>
+            <div class="flex items-start justify-between gap-10">
+                <div>
+                    <h2 class="max-w-[20ch] text-[2rem] font-semibold leading-tight tracking-[-0.01em] md:text-[2.5rem]">
+                        Yang terjadi setelah kamu bayar
+                    </h2>
+                    <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-kraftink">
+                        Lima tahap, dan kamu bisa melihat pesananmu ada di tahap mana
+                        lewat halaman lacak.
+                    </p>
+                </div>
+
+                {{-- Stempel versi tinta gelap. Di sinilah tempatnya:
+                     dicap di atas kertas, bukan melayang di layar hitam. --}}
+                <img src="{{ asset('images/logo-kromatik-dark.png') }}"
+                     alt="" width="128" height="128"
+                     class="hidden w-[128px] shrink-0 opacity-70 lg:block">
+            </div>
 
             <ol class="mt-14 grid gap-10 border-t border-charcoal/20 pt-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
                 @foreach ($this->stages as $i => $stage)
