@@ -57,6 +57,9 @@
                         <div x-show="menu" x-cloak x-transition.opacity.duration.150ms
                              class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-[#161616] py-1.5 shadow-[0_18px_40px_-12px_rgba(0,0,0,.8)]">
                             <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                            @if (auth()->user()->isAdmin())
+                                <a href="{{ route('admin.coffees') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Kelola kopi') }}</a>
+                            @endif
                             <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Profil') }}</a>
                             <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-kraft/15 pt-1">@csrf
                                 <button class="block w-full px-4 py-2.5 text-left text-[14px] text-kraft/70 transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Keluar') }}</button>
@@ -95,6 +98,9 @@
             <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                @if (auth()->user()->isAdmin())
+                    <a href="{{ route('admin.coffees') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Kelola kopi') }}</a>
+                @endif
                 <a href="{{ route('profile') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Profil') }}</a>
                 <form method="POST" action="{{ route('logout') }}">@csrf<button class="block w-full py-2.5 text-left text-[15px] text-kraft/60">{{ __('Keluar') }}</button></form>
             @else

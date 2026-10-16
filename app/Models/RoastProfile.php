@@ -36,6 +36,27 @@ class RoastProfile extends Model
         ];
     }
 
+    /** Kurva standar untuk level baru: makin gelap, makin lama dan panas saat drop. */
+    public static function defaultCurve(string $level): array
+    {
+        [$minute, $temp] = match ($level) {
+            'light' => [9.8, 202],
+            'medium_light' => [10.6, 207],
+            'medium' => [11.4, 212],
+            'medium_dark' => [12.2, 218],
+            default => [13.0, 224],
+        };
+
+        return [
+            ['t' => 0.0, 'temp' => 200, 'phase' => 'charge'],
+            ['t' => 1.3, 'temp' => 92, 'phase' => 'turning_point'],
+            ['t' => 4.0, 'temp' => 140, 'phase' => 'drying'],
+            ['t' => 7.0, 'temp' => 170, 'phase' => 'maillard'],
+            ['t' => 9.2, 'temp' => 196, 'phase' => 'first_crack'],
+            ['t' => $minute, 'temp' => $temp, 'phase' => 'drop'],
+        ];
+    }
+
     public function coffee(): BelongsTo
     {
         return $this->belongsTo(Coffee::class);

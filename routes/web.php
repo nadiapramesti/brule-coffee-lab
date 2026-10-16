@@ -14,6 +14,12 @@ Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
 
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    Route::get('/kopi', \App\Livewire\Admin\CoffeeIndex::class)->name('admin.coffees');
+    Route::get('/kopi/baru', \App\Livewire\Admin\CoffeeForm::class)->name('admin.coffees.create');
+    Route::get('/kopi/{coffee}/ubah', \App\Livewire\Admin\CoffeeForm::class)->name('admin.coffees.edit');
+});
+
 Route::middleware('guest')->group(function () {
     Route::get('/auth/{provider}/redirect', [\App\Http\Controllers\Auth\SocialAuthController::class, 'redirect'])->name('social.redirect');
     Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'callback'])->name('social.callback');
