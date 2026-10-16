@@ -12,6 +12,7 @@
     <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
 
 
+    <script>document.documentElement.classList.add('js')</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>[x-cloak]{display:none!important}</style>
 </head>
@@ -21,7 +22,7 @@
         {{ __('Lewati ke isi') }}
     </a>
 
-    <header x-data="{ open: false, top: true }"
+    <header data-site-header x-data="{ open: false, top: true }"
             x-init="top = window.scrollY < 24"
             @scroll.window.passive="top = window.scrollY < 24"
             :class="top && !open ? 'border-transparent bg-gradient-to-b from-charcoal/90 to-transparent' : 'border-kraft/12 bg-charcoal/90 backdrop-blur-md'"
