@@ -41,23 +41,39 @@
             <nav class="hidden items-center gap-8 text-[14px] md:flex">
                 <a href="{{ route('landing') }}#biji" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Biji') }}</a>
                 <a href="{{ route('builder') }}" class="text-kraft/80 transition-colors hover:text-labwhite">Roast builder</a>
-                @auth
-                    <a href="{{ route('dashboard') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
-                    <a href="{{ route('profile') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Profil') }}</a>
-                    <form method="POST" action="{{ route('logout') }}">@csrf
-                        <button class="text-kraft/60 transition-colors hover:text-labwhite">{{ __('Keluar') }}</button>
-                    </form>
-                @else
-                    <a href="{{ route('login') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Masuk') }}</a>
-                @endauth
             </nav>
 
             <x-lang-switch class="hidden md:flex" />
 
-            <a href="{{ route('builder') }}"
-               class="hidden rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-labwhite transition-colors hover:bg-[#234E94] sm:inline-block">
-                {{ __('Racik kopimu') }}
-            </a>
+            <div class="hidden items-center gap-3 sm:flex">
+                @auth
+                    <div class="relative" x-data="{ menu: false }" @click.outside="menu = false" @keydown.escape.window="menu = false">
+                        <button type="button" @click="menu = !menu" :aria-expanded="menu ? 'true' : 'false'" aria-haspopup="true"
+                                class="flex items-center gap-2.5 rounded border border-kraft/30 py-1.5 pl-1.5 pr-3 transition-colors hover:border-kraft/60">
+                            <span class="grid h-7 w-7 place-items-center rounded-full bg-bluelab font-display text-[13px] font-semibold">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
+                            <span class="max-w-[8rem] truncate text-[13.5px] text-kraft">{{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</span>
+                            <svg viewBox="0 0 12 12" class="h-3 w-3 text-kraft/60 transition-transform" :class="menu && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg>
+                        </button>
+                        <div x-show="menu" x-cloak x-transition.opacity.duration.150ms
+                             class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-[#161616] py-1.5 shadow-[0_18px_40px_-12px_rgba(0,0,0,.8)]">
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                            <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Profil') }}</a>
+                            <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-kraft/15 pt-1">@csrf
+                                <button class="block w-full px-4 py-2.5 text-left text-[14px] text-kraft/70 transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Keluar') }}</button>
+                            </form>
+                        </div>
+                    </div>
+                @else
+                    <a href="{{ route('login') }}"
+                       class="rounded border border-kraft/40 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/80 hover:text-labwhite">
+                        {{ __('Masuk') }}
+                    </a>
+                @endauth
+                <a href="{{ route('builder') }}"
+                   class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+                    {{ __('Racik kopimu') }}
+                </a>
+            </div>
 
             {{-- Tombol menu, hanya di layar sempit --}}
             <button type="button"
