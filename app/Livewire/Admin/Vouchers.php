@@ -115,7 +115,9 @@ class Vouchers extends Component
             'is_active' => $this->active,
         ];
 
-        $existing ? $existing->update($data) : Voucher::create($data);
+        $v = $existing ?: new Voucher;
+        $v->fill($data)->save();
+        \App\Models\ActivityLog::record($existing ? 'voucher.updated' : 'voucher.created', $v, $existing ? 'Voucher :c diperbarui' : 'Voucher :c dibuat', ['c' => $v->code]);
         $this->notice = __('Voucher :c disimpan.', ['c' => $data['code']]);
         $this->open = false;
         unset($this->vouchers, $this->counts);
@@ -125,6 +127,7 @@ class Vouchers extends Component
     {
         $v = Voucher::findOrFail($id);
         $v->update(['is_active' => ! $v->is_active]);
+        \App\Models\ActivityLog::record('voucher.toggled', $v, $v->is_active ? 'Voucher :c diaktifkan' : 'Voucher :c dimatikan', ['c' => $v->code]);
         unset($this->vouchers, $this->counts);
     }
 
@@ -136,6 +139,7 @@ class Vouchers extends Component
 
             return;
         }
+        \App\Models\ActivityLog::record('voucher.deleted', null, 'Voucher :c dihapus', ['c' => $v->code]);
         $v->delete();
         $this->notice = __('Voucher :c dihapus.', ['c' => $v->code]);
         unset($this->vouchers, $this->counts);

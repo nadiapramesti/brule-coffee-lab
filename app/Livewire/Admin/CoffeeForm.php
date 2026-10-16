@@ -198,6 +198,8 @@ class CoffeeForm extends Component
             return $coffee;
         });
 
+        \App\Models\ActivityLog::record($wasNew ? 'coffee.created' : 'coffee.updated', $coffee, $wasNew ? 'Kopi :n ditambahkan' : 'Kopi :n diperbarui', ['n' => $coffee->name]);
+
         $this->dispatch('coffee-saved', name: $coffee->name, created: $wasNew);
     }
 

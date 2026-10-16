@@ -21,6 +21,8 @@
             ['roastery', route('roastery'), __('Antrian roastery'), 'M4 6h16M4 12h16M4 18h10', false, $queueCount ?: null],
         ],
         __('Sistem') => [
+            ['admin.users', route('admin.users'), __('Pengguna'), 'M16 20v-1a4 4 0 00-4-4H8a4 4 0 00-4 4v1M10 11a3.5 3.5 0 100-7 3.5 3.5 0 000 7zM17 11l2 2 3-3', true, null],
+            ['admin.logs', route('admin.logs'), __('Log aktivitas'), 'M12 8v4l3 2M3 12a9 9 0 109-9 9 9 0 00-6.7 3M3 4v4h4', true, null],
             ['admin.settings', route('admin.settings'), __('Pengaturan'), 'M12 15a3 3 0 100-6 3 3 0 000 6zM19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1.1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1.1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3H9a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8V9a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z', true, null],
         ],
     ];
@@ -32,6 +34,8 @@
         request()->routeIs('admin.stock') => [__('Stok')],
         request()->routeIs('admin.vouchers') => [__('Voucher')],
         request()->routeIs('admin.reports') => [__('Laporan')],
+        request()->routeIs('admin.users') => [__('Pengguna')],
+        request()->routeIs('admin.logs') => [__('Log aktivitas')],
         request()->routeIs('admin.settings') => [__('Pengaturan')],
         request()->routeIs('roastery') => [__('Antrian roastery')],
         default => [],

@@ -101,6 +101,7 @@ class CoffeeIndex extends Component
     {
         $coffee = Coffee::findOrFail($id);
         $coffee->update(['is_active' => ! $coffee->is_active]);
+        \App\Models\ActivityLog::record('coffee.toggled', $coffee, $coffee->is_active ? 'Kopi :n ditampilkan di toko' : 'Kopi :n disembunyikan dari toko', ['n' => $coffee->name]);
         unset($this->coffees, $this->counts);
         $this->notice = $coffee->is_active ? __('Kopi ditampilkan di toko.') : __('Kopi disembunyikan dari toko.');
     }
@@ -116,6 +117,7 @@ class CoffeeIndex extends Component
             return;
         }
 
+        \App\Models\ActivityLog::record('coffee.deleted', null, 'Kopi :n dihapus', ['n' => $coffee->name]);
         $coffee->delete();
         unset($this->coffees, $this->counts);
         $this->notice = __('Kopi dihapus.');

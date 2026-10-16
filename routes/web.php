@@ -19,6 +19,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/pesanan', \App\Livewire\Admin\Orders::class)->name('admin.orders');
     Route::get('/laporan', \App\Livewire\Admin\Reports::class)->name('admin.reports');
     Route::get('/laporan/export', \App\Http\Controllers\Admin\ReportExportController::class)->name('admin.reports.export');
+    Route::get('/pengguna', \App\Livewire\Admin\Users::class)->name('admin.users');
+    Route::get('/log', \App\Livewire\Admin\ActivityLogs::class)->name('admin.logs');
     Route::get('/pengaturan', \App\Livewire\Admin\StoreSettings::class)->name('admin.settings');
     Route::get('/voucher', \App\Livewire\Admin\Vouchers::class)->name('admin.vouchers');
     Route::get('/stok', \App\Livewire\Admin\Stock::class)->name('admin.stock');

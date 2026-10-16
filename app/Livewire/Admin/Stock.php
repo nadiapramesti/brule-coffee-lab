@@ -145,6 +145,8 @@ class Stock extends Component
                 : $coffee->moveStock('adjustment', $grams - $coffee->stock_green_bean_gram, $reason),
         };
 
+        \App\Models\ActivityLog::record('stock.adjusted', $coffee, match ($this->mode) { 'restock' => 'Restock :n: +:g g', 'waste' => 'Stok :n dikurangi (susut): -:g g', default => 'Stok :n dikoreksi menjadi :g g' }, ['n' => $coffee->name, 'g' => number_format($grams, 0, ',', '.')]);
+
         $this->notice = __('Stok :n diperbarui.', ['n' => $coffee->name]);
         $this->closeAdjust();
         unset($this->rows, $this->totals, $this->movements);
