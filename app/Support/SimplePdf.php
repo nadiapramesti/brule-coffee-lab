@@ -8,6 +8,8 @@ class SimplePdf
     private const W = 842, H = 595, M = 36, ROW = 17;
 
     /**
+     * Satu tabel panjang.
+     *
      * @param  list<string>  $headers
      * @param  list<list<scalar|null>>  $rows
      * @param  list<float>  $weights  proporsi lebar kolom
@@ -15,44 +17,91 @@ class SimplePdf
      */
     public static function table(string $title, string $subtitle, array $headers, array $rows, array $weights, array $rightAlign = []): string
     {
-        $usable = self::W - 2 * self::M;
-        $sum = array_sum($weights);
-        $widths = array_map(fn ($w) => $w / $sum * $usable, $weights);
-        $perPage = (int) floor((self::H - 2 * self::M - 62) / self::ROW);
-        $chunks = array_chunk($rows ?: [[]], $perPage);
-        $pages = [];
+        return self::report($title, $subtitle, [['heading' => '', 'headers' => $headers, 'rows' => $rows, 'weights' => $weights, 'right' => $rightAlign]]);
+    }
 
-        foreach ($chunks as $pi => $chunk) {
+    /**
+     * Dokumen berisi beberapa tabel berurutan, mengalir ke halaman berikutnya bila penuh.
+     *
+     * @param  list<array{heading:string,headers:list<string>,rows:list<list<scalar|null>>,weights:list<float>,right?:list<int>}>  $sections
+     */
+    public static function report(string $title, string $subtitle, array $sections): string
+    {
+        $usable = self::W - 2 * self::M;
+        $floor = self::M + 18;
+        $pages = [];
+        $c = '';
+        $y = 0;
+
+        $newPage = function (bool $first) use (&$pages, &$c, &$y, $title, $subtitle) {
+            if ($c !== '') {
+                $pages[] = $c;
+            }
             $c = '';
-            $c .= self::text(self::M, self::H - self::M - 4, 'F2', 15, $title);
-            $c .= self::text(self::M, self::H - self::M - 20, 'F1', 8.5, $subtitle, '0.45 0.45 0.45');
-            $y = self::H - self::M - 44;
-            $c .= "0.165 0.365 0.69 rg " . self::M . " " . ($y - 5) . " $usable " . self::ROW . " re f\n";
+            if ($first) {
+                $c .= self::text(self::M, self::H - self::M - 4, 'F2', 15, $title);
+                $c .= self::text(self::M, self::H - self::M - 20, 'F1', 8.5, $subtitle, '0.45 0.45 0.45');
+                $y = self::H - self::M - 46;
+            } else {
+                $c .= self::text(self::M, self::H - self::M - 4, 'F2', 9, $title, '0.45 0.45 0.45');
+                $y = self::H - self::M - 28;
+            }
+        };
+
+        $header = function (array $s, array $widths) use (&$c, &$y, $usable) {
+            $c .= '0.165 0.365 0.69 rg ' . self::M . ' ' . ($y - 5) . " $usable " . self::ROW . " re f\n";
             $x = self::M;
-            foreach ($headers as $i => $h) {
-                $c .= self::cell($x, $y, $widths[$i], 'F2', 8, $h, in_array($i, $rightAlign, true), '1 1 1');
+            foreach ($s['headers'] as $i => $h) {
+                $c .= self::cell($x, $y, $widths[$i], 'F2', 8, (string) $h, in_array($i, $s['right'] ?? [], true), '1 1 1');
                 $x += $widths[$i];
             }
             $y -= self::ROW;
-            foreach ($chunk as $ri => $row) {
-                if (! $row) {
-                    continue;
+        };
+
+        $newPage(true);
+
+        foreach ($sections as $s) {
+            $sum = array_sum($s['weights']);
+            $widths = array_map(fn ($w) => $w / $sum * $usable, $s['weights']);
+            $rows = $s['rows'] ?: [array_fill(0, count($s['headers']), '')];
+            $rows = array_values($rows);
+
+            // Judul + header + minimal 2 baris harus muat; kalau tidak, pindah halaman.
+            if ($y - (self::ROW * 3 + 24) < $floor && $y < self::H - self::M - 60) {
+                $newPage(false);
+            }
+            if (($s['heading'] ?? '') !== '') {
+                $c .= self::text(self::M, $y, 'F2', 11, $s['heading']);
+                $y -= 20;
+            }
+            $header($s, $widths);
+
+            foreach ($rows as $ri => $row) {
+                if ($y < $floor) {
+                    $newPage(false);
+                    $header($s, $widths);
                 }
                 if ($ri % 2 === 1) {
-                    $c .= "0.95 0.95 0.95 rg " . self::M . " " . ($y - 5) . " $usable " . self::ROW . " re f\n";
+                    $c .= '0.95 0.95 0.95 rg ' . self::M . ' ' . ($y - 5) . " $usable " . self::ROW . " re f\n";
                 }
                 $x = self::M;
-                foreach ($headers as $i => $_) {
-                    $c .= self::cell($x, $y, $widths[$i], 'F1', 8, (string) ($row[$i] ?? ''), in_array($i, $rightAlign, true), '0.1 0.1 0.1');
+                foreach ($s['headers'] as $i => $_) {
+                    $c .= self::cell($x, $y, $widths[$i], 'F1', 8, (string) ($row[$i] ?? ''), in_array($i, $s['right'] ?? [], true), '0.1 0.1 0.1');
                     $x += $widths[$i];
                 }
                 $y -= self::ROW;
             }
-            $c .= self::text(self::W - self::M - 70, self::M - 12, 'F1', 8, 'Halaman ' . ($pi + 1) . '/' . count($chunks), '0.5 0.5 0.5');
-            $pages[] = $c;
+            $y -= 16;
         }
+        $pages[] = $c;
 
-        // Susun objek PDF: 1 katalog, 2 pages, 3-4 font, lalu pasangan (page, content) per halaman.
+        $total = count($pages);
+        foreach ($pages as $i => &$content) {
+            $content .= self::text(self::W - self::M - 70, self::M - 12, 'F1', 8, 'Halaman ' . ($i + 1) . '/' . $total, '0.5 0.5 0.5');
+        }
+        unset($content);
+
+        // Objek PDF: 1 katalog, 2 pages, 3-4 font, lalu pasangan (page, content) per halaman.
         $objs = [1 => '<< /Type /Catalog /Pages 2 0 R >>', 3 => '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>', 4 => '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];
         $kids = [];
         foreach ($pages as $i => $content) {
