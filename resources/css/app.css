@@ -147,3 +147,15 @@ header[data-site-header] { view-transition-name: krm-header; }
     .js [data-reveal] { opacity: 1; transform: none; transition: none; }
     ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+
+/* Footer: faint coffee-bean texture so the black isn't flat */
+.krm-footer::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: url("/images/beans-tile.svg") 0 0 / 240px 240px;
+    opacity: .03;
+    pointer-events: none;
+}

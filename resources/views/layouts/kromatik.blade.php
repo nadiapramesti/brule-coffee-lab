@@ -77,68 +77,51 @@
         {{ $slot }}
     </main>
 
-    <footer class="relative isolate overflow-hidden border-t border-kraft/12">
-        <picture class="absolute inset-0 -z-20">
-            <source media="(max-width: 767px)" srcset="{{ asset('images/footer-roastery-sm.webp') }}" type="image/webp">
-            <img src="{{ asset('images/footer-roastery.webp') }}" alt="" width="1920" height="640"
-                 loading="lazy" decoding="async" class="h-full w-full object-cover object-[50%_40%]">
-        </picture>
-        <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,#121212_0%,rgba(18,18,18,.86)_35%,rgba(18,18,18,.93)_100%)]"></div>
+    <footer class="krm-footer relative isolate overflow-hidden border-t border-white/10 bg-[#0a0a0a] text-kraft/80">
+        <div class="mx-auto max-w-[1180px] px-6 pb-8 pt-14 md:pt-16">
+            <div class="grid gap-10 md:grid-cols-3 md:items-start md:gap-8">
 
-        <div class="mx-auto max-w-[1180px] px-6 pb-8 pt-16 md:pt-20">
-            <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
-                <div class="max-w-[34rem]">
-                    <h2 class="krm-h2 font-bold">{{ __('Mulai dari rasa, bukan dari nama kopinya') }}</h2>
-                    <p class="mt-3 text-[15px] leading-relaxed text-kraft/80">
-                        {{ __('Geser level sangrainya, lihat profil rasanya bergerak, lalu pesan di situ juga.') }}
-                    </p>
-                </div>
-                <a href="{{ route('builder') }}"
-                   class="self-start rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94] md:self-auto">
-                    {{ __('Buka roast builder') }}
-                </a>
-            </div>
-
-            <div class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-kraft/20 pt-10 lg:grid-cols-[minmax(0,1.3fr)_1fr_1fr_1fr]">
-
-                <div class="col-span-2 lg:col-span-1">
-                    <img src="{{ asset('images/logo-kromatik-white.png') }}"
-                         alt="Kromatik Specialty Coffee Lab"
-                         width="64" height="64" class="w-16 opacity-90">
-                    <p class="mt-4 font-display text-[15px] font-semibold text-labwhite">Roasted after you order, not before.</p>
-                    <p class="mt-2 max-w-[32ch] text-[13px] leading-relaxed text-kraft/70">
-                        {{ __('Roastery kecil yang menyangrai kopi satu pesanan sekali jalan, dengan asal-usul tiap biji tercatat.') }}
-                    </p>
+                <div>
+                    <a href="{{ route('landing') }}" class="inline-flex items-center gap-3 text-labwhite">
+                        <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="h-9 w-9">
+                        <span class="font-display text-[17px] font-semibold tracking-[0.22em]">KROMATIK</span>
+                    </a>
+                    <address class="mt-5 text-[14px] not-italic leading-relaxed text-kraft/75">
+                        {{ __('Roastery Kromatik') }}<br>
+                        {{ __('Bandung, Jawa Barat') }}
+                    </address>
+                    <p class="mt-3 text-[13px] text-kraft/55">{{ __('Disangrai setelah pesanan masuk') }}</p>
                 </div>
 
-                <nav aria-label="{{ __('Jelajahi') }}">
-                    <h2 class="text-[12px] text-kraft/50">{{ __('Jelajahi') }}</h2>
-                    <ul class="mt-4 space-y-2.5 text-[14px]">
-                        <li><a href="{{ route('landing') }}#biji" class="text-kraft/85 transition-colors hover:text-labwhite">{{ __('Biji di gudang') }}</a></li>
-                        <li><a href="{{ route('landing') }}#tahapan" class="text-kraft/85 transition-colors hover:text-labwhite">{{ __('Setelah kamu bayar') }}</a></li>
-                        <li><a href="{{ route('builder') }}" class="text-kraft/85 transition-colors hover:text-labwhite">Roast builder</a></li>
+                <nav aria-label="{{ __('Jelajahi') }}" class="md:justify-self-center">
+                    <ul class="space-y-2.5 text-[14px]">
+                        <li><a href="{{ route('landing') }}#biji" class="transition-colors hover:text-labwhite">{{ __('Biji') }}</a></li>
+                        <li><a href="{{ route('builder') }}" class="transition-colors hover:text-labwhite">Roast builder</a></li>
+                        <li><a href="{{ route('dashboard') }}" class="transition-colors hover:text-labwhite">{{ __('Lacak pesanan') }}</a></li>
+                        <li><a href="{{ route('landing') }}#tahapan" class="transition-colors hover:text-labwhite">FAQ</a></li>
                     </ul>
                 </nav>
 
-                <div>
-                    <h2 class="text-[12px] text-kraft/50">{{ __('Roastery') }}</h2>
-                    <ul class="mt-4 space-y-2.5 text-[14px] text-kraft/85">
-                        <li>{{ __('Sangrai: Senin–Sabtu') }}</li>
-                        <li class="krm-readout text-[13px]">08.00 – 16.00 WIB</li>
-                        <li class="krm-readout text-[13px]">halo@kromatik.test</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h2 class="text-[12px] text-kraft/50">{{ __('Bahasa') }}</h2>
-                    <x-lang-switch class="mt-4 flex" />
+                <div class="flex gap-3 text-kraft/80 md:justify-self-end" aria-label="{{ __('Kontak') }}">
+                    <a href="https://instagram.com/kromatik.lab" target="_blank" rel="noopener" aria-label="Instagram"
+                       class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
+                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>
+                    </a>
+                    <a href="https://wa.me/6281200000000" target="_blank" rel="noopener" aria-label="WhatsApp"
+                       class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
+                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3l-4.5 1.2z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-.9.8c-1-.4-1.9-1.3-2.3-2.300l.8-.9-1-2L9 8.5z" stroke-width="1"/></svg>
+                    </a>
+                    <a href="mailto:halo@kromatik.test" aria-label="Email"
+                       class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
+                        <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.500L20.5 7"/></svg>
+                    </a>
                 </div>
             </div>
 
-            <p class="mt-12 flex flex-wrap justify-between gap-x-6 gap-y-1 border-t border-kraft/12 pt-6 text-[12.5px] text-kraft/50">
-                <span>&copy; {{ date('Y') }} Kromatik Specialty Coffee Lab</span>
-                <span>{{ __('Dibuat sebagai proyek kuliah Sistem Informasi.') }}</span>
-            </p>
+            <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/10 pt-6 text-[12.5px] text-kraft/50">
+                <p>&copy; {{ date('Y') }} KROMATIK &bull; Specialty Coffee Lab &bull; Bandung</p>
+                <x-lang-switch class="flex" />
+            </div>
         </div>
     </footer>
 </body>
