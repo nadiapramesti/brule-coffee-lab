@@ -140,6 +140,23 @@ class Builder extends Component
         $this->pushToWheel();
     }
 
+    public function setLevel(int $index): void
+    {
+        $this->levelIndex = $index;
+        $this->updatedLevelIndex();
+    }
+
+    /** Warna biji sangrai dari nilai Agtron: makin kecil makin gelap. */
+    public function beanColor(?int $agtron): string
+    {
+        $t = max(0, min(1, (($agtron ?? 70) - 35) / 60));   // 0 = gelap, 1 = terang
+        $dark = [43, 24, 16];
+        $light = [205, 164, 108];
+        $c = array_map(fn ($d, $l) => (int) round($d + ($l - $d) * $t), $dark, $light);
+
+        return sprintf('rgb(%d,%d,%d)', ...$c);
+    }
+
     public function setGrind(string $grind): void
     {
         if (array_key_exists($grind, OrderItem::GRINDS)) {

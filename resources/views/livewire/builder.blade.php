@@ -1,50 +1,90 @@
-<div class="mx-auto max-w-[1180px] px-6 py-16">
+<div>
 
-    <div class="max-w-2xl">
-        <h1 class="krm-h2 font-bold">
-            Roast builder
-        </h1>
-        <p class="mt-4 max-w-[56ch] text-[15px] leading-relaxed text-kraft/80">
-            {{ __('Pilih bijinya, lalu geser level sangrainya. Profil rasa di sebelah kanan bergerak mengikuti pilihanmu, dan harganya ikut dihitung.') }}
-        </p>
-    </div>
+    {{-- ══════════════════ HEADER ══════════════════ --}}
+    <section class="relative isolate -mt-[74px] overflow-hidden pb-14 pt-[calc(74px+3.5rem)] md:pb-16 md:pt-[calc(74px+5rem)]">
+        <picture class="absolute inset-0 -z-20">
+            <source media="(max-width: 767px)" srcset="{{ asset('images/hero-roastery-sm.webp') }}" type="image/webp">
+            <img src="{{ asset('images/hero-roastery.webp') }}" alt="" width="1920" height="1280" decoding="async"
+                 class="h-full w-full object-cover object-[70%_40%]">
+        </picture>
+        <div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(18,18,18,.96)_0%,rgba(18,18,18,.88)_55%,rgba(18,18,18,.6)_100%)]"></div>
+        <div class="absolute inset-x-0 bottom-0 -z-10 h-2/3 bg-gradient-to-b from-transparent to-charcoal"></div>
 
-    <div class="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,430px)]">
+        <div class="mx-auto max-w-[1180px] px-6">
+            <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/70" data-reveal>{{ __('PEMBUAT SANGRAI') }}</p>
+            <h1 class="krm-h1 mt-3 font-bold" data-reveal style="--d:80ms">Roast builder</h1>
+            <p class="mt-5 max-w-[56ch] text-[15px] leading-relaxed text-kraft" data-reveal style="--d:160ms">
+                {{ __('Pilih bijinya, lalu geser level sangrainya. Profil rasa di sebelah kanan bergerak mengikuti pilihanmu, dan harganya ikut dihitung.') }}
+            </p>
+
+            {{-- Ringkasan pilihan: jadi penunjuk langkah sekaligus rekap --}}
+            <ol class="mt-9 grid grid-cols-2 gap-2.5 sm:grid-cols-4" data-reveal style="--d:240ms">
+                @foreach ([
+                    ['01', __('Biji'), $this->coffee?->name],
+                    ['02', __('Sangrai'), $this->profile?->level_label],
+                    ['03', __('Gilingan'), __($this->grindOptions[$grind])],
+                    ['04', __('Berat'), number_format($grams) . ' g'],
+                ] as [$n, $label, $val])
+                    <li class="min-w-0 rounded border border-white/15 bg-charcoal/55 px-3.5 py-3 backdrop-blur-[2px]">
+                        <span class="krm-readout flex items-center gap-2 text-[11px] text-kraft/60">
+                            <span class="text-bluelab">{{ $n }}</span>{{ $label }}
+                        </span>
+                        <span class="mt-1 block truncate text-[13.5px] font-medium text-labwhite">{{ $val }}</span>
+                    </li>
+                @endforeach
+            </ol>
+        </div>
+    </section>
+
+    <div class="mx-auto max-w-[1180px] px-6 pb-28 pt-6 lg:pb-20">
+    <div class="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,430px)] lg:gap-14">
 
         {{-- ─────────── KONTROL ─────────── --}}
-        <div class="space-y-14">
+        <div class="min-w-0 space-y-14">
 
             {{-- Langkah 1 --}}
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
-                    <span class="krm-readout text-[12px] text-kraft/45">01</span>
+                    <span class="krm-readout text-[12px] text-bluelab">01</span>
                     {{ __('Pilih biji') }}
                 </h2>
 
-                <div class="mt-5 grid gap-3 sm:grid-cols-3">
+                <div class="-mx-6 mt-5 flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-4">
                     @foreach ($this->coffees as $bean)
+                        @php $on = $this->coffeeId === $bean->id; @endphp
                         <button type="button"
                                 wire:click="selectCoffee({{ $bean->id }})"
-                                aria-pressed="{{ $this->coffeeId === $bean->id ? 'true' : 'false' }}"
-                                class="flex flex-col items-start justify-start rounded border p-4 text-left transition-colors
-                                       {{ $this->coffeeId === $bean->id
-                                            ? 'border-bluelab bg-bluelab/10'
-                                            : 'border-kraft/20 hover:border-kraft/45' }}">
-                            <span class="block font-display text-[15px] font-semibold leading-snug">
-                                {{ $bean->name }}
+                                aria-pressed="{{ $on ? 'true' : 'false' }}"
+                                class="group relative flex w-[68%] shrink-0 snap-start flex-col items-start justify-start rounded border p-4 text-left transition-all duration-300 sm:w-auto
+                                       {{ $on
+                                            ? 'border-bluelab bg-bluelab/12 shadow-[0_0_0_1px_#2A5DB0,0_12px_32px_-14px_rgba(42,93,176,.7)]'
+                                            : 'border-kraft/20 hover:-translate-y-0.5 hover:border-kraft/50' }}">
+                            <span class="flex w-full items-center justify-between gap-2">
+                                <span class="krm-readout rounded-[6px] border border-kraft/25 px-1.5 py-0.5 text-[10.5px] text-kraft/75">
+                                    {{ $bean->traceability?->process }}
+                                </span>
+                                <span class="grid h-5 w-5 place-items-center rounded-full bg-bluelab text-labwhite transition-all duration-300 {{ $on ? 'scale-100 opacity-100' : 'scale-50 opacity-0' }}">
+                                    <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.4 2.4 4.6-5"/></svg>
+                                </span>
                             </span>
-                            <span class="mt-2 block text-[12.5px] text-kraft/65">
-                                {{ $bean->traceability?->region }}
+                            <span class="mt-4 block font-display text-[15.5px] font-semibold leading-snug text-labwhite">
+                                {{ \Illuminate\Support\Str::of($bean->name)->replace([' Washed',' Natural',' Honey',' Wet-Hulled',' Anaerobic'], '') }}
                             </span>
-                            <span class="krm-readout mt-3 block text-[12px] text-bluelab">
-                                {{ number_format($bean->cupping_score, 1) }}
+                            <span class="mt-1.5 block text-[12.5px] leading-snug text-kraft/65">
+                                {{ \Illuminate\Support\Str::before($bean->traceability?->region ?? '', ',') }}
+                                <span class="text-kraft/40">·</span>
+                                {{ \Illuminate\Support\Str::afterLast($bean->traceability?->region ?? '', ', ') }}
+                            </span>
+                            <span class="krm-readout mt-4 flex items-baseline gap-1 text-bluelab">
+                                <span class="text-[1.15rem]">{{ number_format($bean->cupping_score, 1) }}</span>
+                                <span class="text-[10.5px] text-kraft/50">SCA</span>
                             </span>
                         </button>
                     @endforeach
                 </div>
 
                 @if ($this->coffee?->story)
-                    <p class="mt-5 max-w-[60ch] border-l-2 border-bluelab/60 pl-4 text-[14px] leading-relaxed text-kraft/75">
+                    <p class="mt-6 max-w-[60ch] border-l-2 border-bluelab/60 pl-4 text-[14px] leading-relaxed text-kraft/75">
                         {{ $this->coffee->localizedStory() }}
                     </p>
                 @endif
@@ -53,38 +93,61 @@
             {{-- Langkah 2 --}}
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
-                    <span class="krm-readout text-[12px] text-kraft/45">02</span>
+                    <span class="krm-readout text-[12px] text-bluelab">02</span>
                     {{ __('Level sangrai') }}
                 </h2>
 
                 @if ($this->levels->isNotEmpty())
-                    <div class="mt-5 rounded border border-kraft/20 p-6">
-                        <div class="flex items-baseline justify-between gap-4">
-                            <p class="font-display text-[1.6rem] font-semibold">
-                                {{ $this->profile?->level_label }}
-                            </p>
-                            <p class="krm-readout text-[13px] text-kraft/70">
-                                Agtron {{ $this->profile?->agtron }}
-                            </p>
-                        </div>
+                    <div class="mt-5 overflow-hidden rounded border border-kraft/20 bg-[linear-gradient(135deg,rgba(255,251,242,.035),transparent_60%)]">
+                        <div class="flex flex-col items-center gap-6 p-6 sm:flex-row sm:gap-8 sm:p-8">
 
-                        <label for="roast" class="sr-only">{{ __('Level sangrai') }}</label>
-                        <input id="roast"
-                               type="range"
-                               min="0"
-                               max="{{ $this->levels->count() - 1 }}"
-                               step="1"
-                               wire:model.live="levelIndex"
-                               class="krm-slider mt-5">
+                            {{-- Biji yang berubah warna mengikuti level --}}
+                            <div class="relative grid h-36 w-36 shrink-0 place-items-center rounded-full bg-[radial-gradient(circle,rgba(255,251,242,.07),transparent_68%)] sm:h-40 sm:w-40">
+                                <svg viewBox="0 0 120 120" class="h-28 w-28 -rotate-[24deg] drop-shadow-[0_14px_16px_rgba(0,0,0,.55)] sm:h-32 sm:w-32" aria-hidden="true">
+                                    <ellipse cx="60" cy="60" rx="38" ry="50"
+                                             style="fill: {{ $this->beanColor($this->profile?->agtron) }}; transition: fill .45s ease"/>
+                                    <ellipse cx="60" cy="60" rx="38" ry="50" fill="url(#bean-shine)"/>
+                                    <path d="M60 12c-9 16 9 28 0 48s9 30 0 48" fill="none" stroke="rgba(0,0,0,.42)" stroke-width="4" stroke-linecap="round"/>
+                                    <defs>
+                                        <radialGradient id="bean-shine" cx="34%" cy="26%" r="70%">
+                                            <stop offset="0" stop-color="#fff" stop-opacity=".34"/>
+                                            <stop offset=".45" stop-color="#fff" stop-opacity="0"/>
+                                        </radialGradient>
+                                    </defs>
+                                </svg>
+                            </div>
 
-                        <div class="mt-3 flex justify-between gap-2 text-[11.5px] text-kraft/55">
-                            @foreach ($this->levels as $lv)
-                                <span>{{ $lv->level_label }}</span>
-                            @endforeach
+                            <div class="w-full min-w-0 flex-1">
+                                <div class="flex items-baseline justify-between gap-4">
+                                    <p class="font-display text-[1.7rem] font-semibold leading-none">
+                                        {{ $this->profile?->level_label }}
+                                    </p>
+                                    <p class="krm-readout text-[13px] text-kraft/70">
+                                        Agtron <span class="text-labwhite">{{ $this->profile?->agtron }}</span>
+                                    </p>
+                                </div>
+
+                                <label for="roast" class="sr-only">{{ __('Level sangrai') }}</label>
+                                <input id="roast" type="range" min="0" max="{{ $this->levels->count() - 1 }}" step="1"
+                                       wire:model.live="levelIndex" class="krm-slider mt-6">
+
+                                <div class="mt-3 flex justify-between gap-1">
+                                    @foreach ($this->levels as $i => $lv)
+                                        <button type="button" wire:click="setLevel({{ $i }})"
+                                                class="flex min-w-0 flex-1 flex-col items-center gap-1.5 text-[11px] transition-colors
+                                                       {{ $i === $this->levelIndex ? 'text-labwhite' : 'text-kraft/50 hover:text-kraft' }}
+                                                       first:items-start last:items-end">
+                                            <span class="h-2.5 w-2.5 rounded-full border border-white/20"
+                                                  style="background: {{ $this->beanColor($lv->agtron) }}"></span>
+                                            <span class="truncate">{{ $lv->level_label }}</span>
+                                        </button>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
 
                         @if ($this->levels->count() < 5)
-                            <p class="mt-5 max-w-[52ch] text-[13px] leading-relaxed text-kraft/60">
+                            <p class="border-t border-kraft/15 px-6 py-4 text-[13px] leading-relaxed text-kraft/60 sm:px-8">
                                 {{ __('Biji ini berhenti sebelum level paling gelap. Disangrai lebih jauh, karakter aslinya hilang dan yang tersisa cuma rasa gosong.') }}
                             </p>
                         @endif
@@ -95,19 +158,20 @@
             {{-- Langkah 3 --}}
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
-                    <span class="krm-readout text-[12px] text-kraft/45">03</span>
+                    <span class="krm-readout text-[12px] text-bluelab">03</span>
                     {{ __('Ukuran gilingan') }}
                 </h2>
 
-                <div class="mt-5 flex flex-wrap gap-2.5">
+                <div class="mt-5 grid grid-cols-2 gap-2.5 sm:grid-cols-3">
                     @foreach ($this->grindOptions as $key => $label)
-                        <button type="button"
-                                wire:click="setGrind('{{ $key }}')"
-                                aria-pressed="{{ $grind === $key ? 'true' : 'false' }}"
-                                class="rounded border px-4 py-2.5 text-[13.5px] transition-colors
-                                       {{ $grind === $key
-                                            ? 'border-bluelab bg-bluelab/10 text-labwhite'
-                                            : 'border-kraft/20 text-kraft/80 hover:border-kraft/45' }}">
+                        @php $on = $grind === $key; @endphp
+                        <button type="button" wire:click="setGrind('{{ $key }}')"
+                                aria-pressed="{{ $on ? 'true' : 'false' }}"
+                                class="flex items-center gap-3 rounded border px-4 py-3.5 text-left text-[13.5px] transition-all duration-300
+                                       {{ $on
+                                            ? 'border-bluelab bg-bluelab/12 text-labwhite shadow-[0_0_0_1px_#2A5DB0]'
+                                            : 'border-kraft/20 text-kraft/80 hover:border-kraft/50' }}">
+                            <span class="grid h-2 w-2 shrink-0 place-items-center rounded-full {{ $on ? 'bg-bluelab' : 'bg-kraft/30' }}"></span>
                             {{ __($label) }}
                         </button>
                     @endforeach
@@ -117,25 +181,26 @@
             {{-- Langkah 4 --}}
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
-                    <span class="krm-readout text-[12px] text-kraft/45">04</span>
+                    <span class="krm-readout text-[12px] text-bluelab">04</span>
                     {{ __('Berat') }}
                 </h2>
 
-                <div class="mt-5 grid max-w-md grid-cols-3 gap-3">
+                <div class="mt-5 grid max-w-xl grid-cols-3 gap-3">
                     @foreach ([200, 500, 1000] as $g)
-                        <button type="button"
-                                wire:click="setGrams({{ $g }})"
-                                aria-pressed="{{ $grams === $g ? 'true' : 'false' }}"
-                                class="rounded border py-5 transition-colors
-                                       {{ $grams === $g
-                                            ? 'border-bluelab bg-bluelab/10'
-                                            : 'border-kraft/20 hover:border-kraft/45' }}">
-                            <span class="krm-readout block text-[1.3rem]">
-                                {{ $g >= 1000 ? '1' : $g }}
-                            </span>
-                            <span class="mt-0.5 block text-[12px] text-kraft/65">
-                                {{ $g >= 1000 ? __('kilogram') : __('gram') }}
-                            </span>
+                        @php $on = $grams === $g; @endphp
+                        <button type="button" wire:click="setGrams({{ $g }})"
+                                aria-pressed="{{ $on ? 'true' : 'false' }}"
+                                class="rounded border px-3 py-5 text-center transition-all duration-300
+                                       {{ $on
+                                            ? 'border-bluelab bg-bluelab/12 shadow-[0_0_0_1px_#2A5DB0]'
+                                            : 'border-kraft/20 hover:-translate-y-0.5 hover:border-kraft/50' }}">
+                            <span class="krm-readout block text-[1.45rem] leading-none">{{ $g >= 1000 ? '1' : $g }}</span>
+                            <span class="mt-1.5 block text-[12px] text-kraft/65">{{ $g >= 1000 ? __('kilogram') : __('gram') }}</span>
+                            @if ($this->profile)
+                                <span class="krm-readout mt-3 block border-t border-kraft/15 pt-2.5 text-[12px] text-kraft/60">
+                                    Rp{{ number_format($this->profile->priceFor($g), 0, ',', '.') }}
+                                </span>
+                            @endif
                         </button>
                     @endforeach
                 </div>
@@ -144,71 +209,78 @@
 
         {{-- ─────────── PANEL RASA ─────────── --}}
         <div class="lg:sticky lg:top-24 lg:self-start">
-            <div class="rounded border border-kraft/20 p-6">
+            <div class="overflow-hidden rounded border border-kraft/25 bg-[#161616]">
 
-                <h2 class="text-[1.1rem] font-semibold">{{ __('Profil rasa') }}</h2>
-                <p class="mt-1 text-[13px] text-kraft/60">
-                    {{ __('Bergerak tiap kali pilihanmu berubah.') }}
-                </p>
+                <div class="p-6 pb-2">
+                    <div class="flex items-baseline justify-between gap-3">
+                        <h2 class="text-[1.1rem] font-semibold">{{ __('Profil rasa') }}</h2>
+                        <span class="krm-readout inline-flex items-center gap-1.5 text-[11px] text-kraft/55">
+                            <span class="h-1.5 w-1.5 rounded-full bg-bluelab animate-pulse"></span>LIVE
+                        </span>
+                    </div>
+                    <p class="mt-1 text-[13px] text-kraft/60">{{ __('Bergerak tiap kali pilihanmu berubah.') }}</p>
 
-                {{-- wire:ignore: isi div ini digambar D3, bukan Blade.
-                     Nilai barunya dikirim lewat event, bukan render ulang. --}}
-                <div wire:ignore
-                     class="mt-6"
-                     {{-- Alpine memanggil init() sendiri; menuliskannya lagi
-                          di x-init membuat grafiknya tergambar dua kali. --}}
-                     x-data="flavorWheel(@js($this->flavorValues), @js($this->wheelLabels))">
-                    <div x-ref="wheel" class="flex justify-center"></div>
+                    {{-- wire:ignore: isi div ini digambar D3, bukan Blade.
+                         Nilai barunya dikirim lewat event, bukan render ulang. --}}
+                    <div wire:ignore class="mt-4"
+                         {{-- Alpine memanggil init() sendiri; menuliskannya lagi
+                              di x-init membuat grafiknya tergambar dua kali. --}}
+                         x-data="flavorWheel(@js($this->flavorValues), @js($this->wheelLabels))">
+                        <div x-ref="wheel" class="flex justify-center"></div>
+                    </div>
+
+                    @if ($this->profile?->tasting_notes)
+                        <div class="mt-4 flex flex-wrap gap-1.5 pb-4">
+                            @foreach ($this->profile->tasting_notes as $note)
+                                <span class="rounded-[6px] border border-kraft/25 px-2.5 py-1 text-[12.5px] text-labwhite">{{ $note }}</span>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
 
-                @if ($this->profile?->tasting_notes)
-                    <p class="mt-7 border-t border-kraft/15 pt-5 text-[14px] leading-relaxed">
-                        {{ implode(', ', $this->profile->tasting_notes) }}
-                    </p>
-                @endif
+                {{-- Bagian "struk": dipisah garis putus-putus seperti tiket lab --}}
+                <div class="border-t border-dashed border-kraft/30 bg-[#101010] p-6">
+                    <dl class="krm-settling space-y-2.5 text-[13px]" wire:loading.delay.class="opacity-50">
+                        <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Biji kopi') }}</dt><dd class="text-right">{{ $this->coffee?->name }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Sangrai') }}</dt><dd class="text-right">{{ $this->profile?->level_label }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Gilingan') }}</dt><dd class="text-right">{{ __($this->grindOptions[$grind]) }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Berat') }}</dt><dd class="krm-readout text-right">{{ number_format($grams) }} g</dd></div>
+                    </dl>
 
-                <dl class="krm-settling mt-6 space-y-2.5 border-t border-kraft/15 pt-5 text-[13px]"
-                    wire:loading.delay.class="opacity-50">
-                    <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">{{ __('Biji kopi') }}</dt>
-                        <dd class="text-right">{{ $this->coffee?->name }}</dd>
+                    <div class="krm-settling mt-5 flex items-end justify-between gap-4 border-t border-dashed border-kraft/30 pt-5" wire:loading.delay.class="opacity-50">
+                        <span class="text-[13px] text-kraft/60">{{ __('Total') }}</span>
+                        <span class="krm-readout text-[1.9rem] font-medium leading-none">Rp{{ number_format($this->price, 0, ',', '.') }}</span>
                     </div>
-                    <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">{{ __('Sangrai') }}</dt>
-                        <dd class="text-right">{{ $this->profile?->level_label }}</dd>
-                    </div>
-                    <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">{{ __('Gilingan') }}</dt>
-                        <dd class="text-right">{{ __($this->grindOptions[$grind]) }}</dd>
-                    </div>
-                    <div class="flex justify-between gap-4">
-                        <dt class="text-kraft/60">{{ __('Berat') }}</dt>
-                        <dd class="krm-readout text-right">{{ number_format($grams) }} g</dd>
-                    </div>
-                </dl>
 
-                <div class="krm-settling mt-5 flex items-end justify-between gap-4 border-t border-kraft/15 pt-5"
-                     wire:loading.delay.class="opacity-50">
-                    <span class="text-[13px] text-kraft/60">{{ __('Total') }}</span>
-                    <span class="krm-readout text-[1.75rem] font-medium">
-                        Rp{{ number_format($this->price, 0, ',', '.') }}
-                    </span>
+                    @if ($this->stockOk)
+                        <button type="button"
+                                class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] hover:shadow-[0_10px_28px_-10px_rgba(42,93,176,.9)] active:scale-[.99]">
+                            {{ __('Pesan dan sangrai') }}
+                        </button>
+                        <p class="mt-3 text-center text-[12px] leading-relaxed text-kraft/55">
+                            {{ __('Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.') }}
+                        </p>
+                    @else
+                        <p class="mt-6 rounded border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/70">
+                            {{ __('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.') }}
+                        </p>
+                    @endif
                 </div>
-
-                @if ($this->stockOk)
-                    <button type="button"
-                            class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-colors hover:bg-[#234E94]">
-                        {{ __('Pesan dan sangrai') }}
-                    </button>
-                    <p class="mt-3 text-center text-[12px] leading-relaxed text-kraft/55">
-                        {{ __('Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.') }}
-                    </p>
-                @else
-                    <p class="mt-6 rounded border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/70">
-                        {{ __('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.') }}
-                    </p>
-                @endif
             </div>
         </div>
     </div>
+    </div>
+
+    {{-- Bar total untuk layar kecil: panel asli ada jauh di bawah --}}
+    @if ($this->stockOk)
+        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-white/15 bg-[#0a0a0a]/92 px-4 py-3 backdrop-blur lg:hidden">
+            <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-4">
+                <div class="min-w-0">
+                    <p class="truncate text-[12px] text-kraft/60">{{ $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>
+                    <p class="krm-readout text-[1.15rem] leading-tight">Rp{{ number_format($this->price, 0, ',', '.') }}</p>
+                </div>
+                <button type="button" class="shrink-0 rounded bg-bluelab px-5 py-3 font-display text-[14px] font-semibold">{{ __('Pesan dan sangrai') }}</button>
+            </div>
+        </div>
+    @endif
 </div>
