@@ -15,7 +15,7 @@ return new class extends Migration
             $table->string('region');
             $table->unsignedSmallInteger('altitude'); // simpan angka: 1950
             $table->string('varietal');
-            $table->enum('process', ['Washed', 'Honey', 'Natural', 'Anaerobic']);
+            $table->enum('process', ['Washed', 'Honey', 'Natural', 'Anaerobic', 'Wet-Hulled']);
             $table->date('harvest_date')->nullable();
             $table->string('q_grader')->nullable();
             $table->timestamps();

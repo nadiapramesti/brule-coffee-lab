@@ -56,13 +56,13 @@ class CoffeeSeeder extends Seeder
     {
         return [
             // ============================================================
-            // 1. ETHIOPIA GUJI - WASHED
+            // 1. ETHIOPIA YIRGACHEFFE - WASHED
             // ============================================================
             [
-                'slug'  => 'ethiopia-guji-washed',
-                'name'  => 'Ethiopia Guji Washed',
-                'story' => 'Dipetik dari kebun kecil di dataran tinggi Guji, '
-                         . 'Oromia. Proses washed-nya mencuci bersih lapisan '
+                'slug'  => 'ethiopia-yirgacheffe-washed',
+                'name'  => 'Ethiopia Yirgacheffe Washed',
+                'story' => 'Dipetik dari kebun kecil di dataran tinggi Yirgacheffe, '
+                         . 'Gedeo. Proses washed-nya mencuci bersih lapisan '
                          . 'gula buah, menyisakan karakter asli biji: floral, '
                          . 'bersih, dan terang seperti teh. Ini kopi yang '
                          . 'paling jujur menunjukkan asal-usulnya.',
@@ -70,8 +70,8 @@ class CoffeeSeeder extends Seeder
                 'cupping_score'         => 88.2,
                 'traceability' => [
                     'farmer'       => 'Tadesse Bekele',
-                    'region'       => 'Guji, Oromia, Ethiopia',
-                    'altitude'     => 1950,
+                    'region'       => 'Yirgacheffe, Gedeo, Ethiopia',
+                    'altitude'     => 2100,
                     'varietal'     => 'Heirloom (Kurume, Dega)',
                     'process'      => 'Washed',
                     'harvest_date' => '2026-01-18',

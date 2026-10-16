@@ -192,7 +192,11 @@
 
             <ol class="mt-14 grid gap-10 border-t border-charcoal/20 pt-8 sm:grid-cols-2 lg:grid-cols-5 lg:gap-6">
                 @foreach ($this->stages as $i => $stage)
-                    <li class="relative">
+                    <li class="relative flex gap-5 sm:block">
+                        <img src="{{ asset('images/stage-' . ($i + 1) . '.webp') }}" alt="{{ $stage['name'] }}"
+                             width="586" height="1060" loading="lazy" decoding="async"
+                             class="aspect-[4/5] w-[104px] shrink-0 self-start rounded border border-charcoal/15 object-cover sm:mb-5 sm:w-full">
+                        <div>
                         <span class="krm-readout block text-[12px] text-charcoal/45">
                             {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
                         </span>
@@ -200,6 +204,7 @@
                         <p class="mt-2 text-[13px] leading-relaxed text-kraftink">
                             {{ $stage['note'] }}
                         </p>
+                        </div>
                     </li>
                 @endforeach
             </ol>

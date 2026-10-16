@@ -39,5 +39,20 @@ class UserSeeder extends Seeder
                 'phone'    => '081200000003',
             ]
         );
+
+        foreach ([
+            ['raka@kromatik.test',  'Raka Pratama', '081200000004'],
+            ['sinta@kromatik.test', 'Sinta Dewi',   '081200000005'],
+        ] as [$email, $name, $phone]) {
+            User::updateOrCreate(
+                ['email' => $email],
+                [
+                    'name'     => $name,
+                    'password' => Hash::make('password'),
+                    'role'     => 'customer',
+                    'phone'    => $phone,
+                ]
+            );
+        }
     }
 }
