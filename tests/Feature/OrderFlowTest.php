@@ -106,3 +106,8 @@ it('shows the tracking page to anyone with the code', function () {
     placeOrder($this);
     $this->get(route('track', Order::first()->order_code))->assertOk()->assertSee('Menunggu Pembayaran');
 });
+
+it('sends each role to its own home from /dashboard', function () {
+    $this->actingAs($this->customer)->get('/dashboard')->assertRedirect(route('track'));
+    $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())->get('/dashboard')->assertRedirect(route('roastery'));
+});

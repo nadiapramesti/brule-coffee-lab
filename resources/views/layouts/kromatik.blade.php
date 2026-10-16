@@ -41,6 +41,14 @@
             <nav class="hidden items-center gap-8 text-[14px] md:flex">
                 <a href="{{ route('landing') }}#biji" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Biji') }}</a>
                 <a href="{{ route('builder') }}" class="text-kraft/80 transition-colors hover:text-labwhite">Roast builder</a>
+                @auth
+                    <a href="{{ route('dashboard') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                    <form method="POST" action="{{ route('logout') }}">@csrf
+                        <button class="text-kraft/60 transition-colors hover:text-labwhite">{{ __('Keluar') }}</button>
+                    </form>
+                @else
+                    <a href="{{ route('login') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Masuk') }}</a>
+                @endauth
             </nav>
 
             <x-lang-switch class="hidden md:flex" />
@@ -68,6 +76,12 @@
              class="border-t border-kraft/12 px-6 py-3 md:hidden">
             <a href="{{ route('landing') }}#biji" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Biji') }}</a>
             <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
+            @auth
+                <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan') }}</a>
+                <form method="POST" action="{{ route('logout') }}">@csrf<button class="block w-full py-2.5 text-left text-[15px] text-kraft/60">{{ __('Keluar') }}</button></form>
+            @else
+                <a href="{{ route('login') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Masuk') }}</a>
+            @endauth
             <a href="{{ route('builder') }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Racik kopimu') }}</a>
             <x-lang-switch class="mt-4 flex pb-1" />
         </nav>

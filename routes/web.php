@@ -22,7 +22,8 @@ Route::get('/bahasa/{locale}', function (string $locale) {
     return redirect()->back(fallback: route('landing'));
 })->where('locale', 'id|en')->name('locale');
 
-Route::view('dashboard', 'dashboard')
+// Tidak ada dasbor generik: tiap peran punya tempat kerjanya sendiri.
+Route::get('dashboard', fn () => redirect()->route(auth()->user()->isRoaster() ? 'roastery' : 'track'))
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
 
@@ -31,3 +32,11 @@ Route::view('profile', 'profile')
     ->name('profile');
 
 require __DIR__.'/auth.php';
+
+Route::post('/logout', function (\Illuminate\Http\Request $request) {
+    \Illuminate\Support\Facades\Auth::guard('web')->logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return redirect()->route('landing');
+})->middleware('auth')->name('logout');
