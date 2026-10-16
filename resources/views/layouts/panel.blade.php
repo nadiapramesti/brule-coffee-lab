@@ -87,17 +87,17 @@
             </a>
         </nav>
 
+        {{-- Tombol ciutkan: bulat kecil di tepi sidebar, sejajar header --}}
+        <button type="button" x-data @click="const m = document.documentElement.classList.toggle('mini'); try { localStorage.setItem('krm-mini', m ? '1' : '0') } catch (e) {}"
+                class="absolute -right-3 top-[19px] z-10 hidden h-6 w-6 place-items-center rounded-full border border-kraft/30 bg-[#161616] text-kraft/70 shadow-[0_2px_8px_rgba(0,0,0,.6)] transition-colors hover:border-bluelab hover:bg-bluelab hover:text-labwhite lg:grid" aria-label="{{ __('Ciutkan menu') }}" title="{{ __('Ciutkan menu') }}">
+            <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 lg:[.mini_&]:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
+        </button>
     </aside>
 
     <div class="transition-[padding] duration-300 ease-out lg:pl-[248px] lg:[.mini_&]:pl-[72px]">
         <header class="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-kraft/15 bg-charcoal/90 px-4 backdrop-blur-md sm:px-6 lg:px-8">
             <button type="button" @click="nav = true" class="-ml-2 grid h-10 w-10 place-items-center lg:hidden" :aria-expanded="nav ? 'true' : 'false'" aria-label="{{ __('Buka menu') }}">
                 <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2 5h16M2 10h16M2 15h16"/></svg>
-            </button>
-
-            <button type="button" x-data @click="const m = document.documentElement.classList.toggle('mini'); try { localStorage.setItem('krm-mini', m ? '1' : '0') } catch (e) {}"
-                    class="-ml-2 hidden h-10 w-10 place-items-center rounded text-kraft/70 transition-colors hover:bg-white/[.06] hover:text-labwhite lg:grid" aria-label="{{ __('Ciutkan menu') }}" title="{{ __('Ciutkan menu') }}">
-                <svg viewBox="0 0 24 24" class="h-[19px] w-[19px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M9.5 4.5v15"/></svg>
             </button>
 
             <nav aria-label="breadcrumb" class="flex min-w-0 items-center gap-2 text-[13.5px]">
