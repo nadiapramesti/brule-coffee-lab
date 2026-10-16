@@ -1,7 +1,7 @@
 <div>
 
     {{-- ══════════════════ HERO ══════════════════ --}}
-    <section class="relative isolate overflow-hidden -mt-[73px] pb-2 pt-[calc(73px+3rem)] md:pt-[calc(73px+4.5rem)]">
+    <section class="relative isolate overflow-hidden -mt-[74px] pb-2 pt-[calc(74px+3rem)] md:pt-[calc(74px+4.5rem)]">
         {{-- Foto ruang sangrai asli sebagai latar. Dua lapis gelap:
              satu dari kiri supaya teks terbaca, satu dari bawah supaya
              kromatogram duduk di atas warna yang sama dengan sisa halaman. --}}
@@ -130,8 +130,8 @@
             </div>
 
             {{-- Kepala kolom, hanya di layar lebar --}}
-            <div class="mt-8 hidden grid-cols-[minmax(0,1fr)_150px_96px_64px_28px] gap-6 border-b border-kraft/15 pb-3 text-[12px] text-kraft/50 md:grid">
-                <span>{{ __('Lot') }}</span><span>{{ __('Proses') }}</span><span>{{ __('Ketinggian') }}</span><span>{{ __('Skor') }}</span><span></span>
+            <div class="mt-8 hidden grid-cols-[minmax(0,1.25fr)_120px_96px_56px_28px] lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1.1fr)_120px_96px_56px_28px] gap-6 border-b border-kraft/15 pb-3 text-[12px] text-kraft/50 md:grid">
+                <span>{{ __('Lot') }}</span><span class="hidden lg:block">{{ __('Asal') }}</span><span>{{ __('Proses') }}</span><span>{{ __('Ketinggian') }}</span><span>{{ __('Skor') }}</span><span></span>
             </div>
 
             @foreach ($this->coffees as $bean)
@@ -143,12 +143,14 @@
 
                     <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'"
                             aria-controls="lot-{{ $bean->id }}"
-                            class="group grid w-full grid-cols-[minmax(0,1fr)_28px] items-center gap-x-6 gap-y-1 py-5 text-left md:grid-cols-[minmax(0,1fr)_150px_96px_64px_28px]">
+                            class="group grid w-full grid-cols-[minmax(0,1fr)_28px] items-center gap-x-6 gap-y-1 py-5 text-left md:grid-cols-[minmax(0,1.25fr)_120px_96px_56px_28px] lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1.1fr)_120px_96px_56px_28px]">
 
                         <span class="min-w-0">
                             <span class="krm-h3 block font-semibold leading-tight transition-colors group-hover:text-bluelab/90">{{ $bean->name }}</span>
-                            <span class="mt-1 block truncate text-[13px] text-kraft/60">{{ $t?->region }}</span>
+                            <span class="mt-1 block truncate text-[13px] text-kraft/60 lg:hidden">{{ $t?->region }}</span>
                         </span>
+
+                        <span class="hidden truncate text-[13.5px] text-kraft/70 lg:block">{{ $t?->region }}</span>
 
                         <span class="hidden text-[14px] text-labwhite md:block">{{ $t?->process ?? '—' }}</span>
                         <span class="krm-readout hidden text-[13px] text-labwhite md:block">{{ $t?->altitude ? number_format($t->altitude) . ' m' : '—' }}</span>
@@ -230,18 +232,18 @@
 
             {{-- Satu strip, bukan lima kotak terpisah: panel menyatu dengan
                  garis rambut di antaranya, seperti lembar kontak film. --}}
-            <ol class="mt-8 grid overflow-hidden rounded border border-charcoal/25 bg-charcoal/25 gap-px sm:grid-cols-2 lg:grid-cols-5">
+            <ol class="mt-8 grid overflow-hidden rounded border border-charcoal/25 bg-charcoal/25 gap-px lg:grid-cols-5">
                 @foreach ($this->stages as $i => $stage)
-                    <li class="flex bg-kraft sm:block">
-                        <div class="relative w-[104px] shrink-0 overflow-hidden sm:w-full">
+                    <li class="flex bg-kraft lg:block">
+                        <div class="relative aspect-square w-[104px] shrink-0 overflow-hidden sm:w-[148px] lg:aspect-auto lg:w-full">
                             <img src="{{ asset('images/stage-' . ($i + 1) . '.webp') }}" alt="{{ $stage['name'] }}"
                                  width="586" height="1060" loading="lazy" decoding="async"
-                                 class="h-full w-full object-cover sm:aspect-[4/5]">
+                                 class="absolute inset-0 h-full w-full object-cover lg:static lg:aspect-[4/5]">
                             <span class="krm-readout absolute left-2 top-2 rounded-[2px] bg-charcoal/85 px-1.5 py-0.5 text-[11px] text-labwhite">
                                 {{ str_pad($i + 1, 2, '0', STR_PAD_LEFT) }}
                             </span>
                         </div>
-                        <div class="p-4 sm:p-4 sm:pb-5">
+                        <div class="flex flex-col justify-center p-4 lg:block lg:pb-5">
                             <h3 class="text-[1.1rem] font-semibold">{{ $stage['name'] }}</h3>
                             <p class="mt-1.5 text-[13px] leading-relaxed text-kraftink">
                                 {{ $stage['note'] }}
@@ -253,22 +255,4 @@
         </div>
     </section>
 
-
-    {{-- ══════════════════ PENUTUP ══════════════════ --}}
-    <section class="mx-auto max-w-[1180px] px-6 py-14 md:py-16">
-        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
-            <div class="max-w-[40ch]">
-                <h2 class="krm-h2 font-semibold">
-                    {{ __('Mulai dari rasa, bukan dari nama kopinya') }}
-                </h2>
-                <p class="mt-3 text-[15px] leading-relaxed text-kraft/75">
-                    {{ __('Geser level sangrainya, lihat profil rasanya bergerak, lalu pesan di situ juga.') }}
-                </p>
-            </div>
-            <a href="{{ route('builder') }}"
-               class="self-start rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94] md:self-auto">
-                {{ __('Buka roast builder') }}
-            </a>
-        </div>
-    </section>
 </div>

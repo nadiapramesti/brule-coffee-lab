@@ -85,17 +85,27 @@
         <div class="absolute inset-0 -z-10 bg-[linear-gradient(180deg,#121212_0%,rgba(18,18,18,.86)_35%,rgba(18,18,18,.93)_100%)]"></div>
 
         <div class="mx-auto max-w-[1180px] px-6 pb-8 pt-16 md:pt-20">
-            <p class="krm-h2 max-w-[18ch] font-bold">
-                Roasted after<br>you order,<br class="sm:hidden"> not before.
-            </p>
+            <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between md:gap-12">
+                <div class="max-w-[34rem]">
+                    <h2 class="krm-h2 font-bold">{{ __('Mulai dari rasa, bukan dari nama kopinya') }}</h2>
+                    <p class="mt-3 text-[15px] leading-relaxed text-kraft/80">
+                        {{ __('Geser level sangrainya, lihat profil rasanya bergerak, lalu pesan di situ juga.') }}
+                    </p>
+                </div>
+                <a href="{{ route('builder') }}"
+                   class="self-start rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94] md:self-auto">
+                    {{ __('Buka roast builder') }}
+                </a>
+            </div>
 
-            <div class="mt-12 grid gap-10 border-t border-kraft/20 pt-10 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_1fr_1fr_1fr]">
+            <div class="mt-12 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-kraft/20 pt-10 lg:grid-cols-[minmax(0,1.3fr)_1fr_1fr_1fr]">
 
-                <div class="flex items-start gap-4">
+                <div class="col-span-2 lg:col-span-1">
                     <img src="{{ asset('images/logo-kromatik-white.png') }}"
                          alt="Kromatik Specialty Coffee Lab"
-                         width="72" height="72" class="w-[72px] shrink-0 opacity-90">
-                    <p class="max-w-[28ch] text-[13px] leading-relaxed text-kraft/70">
+                         width="64" height="64" class="w-16 opacity-90">
+                    <p class="mt-4 font-display text-[15px] font-semibold text-labwhite">Roasted after you order, not before.</p>
+                    <p class="mt-2 max-w-[32ch] text-[13px] leading-relaxed text-kraft/70">
                         {{ __('Roastery kecil yang menyangrai kopi satu pesanan sekali jalan, dengan asal-usul tiap biji tercatat.') }}
                     </p>
                 </div>
