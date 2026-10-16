@@ -1,8 +1,11 @@
 <?php
 
+use App\Livewire\Builder;
+use App\Livewire\Landing;
 use Illuminate\Support\Facades\Route;
 
-Route::view('/', 'welcome');
+Route::get('/', Landing::class)->name('landing');
+Route::get('/builder', Builder::class)->name('builder');
 
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

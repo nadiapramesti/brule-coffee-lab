@@ -1,149 +1,145 @@
-<div class="mx-auto max-w-7xl px-5 py-12">
+<div class="mx-auto max-w-[1180px] px-6 py-16">
 
-    {{-- ===== Judul halaman ===== --}}
-    <div class="mb-10 flex items-end justify-between gap-6 border-b border-[#D8C5A6]/15 pb-6">
-        <div>
-            <p class="text-[11px] tracking-[0.3em] text-[#2A5DB0]">LAB / 01</p>
-            <h1 class="krm-display mt-2 text-4xl font-bold tracking-wide md:text-5xl">
-                ROAST BUILDER
-            </h1>
-            <p class="mt-2 max-w-xl text-sm leading-relaxed text-[#D8C5A6]/80">
-                Racik sendiri profil kopimu. Setiap perubahan langsung
-                terbaca di kromatogram rasa di sebelah kanan.
-            </p>
-        </div>
-        <div class="hidden text-right md:block">
-            <p class="text-[11px] tracking-[0.2em] text-[#D8C5A6]/60">CUPPING SCORE</p>
-            <p class="krm-display text-4xl font-bold text-[#2A5DB0]">
-                {{ number_format($this->coffee?->cupping_score ?? 0, 1) }}
-            </p>
-        </div>
+    <div class="max-w-2xl">
+        <h1 class="text-[2.25rem] font-bold leading-tight tracking-[-0.015em] md:text-[3rem]">
+            Roast builder
+        </h1>
+        <p class="mt-4 max-w-[56ch] text-[15px] leading-relaxed text-kraft/80">
+            Pilih bijinya, lalu geser level sangrainya. Profil rasa di sebelah
+            kanan bergerak mengikuti pilihanmu, dan harganya ikut dihitung.
+        </p>
     </div>
 
-    <div class="grid gap-10 lg:grid-cols-[1fr_minmax(0,460px)]">
+    <div class="mt-14 grid gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,430px)]">
 
-        {{-- ================= KIRI : KONTROL ================= --}}
-        <div class="space-y-10">
+        {{-- ─────────── KONTROL ─────────── --}}
+        <div class="space-y-14">
 
-            {{-- 1. Pilih biji --}}
+            {{-- Langkah 1 --}}
             <section>
-                <div class="mb-4 flex items-center gap-3">
-                    <span class="krm-display text-xs tracking-[0.25em] text-[#2A5DB0]">01</span>
-                    <h2 class="krm-display text-lg tracking-[0.18em]">PILIH BIJI</h2>
-                </div>
+                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                    <span class="krm-readout text-[12px] text-kraft/45">01</span>
+                    Pilih biji
+                </h2>
 
-                <div class="grid gap-3 sm:grid-cols-3">
+                <div class="mt-5 grid gap-3 sm:grid-cols-3">
                     @foreach ($this->coffees as $bean)
                         <button type="button"
                                 wire:click="selectCoffee({{ $bean->id }})"
-                                class="group rounded-sm border p-4 text-left transition
+                                aria-pressed="{{ $this->coffeeId === $bean->id ? 'true' : 'false' }}"
+                                class="border p-4 text-left transition-colors
                                        {{ $this->coffeeId === $bean->id
-                                            ? 'border-[#2A5DB0] bg-[#2A5DB0]/10'
-                                            : 'border-[#D8C5A6]/20 hover:border-[#D8C5A6]/50' }}">
-                            <p class="krm-display text-sm leading-snug tracking-wide">
+                                            ? 'border-bluelab bg-bluelab/10'
+                                            : 'border-kraft/20 hover:border-kraft/45' }}">
+                            <span class="block font-display text-[15px] font-semibold leading-snug">
                                 {{ $bean->name }}
-                            </p>
-                            <p class="mt-2 text-[11px] text-[#D8C5A6]/70">
+                            </span>
+                            <span class="mt-2 block text-[12.5px] text-kraft/65">
                                 {{ $bean->traceability?->region }}
-                            </p>
-                            <p class="mt-3 text-[11px] tracking-[0.1em] text-[#2A5DB0]">
-                                {{ number_format($bean->cupping_score, 1) }} PTS
-                            </p>
+                            </span>
+                            <span class="krm-readout mt-3 block text-[12px] text-bluelab">
+                                {{ number_format($bean->cupping_score, 1) }}
+                            </span>
                         </button>
                     @endforeach
                 </div>
 
                 @if ($this->coffee?->story)
-                    <p class="mt-4 border-l-2 border-[#2A5DB0]/50 pl-4 text-sm leading-relaxed text-[#D8C5A6]/75">
+                    <p class="mt-5 max-w-[60ch] border-l-2 border-bluelab/60 pl-4 text-[14px] leading-relaxed text-kraft/75">
                         {{ $this->coffee->story }}
                     </p>
                 @endif
             </section>
 
-            {{-- 2. Level sangrai --}}
+            {{-- Langkah 2 --}}
             <section>
-                <div class="mb-4 flex items-center gap-3">
-                    <span class="krm-display text-xs tracking-[0.25em] text-[#2A5DB0]">02</span>
-                    <h2 class="krm-display text-lg tracking-[0.18em]">LEVEL SANGRAI</h2>
-                </div>
+                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                    <span class="krm-readout text-[12px] text-kraft/45">02</span>
+                    Level sangrai
+                </h2>
 
                 @if ($this->levels->isNotEmpty())
-                    <div class="rounded-sm border border-[#D8C5A6]/20 p-5">
-                        <div class="mb-5 flex items-baseline justify-between">
-                            <p class="krm-display text-2xl tracking-wide">
+                    <div class="mt-5 border border-kraft/20 p-6">
+                        <div class="flex items-baseline justify-between gap-4">
+                            <p class="font-display text-[1.6rem] font-semibold">
                                 {{ $this->profile?->level_label }}
                             </p>
-                            <p class="text-[11px] tracking-[0.15em] text-[#D8C5A6]/70">
-                                AGTRON {{ $this->profile?->agtron }}
+                            <p class="krm-readout text-[13px] text-kraft/70">
+                                Agtron {{ $this->profile?->agtron }}
                             </p>
                         </div>
 
-                        <input type="range"
+                        <label for="roast" class="sr-only">Level sangrai</label>
+                        <input id="roast"
+                               type="range"
                                min="0"
                                max="{{ $this->levels->count() - 1 }}"
                                step="1"
                                wire:model.live="levelIndex"
-                               class="h-1 w-full cursor-pointer appearance-none rounded-full
-                                      bg-gradient-to-r from-[#D8C5A6] to-[#4A2C18]
-                                      accent-[#2A5DB0]">
+                               class="mt-6 h-1 w-full cursor-pointer appearance-none rounded-full
+                                      bg-gradient-to-r from-[#E4D6BB] via-[#9A6B42] to-[#3B2316]
+                                      accent-bluelab">
 
-                        <div class="mt-3 flex justify-between text-[10px] tracking-[0.12em] text-[#D8C5A6]/60">
+                        <div class="mt-3 flex justify-between gap-2 text-[11.5px] text-kraft/55">
                             @foreach ($this->levels as $lv)
-                                <span>{{ strtoupper(str_replace('_', ' ', $lv->level)) }}</span>
+                                <span>{{ $lv->level_label }}</span>
                             @endforeach
                         </div>
 
                         @if ($this->levels->count() < 5)
-                            <p class="mt-4 text-[11px] leading-relaxed text-[#D8C5A6]/55">
-                                Biji ini tidak disangrai sampai level paling gelap —
-                                karakter aslinya akan hilang.
+                            <p class="mt-5 max-w-[52ch] text-[13px] leading-relaxed text-kraft/60">
+                                Biji ini berhenti sebelum level paling gelap. Disangrai
+                                lebih jauh, karakter aslinya hilang dan yang tersisa
+                                cuma rasa gosong.
                             </p>
                         @endif
                     </div>
                 @endif
             </section>
 
-            {{-- 3. Gilingan --}}
+            {{-- Langkah 3 --}}
             <section>
-                <div class="mb-4 flex items-center gap-3">
-                    <span class="krm-display text-xs tracking-[0.25em] text-[#2A5DB0]">03</span>
-                    <h2 class="krm-display text-lg tracking-[0.18em]">GILINGAN</h2>
-                </div>
+                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                    <span class="krm-readout text-[12px] text-kraft/45">03</span>
+                    Ukuran gilingan
+                </h2>
 
-                <div class="flex flex-wrap gap-2">
+                <div class="mt-5 flex flex-wrap gap-2.5">
                     @foreach ($this->grindOptions as $key => $label)
                         <button type="button"
                                 wire:click="setGrind('{{ $key }}')"
-                                class="rounded-sm border px-4 py-2 text-xs tracking-[0.1em] transition
+                                aria-pressed="{{ $grind === $key ? 'true' : 'false' }}"
+                                class="border px-4 py-2.5 text-[13.5px] transition-colors
                                        {{ $grind === $key
-                                            ? 'border-[#2A5DB0] bg-[#2A5DB0]/15 text-[#FFFBF2]'
-                                            : 'border-[#D8C5A6]/20 text-[#D8C5A6]/80 hover:border-[#D8C5A6]/50' }}">
+                                            ? 'border-bluelab bg-bluelab/10 text-labwhite'
+                                            : 'border-kraft/20 text-kraft/80 hover:border-kraft/45' }}">
                             {{ $label }}
                         </button>
                     @endforeach
                 </div>
             </section>
 
-            {{-- 4. Berat --}}
+            {{-- Langkah 4 --}}
             <section>
-                <div class="mb-4 flex items-center gap-3">
-                    <span class="krm-display text-xs tracking-[0.25em] text-[#2A5DB0]">04</span>
-                    <h2 class="krm-display text-lg tracking-[0.18em]">BERAT</h2>
-                </div>
+                <h2 class="flex items-baseline gap-3 text-[1.35rem] font-semibold">
+                    <span class="krm-readout text-[12px] text-kraft/45">04</span>
+                    Berat
+                </h2>
 
-                <div class="grid max-w-md grid-cols-3 gap-3">
+                <div class="mt-5 grid max-w-md grid-cols-3 gap-3">
                     @foreach ([200, 500, 1000] as $g)
                         <button type="button"
                                 wire:click="setGrams({{ $g }})"
-                                class="rounded-sm border py-4 transition
+                                aria-pressed="{{ $grams === $g ? 'true' : 'false' }}"
+                                class="border py-5 transition-colors
                                        {{ $grams === $g
-                                            ? 'border-[#2A5DB0] bg-[#2A5DB0]/15'
-                                            : 'border-[#D8C5A6]/20 hover:border-[#D8C5A6]/50' }}">
-                            <span class="krm-display block text-xl">
+                                            ? 'border-bluelab bg-bluelab/10'
+                                            : 'border-kraft/20 hover:border-kraft/45' }}">
+                            <span class="krm-readout block text-[1.3rem]">
                                 {{ $g >= 1000 ? '1' : $g }}
                             </span>
-                            <span class="text-[10px] tracking-[0.15em] text-[#D8C5A6]/70">
-                                {{ $g >= 1000 ? 'KILOGRAM' : 'GRAM' }}
+                            <span class="mt-0.5 block text-[12px] text-kraft/65">
+                                {{ $g >= 1000 ? 'kilogram' : 'gram' }}
                             </span>
                         </button>
                     @endforeach
@@ -151,82 +147,69 @@
             </section>
         </div>
 
-        {{-- ================= KANAN : WHEEL + RINGKASAN ================= --}}
+        {{-- ─────────── PANEL RASA ─────────── --}}
         <div class="lg:sticky lg:top-24 lg:self-start">
-            <div class="rounded-sm border border-[#D8C5A6]/20 bg-[#121212]/70 p-6">
+            <div class="border border-kraft/20 p-6">
 
-                <div class="mb-5 flex items-center justify-between">
-                    <p class="text-[11px] tracking-[0.25em] text-[#D8C5A6]/70">
-                        KROMATOGRAM RASA
-                    </p>
-                    <span class="flex items-center gap-2 text-[10px] tracking-[0.2em] text-[#2A5DB0]">
-                        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[#2A5DB0]"></span>
-                        LIVE
-                    </span>
-                </div>
+                <h2 class="text-[1.1rem] font-semibold">Profil rasa</h2>
+                <p class="mt-1 text-[13px] text-kraft/60">
+                    Bergerak tiap kali pilihanmu berubah.
+                </p>
 
-                {{-- wire:ignore penting: biar D3 yang pegang isi div ini,
-                     bukan Livewire. Update nilai dikirim lewat event. --}}
+                {{-- wire:ignore: isi div ini digambar D3, bukan Blade.
+                     Nilai barunya dikirim lewat event, bukan render ulang. --}}
                 <div wire:ignore
+                     class="mt-6"
                      x-data="flavorWheel(@js($this->flavorValues))"
                      x-init="init()">
                     <div x-ref="wheel" class="flex justify-center"></div>
                 </div>
 
-                {{-- Tasting notes --}}
-                <div class="mt-6 border-t border-[#D8C5A6]/15 pt-5">
-                    <p class="mb-3 text-[11px] tracking-[0.2em] text-[#D8C5A6]/70">
-                        ESTIMATED PROFILE
+                @if ($this->profile?->tasting_notes)
+                    <p class="mt-7 border-t border-kraft/15 pt-5 text-[14px] leading-relaxed">
+                        {{ implode(', ', $this->profile->tasting_notes) }}
                     </p>
-                    <div class="flex flex-wrap gap-2">
-                        @foreach ($this->profile?->tasting_notes ?? [] as $note)
-                            <span class="rounded-full border border-[#2A5DB0]/50 bg-[#2A5DB0]/10 px-3 py-1 text-[11px] tracking-wide">
-                                {{ $note }}
-                            </span>
-                        @endforeach
-                    </div>
-                </div>
+                @endif
 
-                {{-- Ringkasan pesanan --}}
-                <div class="mt-6 space-y-2 border-t border-[#D8C5A6]/15 pt-5 text-xs">
-                    <div class="flex justify-between text-[#D8C5A6]/75">
-                        <span>Biji</span>
-                        <span class="text-[#FFFBF2]">{{ $this->coffee?->name }}</span>
+                <dl class="mt-6 space-y-2.5 border-t border-kraft/15 pt-5 text-[13px]">
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-kraft/60">Biji</dt>
+                        <dd class="text-right">{{ $this->coffee?->name }}</dd>
                     </div>
-                    <div class="flex justify-between text-[#D8C5A6]/75">
-                        <span>Sangrai</span>
-                        <span class="text-[#FFFBF2]">{{ $this->profile?->level_label }}</span>
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-kraft/60">Sangrai</dt>
+                        <dd class="text-right">{{ $this->profile?->level_label }}</dd>
                     </div>
-                    <div class="flex justify-between text-[#D8C5A6]/75">
-                        <span>Gilingan</span>
-                        <span class="text-[#FFFBF2]">{{ $this->grindOptions[$grind] }}</span>
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-kraft/60">Gilingan</dt>
+                        <dd class="text-right">{{ $this->grindOptions[$grind] }}</dd>
                     </div>
-                    <div class="flex justify-between text-[#D8C5A6]/75">
-                        <span>Berat</span>
-                        <span class="text-[#FFFBF2]">{{ number_format($grams) }} gram</span>
+                    <div class="flex justify-between gap-4">
+                        <dt class="text-kraft/60">Berat</dt>
+                        <dd class="krm-readout text-right">{{ number_format($grams) }} g</dd>
                     </div>
-                </div>
+                </dl>
 
-                {{-- Harga --}}
-                <div class="mt-5 flex items-end justify-between border-t border-[#D8C5A6]/15 pt-5">
-                    <span class="text-[11px] tracking-[0.2em] text-[#D8C5A6]/70">TOTAL</span>
-                    <span class="krm-display text-3xl font-bold text-[#FFFBF2]">
-                        Rp {{ number_format($this->price, 0, ',', '.') }}
+                <div class="mt-5 flex items-end justify-between gap-4 border-t border-kraft/15 pt-5">
+                    <span class="text-[13px] text-kraft/60">Total</span>
+                    <span class="krm-readout text-[1.75rem] font-medium">
+                        Rp{{ number_format($this->price, 0, ',', '.') }}
                     </span>
                 </div>
 
                 @if ($this->stockOk)
                     <button type="button"
-                            class="krm-display mt-5 w-full rounded-sm bg-[#2A5DB0] py-4 text-sm font-semibold tracking-[0.2em] transition hover:bg-[#2A5DB0]/85">
-                        PESAN & SANGRAI
+                            class="mt-6 w-full bg-bluelab py-4 font-display text-[15px] font-semibold transition-colors hover:bg-[#234E94]">
+                        Pesan dan sangrai
                     </button>
-                    <p class="mt-3 text-center text-[10px] tracking-[0.12em] text-[#D8C5A6]/55">
-                        DISANGRAI SETELAH PESANAN MASUK &middot; KIRIM DALAM 24 JAM
+                    <p class="mt-3 text-center text-[12px] leading-relaxed text-kraft/55">
+                        Disangrai setelah pesanan masuk. Berangkat dalam 24 jam.
                     </p>
                 @else
-                    <div class="mt-5 rounded-sm border border-[#D8C5A6]/30 py-4 text-center text-xs tracking-[0.15em] text-[#D8C5A6]/70">
-                        STOK GREEN BEAN TIDAK CUKUP
-                    </div>
+                    <p class="mt-6 border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/70">
+                        Stok biji mentahnya tidak cukup untuk berat ini.
+                        Coba ukuran yang lebih kecil.
+                    </p>
                 @endif
             </div>
         </div>

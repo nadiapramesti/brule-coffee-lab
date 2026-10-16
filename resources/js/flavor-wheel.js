@@ -5,12 +5,12 @@ import * as d3 from 'd3';
  * Nilai tiap rasa 0-100, digambar sebagai poligon di atas grid melingkar.
  */
 const AXES = [
-    { key: 'citrus',    label: 'Citrus' },
-    { key: 'floral',    label: 'Floral' },
-    { key: 'berry',     label: 'Berry' },
-    { key: 'chocolate', label: 'Chocolate' },
-    { key: 'nutty',     label: 'Nutty' },
-    { key: 'spice',     label: 'Spice' },
+    { key: 'citrus',    label: 'Jeruk' },
+    { key: 'floral',    label: 'Bunga' },
+    { key: 'berry',     label: 'Beri' },
+    { key: 'chocolate', label: 'Cokelat' },
+    { key: 'nutty',     label: 'Kacang' },
+    { key: 'spice',     label: 'Rempah' },
 ];
 
 const BLUE     = '#2A5DB0';
@@ -109,10 +109,10 @@ export default function flavorWheel(initialValues = {}) {
                     .attr('text-anchor', 'middle')
                     .attr('dominant-baseline', 'middle')
                     .attr('fill', LABWHITE)
-                    .attr('font-size', 11)
-                    .attr('letter-spacing', '0.14em')
-                    .attr('font-family', 'ui-monospace, monospace')
-                    .text(axis.label.toUpperCase());
+                    .attr('font-size', 13)
+                    .attr('font-weight', 600)
+                    .attr('font-family', "'IBM Plex Sans Condensed', sans-serif")
+                    .text(axis.label);
             });
 
             // poligon rasa

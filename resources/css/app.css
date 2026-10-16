@@ -1,4 +1,52 @@
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    html {
+        -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    }
+
+    /* Judul & teks besar: Plex Sans Condensed. Sempit, tegas,
+       dirancang untuk dokumen teknis. */
+    h1, h2, h3, .krm-display {
+        font-family: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+    }
+
+    /* Monospace HANYA untuk angka hasil ukur: retention time,
+       altitude, agtron, cupping score, harga, berat.
+       Bukan untuk label UI atau navigasi. */
+    .krm-readout {
+        font-family: 'IBM Plex Mono', ui-monospace, monospace;
+        font-variant-numeric: tabular-nums;
+    }
+
+    :focus-visible {
+        outline: 2px solid #2A5DB0;
+        outline-offset: 3px;
+    }
+}
+
+@layer components {
+    /* Kertas milimeter blok laboratorium */
+    .krm-grid {
+        background-color: #121212;
+        background-image:
+            linear-gradient(rgba(216, 197, 166, .05) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(216, 197, 166, .05) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+    }
+}
