@@ -648,5 +648,6 @@
     "Pesanan :code selesai. Selamat menyeduh!": "Order :code is complete. Happy brewing!",
     ":code · :r": ":code · :r",
     "Pesanan :code dibatalkan.": "Order :code was cancelled.",
-    ":n tersisa :kg kg": ":n has :kg kg left"
+    ":n tersisa :kg kg": ":n has :kg kg left",
+    "Ganti tema": "Switch theme"
 }

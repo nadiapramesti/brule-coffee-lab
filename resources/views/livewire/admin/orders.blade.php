@@ -21,7 +21,7 @@
         <p role="status" x-data x-init="setTimeout(() => $el.remove(), 4000)" class="mt-4 rounded border border-bluelab/50 bg-bluelab/10 px-4 py-2.5 text-[13px]">{{ $notice }}</p>
     @endif
 
-    <section class="mt-4 rounded border border-kraft/20 bg-[#121212]">
+    <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         {{-- Filter --}}
         <div class="flex flex-wrap items-end gap-3 px-4 pt-4">
             <div class="relative min-w-[220px] flex-1 sm:max-w-sm">
@@ -48,7 +48,7 @@
             @foreach (\App\Models\Order::TABS as $key => [$label])
                 <button type="button" role="tab" aria-selected="{{ $tab === $key ? 'true' : 'false' }}" wire:click="setTab('{{ $key }}')"
                         class="-mb-px flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
-                    {{ __($label) }}<span class="krm-readout rounded-[6px] bg-white/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
+                    {{ __($label) }}<span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
                 </button>
             @endforeach
         </div>
@@ -60,7 +60,7 @@
                 </thead>
                 <tbody class="divide-y divide-kraft/10">
                     @foreach ($orders as $row)
-                        <tr wire:key="r-{{ $row->id }}" wire:click="show('{{ $row->order_code }}')" class="cursor-pointer transition-colors hover:bg-white/[.03] {{ $open === $row->order_code ? 'bg-bluelab/10' : '' }}">
+                        <tr wire:key="r-{{ $row->id }}" wire:click="show('{{ $row->order_code }}')" class="cursor-pointer transition-colors hover:bg-labwhite/[.03] {{ $open === $row->order_code ? 'bg-bluelab/10' : '' }}">
                             <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}</td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $row->user?->name ?? $row->recipient_name }}</td>
                             <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->items->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g')->implode(', ') }}</td>
@@ -108,7 +108,7 @@
              x-data="{ init() { document.body.style.overflow = 'hidden'; }, destroy() { document.body.style.overflow = ''; } }"
              @keydown.escape.window="$wire.close()">
             <div class="krm-fade absolute inset-0 bg-black/60 backdrop-blur-[2px]" wire:click="close"></div>
-            <aside role="dialog" aria-modal="true" aria-labelledby="od-title" class="krm-slide relative flex h-full w-full max-w-[540px] flex-col border-l border-kraft/25 bg-[#141414] shadow-[-30px_0_80px_-20px_rgba(0,0,0,.9)]">
+            <aside role="dialog" aria-modal="true" aria-labelledby="od-title" class="krm-slide relative flex h-full w-full max-w-[540px] flex-col border-l border-kraft/25 bg-surface shadow-[-30px_0_80px_-20px_rgb(var(--shadow)/.9)]">
                 <header class="flex shrink-0 items-start justify-between gap-3 border-b border-kraft/15 px-5 py-4">
                     <div class="min-w-0">
                         <p class="krm-readout text-[11px] uppercase tracking-[0.16em] text-kraft/50">{{ __('Pesanan') }}</p>
@@ -117,7 +117,7 @@
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $o->statusTone() }}">{{ $o->status_label }}</span>
-                        <button type="button" wire:click="close" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 hover:bg-white/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
+                        <button type="button" wire:click="close" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 hover:bg-labwhite/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
                             <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>
                         </button>
                     </div>
@@ -126,7 +126,7 @@
                 <div class="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain px-5 py-5">
                     {{-- Tahapan --}}
                     @if ($o->status === 'cancelled')
-                        <p class="rounded border border-kraft/25 bg-white/[.03] px-4 py-3 text-[13px] text-kraft/70">{{ __('Dibatalkan') }} {{ $o->cancelled_at?->translatedFormat('j M Y, H:i') }}. {{ __('Stok biji dikembalikan.') }}</p>
+                        <p class="rounded border border-kraft/25 bg-labwhite/[.03] px-4 py-3 text-[13px] text-kraft/70">{{ __('Dibatalkan') }} {{ $o->cancelled_at?->translatedFormat('j M Y, H:i') }}. {{ __('Stok biji dikembalikan.') }}</p>
                     @else
                         @php
                             $flow = ['pending_payment' => $o->created_at] + collect(\App\Models\Order::FLOW)->mapWithKeys(fn ($s) => [$s => match ($s) { 'queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at, 'completed' => $o->completed_at, default => null }])->all();
@@ -137,7 +137,7 @@
                                 @php $done = array_search($s, $order, true) <= $idx; @endphp
                                 <li class="relative flex-1 text-center">
                                     @unless ($loop->first)<span class="absolute right-1/2 top-[7px] h-px w-full {{ $done ? 'bg-bluelab' : 'bg-kraft/20' }}"></span>@endunless
-                                    <span class="relative mx-auto block h-[15px] w-[15px] rounded-full border-2 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-[#141414]' }} {{ $s === $o->status ? 'ring-4 ring-bluelab/25' : '' }}"></span>
+                                    <span class="relative mx-auto block h-[15px] w-[15px] rounded-full border-2 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-surface' }} {{ $s === $o->status ? 'ring-4 ring-bluelab/25' : '' }}"></span>
                                     <span class="mt-1.5 block text-[10px] leading-tight {{ $done ? 'text-labwhite' : 'text-kraft/40' }}">{{ __(\App\Models\Order::STATUS_LABELS[$s]) }}</span>
                                     @if ($at)<span class="krm-readout block text-[9.5px] text-kraft/45">{{ $at->translatedFormat('j M H:i') }}</span>@endif
                                 </li>
@@ -159,7 +159,7 @@
                                     <input id="resi" wire:model="tracking" wire:keydown.enter="ship" placeholder="{{ __('Contoh: JNE1234567890') }}" class="{{ $inp }} krm-readout min-w-0 flex-1">
                                     <button wire:click="ship" class="shrink-0 rounded bg-bluelab px-4 text-[13.5px] font-semibold hover:bg-[#234E94]">{{ __('Kirim') }}</button>
                                 </div>
-                                @error('tracking')<p class="text-[12px] text-red-300">{{ $message }}</p>@enderror
+                                @error('tracking')<p class="text-[12px] text-redtext">{{ $message }}</p>@enderror
                             @elseif ($o->status === 'shipped')
                                 <button wire:click="complete" class="w-full rounded bg-bluelab py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Tandai selesai (sudah diterima)') }}</button>
                             @else
@@ -168,13 +168,13 @@
 
                             @if (in_array($o->status, ['pending_payment', 'queued']))
                                 @if (! $confirmCancel)
-                                    <button wire:click="$set('confirmCancel', true)" class="w-full rounded border border-red-400/30 py-2 text-[13px] text-red-300 transition-colors hover:bg-red-400/10">{{ __('Batalkan pesanan') }}</button>
+                                    <button wire:click="$set('confirmCancel', true)" class="w-full rounded border border-redtext/30 py-2 text-[13px] text-redtext transition-colors hover:bg-redtext/10">{{ __('Batalkan pesanan') }}</button>
                                 @else
-                                    <div class="rounded border border-red-400/30 bg-red-400/[.05] p-3">
+                                    <div class="rounded border border-redtext/30 bg-redtext/[.05] p-3">
                                         <label for="why" class="text-[12.5px] text-kraft/75">{{ __('Alasan pembatalan') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
                                         <input id="why" wire:model="cancelReason" placeholder="{{ __('Contoh: stok biji habis / permintaan pembeli') }}" class="{{ $inp }} mt-1.5 w-full">
                                         <div class="mt-2.5 flex gap-2">
-                                            <button wire:click="cancel" class="flex-1 rounded bg-red-500/80 py-2 text-[13px] font-semibold hover:bg-red-500">{{ __('Ya, batalkan & kembalikan stok') }}</button>
+                                            <button wire:click="cancel" class="flex-1 rounded bg-redtext/80 py-2 text-[13px] font-semibold hover:bg-red-500">{{ __('Ya, batalkan & kembalikan stok') }}</button>
                                             <button wire:click="$set('confirmCancel', false)" class="rounded px-3 text-[13px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
                                         </div>
                                     </div>
@@ -188,7 +188,7 @@
                         <h3 class="text-[12.5px] font-semibold">{{ __('Penerima & pengiriman') }}</h3>
                         <p class="mt-2.5 font-semibold">{{ $o->recipient_name }}</p>
                         <p class="krm-readout text-[12.5px] text-kraft/70">{{ $o->recipient_phone }}
-                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-[#9DBBEF] underline-offset-4 hover:underline">WhatsApp ↗</a></p>
+                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">WhatsApp ↗</a></p>
                         <p class="mt-2 whitespace-pre-line text-kraft/80">{{ $o->shipping_address }}</p>
                         @if ($o->user)<p class="mt-3 border-t border-kraft/10 pt-2.5 text-[12px] text-kraft/55">{{ __('Akun') }}: {{ $o->user->name }} · {{ $o->user->email }}</p>@endif
                         @if ($o->tracking_number)<p class="mt-1 text-[12px] text-kraft/55">{{ __('Resi') }}: <span class="krm-readout text-labwhite">{{ $o->tracking_number }}</span></p>@endif
@@ -220,7 +220,7 @@
                     <section class="rounded border border-kraft/20 p-4">
                         <label for="note" class="text-[12.5px] font-semibold">{{ __('Catatan internal') }}</label>
                         <textarea id="note" rows="2" wire:model="note" placeholder="{{ __('Contoh: pembeli minta digiling lebih halus, hubungi sebelum kirim') }}" class="{{ $inp }} mt-2 w-full"></textarea>
-                        @error('note')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('note')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                         <button wire:click="saveNote" class="mt-2 rounded border border-kraft/30 px-3.5 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Simpan catatan') }}</button>
                     </section>
 

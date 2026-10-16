@@ -1,7 +1,7 @@
 @php
     $inp = 'w-full rounded border border-kraft/25 bg-transparent px-3 py-2.5 text-[14px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40';
     $tabs = ['' => __('Semua')] + collect(\App\Livewire\Admin\Users::ROLES)->all();
-    $chip = ['admin' => 'border-[#E8782A]/50 text-[#F2A266]', 'roaster' => 'border-bluelab/60 text-[#9DBBEF]', 'customer' => 'border-kraft/30 text-kraft/70'];
+    $chip = ['admin' => 'border-[#E8782A]/50 text-ambertext', 'roaster' => 'border-bluelab/60 text-bluetext', 'customer' => 'border-kraft/30 text-kraft/70'];
     $desc = ['admin' => __('Akses penuh: semua menu panel, pengaturan, dan pengguna.'), 'roaster' => __('Hanya melihat dan menjalankan antrian roastery.'), 'customer' => __('Pembeli biasa: belanja dan lacak pesanan.')];
     $me = auth()->id();
 @endphp
@@ -20,12 +20,12 @@
         <p role="status" x-data x-init="setTimeout(() => $el.remove(), 6000)" class="mt-4 rounded border border-bluelab/50 bg-bluelab/10 px-4 py-2.5 text-[13px]">{{ $notice }}</p>
     @endif
 
-    <section class="mt-4 rounded border border-kraft/20 bg-[#121212]">
+    <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-kraft/15 px-3">
             <div class="flex flex-wrap gap-1" role="tablist">
                 @foreach ($tabs as $k => $l)
                     <button role="tab" aria-selected="{{ $role === (string) $k ? 'true' : 'false' }}" wire:click="setRole('{{ $k }}')"
-                            class="-mb-px border-b-2 px-3 py-3 text-[13px] transition-colors {{ $role === (string) $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-white/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
+                            class="-mb-px border-b-2 px-3 py-3 text-[13px] transition-colors {{ $role === (string) $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
                 @endforeach
             </div>
             <div class="py-2">
@@ -81,7 +81,7 @@
     @if ($this->editing)
         <div class="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" x-data="{ init() { document.body.style.overflow = 'hidden'; }, destroy() { document.body.style.overflow = ''; } }" @keydown.escape.window="$wire.closeRole()">
             <div class="krm-fade absolute inset-0 bg-black/70 backdrop-blur-[2px]" wire:click="closeRole"></div>
-            <form wire:submit="saveRole" role="dialog" aria-modal="true" aria-labelledby="ur-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-[#141414] shadow-[0_30px_80px_-20px_rgba(0,0,0,.95)] sm:max-w-[440px] sm:rounded-[14px]">
+            <form wire:submit="saveRole" role="dialog" aria-modal="true" aria-labelledby="ur-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-surface shadow-[0_30px_80px_-20px_rgb(var(--shadow)/.95)] sm:max-w-[440px] sm:rounded-[14px]">
                 <header class="border-b border-kraft/15 px-5 py-4">
                     <h2 id="ur-title" class="font-display text-[1.05rem] font-semibold">{{ __('Ubah role') }}</h2>
                     <p class="mt-0.5 truncate text-[12.5px] text-kraft/60">{{ $this->editing->name }} · {{ $this->editing->email }}</p>
@@ -93,7 +93,7 @@
                             <span><span class="block text-[13.5px] font-semibold">{{ $l }}</span><span class="block text-[12.5px] text-kraft/60">{{ $desc[$k] }}</span></span>
                         </label>
                     @endforeach
-                    @error('newRole')<p class="text-[12.5px] text-red-300">{{ $message }}</p>@enderror
+                    @error('newRole')<p class="text-[12.5px] text-redtext">{{ $message }}</p>@enderror
                 </div>
                 <footer class="flex items-center justify-end gap-2 border-t border-kraft/15 px-5 py-3.5">
                     <button type="button" wire:click="closeRole" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
@@ -107,28 +107,28 @@
     @if ($creating)
         <div class="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" x-data="{ init() { document.body.style.overflow = 'hidden'; }, destroy() { document.body.style.overflow = ''; } }" @keydown.escape.window="$wire.closeCreate()">
             <div class="krm-fade absolute inset-0 bg-black/70 backdrop-blur-[2px]" wire:click="closeCreate"></div>
-            <form wire:submit="createStaff" role="dialog" aria-modal="true" aria-labelledby="uc-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-[#141414] shadow-[0_30px_80px_-20px_rgba(0,0,0,.95)] sm:max-w-[460px] sm:rounded-[14px]" novalidate>
+            <form wire:submit="createStaff" role="dialog" aria-modal="true" aria-labelledby="uc-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-surface shadow-[0_30px_80px_-20px_rgb(var(--shadow)/.95)] sm:max-w-[460px] sm:rounded-[14px]" novalidate>
                 <header class="border-b border-kraft/15 px-5 py-4"><h2 id="uc-title" class="font-display text-[1.05rem] font-semibold">{{ __('Tambah staf') }}</h2></header>
                 <div class="space-y-4 px-5 py-4">
                     <div>
                         <label for="un" class="text-[12.5px] text-kraft/75">{{ __('Nama lengkap') }}</label>
                         <input id="un" wire:model="name" autocomplete="off" placeholder="Dimas Prakoso" class="{{ $inp }} mt-1.5">
-                        @error('name')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('name')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div>
                         <label for="ue" class="text-[12.5px] text-kraft/75">Email</label>
                         <input id="ue" type="email" wire:model="email" autocomplete="off" placeholder="roaster@kromatik.id" class="{{ $inp }} mt-1.5">
-                        @error('email')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('email')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label for="ur" class="text-[12.5px] text-kraft/75">{{ __('Role') }}</label>
-                            <select id="ur" wire:model="staffRole" class="{{ $inp }} mt-1.5"><option class="bg-[#141414]" value="roaster">Roaster</option><option class="bg-[#141414]" value="admin">Admin</option></select>
+                            <select id="ur" wire:model="staffRole" class="{{ $inp }} mt-1.5"><option class="bg-surface" value="roaster">Roaster</option><option class="bg-surface" value="admin">Admin</option></select>
                         </div>
                         <div>
                             <label for="up" class="text-[12.5px] text-kraft/75">{{ __('Kata sandi sementara') }}</label>
                             <input id="up" type="text" wire:model="password" autocomplete="off" placeholder="{{ __('min. 8 karakter') }}" class="{{ $inp }} krm-readout mt-1.5">
-                            @error('password')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                            @error('password')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                         </div>
                     </div>
                     <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Berikan kata sandi ini langsung ke orangnya, lalu minta dia menggantinya lewat halaman Profil.') }}</p>

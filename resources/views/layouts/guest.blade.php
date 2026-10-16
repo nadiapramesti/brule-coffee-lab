@@ -17,6 +17,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $copy[0] }} — KROMATIK</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
+    @include('layouts.partials.theme-boot')
     <script>document.documentElement.classList.add('js')</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -28,17 +29,17 @@
             <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 2.5L4 6l3.5 3.5"/></svg>
             <span class="max-[420px]:hidden">{{ __('Kembali ke beranda') }}</span><span class="min-[421px]:hidden">{{ __('Beranda') }}</span>
         </a>
-        <x-lang-switch class="flex" />
+        <div class="flex items-center gap-3"><x-lang-switch class="flex" /><x-theme-toggle /></div>
     </div>
 
     <main class="flex flex-1 items-center justify-center py-3 sm:py-6">
         <div class="w-full {{ $route === 'register' ? 'max-w-[560px]' : 'max-w-[420px]' }}" data-reveal>
             <a href="{{ route('landing') }}" wire:navigate class="flex items-center justify-center gap-3">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="h-9 w-9">
+                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="krm-mark h-9 w-9">
                 <span class="font-display text-[15px] font-semibold tracking-[0.24em]">KROMATIK</span>
             </a>
 
-            <div class="mt-4 rounded-[14px] border border-kraft/20 bg-[#141414]/90 p-5 shadow-[0_30px_60px_-30px_rgba(0,0,0,.9)] sm:mt-5 sm:p-7">
+            <div class="mt-4 rounded-[14px] border border-kraft/20 bg-surface/90 p-5 shadow-[0_30px_60px_-30px_rgb(var(--shadow)/.9)] sm:mt-5 sm:p-7">
                 <h1 class="font-display text-[1.65rem] font-bold leading-tight tracking-[-0.01em]">{{ $copy[0] }}</h1>
                 @if ($copy[1])<p class="mt-1.5 text-[14px] leading-relaxed text-kraft/70 {{ $route === 'register' ? 'hidden' : '' }}">{{ $copy[1] }}</p>@endif
                 <div class="{{ $route === 'register' ? 'mt-4' : 'mt-5 sm:mt-7' }}">

@@ -12,9 +12,19 @@ export default {
     theme: {
         extend: {
             colors: {
-                charcoal: '#121212',
-                labwhite: '#FFFBF2',
-                kraft:    '#D8C5A6',
+                // Token tema: nilainya (terang/gelap) ada di resources/css/app.css.
+                // Nama lama dipertahankan supaya seluruh tampilan ikut berganti
+                // tanpa menulis ulang setiap kelas.
+                charcoal: 'rgb(var(--c-bg) / <alpha-value>)',      // latar halaman
+                labwhite: 'rgb(var(--c-fg) / <alpha-value>)',      // teks utama
+                kraft:    'rgb(var(--c-muted) / <alpha-value>)',   // teks redup, garis
+                surface:  'rgb(var(--c-surface) / <alpha-value>)', // kartu, menu, sidebar
+                bluetext: 'rgb(var(--c-bluetext) / <alpha-value>)',
+                ambertext:'rgb(var(--c-ambertext) / <alpha-value>)',
+                redtext:  'rgb(var(--c-redtext) / <alpha-value>)',
+                // Tetap sama di kedua mode (di atas tombol berwarna / foto):
+                paper:    '#FFFBF2',
+                night:    '#121212',
                 kraftink: '#5C4B33',
                 bluelab:  '#2A5DB0',
             },

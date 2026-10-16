@@ -34,7 +34,7 @@
         <div class="inline-flex flex-wrap rounded border border-kraft/25 p-0.5 text-[12.5px]" role="radiogroup" aria-label="{{ __('Periode') }}">
             @foreach (\App\Support\SalesReport::PRESETS as $k => $l)
                 <button type="button" role="radio" aria-checked="{{ $preset === $k ? 'true' : 'false' }}" wire:click="setPreset('{{ $k }}')"
-                        class="krm-readout rounded-[6px] px-3 py-1.5 transition-colors {{ $preset === $k ? 'bg-bluelab text-labwhite' : 'text-kraft/65 hover:text-labwhite' }}">{{ __($l) }}</button>
+                        class="krm-readout rounded-[6px] px-3 py-1.5 transition-colors {{ $preset === $k ? 'bg-bluelab text-paper' : 'text-kraft/65 hover:text-labwhite' }}">{{ __($l) }}</button>
             @endforeach
         </div>
         @if ($preset === 'custom')
@@ -57,10 +57,10 @@
                 [__('Diskon voucher'), $rp($s['discount']), null],
                 [__('Berat terjual'), $n($s['grams']) . ' g', null],
             ] as [$l, $v, $d])
-                <div class="rounded border border-kraft/20 bg-[#121212] px-4 py-3">
+                <div class="rounded border border-kraft/20 bg-charcoal px-4 py-3">
                     <dt class="text-[12px] text-kraft/60">{{ $l }}</dt>
                     <dd class="krm-readout mt-1 truncate text-[1.25rem] leading-tight">{{ $v }}</dd>
-                    <p class="mt-1.5 min-h-[1rem] text-[11.5px] {{ $d === null ? 'text-kraft/40' : ($d >= 0 ? 'text-[#9DBBEF]' : 'text-[#F2A266]') }}">
+                    <p class="mt-1.5 min-h-[1rem] text-[11.5px] {{ $d === null ? 'text-kraft/40' : ($d >= 0 ? 'text-bluetext' : 'text-ambertext') }}">
                         @if ($d !== null){{ $d >= 0 ? '▲' : '▼' }} {{ abs($d) }}% {{ __('vs periode sebelumnya') }}@else&nbsp;@endif
                     </p>
                 </div>
@@ -68,7 +68,7 @@
         </dl>
         <p class="mt-2 text-[12px] text-kraft/50">{{ __('Omzet') }} {{ $rp($s['revenue']) }} = {{ __('kopi') }} {{ $rp($s['goods']) }} + {{ __('ongkir') }} {{ $rp($s['shipping']) }} − {{ __('diskon') }} {{ $rp($s['discount']) }}</p>
 
-        <section class="mt-4 rounded border border-kraft/20 bg-[#121212] p-5">
+        <section class="mt-4 rounded border border-kraft/20 bg-charcoal p-5">
             <h2 class="font-display text-[1rem] font-semibold">{{ $r->granularity() === 'month' ? __('Omzet per bulan') : __('Omzet per hari') }}</h2>
             @if ($s['orders'] === 0)
                 <p class="grid min-h-[200px] place-items-center text-[13px] text-kraft/45">{{ __('Belum ada pesanan dibayar di rentang ini.') }}</p>
@@ -82,7 +82,7 @@
                                 @php $h = $d['total'] > 0 ? max(2, round($d['total'] / $niceMax * 100)) : 0; $edge = $i > count($series) * 0.7; @endphp
                                 <div class="group relative flex h-full min-w-0 flex-1 items-end">
                                     <div class="w-full rounded-t-[3px] bg-bluelab transition-colors group-hover:bg-[#4A7BD0]" style="height: {{ $h }}%"></div>
-                                    <div class="pointer-events-none absolute bottom-full {{ $edge ? 'right-0' : 'left-1/2 -translate-x-1/2' }} z-10 mb-2 hidden whitespace-nowrap rounded border border-kraft/30 bg-[#1b1b1b] px-2.5 py-1.5 text-[11.5px] shadow-lg group-hover:block">
+                                    <div class="pointer-events-none absolute bottom-full {{ $edge ? 'right-0' : 'left-1/2 -translate-x-1/2' }} z-10 mb-2 hidden whitespace-nowrap rounded border border-kraft/30 bg-surface px-2.5 py-1.5 text-[11.5px] shadow-lg group-hover:block">
                                         <span class="text-kraft/60">{{ $d['label'] }}</span><br><span class="krm-readout">{{ $rp($d['total']) }}</span> · {{ $d['count'] }} {{ __('pesanan') }}
                                     </div>
                                 </div>
@@ -96,7 +96,7 @@
 
         <div class="mt-4 grid gap-4 xl:grid-cols-2">
             @foreach ([[__('Per kopi'), $coffee, 'name', $totalRev, __('Kopi')], [__('Per level roast'), $level, 'level', $totalLvl, __('Level')]] as [$title, $rows, $field, $total, $col])
-                <section class="min-w-0 rounded border border-kraft/20 bg-[#121212]">
+                <section class="min-w-0 rounded border border-kraft/20 bg-charcoal">
                     <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ $title }}</h2></header>
                     @if ($rows->isEmpty())
                         <p class="px-5 py-10 text-center text-[13px] text-kraft/45">{{ __('Belum ada data.') }}</p>
@@ -106,7 +106,7 @@
                             <tbody class="divide-y divide-kraft/10">
                                 @foreach ($rows as $row)
                                     <tr>
-                                        <td class="max-w-[140px] px-3 py-2.5 sm:max-w-[220px] sm:px-5"><p class="truncate">{{ $row[$field] }}</p><div class="mt-1.5 h-[3px] rounded-full bg-white/10"><div class="h-[3px] rounded-full bg-bluelab" style="width: {{ round($row['revenue'] / $total * 100) }}%"></div></div></td>
+                                        <td class="max-w-[140px] px-3 py-2.5 sm:max-w-[220px] sm:px-5"><p class="truncate">{{ $row[$field] }}</p><div class="mt-1.5 h-[3px] rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full bg-bluelab" style="width: {{ round($row['revenue'] / $total * 100) }}%"></div></div></td>
                                         <td class="krm-readout hidden px-2 py-2.5 text-right text-kraft/70 sm:table-cell">{{ $row['orders'] }}</td>
                                         <td class="krm-readout whitespace-nowrap px-2 py-2.5 text-right text-kraft/70">{{ $n($row['grams']) }} g</td>
                                         <td class="krm-readout whitespace-nowrap px-3 py-2.5 text-right sm:px-5">{{ $rp($row['revenue']) }}</td>
@@ -119,14 +119,14 @@
             @endforeach
         </div>
 
-        <section class="mt-4 rounded border border-kraft/20 bg-[#121212]">
+        <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pemakaian voucher') }}</h2></header>
             @if ($vouchers->isEmpty())
                 <p class="px-5 py-8 text-center text-[13px] text-kraft/45">{{ __('Tidak ada voucher yang dipakai di rentang ini.') }}</p>
             @else
                 <ul class="divide-y divide-kraft/10">
                     @foreach ($vouchers as $v)
-                        <li class="flex items-center justify-between gap-3 px-5 py-2.5 text-[13px]"><span class="krm-readout">{{ $v['code'] }}</span><span class="text-kraft/60">{{ $v['uses'] }}× {{ __('dipakai') }}</span><span class="krm-readout text-[#9DBBEF]">− {{ $rp($v['discount']) }}</span></li>
+                        <li class="flex items-center justify-between gap-3 px-5 py-2.5 text-[13px]"><span class="krm-readout">{{ $v['code'] }}</span><span class="text-kraft/60">{{ $v['uses'] }}× {{ __('dipakai') }}</span><span class="krm-readout text-bluetext">− {{ $rp($v['discount']) }}</span></li>
                     @endforeach
                 </ul>
             @endif

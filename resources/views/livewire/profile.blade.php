@@ -4,7 +4,7 @@
     <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/60" data-reveal>{{ __('AKUN') }}</p>
     <h1 class="krm-h2 mt-2 font-bold" data-reveal style="--d:60ms">{{ __('Profil') }}</h1>
 
-    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 rounded border border-kraft/20 bg-[#161616] px-5 py-4" data-reveal style="--d:120ms">
+    <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 rounded border border-kraft/20 bg-surface px-5 py-4" data-reveal style="--d:120ms">
         <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-bluelab font-display text-[1.1rem] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
         <div class="min-w-0 flex-1">
             <p class="truncate font-display text-[1.05rem] font-semibold">{{ $u->name }}</p>
@@ -16,7 +16,7 @@
 
     <div class="mt-6 space-y-5">
         @foreach (['update-profile-information-form', 'update-password-form', 'delete-user-form'] as $i => $form)
-            <div class="rounded border {{ $form === 'delete-user-form' ? 'border-red-400/25' : 'border-kraft/20' }} p-6 sm:p-8" data-reveal style="--d:{{ 180 + $i * 80 }}ms">
+            <div class="rounded border {{ $form === 'delete-user-form' ? 'border-redtext/25' : 'border-kraft/20' }} p-6 sm:p-8" data-reveal style="--d:{{ 180 + $i * 80 }}ms">
                 <div class="max-w-xl">
                     <livewire:is :component="'profile.' . $form" />
                 </div>

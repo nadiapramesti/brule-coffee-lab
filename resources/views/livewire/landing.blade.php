@@ -1,7 +1,7 @@
 <div>
 
     {{-- ══════════════════ HERO ══════════════════ --}}
-    <section class="relative isolate overflow-hidden -mt-[74px] pb-2 pt-[calc(74px+3rem)] md:pt-[calc(74px+4.5rem)]">
+    <section class="krm-dark relative isolate overflow-hidden -mt-[74px] pb-2 pt-[calc(74px+3rem)] md:pt-[calc(74px+4.5rem)]">
         {{-- Foto ruang sangrai asli sebagai latar. Dua lapis gelap:
              satu dari kiri supaya teks terbaca, satu dari bawah supaya
              kromatogram duduk di atas warna yang sama dengan sisa halaman. --}}
@@ -19,7 +19,7 @@
         <div class="mx-auto max-w-[1180px] px-6">
             <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div class="max-w-3xl">
-                <p class="mb-6 inline-flex items-center gap-3 rounded-full border border-white/15 bg-charcoal/50 py-1.5 pl-3 pr-4 text-[12px] backdrop-blur-[2px]"
+                <p class="mb-6 inline-flex items-center gap-3 rounded-full border border-labwhite/15 bg-charcoal/50 py-1.5 pl-3 pr-4 text-[12px] backdrop-blur-[2px]"
                    x-data="roastClock" data-reveal>
                     <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8782A] opacity-70"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-[#E8782A]"></span></span>
                     <span class="krm-readout tracking-[0.12em] text-kraft/80">{{ __('SEDANG DISANGRAI') }}</span>
@@ -38,7 +38,7 @@
 
                 <div class="mt-9 flex flex-wrap items-center gap-3" data-reveal style="--d:240ms">
                     <a href="{{ route('builder') }}"
-                       class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+                       class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
                         {{ __('Racik kopimu') }}
                     </a>
                     <a href="#biji"
@@ -124,14 +124,14 @@
                 <span class="mr-2 text-[12px] text-kraft/50">{{ __('Proses') }}</span>
                 <button type="button" @click="f = 'semua'"
                         :aria-pressed="f === 'semua'"
-                        :class="f === 'semua' ? 'border-bluelab bg-bluelab text-labwhite' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
+                        :class="f === 'semua' ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
                         class="rounded border px-3.5 py-1.5 text-[13px] transition-colors">
                     {{ __('Semua') }} <span class="krm-readout ml-1 text-[11px] opacity-70">{{ $this->coffees->count() }}</span>
                 </button>
                 @foreach ($processes as $proc)
                     <button type="button" @click="f = @js($proc)"
                             :aria-pressed="f === @js($proc)"
-                            :class="f === @js($proc) ? 'border-bluelab bg-bluelab text-labwhite' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
+                            :class="f === @js($proc) ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
                             class="rounded border px-3.5 py-1.5 text-[13px] transition-colors">
                         {{ $proc }}
                         <span class="krm-readout ml-1 text-[11px] opacity-70">{{ $this->coffees->filter(fn ($c) => $c->traceability?->process === $proc)->count() }}</span>
@@ -223,7 +223,7 @@
 
 
     {{-- ══════════════════ TAHAPAN: protokol satu foto, lima langkah ══════════════════ --}}
-    <section id="tahapan" class="mt-16 scroll-mt-16 bg-kraft py-14 text-charcoal md:mt-20 md:py-16">
+    <section id="tahapan" class="krm-dark mt-16 scroll-mt-16 bg-kraft py-14 text-charcoal md:mt-20 md:py-16">
         <div class="mx-auto max-w-[1180px] px-6">
 
             <div class="flex items-start justify-between gap-10" data-reveal>
@@ -245,7 +245,7 @@
             <ol class="-mx-6 mt-10 flex scroll-px-6 snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
                 @foreach ($this->stages as $k => $stage)
                     <li class="w-[64%] shrink-0 snap-start sm:w-auto" data-reveal style="--d: {{ $k * 90 }}ms">
-                        <div class="relative aspect-[3/4] overflow-hidden rounded border-t border-white/20 bg-charcoal">
+                        <div class="relative aspect-[3/4] overflow-hidden rounded border-t border-labwhite/20 bg-charcoal">
                             <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}"
                                  width="900" height="1200" loading="lazy" decoding="async"
                                  class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]">

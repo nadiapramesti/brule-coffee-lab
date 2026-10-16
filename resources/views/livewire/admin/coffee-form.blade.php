@@ -1,7 +1,7 @@
 @php
     $in = 'mt-1.5 w-full rounded border border-kraft/25 bg-transparent px-3 py-2.5 text-[14px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40';
     $lb = 'text-[12.5px] text-kraft/75';
-    $er = 'mt-1 text-[12px] text-red-300';
+    $er = 'mt-1 text-[12px] text-redtext';
     $card = 'rounded border border-kraft/15 p-4';
 @endphp
 <form wire:submit="save" class="flex min-h-0 flex-1 flex-col">
@@ -10,7 +10,7 @@
             <h2 id="form-title" class="font-display text-[1.1rem] font-semibold leading-tight">{{ $coffeeId ? __('Ubah kopi') : __('Kopi baru') }}</h2>
             @if ($coffeeId)<p class="krm-readout text-[11px] text-kraft/50">{{ $slug }}</p>@endif
         </div>
-        <button type="button" wire:click="$dispatch('close-coffee-form')" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 transition-colors hover:bg-white/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
+        <button type="button" wire:click="$dispatch('close-coffee-form')" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 transition-colors hover:bg-labwhite/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
             <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>
         </button>
     </header>
@@ -80,7 +80,7 @@
                 <div>
                     <label for="process" class="{{ $lb }}">{{ __('Proses') }}</label>
                     <select id="process" wire:model="process" class="{{ $in }}">
-                        @foreach (\App\Livewire\Admin\CoffeeForm::PROCESSES as $p)<option class="bg-[#121212]" value="{{ $p }}">{{ $p }}</option>@endforeach
+                        @foreach (\App\Livewire\Admin\CoffeeForm::PROCESSES as $p)<option class="bg-charcoal" value="{{ $p }}">{{ $p }}</option>@endforeach
                     </select>
                     @error('process')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
@@ -95,7 +95,7 @@
 
             <div class="mt-3 space-y-2.5">
                 @foreach (\App\Models\RoastProfile::LEVELS as $lv => $label)
-                    <div wire:key="lv-{{ $lv }}" x-data="{ on: @entangle("profiles.$lv.on") }" class="rounded border transition-colors" :class="on ? 'border-bluelab/50 bg-white/[.02]' : 'border-kraft/15'">
+                    <div wire:key="lv-{{ $lv }}" x-data="{ on: @entangle("profiles.$lv.on") }" class="rounded border transition-colors" :class="on ? 'border-bluelab/50 bg-labwhite/[.02]' : 'border-kraft/15'">
                         <label class="flex cursor-pointer items-center gap-3 px-3.5 py-2.5">
                             <input type="checkbox" x-model="on" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
                             <span class="font-display text-[15px] font-semibold">{{ $label }}</span>
@@ -134,7 +134,7 @@
 
     </div>
 
-    <footer class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-kraft/15 bg-[#141414] px-5 py-3.5">
+    <footer class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-kraft/15 bg-surface px-5 py-3.5">
         <p class="hidden text-[12px] text-kraft/45 sm:block">{{ __('Level yang sudah pernah dipesan tidak bisa dimatikan.') }}</p>
         <div class="ml-auto flex items-center gap-2">
             <button type="button" wire:click="$dispatch('close-coffee-form')" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 transition-colors hover:text-labwhite">{{ __('Batal') }}</button>

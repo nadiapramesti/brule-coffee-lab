@@ -85,12 +85,12 @@ export default function chromatogram(peaks = [], text = {}) {
                 axis.append('line')
                     .attr('x1', x).attr('x2', x)
                     .attr('y1', baselineY).attr('y2', baselineY + 5)
-                    .attr('stroke', '#D8C5A6').attr('stroke-opacity', .3);
+                    .attr('stroke', 'rgb(var(--c-muted))').attr('stroke-opacity', .3);
                 if (!narrow) {
                     axis.append('text')
                         .attr('x', x).attr('y', baselineY + 20)
                         .attr('text-anchor', 'middle')
-                        .attr('fill', '#D8C5A6').attr('fill-opacity', .45)
+                        .attr('fill', 'rgb(var(--c-muted))').attr('fill-opacity', .45)
                         .attr('font-family', "'IBM Plex Mono', monospace")
                         .attr('font-size', 10)
                         .text(rt);
@@ -100,13 +100,13 @@ export default function chromatogram(peaks = [], text = {}) {
             svg.append('line')
                 .attr('x1', 0).attr('x2', width)
                 .attr('y1', baselineY).attr('y2', baselineY)
-                .attr('stroke', '#D8C5A6').attr('stroke-opacity', .3);
+                .attr('stroke', 'rgb(var(--c-muted))').attr('stroke-opacity', .3);
 
             if (!narrow) {
                 svg.append('text')
                     .attr('x', 24).attr('y', baselineY + 38)
                     .attr('text-anchor', 'start')
-                    .attr('fill', '#D8C5A6').attr('fill-opacity', .45)
+                    .attr('fill', 'rgb(var(--c-muted))').attr('fill-opacity', .45)
                     .attr('font-family', "'IBM Plex Mono', monospace")
                     .attr('font-size', 10)
                     .text(text.axis ?? 'waktu retensi (menit)');
@@ -145,12 +145,12 @@ export default function chromatogram(peaks = [], text = {}) {
                     .attr('x1', x).attr('x2', x)
                     .attr('y1', apex - 7)
                     .attr('y2', Math.max(26, apex - 24))
-                    .attr('stroke', '#D8C5A6').attr('stroke-opacity', .4);
+                    .attr('stroke', 'rgb(var(--c-muted))').attr('stroke-opacity', .4);
 
                 g.append('text')
                     .attr('x', x).attr('y', Math.max(18, apex - 32))
                     .attr('text-anchor', 'middle')
-                    .attr('fill', '#FFFBF2')
+                    .attr('fill', 'rgb(var(--c-fg))')
                     .attr('font-family', "'IBM Plex Sans Condensed', sans-serif")
                     .attr('font-size', narrow ? 13 : 15)
                     .attr('font-weight', 600)
@@ -160,7 +160,7 @@ export default function chromatogram(peaks = [], text = {}) {
                     g.append('text')
                         .attr('x', x).attr('y', Math.max(32, apex - 18))
                         .attr('text-anchor', 'middle')
-                        .attr('fill', '#D8C5A6').attr('fill-opacity', .7)
+                        .attr('fill', 'rgb(var(--c-muted))').attr('fill-opacity', .7)
                         .attr('font-family', "'IBM Plex Mono', monospace")
                         .attr('font-size', 10.5)
                         .text(`${p.compound} · ${p.rt.toFixed(2)}`);

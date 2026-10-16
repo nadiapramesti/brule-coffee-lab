@@ -14,48 +14,48 @@
 
     <form wire:submit="save" class="mt-4 grid gap-4 xl:grid-cols-2" novalidate>
         {{-- Identitas --}}
-        <section class="rounded border border-kraft/20 bg-[#121212]">
+        <section class="rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Identitas toko') }}</h2></header>
             <div class="space-y-4 p-5">
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label for="sn" class="text-[12.5px] text-kraft/75">{{ __('Nama toko') }}</label>
                         <input id="sn" wire:model="storeName" placeholder="KROMATIK" class="{{ $inp }} mt-1.5">
-                        @error('storeName')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('storeName')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div>
                         <label for="sc" class="text-[12.5px] text-kraft/75">{{ __('Kota') }}</label>
                         <input id="sc" wire:model="city" placeholder="Bandung" class="{{ $inp }} mt-1.5">
-                        @error('city')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('city')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                 </div>
                 <div>
                     <label for="st" class="text-[12.5px] text-kraft/75">{{ __('Tagline') }}</label>
                     <input id="st" wire:model="tagline" placeholder="Specialty Coffee Lab" class="{{ $inp }} mt-1.5">
-                    @error('tagline')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                    @error('tagline')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
                 <div>
                     <label for="sa" class="text-[12.5px] text-kraft/75">{{ __('Alamat roastery') }}</label>
                     <input id="sa" wire:model="address" placeholder="{{ __('Contoh: Jl. Braga No. 12, Kota Bandung, Jawa Barat') }}" class="{{ $inp }} mt-1.5">
-                    @error('address')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                    @error('address')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
             </div>
         </section>
 
         {{-- Kontak --}}
-        <section class="rounded border border-kraft/20 bg-[#121212]">
+        <section class="rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Kontak') }}</h2></header>
             <div class="space-y-4 p-5">
                 <div>
                     <label for="ce" class="text-[12.5px] text-kraft/75">Email</label>
                     <input id="ce" type="email" wire:model="email" placeholder="halo@kromatik.id" class="{{ $inp }} mt-1.5">
-                    @error('email')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                    @error('email')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label for="cw" class="text-[12.5px] text-kraft/75">WhatsApp</label>
                         <input id="cw" type="tel" wire:model="whatsapp" placeholder="081234567890" class="{{ $inp }} krm-readout mt-1.5">
-                        @error('whatsapp')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('whatsapp')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div>
                         <label for="ci" class="text-[12.5px] text-kraft/75">Instagram</label>
@@ -63,7 +63,7 @@
                             <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-kraft/45">@</span>
                             <input id="ci" wire:model="instagram" placeholder="kromatik.lab" class="{{ $inp }} pl-7">
                         </div>
-                        @error('instagram')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('instagram')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                 </div>
                 <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Nomor WhatsApp boleh ditulis 08…, 62…, atau +62…; Instagram boleh berupa @username atau link profil.') }}</p>
@@ -71,22 +71,22 @@
         </section>
 
         {{-- Pengiriman --}}
-        <section class="rounded border border-kraft/20 bg-[#121212]">
+        <section class="rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pengiriman') }}</h2></header>
             <div class="space-y-4 p-5">
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label for="sf" class="text-[12.5px] text-kraft/75">{{ __('Ongkir flat (Rp)') }}</label>
                         <input id="sf" type="number" inputmode="numeric" wire:model.live.debounce.300ms="shippingFlat" placeholder="15000" class="{{ $inp }} krm-readout mt-1.5">
-                        @error('shippingFlat')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('shippingFlat')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div>
                         <label for="ff" class="text-[12.5px] text-kraft/75">{{ __('Gratis ongkir mulai (Rp)') }}</label>
                         <input id="ff" type="number" inputmode="numeric" wire:model.live.debounce.300ms="freeFrom" placeholder="500000" class="{{ $inp }} krm-readout mt-1.5">
-                        @error('freeFrom')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                        @error('freeFrom')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                 </div>
-                <p class="rounded border border-kraft/15 bg-white/[.02] px-3 py-2.5 text-[12.5px] text-kraft/65">
+                <p class="rounded border border-kraft/15 bg-labwhite/[.02] px-3 py-2.5 text-[12.5px] text-kraft/65">
                     @if ((int) $freeFrom > 0)
                         {{ __('Pratinjau: belanja di bawah :f kena ongkir :s, selebihnya gratis.', ['f' => $rp($freeFrom), 's' => $rp($shippingFlat)]) }}
                     @else
@@ -98,13 +98,13 @@
         </section>
 
         {{-- Stok --}}
-        <section class="rounded border border-kraft/20 bg-[#121212]">
+        <section class="rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Stok') }}</h2></header>
             <div class="space-y-4 p-5">
                 <div class="sm:max-w-[260px]">
                     <label for="ls" class="text-[12.5px] text-kraft/75">{{ __('Batas stok menipis (gram)') }}</label>
                     <input id="ls" type="number" inputmode="numeric" wire:model="lowStock" placeholder="5000" class="{{ $inp }} krm-readout mt-1.5">
-                    @error('lowStock')<p class="mt-1 text-[12px] text-red-300">{{ $message }}</p>@enderror
+                    @error('lowStock')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
                 <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Kopi dengan stok biji mentah di bawah angka ini ditandai "Menipis" di Dashboard, Kelola kopi, dan halaman Stok.') }}</p>
             </div>

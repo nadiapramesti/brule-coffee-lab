@@ -25,3 +25,22 @@ document.addEventListener('livewire:navigated', () => {
         document.documentElement.classList.toggle('mini', localStorage.getItem('krm-mini') === '1');
     } catch (e) {}
 });
+
+// Tema terang/gelap. Pilihan disimpan; sebelum memilih, ikut setelan sistem.
+const systemTheme = () => (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+const storedTheme = () => { try { const t = localStorage.getItem('krm-theme'); return t === 'light' || t === 'dark' ? t : null; } catch (e) { return null; } };
+const applyTheme = (t) => { document.documentElement.dataset.theme = t; };
+
+window.krmTheme = {
+    get: () => document.documentElement.dataset.theme || systemTheme(),
+    set(t) {
+        applyTheme(t);
+        try { localStorage.setItem('krm-theme', t); } catch (e) {}
+        window.dispatchEvent(new CustomEvent('krm-theme', { detail: t }));
+    },
+    toggle() { this.set(this.get() === 'light' ? 'dark' : 'light'); },
+};
+
+// wire:navigate mengganti <html>; pasang ulang tema tanpa kedipan.
+document.addEventListener('livewire:navigated', () => applyTheme(storedTheme() ?? systemTheme()));
+matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => { if (!storedTheme()) applyTheme(systemTheme()); });

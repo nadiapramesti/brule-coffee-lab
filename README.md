@@ -68,3 +68,7 @@ Tombolnya selalu tampil; tanpa kunci, klik akan menampilkan pesan "belum dikonfi
 4. Jalankan `php artisan migrate` (menambah kolom `provider` dan `provider_id`).
 
 Akun tim roastery/admin sengaja tidak bisa masuk lewat login sosial.
+
+## Tema terang / gelap
+
+Seluruh situs (toko, auth, panel admin & roastery) punya dua tema. Bawaannya mengikuti setelan sistem; tombol matahari/bulan di navbar mengganti dan pilihannya diingat (`localStorage: krm-theme`). Warna dikelola sebagai token CSS di `resources/css/app.css` (`--c-bg`, `--c-fg`, `--c-muted`, `--c-surface`, dst.) dan dipetakan di `tailwind.config.js` (`charcoal`, `labwhite`, `kraft`, `surface`, ...). Area yang harus tetap gelap di kedua mode (hero berfoto, pita kraft, footer) memakai kelas `.krm-dark`. Untuk teks di atas tombol berwarna pakai `text-paper`.

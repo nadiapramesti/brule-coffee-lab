@@ -19,7 +19,7 @@
             [__('Pelanggan langganan'), $st['repeat'], __('pesan 2× atau lebih')],
             [__('Baru 30 hari'), $st['new'], null],
         ] as [$l, $v, $sub])
-            <div class="rounded border border-kraft/20 bg-[#121212] px-4 py-3">
+            <div class="rounded border border-kraft/20 bg-charcoal px-4 py-3">
                 <dt class="text-[12px] text-kraft/60">{{ $l }}</dt>
                 <dd class="krm-readout mt-1 text-[1.4rem] leading-none">{{ $v }}</dd>
                 <p class="mt-1.5 min-h-[1rem] text-[11.5px] text-kraft/45">{{ $sub }}</p>
@@ -27,7 +27,7 @@
         @endforeach
     </dl>
 
-    <section class="mt-4 rounded border border-kraft/20 bg-[#121212]">
+    <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center gap-3 px-4 pt-4">
             <div class="relative min-w-[220px] flex-1 sm:max-w-sm">
                 <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
@@ -37,7 +37,7 @@
             <div class="ml-auto flex items-center gap-2 text-[12.5px] text-kraft/60">
                 <label for="sort">{{ __('Urutkan') }}</label>
                 <select id="sort" wire:model.live="sort" class="{{ $inp }} py-1.5">
-                    @foreach (\App\Livewire\Admin\Customers::SORTS as $k => $l)<option class="bg-[#121212]" value="{{ $k }}">{{ __($l) }}</option>@endforeach
+                    @foreach (\App\Livewire\Admin\Customers::SORTS as $k => $l)<option class="bg-charcoal" value="{{ $k }}">{{ __($l) }}</option>@endforeach
                 </select>
             </div>
         </div>
@@ -46,7 +46,7 @@
             @foreach (\App\Livewire\Admin\Customers::TABS as $key => $label)
                 <button type="button" role="tab" aria-selected="{{ $tab === $key ? 'true' : 'false' }}" wire:click="setTab('{{ $key }}')"
                         class="-mb-px flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
-                    {{ __($label) }}<span class="krm-readout rounded-[6px] bg-white/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
+                    {{ __($label) }}<span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
                 </button>
             @endforeach
         </div>
@@ -58,10 +58,10 @@
                 </thead>
                 <tbody class="divide-y divide-kraft/10">
                     @foreach ($list as $u)
-                        <tr wire:key="u-{{ $u->id }}" wire:click="show({{ $u->id }})" class="cursor-pointer transition-colors hover:bg-white/[.03] {{ $open === $u->id ? 'bg-bluelab/10' : '' }}">
+                        <tr wire:key="u-{{ $u->id }}" wire:click="show({{ $u->id }})" class="cursor-pointer transition-colors hover:bg-labwhite/[.03] {{ $open === $u->id ? 'bg-bluelab/10' : '' }}">
                             <td class="px-4 py-2.5">
                                 <div class="flex items-center gap-3">
-                                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-white/[.08] font-display text-[13px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
+                                    <span class="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-labwhite/[.08] font-display text-[13px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
                                     <div class="min-w-0"><p class="truncate font-medium">{{ $u->name }}</p><p class="truncate text-[12px] text-kraft/55">{{ $u->email }}</p></div>
                                 </div>
                             </td>
@@ -79,7 +79,7 @@
                 @foreach ($list as $u)
                     <li wire:key="um-{{ $u->id }}">
                         <button type="button" wire:click="show({{ $u->id }})" class="flex w-full items-center gap-3 px-4 py-3 text-left">
-                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white/[.08] font-display text-[14px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
+                            <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-labwhite/[.08] font-display text-[14px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
                             <div class="min-w-0 flex-1"><p class="truncate text-[13.5px] font-medium">{{ $u->name }}</p><p class="truncate text-[12px] text-kraft/55">{{ $u->orders_count }} {{ __('pesanan') }} · {{ $src($u) }}</p></div>
                             <span class="krm-readout shrink-0 text-[12.5px]">{{ $u->spent ? $rp($u->spent) : '—' }}</span>
                         </button>
@@ -107,7 +107,7 @@
              x-data="{ init() { document.body.style.overflow = 'hidden'; }, destroy() { document.body.style.overflow = ''; } }"
              @keydown.escape.window="$wire.close()">
             <div class="krm-fade absolute inset-0 bg-black/60 backdrop-blur-[2px]" wire:click="close"></div>
-            <aside role="dialog" aria-modal="true" aria-labelledby="cd-title" class="krm-slide relative flex h-full w-full max-w-[500px] flex-col border-l border-kraft/25 bg-[#141414] shadow-[-30px_0_80px_-20px_rgba(0,0,0,.9)]">
+            <aside role="dialog" aria-modal="true" aria-labelledby="cd-title" class="krm-slide relative flex h-full w-full max-w-[500px] flex-col border-l border-kraft/25 bg-surface shadow-[-30px_0_80px_-20px_rgb(var(--shadow)/.9)]">
                 <header class="flex shrink-0 items-center justify-between gap-3 border-b border-kraft/15 px-5 py-4">
                     <div class="flex min-w-0 items-center gap-3">
                         <span class="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-bluelab font-display text-[1.1rem] font-semibold">{{ mb_strtoupper(mb_substr($c->name, 0, 1)) }}</span>
@@ -116,7 +116,7 @@
                             <p class="truncate text-[12.5px] text-kraft/60">{{ $c->email }}</p>
                         </div>
                     </div>
-                    <button type="button" wire:click="close" class="-mr-2 grid h-9 w-9 shrink-0 place-items-center rounded text-kraft/70 hover:bg-white/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
+                    <button type="button" wire:click="close" class="-mr-2 grid h-9 w-9 shrink-0 place-items-center rounded text-kraft/70 hover:bg-labwhite/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
                         <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>
                     </button>
                 </header>
@@ -136,7 +136,7 @@
                         <h3 class="text-[12.5px] font-semibold">{{ __('Profil') }}</h3>
                         <dl class="mt-3 space-y-2">
                             <div class="flex justify-between gap-4"><dt class="text-kraft/55">{{ __('Telepon') }}</dt><dd class="krm-readout text-[12.5px]">
-                                @if ($c->phone){{ $c->phone }} <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $c->phone)) }}" target="_blank" rel="noopener" class="ml-1 font-sans text-[12px] text-[#9DBBEF] underline-offset-4 hover:underline">WhatsApp ↗</a>@else <span class="text-kraft/40">—</span>@endif</dd></div>
+                                @if ($c->phone){{ $c->phone }} <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $c->phone)) }}" target="_blank" rel="noopener" class="ml-1 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">WhatsApp ↗</a>@else <span class="text-kraft/40">—</span>@endif</dd></div>
                             <div class="flex justify-between gap-4"><dt class="text-kraft/55">{{ __('Masuk via') }}</dt><dd>{{ $src($c) }}</dd></div>
                             <div class="flex justify-between gap-4"><dt class="text-kraft/55">{{ __('Bergabung') }}</dt><dd>{{ $c->created_at->translatedFormat('j F Y') }}</dd></div>
                             <div class="flex justify-between gap-4"><dt class="text-kraft/55">{{ __('Terakhir memesan') }}</dt><dd>{{ $c->last_order_at ? \Carbon\Carbon::parse($c->last_order_at)->diffForHumans() : '—' }}</dd></div>

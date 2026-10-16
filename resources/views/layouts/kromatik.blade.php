@@ -12,6 +12,7 @@
     <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
 
 
+    @include('layouts.partials.theme-boot')
     <script>document.documentElement.classList.add('js')</script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>[x-cloak]{display:none!important}</style>
@@ -22,10 +23,10 @@
         {{ __('Lewati ke isi') }}
     </a>
 
-    <header data-site-header x-data="{ open: false, top: true }"
+    <header data-site-header x-data="{ open: false, top: true, hero: {{ request()->routeIs('landing', 'builder') ? 'true' : 'false' }} }"
             x-init="top = window.scrollY < 24"
             @scroll.window.passive="top = window.scrollY < 24"
-            :class="top && !open ? 'border-transparent bg-gradient-to-b from-charcoal/90 to-transparent' : 'border-kraft/12 bg-charcoal/90 backdrop-blur-md'"
+            :class="top && !open && hero ? 'krm-dark border-transparent bg-gradient-to-b from-charcoal/90 to-transparent' : 'border-kraft/12 bg-charcoal/90 backdrop-blur-md'"
             class="sticky top-0 z-40 border-b transition-colors duration-300 [background-origin:border-box]">
         <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-6 py-4">
 
@@ -33,7 +34,7 @@
                 {{-- Tanda ringkas (K + kromatogram). Stempel penuhnya terlalu
                      rapat untuk dibaca di ukuran header; dipakai di footer. --}}
                 <img src="{{ asset('images/mark-kromatik-white.png') }}"
-                     alt="" width="40" height="40" class="h-10 w-10 shrink-0">
+                     alt="" width="40" height="40" class="krm-mark h-10 w-10 shrink-0">
                 <span class="font-display text-[1.05rem] font-bold tracking-[0.2em]">KROMATIK</span>
                 <span class="sr-only">Specialty Coffee Lab</span>
             </a>
@@ -43,7 +44,7 @@
                 <a href="{{ route('builder') }}" class="text-kraft/80 transition-colors hover:text-labwhite">Roast builder</a>
             </nav>
 
-            <x-lang-switch class="hidden md:flex" />
+            <div class="hidden items-center gap-3 md:flex"><x-lang-switch class="flex" /><x-theme-toggle /></div>
 
             <div class="hidden items-center gap-3 sm:flex">
                 @auth
@@ -56,15 +57,15 @@
                             <svg viewBox="0 0 12 12" class="h-3 w-3 text-kraft/60 transition-transform" :class="menu && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg>
                         </button>
                         <div x-show="menu" x-cloak x-transition.opacity.duration.150ms
-                             class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-[#161616] py-1.5 shadow-[0_18px_40px_-12px_rgba(0,0,0,.8)]">
-                            <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan')) }}</a>
+                             class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-surface py-1.5 shadow-[0_18px_40px_-12px_rgb(var(--shadow)/.8)]">
+                            <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Pesanan')) }}</a>
                             @if (auth()->user()->isAdmin())
-                                <a href="{{ route('roastery') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Antrian') }}</a>
-                                <a href="{{ route('admin.coffees') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Kelola kopi') }}</a>
+                                <a href="{{ route('roastery') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Antrian') }}</a>
+                                <a href="{{ route('admin.coffees') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Kelola kopi') }}</a>
                             @endif
-                            <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Profil') }}</a>
+                            <a href="{{ route('profile') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Profil') }}</a>
                             <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-kraft/15 pt-1">@csrf
-                                <button class="block w-full px-4 py-2.5 text-left text-[14px] text-kraft/70 transition-colors hover:bg-white/[.05] hover:text-labwhite">{{ __('Keluar') }}</button>
+                                <button class="block w-full px-4 py-2.5 text-left text-[14px] text-kraft/70 transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Keluar') }}</button>
                             </form>
                         </div>
                     </div>
@@ -75,12 +76,13 @@
                     </a>
                 @endauth
                 <a href="{{ route('builder') }}"
-                   class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-labwhite transition-colors hover:bg-[#234E94]">
+                   class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
                     {{ __('Racik kopimu') }}
                 </a>
             </div>
 
             <div class="flex items-center gap-2 md:hidden">
+                <x-theme-toggle />
                 @auth<div class="sm:hidden"><livewire:notifications /></div>@endauth
             {{-- Tombol menu, hanya di layar sempit --}}
             <button type="button"
@@ -121,13 +123,13 @@
         {{ $slot }}
     </main>
 
-    <footer class="krm-footer relative isolate overflow-hidden border-t border-white/10 bg-[#0a0a0a] text-kraft/80">
+    <footer class="krm-dark krm-footer relative isolate overflow-hidden border-t border-labwhite/10 bg-[#0a0a0a] text-kraft/80">
         <div class="mx-auto max-w-[1180px] px-6 pb-8 pt-14 md:pt-16">
             <div class="grid gap-10 md:grid-cols-3 md:items-start md:gap-8">
 
                 <div>
                     <a href="{{ route('landing') }}" class="inline-flex items-center gap-3 text-labwhite">
-                        <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="h-9 w-9">
+                        <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="krm-mark h-9 w-9">
                         <span class="font-display text-[17px] font-semibold tracking-[0.22em]">KROMATIK</span>
                     </a>
                     <address class="mt-5 text-[14px] not-italic leading-relaxed text-kraft/75">
@@ -147,21 +149,21 @@
 
                 <div class="flex gap-3 text-kraft/80 md:justify-self-end" aria-label="{{ __('Kontak') }}">
                     <a href="https://instagram.com/{{ \App\Models\Setting::get('instagram') }}" target="_blank" rel="noopener" aria-label="Instagram"
-                       class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
+                       class="grid h-10 w-10 place-items-center rounded border border-labwhite/15 transition-colors hover:border-labwhite/40 hover:text-labwhite">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="4.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r=".6" fill="currentColor"/></svg>
                     </a>
                     <a href="{{ \App\Models\Setting::whatsappUrl() }}" target="_blank" rel="noopener" aria-label="WhatsApp"
-                       class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
+                       class="grid h-10 w-10 place-items-center rounded border border-labwhite/15 transition-colors hover:border-labwhite/40 hover:text-labwhite">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 20.5l1.3-4.4A8.5 8.5 0 1 1 8 19.3l-4.5 1.2z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2-1-.9.8c-1-.4-1.9-1.3-2.3-2.300l.8-.9-1-2L9 8.5z" stroke-width="1"/></svg>
                     </a>
                     <a href="mailto:{{ \App\Models\Setting::get('contact_email') }}" aria-label="Email"
-                       class="grid h-10 w-10 place-items-center rounded border border-white/15 transition-colors hover:border-white/40 hover:text-labwhite">
+                       class="grid h-10 w-10 place-items-center rounded border border-labwhite/15 transition-colors hover:border-labwhite/40 hover:text-labwhite">
                         <svg viewBox="0 0 24 24" class="h-[18px] w-[18px]" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2"/><path d="M3.5 7l8.5 6.500L20.5 7"/></svg>
                     </a>
                 </div>
             </div>
 
-            <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-white/10 pt-6 text-[12.5px] text-kraft/50">
+            <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-labwhite/10 pt-6 text-[12.5px] text-kraft/50">
                 <p>&copy; {{ date('Y') }} {{ \App\Models\Setting::get('store_name') }} &bull; {{ \App\Models\Setting::get('store_tagline') }} &bull; {{ \App\Models\Setting::get('store_city') }}</p>
                 <x-lang-switch class="flex" />
             </div>

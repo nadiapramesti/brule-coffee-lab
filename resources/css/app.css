@@ -13,6 +13,70 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ───────── Tema terang / gelap ─────────
+   Semua warna antarmuka memakai token di bawah (lihat tailwind.config.js).
+   Gelap = bawaan situs; terang = kertas laboratorium. Mode dipilih lewat
+   atribut data-theme di <html> (diatur script kecil di <head> sebelum cat
+   pertama, jadi tidak ada kedipan), mengikuti setelan sistem sampai
+   pengunjung memilih sendiri. */
+:root,
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --c-bg: 18 18 18;
+    --c-fg: 255 251 242;
+    --c-muted: 216 197 166;
+    --c-surface: 20 20 20;
+    --c-bluetext: 157 187 239;
+    --c-ambertext: 242 162 102;
+    --c-redtext: 226 109 109;
+    --shadow: 0 0 0;
+}
+:root[data-theme="light"] {
+    color-scheme: light;
+    --c-bg: 247 243 234;
+    --c-fg: 28 24 19;
+    --c-muted: 74 60 40;
+    --c-surface: 255 253 249;
+    --c-bluetext: 30 74 148;
+    --c-ambertext: 168 82 16;
+    --c-redtext: 176 52 44;
+    --shadow: 70 52 28;
+}
+@media (prefers-color-scheme: light) {
+    :root:not([data-theme]) {
+        color-scheme: light;
+        --c-bg: 247 243 234;
+        --c-fg: 28 24 19;
+        --c-muted: 74 60 40;
+        --c-surface: 255 253 249;
+        --c-bluetext: 30 74 148;
+        --c-ambertext: 168 82 16;
+        --c-redtext: 176 52 44;
+        --shadow: 70 52 28;
+    }
+}
+
+/* Area yang harus tetap gelap di kedua mode: foto hero, pita kertas kraft, footer. */
+.krm-dark {
+    color-scheme: dark;
+    --c-bg: 18 18 18;
+    --c-fg: 255 251 242;
+    --c-muted: 216 197 166;
+    --c-surface: 20 20 20;
+    --c-bluetext: 157 187 239;
+    --c-ambertext: 242 162 102;
+    --c-redtext: 226 109 109;
+    --shadow: 0 0 0;
+    color: rgb(var(--c-fg));
+}
+
+body { transition: background-color .25s ease, color .25s ease; }
+
+@layer components {
+    /* Tombol biru selalu berteks terang, apa pun modenya. Kelas teks eksplisit tetap menang. */
+    .bg-bluelab, .hover\:bg-bluelab:hover, .hover\:bg-\[\#234E94\]:hover { color: #FFFBF2; }
+}
+
 @layer base {
     html {
         -webkit-font-smoothing: antialiased;
@@ -45,10 +109,10 @@
 @layer components {
     /* Kertas milimeter blok laboratorium */
     .krm-grid {
-        background-color: #121212;
+        background-color: rgb(var(--c-bg));
         background-image:
-            linear-gradient(rgba(216, 197, 166, .05) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(216, 197, 166, .05) 1px, transparent 1px);
+            linear-gradient(rgb(var(--c-muted) / .05) 1px, transparent 1px),
+            linear-gradient(90deg, rgb(var(--c-muted) / .05) 1px, transparent 1px);
         background-size: 24px 24px;
     }
 }
@@ -191,22 +255,22 @@ header[data-site-header] { view-transition-name: krm-header; }
 /* ───────── Halaman auth (Breeze) ─────────
    Komponen Breeze dipakai juga oleh halaman profil yang terang, jadi
    gayanya ditimpa lewat .krm-auth, bukan dengan mengubah komponennya. */
-.krm-auth label { color: rgba(216, 197, 166, .8); font-size: 13px; font-weight: 400; }
+.krm-auth label { color: rgb(var(--c-muted) / .8); font-size: 13px; font-weight: 400; }
 .krm-auth input:not([type=checkbox]) {
     width: 100%;
     background: transparent;
-    color: #FFFBF2;
-    border: 1px solid rgba(216, 197, 166, .28);
+    color: rgb(var(--c-fg));
+    border: 1px solid rgb(var(--c-muted) / .28);
     border-radius: 10px;
     padding: .72rem 1rem;
     font-size: 15px;
     box-shadow: none;
     transition: border-color .2s, box-shadow .2s;
 }
-.krm-auth input:not([type=checkbox])::placeholder { color: rgba(216, 197, 166, .35); }
+.krm-auth input:not([type=checkbox])::placeholder { color: rgb(var(--c-muted) / .35); }
 .krm-auth input:not([type=checkbox]):focus { border-color: #2A5DB0; box-shadow: 0 0 0 3px rgba(42, 93, 176, .4); outline: none; }
-.krm-auth input:-webkit-autofill { -webkit-text-fill-color: #FFFBF2; box-shadow: 0 0 0 40px #161616 inset; }
-.krm-auth input[type=checkbox] { background: transparent; border: 1px solid rgba(216, 197, 166, .4); border-radius: 5px; color: #2A5DB0; box-shadow: none; }
+.krm-auth input:-webkit-autofill { -webkit-text-fill-color: rgb(var(--c-fg)); box-shadow: 0 0 0 40px rgb(var(--c-surface)) inset; }
+.krm-auth input[type=checkbox] { background: transparent; border: 1px solid rgb(var(--c-muted) / .4); border-radius: 5px; color: #2A5DB0; box-shadow: none; }
 .krm-auth input[type=checkbox]:focus { box-shadow: 0 0 0 3px rgba(42, 93, 176, .4); }
 .krm-auth button[type=submit] {
     background: #2A5DB0; color: #FFFBF2; border: 0; border-radius: 10px;
@@ -216,26 +280,26 @@ header[data-site-header] { view-transition-name: krm-header; }
 }
 .krm-auth button[type=submit]:hover { background: #234E94; box-shadow: 0 10px 28px -10px rgba(42, 93, 176, .9); }
 .krm-auth button[type=submit]:focus-visible { box-shadow: 0 0 0 3px rgba(42, 93, 176, .5); outline: none; }
-.krm-auth a:not([class*="font-display"]) { color: rgba(216, 197, 166, .8); }
-.krm-auth a:not([class*="font-display"]):hover { color: #FFFBF2; }
-.krm-auth .text-gray-600, .krm-auth .text-gray-700 { color: rgba(216, 197, 166, .75); }
-.krm-auth .text-red-600 { color: #fca5a5; }
-.krm-auth .text-green-600 { color: #86efac; }
+.krm-auth a:not([class*="font-display"]) { color: rgb(var(--c-muted) / .8); }
+.krm-auth a:not([class*="font-display"]):hover { color: rgb(var(--c-fg)); }
+.krm-auth .text-gray-600, .krm-auth .text-gray-700 { color: rgb(var(--c-muted) / .75); }
+.krm-auth .text-red-600 { color: rgb(var(--c-redtext)); }
+.krm-auth .text-green-600 { color: #2f8f5b; }
 .krm-auth form button[type=submit] { white-space: nowrap; }
 
 /* Profil: elemen Breeze yang masih membawa warna terang */
-.krm-auth .text-gray-900, .krm-auth .text-gray-800 { color: #FFFBF2; }
+.krm-auth .text-gray-900, .krm-auth .text-gray-800 { color: rgb(var(--c-fg)); }
 .krm-auth button[type=submit].bg-red-600 { background: #B4372F; }
 .krm-auth button[type=submit].bg-red-600:hover { background: #C9443B; box-shadow: 0 10px 28px -10px rgba(180, 55, 47, .9); }
 .krm-auth button.bg-white {
-    background: transparent; color: #D8C5A6; border: 1px solid rgba(216, 197, 166, .35); border-radius: 10px;
+    background: transparent; color: rgb(var(--c-muted)); border: 1px solid rgb(var(--c-muted) / .35); border-radius: 10px;
     padding: .9rem 1.4rem; font-size: 15px; font-weight: 500; letter-spacing: 0; text-transform: none; box-shadow: none;
 }
-.krm-auth button.bg-white:hover { background: rgba(255, 255, 255, .05); }
-.krm-auth div.bg-white { background: #161616; border: 1px solid rgba(216, 197, 166, .25); border-radius: 10px; color: #FFFBF2; }
-.krm-auth .bg-gray-500 { background: #000; }
+.krm-auth button.bg-white:hover { background: rgb(var(--c-fg) / .05); }
+.krm-auth div.bg-white { background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-muted) / .25); border-radius: 10px; color: rgb(var(--c-fg)); }
+.krm-auth .bg-gray-500 { background: rgb(var(--c-bg) / .8); }
 .krm-auth h2.text-lg { font-family: "IBM Plex Sans Condensed", system-ui, sans-serif; font-size: 1.3rem; font-weight: 600; letter-spacing: -.01em; }
-.krm-auth h2.text-lg + p { color: rgba(216, 197, 166, .7); }
+.krm-auth h2.text-lg + p { color: rgb(var(--c-muted) / .7); }
 .krm-auth section header p { font-size: 14px; line-height: 1.6; }
 
 
@@ -258,3 +322,7 @@ html:has(body.krm-panel) { overscroll-behavior-x: none; }
 *::-webkit-scrollbar, *::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+
+/* Logo putih: di mode terang dibalik jadi gelap (biru tetap biru); area .krm-dark tidak ikut. */
+html[data-theme="light"] .krm-mark { filter: invert(1) hue-rotate(180deg); }
+html[data-theme="light"] .krm-dark .krm-mark { filter: none; }

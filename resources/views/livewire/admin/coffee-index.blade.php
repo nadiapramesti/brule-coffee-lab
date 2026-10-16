@@ -18,7 +18,7 @@
            class="mt-4 rounded border border-bluelab/50 bg-bluelab/10 px-4 py-2.5 text-[13px]">{{ $flash }}</p>
     @endif
 
-    <section class="mt-4 rounded border border-kraft/20 bg-[#121212]">
+    <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5">
             <div class="flex gap-1" role="tablist">
                 @foreach (['' => __('Semua'), 'active' => __('Tampil'), 'hidden' => __('Tersembunyi')] as $k => $label)
@@ -47,15 +47,15 @@
                     $low = $c->stock_green_bean_gram < \App\Models\Setting::int('low_stock_gram');
                     $prices = $c->roastProfiles->pluck('price_per_100g');
                 @endphp
-                <li wire:key="c-{{ $c->id }}" class="grid items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-white/[.02] {{ $cols }} {{ $c->is_active ? '' : 'opacity-60' }}">
+                <li wire:key="c-{{ $c->id }}" class="grid items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-labwhite/[.02] {{ $cols }} {{ $c->is_active ? '' : 'opacity-60' }}">
                     <div class="flex min-w-0 items-start justify-between gap-3 max-md:col-span-2 md:block">
                         <div class="min-w-0">
                             <p class="truncate text-[13.5px] font-semibold">{{ $c->name }}</p>
                             <p class="krm-readout truncate text-[10.5px] text-kraft/45">{{ $c->slug }}@if ($c->cupping_score) · {{ $c->cupping_score }}@endif</p>
                         </div>
                         <button type="button" role="switch" aria-checked="{{ $c->is_active ? 'true' : 'false' }}" aria-label="{{ __('Tampilkan di toko') }}" wire:click="toggle({{ $c->id }})"
-                                class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors md:hidden {{ $c->is_active ? 'bg-bluelab' : 'bg-white/15' }}">
-                            <span class="absolute top-[3px] h-4 w-4 rounded-full bg-labwhite transition-all {{ $c->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
+                                class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors md:hidden {{ $c->is_active ? 'bg-bluelab' : 'bg-labwhite/25' }}">
+                            <span class="absolute top-[3px] h-4 w-4 rounded-full bg-paper shadow transition-all {{ $c->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
                         </button>
                     </div>
 
@@ -65,19 +65,19 @@
 
                     <div class="relative max-md:col-span-2" x-data="{ add: false }" @click.outside="add = false" @keydown.escape="add = false">
                         <div class="flex items-center gap-2">
-                            <span class="krm-readout w-[3.6rem] shrink-0 text-[12.5px] {{ $low ? 'text-[#F2A266]' : '' }}">{{ $rp($c->stock_green_bean_gram) }}</span>
-                            <div class="h-[3px] flex-1 rounded-full bg-white/10"><div class="h-[3px] rounded-full {{ $low ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>
+                            <span class="krm-readout w-[3.6rem] shrink-0 text-[12.5px] {{ $low ? 'text-ambertext' : '' }}">{{ $rp($c->stock_green_bean_gram) }}</span>
+                            <div class="h-[3px] flex-1 rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $low ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>
                             <button type="button" @click="add = !add; $nextTick(() => add && $refs.g.focus())" class="grid h-6 w-6 shrink-0 place-items-center rounded border border-kraft/25 text-[14px] leading-none transition-colors hover:border-bluelab hover:bg-bluelab" title="{{ __('Tambah stok') }}" aria-label="{{ __('Tambah stok') }}" :aria-expanded="add ? 'true' : 'false'">+</button>
                         </div>
                         <form x-show="add" x-cloak x-transition.opacity.duration.120ms wire:submit="addStock({{ $c->id }})"
-                              class="absolute right-0 top-full z-20 mt-1.5 w-56 rounded border border-kraft/30 bg-[#1a1a1a] p-2.5 shadow-[0_14px_30px_-10px_rgba(0,0,0,.9)]">
+                              class="absolute right-0 top-full z-20 mt-1.5 w-56 rounded border border-kraft/30 bg-surface p-2.5 shadow-[0_14px_30px_-10px_rgb(var(--shadow)/.9)]">
                             <label for="rs-{{ $c->id }}" class="text-[11.5px] text-kraft/60">{{ __('Tambah stok (gram)') }}</label>
                             <div class="mt-1.5 flex gap-1.5">
                                 <input x-ref="g" id="rs-{{ $c->id }}" type="number" inputmode="numeric" min="1" wire:model="restock.{{ $c->id }}" placeholder="{{ __('Contoh: 5000') }}"
                                        class="krm-readout min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-2.5 py-1.5 text-[12.5px] placeholder:text-kraft/30 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50">
                                 <button class="rounded bg-bluelab px-3 text-[12.5px] font-semibold hover:bg-[#234E94]">{{ __('Tambah') }}</button>
                             </div>
-                            @error("restock.$c->id")<p class="mt-1 text-[11.5px] text-red-300">{{ $message }}</p>@enderror
+                            @error("restock.$c->id")<p class="mt-1 text-[11.5px] text-redtext">{{ $message }}</p>@enderror
                         </form>
                     </div>
 
@@ -88,8 +88,8 @@
 
                     <div class="hidden justify-center md:flex">
                         <button type="button" role="switch" aria-checked="{{ $c->is_active ? 'true' : 'false' }}" aria-label="{{ __('Tampilkan di toko') }}" wire:click="toggle({{ $c->id }})"
-                                class="relative h-[22px] w-[38px] rounded-full transition-colors {{ $c->is_active ? 'bg-bluelab' : 'bg-white/15' }}">
-                            <span class="absolute top-[3px] h-4 w-4 rounded-full bg-labwhite transition-all {{ $c->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
+                                class="relative h-[22px] w-[38px] rounded-full transition-colors {{ $c->is_active ? 'bg-bluelab' : 'bg-labwhite/25' }}">
+                            <span class="absolute top-[3px] h-4 w-4 rounded-full bg-paper shadow transition-all {{ $c->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
                         </button>
                     </div>
 
@@ -99,7 +99,7 @@
                             <svg viewBox="0 0 24 24" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>
                         </button>
                         <button type="button" wire:click="delete({{ $c->id }})" wire:confirm="{{ __('Hapus kopi ini beserta semua level sangrainya?') }}" title="{{ __('Hapus') }}" aria-label="{{ __('Hapus') }} {{ $c->name }}"
-                                class="flex h-8 items-center gap-1.5 rounded border border-red-400/30 px-2.5 text-[12.5px] text-red-300 transition-colors hover:bg-red-400/10 w-8 justify-center px-0">
+                                class="flex h-8 items-center gap-1.5 rounded border border-redtext/30 px-2.5 text-[12.5px] text-redtext transition-colors hover:bg-redtext/10 w-8 justify-center px-0">
                             <svg viewBox="0 0 24 24" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12M10 11v5M14 11v5"/></svg>
                         </button>
                     </div>
@@ -117,7 +117,7 @@
              @keydown.escape.window="$wire.closeForm()">
             <div class="krm-fade absolute inset-0 bg-black/70 backdrop-blur-[2px]" wire:click="closeForm"></div>
             <div role="dialog" aria-modal="true" aria-labelledby="form-title"
-                 class="krm-pop relative flex max-h-[96dvh] w-full flex-col overflow-hidden rounded-t-[14px] border border-kraft/25 bg-[#141414] shadow-[0_30px_80px_-20px_rgba(0,0,0,.95)] sm:max-h-[90vh] sm:max-w-[780px] sm:rounded-[14px]">
+                 class="krm-pop relative flex max-h-[96dvh] w-full flex-col overflow-hidden rounded-t-[14px] border border-kraft/25 bg-surface shadow-[0_30px_80px_-20px_rgb(var(--shadow)/.95)] sm:max-h-[90vh] sm:max-w-[780px] sm:rounded-[14px]">
                 <livewire:admin.coffee-form :coffee="$this->editing" :key="'form-' . ($form ?? '')" />
             </div>
         </div>

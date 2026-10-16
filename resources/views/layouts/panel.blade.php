@@ -50,6 +50,7 @@
     <title>{{ $title ?? 'KROMATIK' }}</title>
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <script>document.documentElement.classList.add('js');try{if(localStorage.getItem('krm-mini')==='1')document.documentElement.classList.add('mini')}catch(e){}</script>
+    @include('layouts.partials.theme-boot')
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>[x-cloak]{display:none!important}</style>
 </head>
@@ -61,10 +62,10 @@
     <div x-show="nav" x-cloak x-transition.opacity @click="nav = false" class="fixed inset-0 z-40 bg-black/60 lg:hidden"></div>
 
     <aside :class="nav ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
-           class="fixed inset-y-0 left-0 z-50 flex w-[248px] lg:[.mini_&]:w-[72px] flex-col border-r border-kraft/15 bg-[#0d0d0d] transition-[transform,width] duration-300 ease-out">
+           class="fixed inset-y-0 left-0 z-50 flex w-[248px] lg:[.mini_&]:w-[72px] flex-col border-r border-kraft/15 bg-surface transition-[transform,width] duration-300 ease-out">
         <div class="flex h-14 shrink-0 items-center justify-between border-b border-kraft/15 px-5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0">
             <a href="{{ route('landing') }}" class="flex items-center gap-2.5" title="KROMATIK">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="30" height="30" class="h-[30px] w-[30px]">
+                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="30" height="30" class="krm-mark h-[30px] w-[30px]">
                 <span class="font-display text-[0.95rem] font-bold tracking-[0.2em] lg:[.mini_&]:hidden">KROMATIK</span>
             </a>
             <button type="button" @click="nav = false" class="-mr-2 grid h-9 w-9 place-items-center text-kraft/70 lg:hidden" aria-label="{{ __('Tutup menu') }}">
@@ -81,25 +82,25 @@
                 @foreach ($items as [$route, $url, $label, $icon, , $badge])
                     @php $on = request()->routeIs($route); @endphp
                     <a href="{{ $url }}" wire:navigate title="{{ $label }}" @if ($on) aria-current="page" @endif
-                       class="relative mb-0.5 flex items-center gap-3 rounded px-3 py-2.5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0 text-[13.5px] transition-colors {{ $on ? 'bg-bluelab/15 text-labwhite' : 'text-kraft/70 hover:bg-white/[.04] hover:text-labwhite' }}">
+                       class="relative mb-0.5 flex items-center gap-3 rounded px-3 py-2.5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0 text-[13.5px] transition-colors {{ $on ? 'bg-bluelab/15 text-labwhite' : 'text-kraft/70 hover:bg-labwhite/[.04] hover:text-labwhite' }}">
                         @if ($on)<span class="absolute inset-y-1.5 left-0 w-[3px] rounded-full bg-bluelab"></span>@endif
                         <svg viewBox="0 0 24 24" class="h-[17px] w-[17px] shrink-0" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ $icon }}"/></svg>
                         <span class="flex-1 lg:[.mini_&]:hidden">{{ $label }}</span>
-                        @if ($badge)<span class="krm-readout rounded-[6px] bg-white/[.09] px-1.5 py-0.5 text-[11px] lg:[.mini_&]:hidden">{{ $badge }}</span><span class="absolute right-2.5 top-2 hidden h-2 w-2 rounded-full bg-[#E8782A] lg:[.mini_&]:block"></span>@endif
+                        @if ($badge)<span class="krm-readout rounded-[6px] bg-labwhite/[.09] px-1.5 py-0.5 text-[11px] lg:[.mini_&]:hidden">{{ $badge }}</span><span class="absolute right-2.5 top-2 hidden h-2 w-2 rounded-full bg-[#E8782A] lg:[.mini_&]:block"></span>@endif
                     </a>
                 @endforeach
             @endforeach
 
             <p class="krm-readout px-3 pb-1.5 pt-6 text-[10.5px] uppercase tracking-[0.18em] text-kraft/40 lg:[.mini_&]:hidden">{{ __('Pintasan') }}</p>
             <div class="mx-3 my-2 hidden border-t border-kraft/10 lg:[.mini_&]:block"></div>
-            <a href="{{ route('landing') }}" title="{{ __('Lihat toko') }}" class="flex items-center gap-3 rounded px-3 py-2.5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0 text-[13.5px] text-kraft/70 transition-colors hover:bg-white/[.04] hover:text-labwhite">
+            <a href="{{ route('landing') }}" title="{{ __('Lihat toko') }}" class="flex items-center gap-3 rounded px-3 py-2.5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0 text-[13.5px] text-kraft/70 transition-colors hover:bg-labwhite/[.04] hover:text-labwhite">
                 <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg><span class="lg:[.mini_&]:hidden">{{ __('Lihat toko') }}</span>
             </a>
         </nav>
 
         {{-- Tombol ciutkan: bulat kecil di tepi sidebar, sejajar header --}}
         <button type="button" x-data @click="const m = document.documentElement.classList.toggle('mini'); try { localStorage.setItem('krm-mini', m ? '1' : '0') } catch (e) {}"
-                class="absolute -right-3 top-[19px] z-10 hidden h-6 w-6 place-items-center rounded-full border border-kraft/30 bg-[#161616] text-kraft/70 shadow-[0_2px_8px_rgba(0,0,0,.6)] transition-colors hover:border-bluelab hover:bg-bluelab hover:text-labwhite lg:grid" aria-label="{{ __('Ciutkan menu') }}" title="{{ __('Ciutkan menu') }}">
+                class="absolute -right-3 top-[19px] z-10 hidden h-6 w-6 place-items-center rounded-full border border-kraft/30 bg-surface text-kraft/70 shadow-[0_2px_8px_rgb(var(--shadow)/.6)] transition-colors hover:border-bluelab hover:bg-bluelab hover:text-paper lg:grid" aria-label="{{ __('Ciutkan menu') }}" title="{{ __('Ciutkan menu') }}">
             <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 transition-transform duration-300 lg:[.mini_&]:rotate-180" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg>
         </button>
     </aside>
@@ -121,27 +122,28 @@
             <div class="ml-auto flex items-center gap-2 sm:gap-3">
                 <span class="krm-readout hidden text-[12px] text-kraft/50 md:block">{{ now()->translatedFormat('D, j M Y') }}</span>
                 <x-lang-switch class="flex" />
+                <x-theme-toggle />
                 <livewire:notifications />
                 <div class="relative" x-data="{ o: false }" @click.outside="o = false" @keydown.escape.window="o = false">
                     <button type="button" @click="o = !o" :aria-expanded="o ? 'true' : 'false'" class="flex items-center gap-2.5 rounded border border-kraft/20 py-1 pl-1 pr-2.5 transition-colors hover:border-kraft/50" aria-haspopup="menu">
                         <span class="grid h-7 w-7 place-items-center rounded-full bg-bluelab font-display text-[12.5px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
                         <span class="hidden text-left leading-tight sm:block">
                             <span class="block max-w-[130px] truncate text-[12.5px] font-medium">{{ $u->name }}</span>
-                            <span class="krm-readout block text-[9.5px] uppercase tracking-wider text-[#9DBBEF]">{{ $u->role }}</span>
+                            <span class="krm-readout block text-[9.5px] uppercase tracking-wider text-bluetext">{{ $u->role }}</span>
                         </span>
                         <svg viewBox="0 0 20 20" class="hidden h-3.5 w-3.5 text-kraft/55 transition-transform sm:block" :class="o && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
                     </button>
-                    <div x-show="o" x-cloak x-transition.opacity.duration.150ms role="menu" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[220px] overflow-hidden rounded-[10px] border border-kraft/25 bg-[#141414] shadow-[0_20px_50px_-15px_rgba(0,0,0,.9)]">
+                    <div x-show="o" x-cloak x-transition.opacity.duration.150ms role="menu" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[220px] overflow-hidden rounded-[10px] border border-kraft/25 bg-surface shadow-[0_20px_50px_-15px_rgb(var(--shadow)/.9)]">
                         <div class="border-b border-kraft/15 px-4 py-3">
                             <p class="truncate text-[13.5px] font-medium">{{ $u->name }}</p>
                             <p class="truncate text-[12px] text-kraft/55">{{ $u->email }}</p>
-                            <span class="krm-readout mt-2 inline-block rounded-[6px] border border-bluelab/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-[#9DBBEF]">{{ $u->role }}</span>
+                            <span class="krm-readout mt-2 inline-block rounded-[6px] border border-bluelab/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-bluetext">{{ $u->role }}</span>
                         </div>
-                        <a href="{{ route('profile') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-[13.5px] text-kraft/80 transition-colors hover:bg-white/[.05] hover:text-labwhite">
+                        <a href="{{ route('profile') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-[13.5px] text-kraft/80 transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">
                             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/></svg>{{ __('Profil') }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}">@csrf
-                            <button role="menuitem" class="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[13.5px] text-kraft/80 transition-colors hover:bg-white/[.05] hover:text-labwhite">
+                            <button role="menuitem" class="flex w-full items-center gap-2.5 px-4 py-2.5 text-left text-[13.5px] text-kraft/80 transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">
                                 <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>{{ __('Keluar') }}
                             </button>
                         </form>

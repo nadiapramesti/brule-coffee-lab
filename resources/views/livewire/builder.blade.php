@@ -1,7 +1,7 @@
 <div>
 
     {{-- ══════════════════ HEADER ══════════════════ --}}
-    <section class="relative isolate -mt-[74px] overflow-hidden pb-14 pt-[calc(74px+3.5rem)] md:pb-16 md:pt-[calc(74px+5rem)]">
+    <section class="krm-dark relative isolate -mt-[74px] overflow-hidden pb-14 pt-[calc(74px+3.5rem)] md:pb-16 md:pt-[calc(74px+5rem)]">
         <picture class="absolute inset-0 -z-20">
             <source media="(max-width: 767px)" srcset="{{ asset('images/hero-roastery-sm.webp') }}" type="image/webp">
             <img src="{{ asset('images/hero-roastery.webp') }}" alt="" width="1920" height="1280" decoding="async"
@@ -25,7 +25,7 @@
                     ['03', __('Gilingan'), __($this->grindOptions[$grind])],
                     ['04', __('Berat'), number_format($grams) . ' g'],
                 ] as [$n, $label, $val])
-                    <li class="min-w-0 rounded border border-white/15 bg-charcoal/55 px-3.5 py-3 backdrop-blur-[2px]">
+                    <li class="min-w-0 rounded border border-labwhite/15 bg-charcoal/55 px-3.5 py-3 backdrop-blur-[2px]">
                         <span class="krm-readout flex items-center gap-2 text-[11px] text-kraft/60">
                             <span class="text-bluelab">{{ $n }}</span>{{ $label }}
                         </span>
@@ -63,7 +63,7 @@
                                 <span class="krm-readout rounded-[6px] border border-kraft/25 px-1.5 py-0.5 text-[10.5px] text-kraft/75">
                                     {{ $bean->traceability?->process }}
                                 </span>
-                                <span class="grid h-5 w-5 place-items-center rounded-full bg-bluelab text-labwhite transition-all duration-300 {{ $on ? 'scale-100 opacity-100' : 'scale-50 opacity-0' }}">
+                                <span class="grid h-5 w-5 place-items-center rounded-full bg-bluelab text-paper transition-all duration-300 {{ $on ? 'scale-100 opacity-100' : 'scale-50 opacity-0' }}">
                                     <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.4 2.4 4.6-5"/></svg>
                                 </span>
                             </span>
@@ -110,7 +110,7 @@
                             <div class="relative h-[84px] w-[84px] shrink-0" aria-hidden="true">
                                 @foreach (['light', 'medium-light', 'medium', 'dark'] as $bn)
                                     <img src="{{ asset("images/beans/bean-{$bn}.png") }}" alt="" width="60" height="60"
-                                         class="absolute left-1/2 top-1/2 w-[60px] -translate-x-1/2 -translate-y-1/2 border-0 bg-transparent object-contain drop-shadow-[0_8px_10px_rgba(0,0,0,.45)] transition-opacity duration-300 ease-out {{ $bn === $activeBean ? 'opacity-100' : 'opacity-0' }}">
+                                         class="absolute left-1/2 top-1/2 w-[60px] -translate-x-1/2 -translate-y-1/2 border-0 bg-transparent object-contain drop-shadow-[0_8px_10px_rgb(var(--shadow)/.45)] transition-opacity duration-300 ease-out {{ $bn === $activeBean ? 'opacity-100' : 'opacity-0' }}">
                                 @endforeach
                             </div>
 
@@ -136,7 +136,7 @@
                                         @php $x = "calc(9px + (100% - 18px) * {$i} / {$last})"; $on = $i === $this->levelIndex; @endphp
                                         <button type="button" wire:click="setLevel({{ $i }})" aria-label="{{ $lv->level_label }}"
                                                 class="absolute top-0 h-11 w-11 -translate-x-1/2" style="left: {{ $x }}">
-                                            <span class="absolute left-1/2 top-[7px] h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-white/20 transition-transform duration-300 {{ $on ? 'scale-125' : '' }}"
+                                            <span class="absolute left-1/2 top-[7px] h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-labwhite/20 transition-transform duration-300 {{ $on ? 'scale-125' : '' }}"
                                                   style="background: {{ $this->beanColor($lv->agtron) }}"></span>
                                         </button>
                                         <span class="pointer-events-none absolute top-[22px] whitespace-nowrap text-[11px] transition-colors
@@ -211,7 +211,7 @@
 
         {{-- ─────────── PANEL RASA ─────────── --}}
         <div class="lg:sticky lg:top-24 lg:self-start">
-            <div class="overflow-hidden rounded border border-kraft/25 bg-[#161616]">
+            <div class="overflow-hidden rounded border border-kraft/25 bg-surface">
 
                 <div class="p-6 pb-2">
                     <div class="flex items-baseline justify-between gap-3">
@@ -241,7 +241,7 @@
                 </div>
 
                 {{-- Bagian "struk": dipisah garis putus-putus seperti tiket lab --}}
-                <div class="border-t border-dashed border-kraft/30 bg-[#101010] p-6">
+                <div class="border-t border-dashed border-kraft/30 bg-surface p-6">
                     <dl class="krm-settling space-y-2.5 text-[13px]" wire:loading.delay.class="opacity-50">
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Biji kopi') }}</dt><dd class="text-right">{{ $this->coffee?->name }}</dd></div>
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Sangrai') }}</dt><dd class="text-right">{{ $this->profile?->level_label }}</dd></div>
@@ -275,7 +275,7 @@
 
     {{-- Bar total untuk layar kecil: panel asli ada jauh di bawah --}}
     @if ($this->stockOk)
-        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-white/15 bg-[#0a0a0a]/92 px-4 py-3 backdrop-blur lg:hidden">
+        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-[#0a0a0a]/92 px-4 py-3 backdrop-blur lg:hidden">
             <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-4">
                 <div class="min-w-0">
                     <p class="truncate text-[12px] text-kraft/60">{{ $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>

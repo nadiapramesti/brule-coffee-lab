@@ -17,7 +17,7 @@
             $idx = array_search($o->status, $flow, true);
             $times = ['queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at];
         @endphp
-        <div class="mt-8 overflow-hidden rounded border border-kraft/25 bg-[#161616]">
+        <div class="mt-8 overflow-hidden rounded border border-kraft/25 bg-surface">
             <div class="flex flex-wrap items-start justify-between gap-4 p-6">
                 <div>
                     <p class="krm-readout text-[13px] text-kraft/60">{{ $o->order_code }}</p>
@@ -29,7 +29,7 @@
             @if ($o->status === 'cancelled')
                 <p class="border-t border-dashed border-kraft/30 px-6 py-5 text-[14px] text-kraft/70">{{ __('Pesanan ini dibatalkan.') }}</p>
             @elseif ($o->status === 'pending_payment')
-                <div class="border-t border-dashed border-kraft/30 bg-[#101010] p-6">
+                <div class="border-t border-dashed border-kraft/30 bg-surface p-6">
                     <p class="text-[14px] leading-relaxed text-kraft/75">{{ __('Biji untukmu sudah ditahan di gudang. Selesaikan pembayaran supaya masuk antrian sangrai.') }}</p>
                     @if ($this->canManage)
                         <div class="mt-5 flex flex-wrap gap-3">
@@ -41,12 +41,12 @@
                     @endif
                 </div>
             @else
-                <ol class="border-t border-dashed border-kraft/30 bg-[#101010] px-6 py-6">
+                <ol class="border-t border-dashed border-kraft/30 bg-surface px-6 py-6">
                     @foreach ($flow as $i => $step)
                         @php $done = $idx !== false && $i <= $idx; $now = $i === $idx; @endphp
                         <li class="relative flex gap-4 pb-6 last:pb-0">
                             @unless ($loop->last)<span class="absolute left-[7px] top-5 h-full w-px {{ $idx !== false && $i < $idx ? 'bg-bluelab' : 'bg-kraft/20' }}"></span>@endunless
-                            <span class="relative mt-1 h-[15px] w-[15px] shrink-0 rounded-full border-2 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-[#101010]' }}">
+                            <span class="relative mt-1 h-[15px] w-[15px] shrink-0 rounded-full border-2 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-surface' }}">
                                 @if ($now && $step !== 'completed')<span class="absolute -inset-1 animate-ping rounded-full bg-bluelab/40"></span>@endif
                             </span>
                             <div>
@@ -76,7 +76,7 @@
                 <h2 class="mt-10 text-[13px] text-kraft/55">{{ __('Pesanan terakhirmu') }}</h2>
                 <ul class="mt-3 divide-y divide-kraft/15 rounded border border-kraft/20">
                     @foreach ($mine as $m)
-                        <li><a href="{{ route('track', $m->order_code) }}" wire:navigate class="flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-white/[.03]">
+                        <li><a href="{{ route('track', $m->order_code) }}" wire:navigate class="flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-labwhite/[.03]">
                             <span class="krm-readout text-[13px]">{{ $m->order_code }}</span>
                             <span class="text-[13px] text-kraft/70">{{ $m->status_label }}</span>
                         </a></li>

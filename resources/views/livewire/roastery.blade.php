@@ -11,7 +11,7 @@
                 [__('Berat antrian'), number_format($this->stats['grams']), ' g'],
                 [__('Dikirim hari ini'), $this->stats['shippedToday'], ''],
             ] as [$l, $v, $u])
-                <div class="flex items-baseline gap-2 rounded border border-kraft/20 bg-[#121212] px-3 py-1.5">
+                <div class="flex items-baseline gap-2 rounded border border-kraft/20 bg-charcoal px-3 py-1.5">
                     <dt class="text-kraft/55">{{ $l }}</dt>
                     <dd class="krm-readout text-[14px]">{{ $v }}<span class="text-[11px] text-kraft/50">{{ $u }}</span></dd>
                 </div>
@@ -21,14 +21,14 @@
 
     <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         @foreach ($this->columns as $status => $orders)
-            <section class="rounded border border-kraft/20 bg-[#121212]">
+            <section class="rounded border border-kraft/20 bg-charcoal">
                 <header class="flex items-center justify-between border-b border-kraft/15 px-3 py-2">
                     <h2 class="text-[12.5px] font-semibold">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</h2>
-                    <span class="krm-readout rounded-[6px] bg-white/[.07] px-1.5 text-[11px]">{{ $orders->count() }}</span>
+                    <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $orders->count() }}</span>
                 </header>
                 <div class="space-y-2 p-2">
                     @forelse ($orders as $o)
-                        <article wire:key="o-{{ $o->id }}" class="rounded border border-kraft/15 bg-[#171717] px-2.5 py-2">
+                        <article wire:key="o-{{ $o->id }}" class="rounded border border-kraft/15 bg-surface px-2.5 py-2">
                             <div class="flex items-center justify-between gap-2">
                                 <p class="krm-readout truncate text-[10.5px] text-kraft/50">{{ $o->order_code }}</p>
                                 <p class="krm-readout shrink-0 text-[12.5px]">{{ number_format($o->items->sum('grams')) }} g</p>
@@ -46,7 +46,7 @@
                                            class="krm-readout min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-2 py-1.5 text-[12px] placeholder:text-kraft/30 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50">
                                     <button wire:click="ship({{ $o->id }})" class="shrink-0 rounded bg-bluelab px-3 text-[12.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Kirim') }}</button>
                                 </div>
-                                @error("tracking.$o->id")<p class="mt-1 text-[11.5px] text-red-300">{{ $message }}</p>@enderror
+                                @error("tracking.$o->id")<p class="mt-1 text-[11.5px] text-redtext">{{ $message }}</p>@enderror
                             @else
                                 <button wire:click="advance({{ $o->id }})" class="mt-2 w-full rounded border border-bluelab/50 py-1.5 text-[12px] font-semibold transition-colors hover:bg-bluelab">
                                     {{ __(\App\Models\Order::STATUS_LABELS[$o->nextStatus()]) }} &rarr;
@@ -61,14 +61,14 @@
         @endforeach
     </div>
 
-    <section class="mt-4 rounded border border-kraft/20 bg-[#121212] px-4 py-3">
+    <section class="mt-4 rounded border border-kraft/20 bg-charcoal px-4 py-3">
         <h2 class="text-[12.5px] font-semibold">{{ __('Stok biji mentah') }}</h2>
         <ul class="mt-2.5 grid gap-x-8 gap-y-2 sm:grid-cols-2 xl:grid-cols-4">
             @foreach ($this->stock as $c)
                 @php $pct = min(100, round($c->stock_green_bean_gram / 20000 * 100)); @endphp
                 <li>
                     <div class="flex justify-between gap-2 text-[12px]"><span class="truncate">{{ $c->name }}</span><span class="krm-readout shrink-0 text-kraft/65">{{ number_format($c->stock_green_bean_gram) }} g</span></div>
-                    <div class="mt-1 h-[3px] rounded-full bg-white/10"><div class="h-[3px] rounded-full {{ $pct < 25 ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>
+                    <div class="mt-1 h-[3px] rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $pct < 25 ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>
                 </li>
             @endforeach
         </ul>

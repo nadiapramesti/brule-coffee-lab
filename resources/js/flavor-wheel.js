@@ -14,8 +14,8 @@ const AXES = [
 ];
 
 const BLUE     = '#2A5DB0';
-const KRAFT    = '#D8C5A6';
-const LABWHITE = '#FFFBF2';
+const KRAFT    = 'rgb(var(--c-muted))';
+const LABWHITE = 'rgb(var(--c-fg))';
 
 export default function flavorWheel(initialValues = {}, labels = {}) {
     // Label sumbu mengikuti bahasa halaman; nilai awalnya Indonesia.
@@ -136,7 +136,7 @@ export default function flavorWheel(initialValues = {}, labels = {}) {
                     .attr('y', ly + dy + 15)
                     .attr('text-anchor', anchor)
                     .attr('dominant-baseline', 'middle')
-                    .attr('fill', '#6E9BE0')
+                    .attr('fill', 'rgb(var(--c-bluetext))')
                     .attr('font-size', 11)
                     .attr('font-family', "'IBM Plex Mono', monospace")
                     .text(Math.round(this.values[axis.key] ?? 0));
