@@ -35,7 +35,7 @@
     color-scheme: light;
     --c-bg: 247 243 234;
     --c-fg: 28 24 19;
-    --c-muted: 74 60 40;
+    --c-muted: 58 46 28;
     --c-surface: 255 253 249;
     --c-bluetext: 30 74 148;
     --c-ambertext: 168 82 16;
@@ -47,7 +47,7 @@
         color-scheme: light;
         --c-bg: 247 243 234;
         --c-fg: 28 24 19;
-        --c-muted: 74 60 40;
+        --c-muted: 58 46 28;
         --c-surface: 255 253 249;
         --c-bluetext: 30 74 148;
         --c-ambertext: 168 82 16;
@@ -326,3 +326,11 @@ input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer
 /* Logo putih: di mode terang dibalik jadi gelap (biru tetap biru); area .krm-dark tidak ikut. */
 html[data-theme="light"] .krm-mark { filter: invert(1) hue-rotate(180deg); }
 html[data-theme="light"] .krm-dark .krm-mark { filter: none; }
+
+/* Mode terang: teks redup dinaikkan kontrasnya (alpha rendah yang nyaman di latar gelap
+   jadi terlalu pucat di kertas). Hanya teks; garis dan latar tidak disentuh. */
+html[data-theme="light"] :is(.text-kraft\/30, .text-kraft\/35, .text-kraft\/40, .text-kraft\/45, .text-kraft\/50):not(.krm-dark *) { color: rgb(var(--c-muted) / .68); }
+html[data-theme="light"] :is(.text-kraft\/55, .text-kraft\/60, .text-kraft\/65):not(.krm-dark *) { color: rgb(var(--c-muted) / .78); }
+html[data-theme="light"] :is(.text-kraft\/70, .text-kraft\/75, .text-kraft\/80, .text-kraft\/85):not(.krm-dark *) { color: rgb(var(--c-muted) / .9); }
+html[data-theme="light"] ::placeholder { opacity: 1; color: rgb(var(--c-muted) / .55); }
+html[data-theme="light"] .krm-auth input:not([type=checkbox])::placeholder { color: rgb(var(--c-muted) / .55); }
