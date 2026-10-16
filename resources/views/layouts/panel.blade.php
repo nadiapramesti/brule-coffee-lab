@@ -43,7 +43,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <style>[x-cloak]{display:none!important}</style>
 </head>
-<body class="min-h-screen bg-charcoal text-labwhite" x-data="{ nav: false }" @keydown.escape.window="nav = false">
+<body class="krm-panel min-h-screen bg-charcoal text-labwhite" x-data="{ nav: false }" @keydown.escape.window="nav = false">
 
     <a href="#isi" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-[60] focus:bg-bluelab focus:px-4 focus:py-2">{{ __('Lewati ke isi') }}</a>
 

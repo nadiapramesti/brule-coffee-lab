@@ -249,3 +249,6 @@ header[data-site-header] { view-transition-name: krm-header; }
 @keyframes krm-slide { from { transform: translateX(32px); opacity: 0; } to { transform: none; opacity: 1; } }
 .krm-slide { animation: krm-slide .26s cubic-bezier(.2,.8,.2,1) both; }
 @media (prefers-reduced-motion: reduce) { .krm-slide { animation: none; } }
+
+/* Panel admin: cegah gestur geser dua jari/trackpad memicu "back" browser tanpa sengaja. */
+html:has(body.krm-panel) { overscroll-behavior-x: none; }
