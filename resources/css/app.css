@@ -252,3 +252,9 @@ header[data-site-header] { view-transition-name: krm-header; }
 
 /* Panel admin: cegah gestur geser dua jari/trackpad memicu "back" browser tanpa sengaja. */
 html:has(body.krm-panel) { overscroll-behavior-x: none; }
+
+/* Sembunyikan semua scrollbar bawaan browser (tetap bisa di-scroll) + spinner input angka. */
+* { scrollbar-width: none; -ms-overflow-style: none; }
+*::-webkit-scrollbar, *::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+input[type=number] { -moz-appearance: textfield; appearance: textfield; }
+input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
