@@ -677,5 +677,6 @@
     "Keranjang penuh (maks :n item). Selesaikan checkout dulu.": "Cart is full (max :n items). Check out first.",
     "Stok :n tidak cukup untuk jumlah yang kamu pilih.": "Not enough :n in stock for the amount you chose.",
     "+:n lainnya": "+:n more",
-    "Jumlah": "Quantity"
+    "Jumlah": "Quantity",
+    "Total berat": "Total weight"
 }

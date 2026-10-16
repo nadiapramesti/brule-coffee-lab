@@ -39,10 +39,11 @@
         <thead><tr><th>{{ __('Item') }}</th><th>{{ __('Level') }}</th><th>{{ __('Gilingan') }}</th><th class="r">{{ __('Berat') }}</th><th class="r">{{ __('Harga') }}</th></tr></thead>
         <tbody>
         @foreach ($order->groupedItems() as $i)
-            <tr><td>{{ $i->coffee_name_snapshot }}</td><td>{{ $i->level_label }}</td><td>{{ __($i->grind_label) }}</td><td class="r">{{ number_format($i->grams) }} g{{ $i->qty > 1 ? ' × '.$i->qty : '' }}</td><td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td></tr>
+            <tr><td>{{ $i->coffee_name_snapshot }}</td><td>{{ $i->level_label }}</td><td>{{ __($i->grind_label) }}</td><td class="r">{{ number_format($i->total_grams, 0, ',', '.') }} g</td><td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td></tr>
         @endforeach
         </tbody>
         <tfoot>
+            <tr><td colspan="3" class="r muted">{{ __('Total berat') }}</td><td class="r">{{ number_format($order->items->sum('grams'), 0, ',', '.') }} g</td><td></td></tr>
             <tr><td colspan="4" class="r muted">{{ __('Subtotal') }}</td><td class="r">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</td></tr>
             @if ($order->discount ?? 0)<tr><td colspan="4" class="r muted">{{ __('Diskon') }}@if ($order->voucher_code) ({{ $order->voucher_code }})@endif</td><td class="r">- Rp {{ number_format($order->discount, 0, ',', '.') }}</td></tr>@endif
             <tr><td colspan="4" class="r muted">{{ __('Ongkir') }}</td><td class="r">{{ $order->shipping_cost ? 'Rp ' . number_format($order->shipping_cost, 0, ',', '.') : __('Gratis') }}</td></tr>
