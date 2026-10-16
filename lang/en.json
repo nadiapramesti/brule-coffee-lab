@@ -649,5 +649,8 @@
     ":code · :r": ":code · :r",
     "Pesanan :code dibatalkan.": "Order :code was cancelled.",
     ":n tersisa :kg kg": ":n has :kg kg left",
-    "Ganti tema": "Switch theme"
+    "Ganti tema": "Switch theme",
+    "Unduh": "Download",
+    "Hapus voucher ini?": "Delete this voucher?",
+    "Hapus voucher": "Delete voucher"
 }

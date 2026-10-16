@@ -23,7 +23,7 @@
         {{ __('Lewati ke isi') }}
     </a>
 
-    <header data-site-header x-data="{ open: false, top: true, hero: {{ request()->routeIs('landing', 'builder') ? 'true' : 'false' }} }"
+    <header data-site-header x-data="{ open: false, top: true, hero: {{ request()->routeIs('landing', 'builder') ? 'true' : 'false' }}, land: {{ request()->routeIs('landing') ? 'true' : 'false' }}, build: {{ request()->routeIs('builder') ? 'true' : 'false' }} }"
             x-init="top = window.scrollY < 24"
             @scroll.window.passive="top = window.scrollY < 24"
             :class="top && !open && hero ? 'krm-dark border-transparent bg-gradient-to-b from-charcoal/90 to-transparent' : 'border-kraft/12 bg-charcoal/90 backdrop-blur-md'"
@@ -71,11 +71,12 @@
                     </div>
                 @else
                     <a href="{{ route('login') }}"
-                       class="rounded border border-kraft/40 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/80 hover:text-labwhite">
+                       class="px-2 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:text-labwhite">
                         {{ __('Masuk') }}
                     </a>
                 @endauth
-                <a href="{{ route('builder') }}"
+                {{-- Satu aksi utama per layar: di beranda tombol ini baru muncul setelah hero lewat, di builder tidak perlu. --}}
+                <a href="{{ route('builder') }}" x-show="land ? !top : !build" x-cloak x-transition.opacity.duration.200ms
                    class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
                     {{ __('Racik kopimu') }}
                 </a>

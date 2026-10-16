@@ -275,7 +275,7 @@
 
     {{-- Bar total untuk layar kecil: panel asli ada jauh di bawah --}}
     @if ($this->stockOk)
-        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-[#0a0a0a]/92 px-4 py-3 backdrop-blur lg:hidden">
+        <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-surface/95 px-4 py-3 backdrop-blur lg:hidden">
             <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-4">
                 <div class="min-w-0">
                     <p class="truncate text-[12px] text-kraft/60">{{ $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>

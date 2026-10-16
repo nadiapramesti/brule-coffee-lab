@@ -11,10 +11,7 @@
             <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Pesanan') }}</h1>
             <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Semua pesanan toko. Klik baris untuk melihat detail dan mengubah status.') }}</p>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.orders.export', $exportQuery + ['format' => 'xlsx']) }}" class="inline-flex items-center gap-2 rounded border border-kraft/30 px-4 py-2.5 text-[13.5px] transition-colors hover:border-kraft/70"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>{{ __('Unduh Excel') }}</a>
-            <a href="{{ route('admin.orders.export', $exportQuery + ['format' => 'pdf']) }}" class="inline-flex items-center gap-2 rounded border border-kraft/30 px-4 py-2.5 text-[13.5px] transition-colors hover:border-kraft/70"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 11l5 5 5-5M5 20h14"/></svg>{{ __('Unduh PDF') }}</a>
-        </div>
+        <x-download-menu :xlsx="route('admin.orders.export', $exportQuery + ['format' => 'xlsx'])" :pdf="route('admin.orders.export', $exportQuery + ['format' => 'pdf'])" />
     </div>
 
     @if ($notice)

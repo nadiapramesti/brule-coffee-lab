@@ -142,6 +142,7 @@ class Vouchers extends Component
         \App\Models\ActivityLog::record('voucher.deleted', null, 'Voucher :c dihapus', ['c' => $v->code]);
         $v->delete();
         $this->notice = __('Voucher :c dihapus.', ['c' => $v->code]);
+        $this->open = false;
         unset($this->vouchers, $this->counts);
     }
 

@@ -42,8 +42,9 @@
                         {{ __('Racik kopimu') }}
                     </a>
                     <a href="#biji"
-                       class="rounded border border-kraft/35 px-7 py-3.5 font-display text-[15px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">
+                       class="group inline-flex items-center gap-2 px-2 py-3.5 font-display text-[15px] font-semibold text-kraft transition-colors hover:text-labwhite">
                         {{ __('Lihat biji yang ada') }}
+                        <svg viewBox="0 0 16 16" class="h-3.5 w-3.5 transition-transform group-hover:translate-y-0.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3v10M3.5 8.5L8 13l4.5-4.5"/></svg>
                     </a>
                 </div>
             </div>

@@ -56,9 +56,8 @@
                         <p class="krm-readout text-[12.5px] text-kraft/70 md:text-right"><span class="text-kraft/45 md:hidden">{{ __('Terpakai 30 hari') }}: </span>{{ $r->used ? $n($r->used) . ' g' : '—' }}</p>
                         <p class="text-[12.5px] md:text-right {{ $r->daysLeft !== null && $r->daysLeft < 14 ? 'text-ambertext' : 'text-kraft/70' }}"><span class="text-kraft/45 md:hidden">{{ __('Perkiraan habis') }}: </span>{{ $r->daysLeft !== null ? '±' . $r->daysLeft . ' ' . __('hari') : '—' }}</p>
                         <span class="hidden w-fit whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] md:inline-block {{ $chip[$r->status][1] }}">{{ __($chip[$r->status][0]) }}</span>
-                        <div class="flex justify-end gap-1.5">
-                            <button wire:click="openAdjust({{ $c->id }}, 'restock')" class="rounded bg-bluelab px-3 py-1.5 text-[12.5px] font-semibold transition-colors hover:bg-[#234E94]">+ {{ __('Restock') }}</button>
-                            <button wire:click="openAdjust({{ $c->id }}, 'count')" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Atur') }}</button>
+                        <div class="flex justify-end">
+                            <button wire:click="openAdjust({{ $c->id }}, 'restock')" class="rounded border border-bluelab/50 px-3 py-1.5 text-[12.5px] font-semibold text-bluetext transition-colors hover:bg-bluelab hover:text-paper">{{ __('Atur stok') }}</button>
                         </div>
                     </li>
                 @endforeach

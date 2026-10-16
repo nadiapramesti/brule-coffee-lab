@@ -24,10 +24,7 @@
             <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Laporan penjualan') }}</h1>
             <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ $r->from->translatedFormat('j M Y') }} – {{ $r->to->translatedFormat('j M Y') }} · {{ $r->days() }} {{ __('hari') }} · {{ __('hanya pesanan yang sudah dibayar dan tidak dibatalkan') }}</p>
         </div>
-        <div class="flex gap-2">
-            <a href="{{ route('admin.reports.export', $q + ['format' => 'xlsx']) }}" class="inline-flex items-center gap-2 rounded border border-kraft/30 px-4 py-2.5 text-[13.5px] transition-colors hover:border-kraft/70">{!! $dl !!}{{ __('Unduh Excel') }}</a>
-            <a href="{{ route('admin.reports.export', $q + ['format' => 'pdf']) }}" class="inline-flex items-center gap-2 rounded border border-kraft/30 px-4 py-2.5 text-[13.5px] transition-colors hover:border-kraft/70">{!! $dl !!}{{ __('Unduh PDF') }}</a>
-        </div>
+        <x-download-menu :xlsx="route('admin.reports.export', $q + ['format' => 'xlsx'])" :pdf="route('admin.reports.export', $q + ['format' => 'pdf'])" />
     </div>
 
     <div class="mt-4 flex flex-wrap items-center gap-3">

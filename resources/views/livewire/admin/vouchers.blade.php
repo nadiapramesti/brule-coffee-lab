@@ -65,10 +65,12 @@
                             @else<span class="text-kraft/45">{{ __('tanpa batas waktu') }}</span>@endif
                         </p>
                         <span class="hidden w-fit whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] lg:inline-block {{ $chip[$st][1] }}">{{ __($chip[$st][0]) }}</span>
-                        <div class="flex justify-end gap-1.5">
+                        <div class="flex items-center justify-end gap-3">
+                            <button type="button" role="switch" aria-checked="{{ $v->is_active ? 'true' : 'false' }}" aria-label="{{ $v->is_active ? __('Matikan') : __('Aktifkan') }}" title="{{ $v->is_active ? __('Matikan') : __('Aktifkan') }}" wire:click="toggle({{ $v->id }})"
+                                    class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors {{ $v->is_active ? 'bg-bluelab' : 'bg-labwhite/25' }}">
+                                <span class="absolute top-[3px] h-4 w-4 rounded-full bg-paper shadow transition-all {{ $v->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
+                            </button>
                             <button wire:click="openForm({{ $v->id }})" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Ubah') }}</button>
-                            <button wire:click="toggle({{ $v->id }})" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ $v->is_active ? __('Matikan') : __('Aktifkan') }}</button>
-                            <button wire:click="delete({{ $v->id }})" wire:confirm="{{ __('Hapus voucher :c?', ['c' => $v->code]) }}" class="grid h-[30px] w-[30px] place-items-center rounded border border-kraft/20 text-kraft/55 transition-colors hover:border-redtext/50 hover:text-redtext" aria-label="{{ __('Hapus') }}"><svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg></button>
                         </div>
                     </li>
                 @empty
@@ -152,6 +154,9 @@
                 </div>
 
                 <footer class="flex items-center justify-end gap-2 border-t border-kraft/15 px-5 py-3.5">
+                    @if ($editingId)
+                        <button type="button" wire:click="delete({{ $editingId }})" wire:confirm="{{ __('Hapus voucher ini?') }}" class="mr-auto rounded px-2 py-2.5 text-[13px] text-redtext/90 transition-colors hover:text-redtext">{{ __('Hapus voucher') }}</button>
+                    @endif
                     <button type="button" wire:click="closeForm" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
                     <button type="submit" wire:loading.attr="disabled" class="rounded bg-bluelab px-6 py-2.5 font-display text-[14px] font-semibold hover:bg-[#234E94] disabled:opacity-60">{{ __('Simpan') }}</button>
                 </footer>
