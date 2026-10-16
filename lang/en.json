@@ -166,5 +166,15 @@
     "Keluar": "Log out",
     "AKUN": "ACCOUNT",
     "Profil": "Profile",
-    "Beranda": "Home"
+    "Beranda": "Home",
+    "Sembunyikan password": "Hide password",
+    "Tampilkan password": "Show password",
+    "Lupa password?": "Forgot password?",
+    "Ingat saya": "Remember me",
+    "Memeriksa...": "Checking...",
+    "Belum punya akun?": "Don't have an account?",
+    "Daftar": "Sign up",
+    "opsional": "optional",
+    "Minimal 8 karakter.": "At least 8 characters.",
+    "Memproses...": "Processing..."
 }
