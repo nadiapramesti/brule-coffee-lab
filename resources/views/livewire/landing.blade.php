@@ -117,9 +117,64 @@
             $processes = $this->coffees->map(fn ($c) => $c->traceability?->process)->filter()->unique()->values();
         @endphp
 
-        <div class="mt-10" x-data="{ f: 'semua' }">
+        @php
+            $catalog = $this->coffees->map(fn ($c) => [
+                'id' => $c->id,
+                'name' => $c->name,
+                'hay' => mb_strtolower(implode(' ', array_filter([
+                    $c->name, $c->traceability?->region, $c->traceability?->process, $c->traceability?->varietal,
+                    implode(' ', $c->signatureProfile()?->tasting_notes ?? []),
+                ]))),
+                'process' => $c->traceability?->process,
+                'price' => (int) ($c->startingPrice() ?? 0),
+                'score' => (float) $c->cupping_score,
+                'rating' => (float) ($c->reviews_avg ?? 0),
+            ])->values();
+        @endphp
 
-            <div class="flex flex-wrap items-center gap-2" role="group" aria-label="{{ __('Saring berdasarkan proses') }}">
+        <div class="mt-10" x-data="{
+                f: 'semua', q: '', sort: 'default', items: @js($catalog),
+                get list() {
+                    const words = this.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+                    let l = this.items.filter(i => (this.f === 'semua' || i.process === this.f) && words.every(w => i.hay.includes(w)));
+                    const by = {
+                        price_asc: (a, b) => a.price - b.price,
+                        price_desc: (a, b) => b.price - a.price,
+                        score: (a, b) => b.score - a.score,
+                        rating: (a, b) => b.rating - a.rating || b.score - a.score,
+                        name: (a, b) => a.name.localeCompare(b.name),
+                    };
+                    return by[this.sort] ? [...l].sort(by[this.sort]) : l;
+                },
+                show(id) { return this.list.some(i => i.id === id) },
+                pos(id) { return this.list.findIndex(i => i.id === id) },
+                reset() { this.f = 'semua'; this.q = ''; this.sort = 'default' },
+                get count() { return @js(__(':n lot ditampilkan')).replace(':n', this.list.length) },
+            }">
+
+            <div class="flex flex-col gap-3 sm:flex-row">
+                <div class="relative flex-1">
+                    <label for="cari-biji" class="sr-only">{{ __('Cari biji') }}</label>
+                    <svg viewBox="0 0 20 20" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/50" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2L17 17"/></svg>
+                    <input id="cari-biji" type="search" x-model="q" autocomplete="off"
+                           placeholder="{{ __('Cari nama, asal, atau rasa. Contoh: Gayo, chocolate, citrus') }}"
+                           class="w-full rounded border border-kraft/25 bg-transparent py-3 pl-10 pr-4 text-[14.5px] text-labwhite placeholder:text-kraft/40 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
+                </div>
+                <div>
+                    <label for="urut-biji" class="sr-only">{{ __('Urutkan') }}</label>
+                    <select id="urut-biji" x-model="sort"
+                            class="w-full rounded border border-kraft/25 bg-transparent px-4 py-3 text-[14.5px] text-labwhite focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40 sm:w-[15rem]">
+                        <option value="default" class="text-charcoal">{{ __('Urutkan: Bawaan') }}</option>
+                        <option value="price_asc" class="text-charcoal">{{ __('Harga terendah') }}</option>
+                        <option value="price_desc" class="text-charcoal">{{ __('Harga tertinggi') }}</option>
+                        <option value="score" class="text-charcoal">{{ __('Skor cupping tertinggi') }}</option>
+                        <option value="rating" class="text-charcoal">{{ __('Rating tertinggi') }}</option>
+                        <option value="name" class="text-charcoal">{{ __('Nama A–Z') }}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="{{ __('Saring berdasarkan proses') }}">
                 <span class="mr-2 text-[12px] text-kraft/50">{{ __('Proses') }}</span>
                 <button type="button" @click="f = 'semua'"
                         :aria-pressed="f === 'semua'"
@@ -138,7 +193,15 @@
                 @endforeach
             </div>
 
-            <div class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <p class="krm-readout mt-5 text-[12px] text-kraft/55" aria-live="polite" x-text="count">{{ $this->coffees->count() }}</p>
+
+            <div x-show="list.length === 0" x-cloak class="mt-4 rounded border border-dashed border-kraft/30 px-6 py-12 text-center">
+                <p class="font-display text-[1.1rem] font-semibold">{{ __('Tidak ada biji yang cocok') }}</p>
+                <p class="mx-auto mt-2 max-w-[44ch] text-[14px] text-kraft/65">{{ __('Coba kata kunci lain, atau hapus saringan proses.') }}</p>
+                <button type="button" @click="reset()" class="mt-5 rounded border border-kraft/35 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">{{ __('Reset pencarian') }}</button>
+            </div>
+
+            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($this->coffees as $bean)
                     @php
                         $t = $bean->traceability; $sig = $bean->signatureProfile();
@@ -146,7 +209,7 @@
                     @endphp
 
                     <article x-data="{ open: false }" data-reveal style="--d: {{ min($loop->index, 5) * 50 }}ms"
-                             x-show="f === 'semua' || f === @js($t?->process)"
+                             x-show="show({{ $bean->id }})" :style="{ order: pos({{ $bean->id }}) }"
                              class="flex min-w-0 flex-col overflow-hidden rounded border border-kraft/20 bg-surface transition-colors hover:border-kraft/45">
 
                         {{-- Foto produk kalau sudah diupload, kalau belum ilustrasi kantongnya --}}

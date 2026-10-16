@@ -60,3 +60,11 @@ it('marks a coffee sold out in the catalog and removes its CTA link', function (
     expect($coffee->fresh()->load('roastProfiles')->stockState())->toBe('soldout');
     $this->get('/')->assertSee('Habis');
 });
+
+it('renders the catalog search box and sort options', function () {
+    $this->get('/')->assertOk()
+        ->assertSee('id="cari-biji"', false)
+        ->assertSee('Harga terendah')
+        ->assertSee('Rating tertinggi')
+        ->assertSee('Tidak ada biji yang cocok');
+});
