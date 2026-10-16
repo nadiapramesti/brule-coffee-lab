@@ -235,7 +235,7 @@
             <ol class="-mx-6 mt-10 flex scroll-px-6 snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
                 @foreach ($this->stages as $k => $stage)
                     <li class="w-[64%] shrink-0 snap-start sm:w-auto" data-reveal style="--d: {{ $k * 90 }}ms">
-                        <div class="relative aspect-[3/4] overflow-hidden border-t border-white/20 bg-charcoal">
+                        <div class="relative aspect-[3/4] overflow-hidden rounded border-t border-white/20 bg-charcoal">
                             <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}"
                                  width="900" height="1200" loading="lazy" decoding="async"
                                  class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]">
