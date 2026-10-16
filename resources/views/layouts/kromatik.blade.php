@@ -97,7 +97,7 @@
                     <ul class="space-y-2.5 text-[14px]">
                         <li><a href="{{ route('landing') }}#biji" class="transition-colors hover:text-labwhite">{{ __('Biji') }}</a></li>
                         <li><a href="{{ route('builder') }}" class="transition-colors hover:text-labwhite">Roast builder</a></li>
-                        <li><a href="{{ route('dashboard') }}" class="transition-colors hover:text-labwhite">{{ __('Lacak pesanan') }}</a></li>
+                        <li><a href="{{ route('track') }}" class="transition-colors hover:text-labwhite">{{ __('Lacak pesanan') }}</a></li>
                         <li><a href="{{ route('landing') }}#tahapan" class="transition-colors hover:text-labwhite">FAQ</a></li>
                     </ul>
                 </nav>

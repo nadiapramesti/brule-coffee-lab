@@ -1,11 +1,18 @@
 <?php
 
 use App\Livewire\Builder;
+use App\Livewire\Checkout;
+use App\Livewire\Roastery;
+use App\Livewire\Track;
 use App\Livewire\Landing;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', Landing::class)->name('landing');
 Route::get('/builder', Builder::class)->name('builder');
+
+Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
+Route::get('/lacak/{code?}', Track::class)->name('track');
+Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
 
 Route::get('/bahasa/{locale}', function (string $locale) {
     if (in_array($locale, \App\Http\Middleware\SetLocale::SUPPORTED, true)) {

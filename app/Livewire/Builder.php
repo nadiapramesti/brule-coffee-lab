@@ -140,6 +140,16 @@ class Builder extends Component
         $this->pushToWheel();
     }
 
+    /** Lanjut ke checkout. Harga tidak ikut dikirim; halaman berikutnya menghitung ulang. */
+    public function order()
+    {
+        abort_unless($this->profile && $this->stockOk, 422);
+
+        return $this->redirectRoute('checkout', [
+            'p' => $this->profile->id, 'g' => $this->grams, 'grind' => $this->grind,
+        ], navigate: true);
+    }
+
     public function setLevel(int $index): void
     {
         $this->levelIndex = $index;

@@ -91,4 +91,85 @@ class Order extends Model
     {
         return $query->whereIn('status', ['queued', 'roasting', 'grinding', 'packing']);
     }
+
+    public const FREE_SHIPPING_FROM = 500000;
+    public const SHIPPING_FLAT = 15000;
+
+    public static function shippingFor(int $subtotal): int
+    {
+        return $subtotal >= self::FREE_SHIPPING_FROM ? 0 : self::SHIPPING_FLAT;
+    }
+
+    /**
+     * Buat pesanan satu item. Harga dihitung ulang di sini dari database,
+     * bukan dipercaya dari browser, dan stok biji mentah dikunci selama
+     * transaksi supaya dua pembeli tidak bisa mengambil stok yang sama.
+     *
+     * @throws \RuntimeException bila stok tidak cukup
+     */
+    public static function place(User $user, RoastProfile $profile, int $grams, string $grind, array $ship): self
+    {
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $profile, $grams, $grind, $ship) {
+            $coffee = Coffee::whereKey($profile->coffee_id)->lockForUpdate()->firstOrFail();
+
+            if (! $coffee->is_active || ! $coffee->hasStockFor($grams)) {
+                throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
+            }
+
+            $line = $profile->priceFor($grams);
+            $shipping = self::shippingFor($line);
+
+            $order = self::create([
+                'order_code'       => self::generateCode(),
+                'user_id'          => $user->id,
+                'status'           => 'pending_payment',
+                'subtotal'         => $line,
+                'shipping_cost'    => $shipping,
+                'total'            => $line + $shipping,
+                'recipient_name'   => $ship['name'],
+                'recipient_phone'  => $ship['phone'],
+                'shipping_address' => $ship['address'],
+            ]);
+
+            $order->items()->create([
+                'roast_profile_id'        => $profile->id,
+                'grams'                   => $grams,
+                'grind'                   => $grind,
+                'coffee_name_snapshot'    => $coffee->name,
+                'roast_level_snapshot'    => $profile->level_label,
+                'price_per_100g_snapshot' => $profile->price_per_100g,
+                'line_total'              => $line,
+            ]);
+
+            $coffee->reduceStock($grams);
+
+            return $order;
+        });
+    }
+
+    /** Simulasi pembayaran: tanpa gateway, tombolnya langsung menandai lunas. */
+    public function markPaid(): void
+    {
+        if ($this->status === 'pending_payment') {
+            $this->update(['status' => 'queued', 'paid_at' => now()]);
+        }
+    }
+
+    /** Batalkan pesanan yang belum disangrai dan kembalikan stok biji mentahnya. */
+    public function cancelAndRestock(): bool
+    {
+        if (! in_array($this->status, ['pending_payment', 'queued'], true)) {
+            return false;
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () {
+            foreach ($this->items()->with('roastProfile.coffee')->get() as $item) {
+                $coffee = $item->roastProfile?->coffee;
+                $coffee?->increment('stock_green_bean_gram', $coffee->greenBeanNeeded($item->grams));
+            }
+            $this->update(['status' => 'cancelled']);
+        });
+
+        return true;
+    }
 }

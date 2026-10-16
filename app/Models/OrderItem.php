@@ -50,6 +50,12 @@ class OrderItem extends Model
         return $this->hasOne(RoastJournal::class);
     }
 
+    /** Snapshot lama menyimpan kunci ('medium_light'); yang baru sudah label. */
+    public function getLevelLabelAttribute(): string
+    {
+        return RoastProfile::LEVELS[$this->roast_level_snapshot] ?? $this->roast_level_snapshot;
+    }
+
     public function getGrindLabelAttribute(): string
     {
         return self::GRINDS[$this->grind] ?? $this->grind;

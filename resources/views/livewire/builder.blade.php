@@ -101,20 +101,17 @@
                     <div class="mt-5 overflow-hidden rounded border border-kraft/20 bg-[linear-gradient(135deg,rgba(255,251,242,.035),transparent_60%)]">
                         <div class="flex flex-col items-center gap-6 p-6 sm:flex-row sm:gap-8 sm:p-8">
 
-                            {{-- Biji yang berubah warna mengikuti level --}}
-                            <div class="relative grid h-36 w-36 shrink-0 place-items-center rounded-full bg-[radial-gradient(circle,rgba(255,251,242,.07),transparent_68%)] sm:h-40 sm:w-40">
-                                <svg viewBox="0 0 120 120" class="h-28 w-28 -rotate-[24deg] drop-shadow-[0_14px_16px_rgba(0,0,0,.55)] sm:h-32 sm:w-32" aria-hidden="true">
-                                    <ellipse cx="60" cy="60" rx="38" ry="50"
-                                             style="fill: {{ $this->beanColor($this->profile?->agtron) }}; transition: fill .45s ease"/>
-                                    <ellipse cx="60" cy="60" rx="38" ry="50" fill="url(#bean-shine)"/>
-                                    <path d="M60 12c-9 16 9 28 0 48s9 30 0 48" fill="none" stroke="rgba(0,0,0,.42)" stroke-width="4" stroke-linecap="round"/>
-                                    <defs>
-                                        <radialGradient id="bean-shine" cx="34%" cy="26%" r="70%">
-                                            <stop offset="0" stop-color="#fff" stop-opacity=".34"/>
-                                            <stop offset=".45" stop-color="#fff" stop-opacity="0"/>
-                                        </radialGradient>
-                                    </defs>
-                                </svg>
+                            {{-- Foto biji per level. Keempatnya ditumpuk dan dimuat sekaligus,
+                                 jadi pindah level cuma cross-fade opacity 0.3s tanpa menunggu unduhan. --}}
+                            @php
+                                $beanImg = ['light' => 'light', 'medium_light' => 'medium-light', 'medium' => 'medium', 'medium_dark' => 'dark', 'dark' => 'dark'];
+                                $activeBean = $beanImg[$this->profile?->level] ?? 'medium-light';
+                            @endphp
+                            <div class="relative h-[84px] w-[84px] shrink-0" aria-hidden="true">
+                                @foreach (['light', 'medium-light', 'medium', 'dark'] as $bn)
+                                    <img src="{{ asset("images/beans/bean-{$bn}.png") }}" alt="" width="60" height="60"
+                                         class="absolute left-1/2 top-1/2 w-[60px] -translate-x-1/2 -translate-y-1/2 border-0 bg-transparent object-contain drop-shadow-[0_8px_10px_rgba(0,0,0,.45)] transition-opacity duration-300 ease-out {{ $bn === $activeBean ? 'opacity-100' : 'opacity-0' }}">
+                                @endforeach
                             </div>
 
                             <div class="w-full min-w-0 flex-1">
@@ -253,7 +250,7 @@
                     </div>
 
                     @if ($this->stockOk)
-                        <button type="button"
+                        <button type="button" wire:click="order"
                                 class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] hover:shadow-[0_10px_28px_-10px_rgba(42,93,176,.9)] active:scale-[.99]">
                             {{ __('Pesan dan sangrai') }}
                         </button>
@@ -279,7 +276,7 @@
                     <p class="truncate text-[12px] text-kraft/60">{{ $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>
                     <p class="krm-readout text-[1.15rem] leading-tight">Rp{{ number_format($this->price, 0, ',', '.') }}</p>
                 </div>
-                <button type="button" class="shrink-0 rounded bg-bluelab px-5 py-3 font-display text-[14px] font-semibold">{{ __('Pesan dan sangrai') }}</button>
+                <button type="button" wire:click="order" class="shrink-0 rounded bg-bluelab px-5 py-3 font-display text-[14px] font-semibold">{{ __('Pesan dan sangrai') }}</button>
             </div>
         </div>
     @endif
