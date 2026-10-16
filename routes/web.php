@@ -17,6 +17,7 @@ Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');
     Route::get('/pesanan', \App\Livewire\Admin\Orders::class)->name('admin.orders');
+    Route::get('/pelanggan', \App\Livewire\Admin\Customers::class)->name('admin.customers');
     Route::get('/pesanan/export', \App\Http\Controllers\Admin\OrderExportController::class)->name('admin.orders.export');
     Route::get('/pesanan/{order:order_code}/cetak', \App\Http\Controllers\Admin\OrderPrintController::class)->name('admin.orders.print');
     Route::get('/kopi', \App\Livewire\Admin\CoffeeIndex::class)->name('admin.coffees');
