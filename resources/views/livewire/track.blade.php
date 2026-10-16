@@ -26,6 +26,10 @@
                 <p class="krm-readout text-[1.4rem]">Rp{{ number_format($o->total, 0, ',', '.') }}</p>
             </div>
 
+            @if ($o->isCod() && ! $o->isPaid() && $o->status !== 'cancelled')
+                <p class="border-t border-dashed border-kraft/30 bg-surface px-6 py-4 text-[13.5px] text-kraft/80"><span class="krm-readout mr-2 rounded-[6px] border border-kraft/35 px-1.5 py-0.5 text-[11px]">COD</span>{{ __('Siapkan uang tunai Rp:n saat paket tiba.', ['n' => number_format($o->total, 0, ',', '.')]) }}</p>
+            @endif
+
             @if ($o->status === 'cancelled')
                 <p class="border-t border-dashed border-kraft/30 px-6 py-5 text-[14px] text-kraft/70">{{ __('Pesanan ini dibatalkan.') }}</p>
             @elseif ($o->status === 'pending_payment')

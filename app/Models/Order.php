@@ -37,8 +37,13 @@ class Order extends Model
         'cancelled' => ['Batal', ['cancelled']],
     ];
 
+    public const PAYMENTS = [
+        'online' => 'Bayar online',
+        'cod'    => 'COD (bayar di tempat)',
+    ];
+
     protected $fillable = [
-        'order_code', 'user_id', 'status',
+        'order_code', 'user_id', 'status', 'payment_method',
         'subtotal', 'shipping_cost', 'discount', 'voucher_id', 'voucher_code', 'total',
         'recipient_name', 'recipient_phone', 'shipping_address',
         'tracking_number', 'admin_note', 'roaster_id',
@@ -74,6 +79,27 @@ class Order extends Model
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function isCod(): bool
+    {
+        return $this->payment_method === 'cod';
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->paid_at !== null;
+    }
+
+    /** Invoice & label hanya untuk pesanan yang sudah lunas; COD boleh karena kurirnya yang menagih. */
+    public function canPrint(): bool
+    {
+        return $this->status !== 'cancelled' && ($this->isCod() || $this->isPaid());
+    }
+
+    public function getPaymentLabelAttribute(): string
+    {
+        return __(self::PAYMENTS[$this->payment_method] ?? $this->payment_method);
     }
 
     public function getStatusLabelAttribute(): string
@@ -161,13 +187,15 @@ class Order extends Model
      * @param  array<int,array{profile:RoastProfile,grams:int,grind:string}>  $lines
      * @throws \RuntimeException bila stok tidak cukup atau keranjang kosong
      */
-    public static function placeMany(User $user, array $lines, array $ship, ?string $voucherCode = null): self
+    public static function placeMany(User $user, array $lines, array $ship, ?string $voucherCode = null, string $payment = 'online'): self
     {
         if ($lines === []) {
             throw new \RuntimeException(__('Keranjangmu masih kosong.'));
         }
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $lines, $ship, $voucherCode) {
+        $payment = $payment === 'cod' ? 'cod' : 'online';
+
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $lines, $ship, $voucherCode, $payment) {
             // Kunci kopi berurutan berdasarkan id supaya dua transaksi tidak saling tunggu (deadlock).
             $coffees = Coffee::whereIn('id', collect($lines)->map(fn ($l) => $l['profile']->coffee_id)->unique())
                 ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
@@ -204,7 +232,9 @@ class Order extends Model
             $order = self::create([
                 'order_code'       => self::generateCode(),
                 'user_id'          => $user->id,
-                'status'           => 'pending_payment',
+                // COD tidak menunggu pembayaran: langsung antri sangrai, uangnya masuk saat paket diterima.
+                'status'           => $payment === 'cod' ? 'queued' : 'pending_payment',
+                'payment_method'   => $payment,
                 'subtotal'         => $subtotal,
                 'shipping_cost'    => $shipping,
                 'discount'         => $discount,
@@ -236,8 +266,23 @@ class Order extends Model
                 'code' => $order->order_code, 'n' => $user->name, 't' => number_format($order->total, 0, ',', '.'),
             ], route('admin.orders', ['order' => $order->order_code], false), skip: auth()->id());
 
+            if ($payment === 'cod') {
+                $order->announceQueued('Pesanan COD diterima', 'Pesanan :code (COD) masuk antrian sangrai.');
+            }
+
             return $order;
         });
+    }
+
+    /** Beri tahu pembeli dan staf bahwa pesanan masuk antrian sangrai. */
+    private function announceQueued(string $title, string $body): void
+    {
+        $p = ['code' => $this->order_code, 'item' => $this->itemSummary()];
+        Notice::send($this->user, 'order', $title, $body, $p, route('track', $this->order_code, false));
+        foreach (Notice::staff() as $staff) {
+            Notice::send($staff, 'queue', 'Pesanan masuk antrian', ':code · :item', $p,
+                $staff->isAdmin() ? route('admin.orders', ['order' => $this->order_code], false) : route('roastery', [], false), skip: auth()->id());
+        }
     }
 
     /** Simulasi pembayaran: tanpa gateway, tombolnya langsung menandai lunas. */
@@ -250,12 +295,7 @@ class Order extends Model
         $this->update(['status' => 'queued', 'paid_at' => now()]);
         ActivityLog::record('order.paid', $this, 'Pembayaran dikonfirmasi');
 
-        $p = ['code' => $this->order_code, 'item' => $this->itemSummary()];
-        Notice::send($this->user, 'order', 'Pembayaran diterima', 'Pesanan :code masuk antrian sangrai.', $p, route('track', $this->order_code, false));
-        foreach (Notice::staff() as $staff) {
-            Notice::send($staff, 'queue', 'Pesanan masuk antrian', ':code · :item', $p,
-                $staff->isAdmin() ? route('admin.orders', ['order' => $this->order_code], false) : route('roastery', [], false), skip: auth()->id());
-        }
+        $this->announceQueued('Pembayaran diterima', 'Pesanan :code masuk antrian sangrai.');
 
         return true;
     }
@@ -309,8 +349,13 @@ class Order extends Model
             return false;
         }
 
-        $this->update(['status' => 'completed', 'completed_at' => now()]);
+        // COD: uang tunai dari kurir dianggap diterima saat pesanan selesai, baru masuk laporan.
+        $cod = $this->isCod() && ! $this->isPaid();
+        $this->update(['status' => 'completed', 'completed_at' => now()] + ($cod ? ['paid_at' => now()] : []));
         ActivityLog::record('order.completed', $this, 'Pesanan ditandai selesai');
+        if ($cod) {
+            ActivityLog::record('order.paid', $this, 'Pembayaran COD diterima');
+        }
         Notice::send($this->user, 'status', 'Pesanan selesai', 'Pesanan :code selesai. Selamat menyeduh!', ['code' => $this->order_code], route('track', $this->order_code, false));
 
         return true;

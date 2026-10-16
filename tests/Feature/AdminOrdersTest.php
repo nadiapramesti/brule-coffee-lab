@@ -102,7 +102,7 @@ it('filters by tab, search and date', function () {
 it('opens an order from a deep link', function () {
     $o = newOrder($this);
     $this->actingAs($this->admin)->get(route('admin.orders', ['order' => $o->order_code]))
-        ->assertOk()->assertSee('Catatan internal')->assertSee('Cetak invoice');
+        ->assertOk()->assertSee('Catatan internal')->assertSee('Invoice bisa dicetak setelah pembayaran lunas')->assertDontSee('Cetak invoice');
 });
 
 it('exports xlsx following the filters, with formulas kept as plain text', function () {
@@ -132,8 +132,9 @@ it('exports a valid pdf', function () {
     expect(substr($pdf, (int) $m[1], 4))->toBe('xref');
 });
 
-it('renders a printable invoice', function () {
+it('renders a printable invoice for a paid order', function () {
     $o = newOrder($this);
+    $o->markPaid();
     $this->actingAs($this->admin)->get(route('admin.orders.print', $o))
         ->assertOk()->assertSee($o->order_code)->assertSee('Jl. Merdeka No. 10');
 });

@@ -21,7 +21,7 @@ class Roastery extends Component
     #[Computed]
     public function columns(): array
     {
-        $orders = Order::with('items')->whereIn('status', self::COLUMNS)->orderBy('paid_at')->get()->groupBy('status');
+        $orders = Order::with('items')->whereIn('status', self::COLUMNS)->orderByRaw('COALESCE(paid_at, created_at)')->get()->groupBy('status');
 
         return collect(self::COLUMNS)->mapWithKeys(fn ($s) => [$s => $orders->get($s, collect())])->all();
     }

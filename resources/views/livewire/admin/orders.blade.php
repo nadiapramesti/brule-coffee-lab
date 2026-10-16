@@ -144,7 +144,10 @@
 
                     {{-- Aksi --}}
                     <section class="rounded border border-kraft/20 p-4">
-                        <h3 class="text-[12.5px] font-semibold">{{ __('Tindakan') }}</h3>
+                        <div class="flex items-center justify-between gap-3">
+                            <h3 class="text-[12.5px] font-semibold">{{ __('Tindakan') }}</h3>
+                            <span class="krm-readout rounded-[6px] border px-2 py-0.5 text-[11px] {{ $o->isCod() ? 'border-[#E8782A]/50 text-ambertext' : 'border-kraft/30 text-kraft/70' }}">{{ $o->isCod() ? 'COD' : __('Online') }} · {{ $o->isPaid() ? __('Lunas') : __('Belum lunas') }}</span>
+                        </div>
                         <div class="mt-3 space-y-3">
                             @if ($o->status === 'pending_payment')
                                 <button wire:click="markPaid" class="w-full rounded bg-bluelab py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Tandai sudah dibayar') }}</button>
@@ -158,7 +161,7 @@
                                 </div>
                                 @error('tracking')<p class="text-[12px] text-redtext">{{ $message }}</p>@enderror
                             @elseif ($o->status === 'shipped')
-                                <button wire:click="complete" class="w-full rounded bg-bluelab py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Tandai selesai (sudah diterima)') }}</button>
+                                <button wire:click="complete" class="w-full rounded bg-bluelab py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ $o->isCod() && ! $o->isPaid() ? __('Tandai selesai (paket diterima, uang COD masuk)') : __('Tandai selesai (sudah diterima)') }}</button>
                             @else
                                 <p class="text-[13px] text-kraft/55">{{ __('Tidak ada tindakan untuk status ini.') }}</p>
                             @endif
@@ -239,9 +242,13 @@
                 </div>
 
                 <footer class="flex shrink-0 items-center justify-between gap-3 border-t border-kraft/15 px-5 py-3">
-                    <a href="{{ route('admin.orders.print', $o) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-[13px] text-kraft/75 underline-offset-4 hover:text-labwhite hover:underline">
-                        <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5v-6h14v6h-2M7 14h10v6H7z"/></svg>{{ __('Cetak invoice & label') }}
-                    </a>
+                    @if ($o->canPrint())
+                        <a href="{{ route('admin.orders.print', $o) }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-[13px] text-kraft/75 underline-offset-4 hover:text-labwhite hover:underline">
+                            <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5v-6h14v6h-2M7 14h10v6H7z"/></svg>{{ __('Cetak invoice & label') }}
+                        </a>
+                    @else
+                        <span class="text-[12.5px] text-kraft/50">{{ $o->status === 'cancelled' ? __('Pesanan dibatalkan, tidak ada invoice.') : __('Invoice bisa dicetak setelah pembayaran lunas.') }}</span>
+                    @endif
                     <a href="{{ route('track', $o->order_code) }}" target="_blank" rel="noopener" class="text-[13px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Lihat halaman pelacakan') }} ↗</a>
                 </footer>
             </aside>

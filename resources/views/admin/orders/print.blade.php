@@ -16,6 +16,11 @@
         th { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: #666; }
         td.r, th.r { text-align: right; }
         .label { border: 2px dashed #111; padding: 16px 18px; margin-top: 26px; }
+        .pay { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 12px 16px; margin-bottom: 14px; border: 2px solid #111; }
+        .pay.cod { background: #111; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+        .pay b { font-size: 20px; letter-spacing: .06em; }
+        .pay .amt { text-align: right; font-size: 12.5px; }
+        .pay .amt b { display: block; font-size: 18px; letter-spacing: 0; }
         .label b { font-size: 16px; }
         .bar { text-align: center; padding: 12px; }
         button { font: inherit; padding: 8px 18px; cursor: pointer; }
@@ -32,7 +37,7 @@
 
     <div class="row" style="margin-top:22px">
         <div><div class="muted">{{ __('Ditagihkan ke') }}</div><b>{{ $order->user?->name ?? $order->recipient_name }}</b><br>{{ $order->user?->email }}</div>
-        <div style="text-align:right"><div class="muted">{{ __('Status') }}</div><b>{{ $order->status_label }}</b>@if ($order->paid_at)<div class="muted">{{ __('Dibayar') }} {{ $order->paid_at->translatedFormat('j M Y, H:i') }}</div>@endif</div>
+        <div style="text-align:right"><div class="muted">{{ __('Status') }}</div><b>{{ $order->status_label }}</b><div class="muted">{{ $order->payment_label }}</div>@if ($order->paid_at)<div class="muted">{{ __('Dibayar') }} {{ $order->paid_at->translatedFormat('j M Y, H:i') }}</div>@endif</div>
     </div>
 
     <table>
@@ -57,6 +62,11 @@
     </table>
 
     <div class="label">
+        @if ($order->isCod() && ! $order->isPaid())
+            <div class="pay cod"><b>COD</b><div class="amt">{{ __('Tagihan dibayar penerima ke kurir') }}<b>Rp {{ number_format($order->total, 0, ',', '.') }}</b></div></div>
+        @else
+            <div class="pay"><b>NON-COD</b><div class="amt">{{ $order->isCod() ? __('COD · Lunas') : __('Sudah dibayar') }}<b>{{ __('LUNAS') }}</b></div></div>
+        @endif
         <div class="muted">{{ __('Kirim ke') }}</div>
         <b>{{ $order->recipient_name }}</b> · {{ $order->recipient_phone }}<br>
         {{ $order->shipping_address }}

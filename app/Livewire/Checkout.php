@@ -23,6 +23,7 @@ class Checkout extends Component
     public string $name = '';
     public string $phone = '';
     public string $address = '';
+    public string $payment = 'online';
     public ?string $error = null;
     public string $voucherInput = '';
     #[Locked] public ?string $voucher = null;
@@ -116,6 +117,7 @@ class Checkout extends Component
             'name'    => ['required', 'string', 'max:80'],
             'phone'   => ['required', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
             'address' => ['required', 'string', 'min:15', 'max:400'],
+            'payment' => ['required', 'in:online,cod'],
         ], [
             'phone.regex'  => __('Nomor WhatsApp tidak valid. Contoh: 0812xxxxxxxx'),
             'address.min'  => __('Alamat terlalu pendek. Tulis jalan, nomor, kota, dan kode pos.'),
@@ -125,7 +127,7 @@ class Checkout extends Component
         $lines = $this->lines->flatMap(fn ($l) => array_fill(0, $l->qty, ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind]))->all();
 
         try {
-            $order = Order::placeMany(auth()->user(), $lines, $data, $this->voucher);
+            $order = Order::placeMany(auth()->user(), $lines, collect($data)->only(['name', 'phone', 'address'])->all(), $this->voucher, $this->payment);
         } catch (\RuntimeException $e) {
             $this->error = $e->getMessage();
             $this->voucher = null;

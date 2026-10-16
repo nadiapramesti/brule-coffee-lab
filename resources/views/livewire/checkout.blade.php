@@ -30,6 +30,25 @@
                 @error('address')<p class="mt-1.5 text-[12.5px] text-redtext">{{ $message }}</p>@enderror
             </div>
 
+            <fieldset>
+                <legend class="text-[13px] text-kraft/75">{{ __('Metode pembayaran') }}</legend>
+                <div class="mt-2 grid gap-3 sm:grid-cols-2">
+                    @foreach ([
+                        'online' => [__('Bayar online'), __('Bayar sekarang, pesanan langsung masuk antrian setelah lunas.')],
+                        'cod' => [__('COD (bayar di tempat)'), __('Bayar tunai ke kurir saat paket tiba. Pesanan langsung diproses.')],
+                    ] as $key => [$title, $hint])
+                        <label class="flex cursor-pointer gap-3 rounded border p-4 transition-colors has-[:checked]:border-bluelab has-[:checked]:bg-bluelab/10 {{ $payment === $key ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 hover:border-kraft/50' }}">
+                            <input type="radio" name="payment" value="{{ $key }}" wire:model.live="payment" class="mt-1 h-4 w-4 shrink-0 border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                            <span class="min-w-0">
+                                <span class="block text-[14.5px] font-semibold">{{ $title }}</span>
+                                <span class="mt-0.5 block text-[12.5px] leading-relaxed text-kraft/65">{{ $hint }}</span>
+                            </span>
+                        </label>
+                    @endforeach
+                </div>
+                @error('payment')<p class="mt-1.5 text-[12.5px] text-redtext">{{ $message }}</p>@enderror
+            </fieldset>
+
             <button type="submit" wire:loading.attr="disabled"
                     class="w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] disabled:opacity-60 lg:hidden">
                 {{ __('Buat pesanan') }}
@@ -89,7 +108,7 @@
                         {{ __('Buat pesanan') }}
                     </button>
                     <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">
-                        @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ __('Pembayaran disimulasikan di halaman berikutnya.') }}
+                        @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ $payment === 'cod' ? __('COD: siapkan uang tunai sebesar total saat paket tiba.') : __('Pembayaran disimulasikan di halaman berikutnya.') }}
                     </p>
                 </div>
             </div>
