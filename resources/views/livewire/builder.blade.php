@@ -158,8 +158,9 @@
                      Nilai barunya dikirim lewat event, bukan render ulang. --}}
                 <div wire:ignore
                      class="mt-6"
-                     x-data="flavorWheel(@js($this->flavorValues))"
-                     x-init="init()">
+                     {{-- Alpine memanggil init() sendiri; menuliskannya lagi
+                          di x-init membuat grafiknya tergambar dua kali. --}}
+                     x-data="flavorWheel(@js($this->flavorValues))">
                     <div x-ref="wheel" class="flex justify-center"></div>
                 </div>
 

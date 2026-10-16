@@ -63,6 +63,22 @@ class Coffee extends Model
         $this->decrement('stock_green_bean_gram', $this->greenBeanNeeded($roastedGram));
     }
 
+    /**
+     * Profil yang dipakai untuk mewakili kopi ini di luar builder.
+     * Diambil yang medium; kalau tidak ada, yang di tengah daftar.
+     */
+    public function signatureProfile(): ?RoastProfile
+    {
+        $order = array_keys(RoastProfile::LEVELS);
+
+        $sorted = $this->roastProfiles
+            ->sortBy(fn ($p) => array_search($p->level, $order, true))
+            ->values();
+
+        return $sorted->firstWhere('level', 'medium')
+            ?? $sorted->get(intdiv(max(0, $sorted->count() - 1), 2));
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

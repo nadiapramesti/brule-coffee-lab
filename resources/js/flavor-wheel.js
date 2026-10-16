@@ -66,10 +66,10 @@ export default function flavorWheel(initialValues = {}) {
 
         draw() {
             const el   = this.$refs.wheel;
-            const size = Math.min(el.clientWidth || 420, 460);
+            const size = Math.min(el.clientWidth || 420, 420);
 
             this.center = size / 2;
-            this.radius = size / 2 - 52; // sisakan ruang buat label
+            this.radius = size / 2 - 44; // sisakan ruang buat label
 
             const svg = d3.select(el)
                 .append('svg')
@@ -101,12 +101,22 @@ export default function flavorWheel(initialValues = {}) {
                     .attr('stroke', KRAFT)
                     .attr('stroke-opacity', 0.3);
 
-                const [lx, ly] = this.point(i, 122);
+                // Label ditaruh mengikuti arah sumbunya: yang di kanan
+                // rata kiri, yang di kiri rata kanan. Kalau semuanya
+                // dibuat rata tengah, tulisannya menimpa ujung sumbu.
+                const [lx, ly] = this.point(i, 112);
+                const atTop    = i === 0;
+                const atBottom = i === 3;
+                const onRight  = i === 1 || i === 2;
+
+                const anchor = atTop || atBottom ? 'middle' : (onRight ? 'start' : 'end');
+                const dx     = atTop || atBottom ? 0 : (onRight ? 10 : -10);
+                const dy     = atTop ? -14 : (atBottom ? 12 : -4);
 
                 g.append('text')
-                    .attr('x', lx)
-                    .attr('y', ly - 6)
-                    .attr('text-anchor', 'middle')
+                    .attr('x', lx + dx)
+                    .attr('y', ly + dy)
+                    .attr('text-anchor', anchor)
                     .attr('dominant-baseline', 'middle')
                     .attr('fill', LABWHITE)
                     .attr('font-size', 13)
@@ -119,11 +129,11 @@ export default function flavorWheel(initialValues = {}) {
                 g.append('text')
                     .attr('class', 'krm-axis-value')
                     .attr('data-key', axis.key)
-                    .attr('x', lx)
-                    .attr('y', ly + 9)
-                    .attr('text-anchor', 'middle')
+                    .attr('x', lx + dx)
+                    .attr('y', ly + dy + 15)
+                    .attr('text-anchor', anchor)
                     .attr('dominant-baseline', 'middle')
-                    .attr('fill', BLUE)
+                    .attr('fill', '#6E9BE0')
                     .attr('font-size', 11)
                     .attr('font-family', "'IBM Plex Mono', monospace")
                     .text(Math.round(this.values[axis.key] ?? 0));

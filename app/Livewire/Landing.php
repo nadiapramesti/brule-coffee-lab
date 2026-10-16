@@ -34,13 +34,13 @@ class Landing extends Component
     public function peaks(): array
     {
         return [
-            ['at' => 0.08, 'height' => 0.34, 'width' => 0.016, 'rt' => 1.42, 'compound' => 'asetaldehida',   'reads' => 'Segar'],
-            ['at' => 0.20, 'height' => 0.86, 'width' => 0.014, 'rt' => 3.07, 'compound' => 'limonena',       'reads' => 'Jeruk'],
-            ['at' => 0.31, 'height' => 0.46, 'width' => 0.013, 'rt' => 4.65, 'compound' => 'etil butanoat',  'reads' => 'Beri'],
-            ['at' => 0.44, 'height' => 0.72, 'width' => 0.012, 'rt' => 6.28, 'compound' => 'linalool',       'reads' => 'Melati'],
-            ['at' => 0.58, 'height' => 0.95, 'width' => 0.015, 'rt' => 8.11, 'compound' => 'furfuriltiol',   'reads' => 'Kakao'],
-            ['at' => 0.71, 'height' => 0.58, 'width' => 0.013, 'rt' => 9.74, 'compound' => 'pirazina',       'reads' => 'Kacang'],
-            ['at' => 0.86, 'height' => 0.41, 'width' => 0.014, 'rt' => 11.9, 'compound' => '4-vinilguaiakol', 'reads' => 'Cengkeh'],
+            ['at' => 0.109, 'height' => 0.30, 'width' => 0.0042, 'rt' => 1.42,  'compound' => 'asetaldehida',    'reads' => 'Segar'],
+            ['at' => 0.236, 'height' => 0.74, 'width' => 0.0052, 'rt' => 3.07,  'compound' => 'limonena',        'reads' => 'Jeruk'],
+            ['at' => 0.358, 'height' => 0.41, 'width' => 0.0046, 'rt' => 4.65,  'compound' => 'etil butanoat',   'reads' => 'Beri'],
+            ['at' => 0.483, 'height' => 0.63, 'width' => 0.0050, 'rt' => 6.28,  'compound' => 'linalool',        'reads' => 'Melati'],
+            ['at' => 0.624, 'height' => 0.97, 'width' => 0.0068, 'rt' => 8.11,  'compound' => 'furfuriltiol',    'reads' => 'Kakao'],
+            ['at' => 0.749, 'height' => 0.52, 'width' => 0.0048, 'rt' => 9.74,  'compound' => 'pirazina',        'reads' => 'Kacang'],
+            ['at' => 0.915, 'height' => 0.36, 'width' => 0.0056, 'rt' => 11.90, 'compound' => '4-vinilguaiakol', 'reads' => 'Cengkeh'],
         ];
     }
 

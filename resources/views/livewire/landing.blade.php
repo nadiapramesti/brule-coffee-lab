@@ -1,8 +1,9 @@
 <div>
 
     {{-- ══════════════════ HERO ══════════════════ --}}
-    <section class="pt-20 pb-4 md:pt-28">
+    <section class="pb-4 pt-14 md:pt-20">
         <div class="mx-auto max-w-[1180px] px-6">
+            <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
             <div class="max-w-3xl">
                 <h1 class="krm-h1 font-bold">
                     Disangrai setelah<br>pesanan masuk.
@@ -25,18 +26,38 @@
                     </a>
                 </div>
             </div>
+
+            {{-- Keterangan jejak di bawah ini. Tanpa ini grafiknya
+                 cuma gambar; dengan ini ia jadi data milik satu lot. --}}
+            @php $contoh = $this->coffees->first(); @endphp
+            @if ($contoh)
+                <dl class="hidden max-w-[16rem] space-y-3 border-l border-kraft/20 pl-5 text-[12.5px] lg:block">
+                    <div>
+                        <dt class="text-kraft/50">Contoh yang diukur</dt>
+                        <dd class="mt-0.5 text-labwhite">{{ $contoh->name }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-kraft/50">Sangrai</dt>
+                        <dd class="mt-0.5 text-labwhite">{{ $contoh->signatureProfile()?->level_label }}</dd>
+                    </div>
+                    <div>
+                        <dt class="text-kraft/50">Puncak bernama</dt>
+                        <dd class="krm-readout mt-0.5 text-labwhite">{{ count($this->peaks) }} senyawa</dd>
+                    </div>
+                </dl>
+            @endif
+            </div>
         </div>
 
         {{-- Kromatogram: melintas penuh dari tepi ke tepi, persis
              seperti waveform di stempel logo. --}}
-        <div class="mt-14"
-             x-data="chromatogram(@js($this->peaks))"
-             x-init="init()">
+        <div class="mt-10"
+             x-data="chromatogram(@js($this->peaks))">
             <div x-ref="trace" class="w-full"></div>
         </div>
 
         {{-- Tiga janji, ditulis sebagai angka yang bisa dicek --}}
-        <div class="mx-auto mt-10 max-w-[1180px] px-6">
+        <div class="mx-auto mt-8 max-w-[1180px] px-6">
             <dl class="grid gap-8 border-t border-kraft/15 pt-8 sm:grid-cols-3">
                 <div>
                     <dt class="krm-readout text-[1.6rem] font-medium text-labwhite">1,2 kg</dt>
@@ -75,15 +96,16 @@
             @foreach ($this->coffees as $bean)
                 @php $t = $bean->traceability; @endphp
 
-                <article class="grid gap-7 border-t border-kraft/15 py-9 md:grid-cols-[minmax(0,1fr)_minmax(0,420px)] md:gap-14">
+                <article class="grid gap-7 border-t border-kraft/15 py-9 md:grid-cols-[minmax(0,1fr)_minmax(0,360px)] md:gap-12">
 
                     <div>
                         <div class="flex items-baseline gap-4">
                             <h3 class="krm-h3 font-semibold">
                                 {{ $bean->name }}
                             </h3>
-                            <span class="krm-readout shrink-0 text-[13px] text-bluelab">
-                                {{ number_format($bean->cupping_score, 1) }}
+                            <span class="shrink-0 text-[12px] text-kraft/55">
+                                skor
+                                <span class="krm-readout ml-1 text-[13px] text-bluelab">{{ number_format($bean->cupping_score, 1) }}</span>
                             </span>
                         </div>
 
@@ -91,11 +113,13 @@
                             {{ $bean->story }}
                         </p>
 
-                        <p class="mt-5 text-[14px] leading-relaxed text-labwhite/90">
-                            {{ $bean->roastProfiles->first()?->tasting_notes
-                                ? implode(', ', $bean->roastProfiles->first()->tasting_notes)
-                                : '' }}
-                        </p>
+                        @php $sig = $bean->signatureProfile(); @endphp
+                        @if ($sig?->tasting_notes)
+                            <p class="mt-5 text-[14px] leading-relaxed text-labwhite/90">
+                                {{ implode(', ', $sig->tasting_notes) }}
+                                <span class="text-kraft/55">— pada sangrai {{ strtolower($sig->level_label) }}</span>
+                            </p>
+                        @endif
                     </div>
 
                     <dl class="grid grid-cols-2 gap-x-8 gap-y-5 self-start text-[13px]">
