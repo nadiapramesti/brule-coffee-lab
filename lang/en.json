@@ -314,7 +314,7 @@
     "Stok (g)": "Stock (g)",
     "Level & harga": "Levels & price",
     "Aksi": "Actions",
-    "Tambah": "Add",
+    "Tambah": "Increase",
     "level": "levels",
     "Tidak ada kopi yang cocok.": "No coffees match.",
     "Tutup": "Close",
@@ -428,7 +428,7 @@
     "Atur stok": "Adjust stock",
     "saldo": "balance",
     "Koreksi hitung": "Recount",
-    "Kurangi": "Reduce",
+    "Kurangi": "Decrease",
     "Jumlah yang masuk (gram)": "Amount received (grams)",
     "Jumlah yang dikurangi (gram)": "Amount removed (grams)",
     "Hasil hitung stok sebenarnya (gram)": "Actual counted stock (grams)",
@@ -676,5 +676,6 @@
     "Kembali ke keranjang": "Back to cart",
     "Keranjang penuh (maks :n item). Selesaikan checkout dulu.": "Cart is full (max :n items). Check out first.",
     "Stok :n tidak cukup untuk jumlah yang kamu pilih.": "Not enough :n in stock for the amount you chose.",
-    "+:n lainnya": "+:n more"
+    "+:n lainnya": "+:n more",
+    "Jumlah": "Quantity"
 }

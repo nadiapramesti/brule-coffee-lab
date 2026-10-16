@@ -40,6 +40,32 @@ class Cart extends Component
     public function remove(string $id): void
     {
         CartStore::remove($id);
+        $this->refreshed();
+    }
+
+    public function step(string $id, int $delta): void
+    {
+        $line = collect(CartStore::raw())->firstWhere('id', $id);
+        if ($line) {
+            CartStore::setQty($id, ((int) ($line['qty'] ?? 1)) + ($delta <=> 0));
+            $this->refreshed();
+        }
+    }
+
+    public function setGrams(string $id, int $grams): void
+    {
+        CartStore::change($id, $grams, null);
+        $this->refreshed();
+    }
+
+    public function setGrind(string $id, string $grind): void
+    {
+        CartStore::change($id, null, $grind);
+        $this->refreshed();
+    }
+
+    private function refreshed(): void
+    {
         unset($this->lines, $this->subtotal, $this->shipping, $this->problem);
         $this->dispatch('cart-updated');
     }

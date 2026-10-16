@@ -121,7 +121,8 @@ class Checkout extends Component
             'address.min'  => __('Alamat terlalu pendek. Tulis jalan, nomor, kota, dan kode pos.'),
         ]);
 
-        $lines = $this->lines->map(fn ($l) => ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind])->all();
+        // Satu bungkus = satu item pesanan, supaya tiap bungkus punya jurnal sangrai sendiri.
+        $lines = $this->lines->flatMap(fn ($l) => array_fill(0, $l->qty, ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind]))->all();
 
         try {
             $order = Order::placeMany(auth()->user(), $lines, $data, $this->voucher);

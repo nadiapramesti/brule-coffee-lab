@@ -46,7 +46,7 @@
                                 <x-coffee-bag :coffee="$l->profile->coffee" :level="$l->profile->level" class="h-[64px] w-[52px] shrink-0" />
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate font-display text-[1rem] font-semibold leading-snug">{{ $l->profile->coffee->name }}</p>
-                                    <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ $l->profile->level_label }} · {{ __(\App\Models\OrderItem::GRINDS[$l->grind]) }} · {{ number_format($l->grams) }} g</p>
+                                    <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ $l->profile->level_label }} · {{ __(\App\Models\OrderItem::GRINDS[$l->grind]) }} · {{ number_format($l->grams) }} g{{ $l->qty > 1 ? ' × '.$l->qty : '' }}</p>
                                 </div>
                                 <span class="krm-readout shrink-0 text-[13px]">Rp{{ number_format($l->price, 0, ',', '.') }}</span>
                             </li>

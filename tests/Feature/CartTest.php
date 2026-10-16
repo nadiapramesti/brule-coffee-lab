@@ -44,10 +44,13 @@ it('rejects bad grams, grind, unknown profile and over-limit lines', function ()
         ->and(Store::add($this->p1->id, 200, 'nope'))->toBeFalse()
         ->and(Store::add(999999, 200, 'v60'))->toBeFalse();
 
-    foreach (range(1, Store::MAX_LINES) as $i) {
-        Store::add($this->p1->id, 200, 'v60');
+    foreach (array_slice(array_keys(\App\Models\OrderItem::GRINDS), 0, 6) as $grind) {
+        foreach ([200, 500] as $g) {
+            Store::add($this->p1->id, $g, $grind);
+        }
     }
-    expect(Store::add($this->p1->id, 200, 'v60'))->toBeFalse();
+    expect(Store::raw())->toHaveCount(Store::MAX_LINES)
+        ->and(Store::add($this->p2->id, 200, 'v60'))->toBeFalse();
 });
 
 it('places one order with several items, one shipping fee, and decrements each stock', function () {
@@ -111,4 +114,54 @@ it('applies a voucher to the whole cart subtotal', function () {
 it('sends an empty checkout back to the cart and gates checkout behind login', function () {
     $this->get(route('checkout'))->assertRedirect(route('login'));
     $this->actingAs($this->customer)->get(route('checkout'))->assertRedirect(route('cart'));
+});
+
+
+it('merges identical racikan into qty and caps qty', function () {
+    foreach (range(1, Store::MAX_QTY) as $i) {
+        expect(Store::add($this->p1->id, 200, 'v60'))->toBeTrue();
+    }
+    expect(Store::raw())->toHaveCount(1)->and(Store::count())->toBe(Store::MAX_QTY)
+        ->and(Store::add($this->p1->id, 200, 'v60'))->toBeFalse();
+});
+
+it('changes qty, weight and grind in the cart and merges lines that become identical', function () {
+    Store::add($this->p1->id, 200, 'v60');
+    Store::add($this->p1->id, 500, 'v60');
+    [$a, $b] = array_column(Store::raw(), 'id');
+
+    $c = Livewire::test(Cart::class)->call('step', $a, 1)->call('step', $a, 1)->call('step', $a, -1);
+    expect(Store::lines()->firstWhere('id', $a)->qty)->toBe(2);
+
+    $c->call('setGrams', $b, 200);
+    expect(Store::raw())->toHaveCount(1)->and(Store::count())->toBe(3);
+
+    $c->call('setGrind', Store::raw()[0]['id'], 'espresso')->call('setGrams', Store::raw()[0]['id'], 300);
+    expect(Store::raw()[0]['grind'])->toBe('espresso')->and(Store::raw()[0]['grams'])->toBe(200);
+});
+
+it('expands qty into one order item per pack with correct totals and stock', function () {
+    $before = $this->p1->coffee->stock_green_bean_gram;
+    Store::add($this->p1->id, 200, 'v60');
+    Store::add($this->p1->id, 200, 'v60');
+    Store::add($this->p1->id, 200, 'v60');
+
+    Livewire::actingAs($this->customer)->test(Checkout::class)
+        ->set('name', 'Nadia')->set('phone', '081234567890')->set('address', $this->ship['address'])
+        ->call('submit');
+
+    $o = Order::with('items')->firstOrFail();
+    expect($o->items)->toHaveCount(3)
+        ->and($o->subtotal)->toBe($this->p1->priceFor(200) * 3)
+        ->and($this->p1->coffee->fresh()->stock_green_bean_gram)->toBe($before - $this->p1->coffee->greenBeanNeeded(200) * 3);
+});
+
+it('blocks checkout in the cart when qty exceeds stock', function () {
+    $coffee = $this->p1->coffee;
+    $coffee->update(['stock_green_bean_gram' => $coffee->greenBeanNeeded(200) * 2]);
+    foreach (range(1, 3) as $i) {
+        Store::add($this->p1->id, 200, 'v60');
+    }
+
+    expect(Livewire::test(Cart::class)->instance()->problem)->not->toBeNull();
 });
