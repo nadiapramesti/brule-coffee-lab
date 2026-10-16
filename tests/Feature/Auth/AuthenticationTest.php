@@ -43,7 +43,7 @@ test('users can not authenticate with invalid password', function () {
     $this->assertGuest();
 });
 
-test('navigation menu can be rendered', function () {
+test('site header shows account links when logged in', function () {
     $user = User::factory()->create();
 
     $this->actingAs($user);
@@ -52,7 +52,8 @@ test('navigation menu can be rendered', function () {
 
     $response
         ->assertOk()
-        ->assertSeeVolt('layout.navigation');
+        ->assertSee(route('logout'), false)
+        ->assertSee('Profil');
 });
 
 test('users can logout', function () {
