@@ -18,10 +18,12 @@ beforeEach(function () {
     $this->profiles = RoastProfile::with('coffee')->get();
     $this->p1 = $this->profiles->first();
     $this->p2 = $this->profiles->first(fn ($p) => $p->coffee_id !== $this->p1->coffee_id);
+    $this->actingAs($this->customer);
     $this->ship = ['name' => 'Nadia', 'phone' => '081234567890', 'address' => 'Jl. Merdeka No. 10, Bandung 40111'];
 });
 
 it('adds the builder selection to the cart without trusting a price', function () {
+    app("auth")->forgetGuards();
     Livewire::test(Builder::class)->call('addToCart')->assertRedirect(route('cart'));
 
     expect(Store::count())->toBe(1);
@@ -112,6 +114,7 @@ it('applies a voucher to the whole cart subtotal', function () {
 });
 
 it('sends an empty checkout back to the cart and gates checkout behind login', function () {
+    app('auth')->forgetGuards();
     $this->get(route('checkout'))->assertRedirect(route('login'));
     $this->actingAs($this->customer)->get(route('checkout'))->assertRedirect(route('cart'));
 });
@@ -184,4 +187,52 @@ it('groups identical items for display while keeping one row per pack', function
     $admin = User::where('email', 'admin@kromatik.test')->first();
     Livewire::actingAs($admin)->test(\App\Livewire\Admin\Orders::class)->assertSee('×3')->call('show', $o->order_code)->assertSee('× 3');
     Livewire::actingAs($this->customer)->test(\App\Livewire\Track::class, ['code' => $o->order_code])->assertSee('× 3');
+});
+
+
+it('keeps a logged-in cart in the database, per user', function () {
+    Store::add($this->p1->id, 200, 'v60');
+    Store::add($this->p2->id, 500, 'espresso');
+
+    expect(\Illuminate\Support\Facades\DB::table('cart_lines')->where('user_id', $this->customer->id)->count())->toBe(2)
+        ->and(session()->has(Store::KEY))->toBeFalse();
+
+    // sesi baru (perangkat lain): keranjang masih ada
+    session()->flush();
+    expect(Store::count())->toBe(2);
+
+    // user lain tidak melihatnya
+    $this->actingAs(User::where('email', 'admin@kromatik.test')->first());
+    expect(Store::count())->toBe(0);
+});
+
+it('merges the guest cart into the account on login', function () {
+    app("auth")->forgetGuards();
+    Store::add($this->p1->id, 200, 'v60');
+    Store::add($this->p2->id, 500, 'espresso');
+    expect(session(Store::KEY))->toHaveCount(2);
+
+    // akun sudah punya racikan yang sama: qty dijumlahkan, bukan dobel
+    \Illuminate\Support\Facades\DB::table('cart_lines')->insert([
+        'user_id' => $this->customer->id, 'line_id' => 'old1', 'roast_profile_id' => $this->p1->id,
+        'grams' => 200, 'grind' => 'v60', 'qty' => 2, 'created_at' => now(), 'updated_at' => now(),
+    ]);
+
+    event(new \Illuminate\Auth\Events\Login('web', $this->customer, false));
+
+    $this->actingAs($this->customer);
+    expect(Store::raw())->toHaveCount(2)->and(Store::count())->toBe(4)
+        ->and(session()->has(Store::KEY))->toBeFalse();
+});
+
+it('logs in through the real form and keeps the guest cart', function () {
+    app("auth")->forgetGuards();
+    Store::add($this->p1->id, 200, 'v60');
+
+    \Livewire\Volt\Volt::test('pages.auth.login')
+        ->set('form.email', 'customer@kromatik.test')->set('form.password', 'password')
+        ->call('login')->assertHasNoErrors();
+
+    $this->assertAuthenticatedAs($this->customer);
+    expect(Store::count())->toBe(1)->and(session()->has(Store::KEY))->toBeFalse();
 });

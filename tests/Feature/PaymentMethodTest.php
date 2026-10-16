@@ -14,6 +14,7 @@ beforeEach(function () {
     $this->customer = User::where('email', 'customer@kromatik.test')->first();
     $this->admin = User::where('email', 'admin@kromatik.test')->first();
     $this->profile = RoastProfile::first();
+    $this->actingAs($this->customer);
     $this->ship = ['name' => 'Nadia', 'phone' => '081234567890', 'address' => 'Jl. Merdeka No. 10, Bandung 40111'];
 });
 
