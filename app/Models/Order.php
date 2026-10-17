@@ -287,6 +287,9 @@ class Order extends Model
                 $order->announceQueued('Pesanan COD diterima', 'Pesanan :code (COD) masuk antrian sangrai.');
             }
 
+            // Email baru dikirim setelah transaksi benar-benar tersimpan.
+            \Illuminate\Support\Facades\DB::afterCommit(fn () => \App\Support\OrderMailer::send($order, 'placed'));
+
             return $order;
         });
     }
@@ -313,6 +316,7 @@ class Order extends Model
         ActivityLog::record('order.paid', $this, 'Pembayaran dikonfirmasi');
 
         $this->announceQueued('Pembayaran diterima', 'Pesanan :code masuk antrian sangrai.');
+        \App\Support\OrderMailer::send($this, 'paid');
 
         return true;
     }
@@ -356,6 +360,7 @@ class Order extends Model
         $this->update(['status' => 'shipped', 'tracking_number' => $tracking, 'shipped_at' => now()]);
         ActivityLog::record('order.shipped', $this, 'Dikirim dengan resi :r', ['r' => $tracking]);
         Notice::send($this->user, 'ship', 'Pesananmu dikirim', ':code · resi :r', ['code' => $this->order_code, 'r' => $tracking], route('track', $this->order_code, false));
+        \App\Support\OrderMailer::send($this, 'shipped');
 
         return true;
     }
@@ -397,6 +402,8 @@ class Order extends Model
             ActivityLog::record('order.cancelled', $this, $reason ? 'Pesanan dibatalkan: :r' : 'Pesanan dibatalkan', ['r' => $reason]);
             Notice::send($this->user, 'cancel', 'Pesanan dibatalkan', $reason ? ':code · :r' : 'Pesanan :code dibatalkan.', ['code' => $this->order_code, 'r' => $reason], route('track', $this->order_code, false));
         });
+
+        \App\Support\OrderMailer::send($this, 'cancelled');
 
         return true;
     }
