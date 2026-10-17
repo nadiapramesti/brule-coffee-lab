@@ -1,74 +1,85 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# KROMATIK — Specialty Coffee Lab
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan masuk. Pembeli memilih biji, level sangrai, ukuran, dan gilingan lewat *roast builder*; roastery dan admin mengurus antrian, stok, dan laporan dari panel internal. Dikerjakan sebagai tugas kuliah web e-commerce.
 
-## About Laravel
+**Stack:** Laravel 13 · Livewire 3 (+ Volt untuk halaman auth) · Tailwind CSS · Alpine.js · D3 · Pest · MySQL (sqlite untuk dev/test).
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Fitur
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+**Toko (pembeli)**
+- Landing dengan katalog kartu produk: harga mulai dari, status stok, rating, pencarian, sortir, dan filter proses.
+- Roast builder dengan flavor wheel dan kromatogram aroma; kantong kemasan dirender SVG per kopi.
+- Keranjang multi-item (tamu di session, user login di database; keranjang tamu digabung saat login).
+- Checkout dengan voucher, ongkir (gratis di atas batas tertentu), bayar online (simulasi) atau COD (bisa dimatikan / dibatasi nominalnya).
+- Lacak pesanan per tahap produksi, riwayat pesanan + "Beli lagi", buku alamat, ulasan pembeli terverifikasi.
+- Email transaksi (pesanan diterima, lunas, dikirim + resi, dibatalkan), notifikasi dalam aplikasi, login Google/Facebook (opsional).
+- FAQ dan kebijakan (ID/EN), tema terang/gelap, dua bahasa ID/EN, halaman error bermerek, SEO dasar + sitemap.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+**Panel internal (admin & roastery)**
+- Dashboard, pesanan (cetak invoice/label kirim, hanya setelah lunas), antrian roastery, jurnal sangrai.
+- Kelola kopi (termasuk foto), stok dengan riwayat pergerakan, voucher, pelanggan, ulasan (moderasi), pengguna & peran, log aktivitas, pengaturan toko.
+- Laporan penjualan dengan ekspor Excel dan PDF.
 
-## Learning Laravel
+## Menjalankan di lokal
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Butuh PHP 8.3+, Composer, Node 20+, dan MySQL (Laragon cukup).
 
 ```bash
-composer require laravel/boost --dev
+git clone https://github.com/nadiapramesti/kromatik-coffee-lab.git
+cd kromatik-coffee-lab
+composer install
+npm install
 
-php artisan boost:install
+cp .env.example .env
+php artisan key:generate
+# edit .env: DB_CONNECTION=mysql, DB_DATABASE=kromatik, DB_USERNAME, DB_PASSWORD
+# buat database kosong "kromatik" dulu
+
+php artisan migrate --seed
+php artisan storage:link      # supaya foto produk yang diupload tampil
+npm run build                 # atau: npm run dev
+php artisan serve
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+Setelah `git pull` berikutnya: `php artisan migrate`, `npm run build`, `php artisan view:clear`, lalu hard refresh (Ctrl+F5).
 
-## Contributing
+### Akun demo (dari seeder)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+| Peran | Email | Password |
+|---|---|---|
+| Admin | `admin@kromatik.test` | `password` |
+| Roaster | `roaster@kromatik.test` | `password` |
+| Pembeli | `customer@kromatik.test` | `password` |
 
-## Code of Conduct
+Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pengaturan) sebelum dipakai di luar demo.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Konfigurasi opsional (`.env`)
 
-## Security Vulnerabilities
+- **Email:** `MAIL_MAILER=log` menulis email ke `storage/logs/laravel.log`. Untuk kirim sungguhan isi `MAIL_*` dengan SMTP, dan pastikan `APP_URL` benar karena tombol di email memakai alamat itu.
+- **Login sosial:** `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` (dan Facebook). Jangan pernah commit `.env`.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Tes
 
-## License
+```bash
+php artisan test
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Suite Pest mencakup alur pesanan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, dan hak akses admin.
 
-## Login Google / Facebook (opsional)
+## Struktur singkat
 
-Tombolnya selalu tampil; tanpa kunci, klik akan menampilkan pesan "belum dikonfigurasi".
+```
+app/Livewire/            halaman toko dan panel (satu komponen per halaman)
+app/Livewire/Admin/      modul admin
+app/Models/              Order (logika pesanan), Coffee (stok), Cart di app/Support
+app/Mail/ + Support/     email transaksi, keranjang
+resources/views/         blade (layouts/kromatik = toko, layouts/panel = admin)
+lang/                    terjemahan ID/EN (en.json, pages.php untuk halaman statis)
+docs/DEMO.md             skenario dan checklist demo
+```
 
-1. **Google** — console.cloud.google.com → APIs & Services → Credentials → *Create OAuth client ID* (Web application).
-   Authorized redirect URI: `http://127.0.0.1:8000/auth/google/callback` (ganti host saat deploy).
-2. **Facebook** — developers.facebook.com → Create App → *Facebook Login*. Valid OAuth Redirect URI: `http://127.0.0.1:8000/auth/facebook/callback`.
-3. Isi `.env`: `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `FACEBOOK_CLIENT_ID`, `FACEBOOK_CLIENT_SECRET`, lalu `php artisan config:clear`.
-4. Jalankan `php artisan migrate` (menambah kolom `provider` dan `provider_id`).
+## Catatan keputusan
 
-Akun tim roastery/admin sengaja tidak bisa masuk lewat login sosial.
-
-## Tema terang / gelap
-
-Seluruh situs (toko, auth, panel admin & roastery) punya dua tema. Bawaannya mengikuti setelan sistem; tombol matahari/bulan di navbar mengganti dan pilihannya diingat (`localStorage: krm-theme`). Warna dikelola sebagai token CSS di `resources/css/app.css` (`--c-bg`, `--c-fg`, `--c-muted`, `--c-surface`, dst.) dan dipetakan di `tailwind.config.js` (`charcoal`, `labwhite`, `kraft`, `surface`, ...). Area yang harus tetap gelap di kedua mode (hero berfoto, pita kraft, footer) memakai kelas `.krm-dark`. Untuk teks di atas tombol berwarna pakai `text-paper`.
+- Harga dan stok selalu dihitung ulang di server saat pesanan dibuat; keranjang hanya menyimpan pilihan, bukan harga.
+- Stok biji mentah dikunci per kopi saat checkout supaya dua pembeli tidak bisa memesan sisa yang sama.
+- Pembayaran online masih simulasi (tombol "Bayar sekarang"). Integrasi gateway (mis. Midtrans) belum dipasang.
