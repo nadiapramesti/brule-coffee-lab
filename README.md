@@ -4,6 +4,32 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 
 **Stack:** Laravel 13 · Livewire 3 (+ Volt untuk halaman auth) · Tailwind CSS · Alpine.js · D3 · Pest · MySQL (sqlite untuk dev/test).
 
+## Tampilan
+
+**Toko**
+
+![Landing](docs/screenshots/01-landing.jpg)
+
+| | |
+|---|---|
+| ![Katalog](docs/screenshots/02-katalog.jpg)<br>**Katalog**: harga, stok, rating, cari, sortir | ![Roast builder](docs/screenshots/03-builder.jpg)<br>**Roast builder**: level sangrai, flavor wheel |
+| ![Keranjang](docs/screenshots/04-keranjang.jpg)<br>**Keranjang** multi-item | ![Checkout](docs/screenshots/05-checkout.jpg)<br>**Checkout**: alamat tersimpan, voucher, online / COD |
+| ![Lacak](docs/screenshots/06-lacak.jpg)<br>**Lacak pesanan** per tahap produksi | ![Akun](docs/screenshots/07-akun.jpg)<br>**Akun saya**: riwayat, Beli lagi, ulasan |
+
+**Panel admin** (tema gelap)
+
+| | |
+|---|---|
+| ![Dashboard](docs/screenshots/08-admin-dashboard.jpg)<br>**Dashboard** | ![Laporan](docs/screenshots/09-admin-laporan.jpg)<br>**Laporan** (ekspor Excel / PDF) |
+| ![Pesanan](docs/screenshots/10-admin-pesanan.jpg)<br>**Pesanan** | ![Invoice](docs/screenshots/11-invoice.jpg)<br>**Invoice / label kirim** (COD vs NON-COD) |
+
+**Mobile**
+
+<p>
+<img src="docs/screenshots/12-mobile-landing.jpg" width="260" alt="Landing mobile">
+<img src="docs/screenshots/13-mobile-builder.jpg" width="260" alt="Builder mobile">
+</p>
+
 ## Fitur
 
 **Toko (pembeli)**
@@ -76,6 +102,7 @@ app/Mail/ + Support/     email transaksi, keranjang
 resources/views/         blade (layouts/kromatik = toko, layouts/panel = admin)
 lang/                    terjemahan ID/EN (en.json, pages.php untuk halaman statis)
 docs/DEMO.md             skenario dan checklist demo
+docs/screenshots/        gambar untuk README
 ```
 
 ## Catatan keputusan
