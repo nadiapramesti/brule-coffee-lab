@@ -5,6 +5,7 @@
     $series = $r->series();
     $coffee = $r->byCoffee();
     $level = $r->byLevel();
+    $gear = $r->byProduct();
     $vouchers = $r->byVoucher();
     $rp = fn ($v) => 'Rp' . number_format($v, 0, ',', '.');
     $n = fn ($v) => number_format($v, 0, ',', '.');
@@ -115,6 +116,25 @@
                 </section>
             @endforeach
         </div>
+
+        @if ($gear->isNotEmpty())
+            <section class="mt-4 min-w-0 rounded border border-kraft/20 bg-charcoal">
+                <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Per perlengkapan') }}</h2></header>
+                <table class="w-full text-left text-[13px]">
+                    <thead class="krm-readout text-[10.5px] uppercase tracking-[0.12em] text-kraft/45"><tr class="border-b border-kraft/10"><th class="px-3 py-2 font-normal sm:px-5">{{ __('Produk') }}</th><th class="hidden px-2 py-2 text-right font-normal sm:table-cell">{{ __('Pesanan') }}</th><th class="px-2 py-2 text-right font-normal">{{ __('Unit') }}</th><th class="px-3 py-2 text-right font-normal sm:px-5">{{ __('Penjualan') }}</th></tr></thead>
+                    <tbody class="divide-y divide-kraft/10">
+                        @foreach ($gear as $row)
+                            <tr>
+                                <td class="max-w-[200px] truncate px-3 py-2.5 sm:px-5">{{ $row['name'] }}</td>
+                                <td class="krm-readout hidden px-2 py-2.5 text-right text-kraft/70 sm:table-cell">{{ $row['orders'] }}</td>
+                                <td class="krm-readout px-2 py-2.5 text-right text-kraft/70">{{ $n($row['units']) }}</td>
+                                <td class="krm-readout whitespace-nowrap px-3 py-2.5 text-right sm:px-5">{{ $rp($row['revenue']) }}</td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </section>
+        @endif
 
         <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pemakaian voucher') }}</h2></header>

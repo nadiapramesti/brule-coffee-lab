@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             CoffeeSeeder::class,
             MoreCoffeeSeeder::class,
+            ProductSeeder::class,
             OrderSeeder::class,
             StockMovementSeeder::class,
             VoucherSeeder::class,

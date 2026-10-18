@@ -45,7 +45,7 @@
                 <tr>
                     <td style="padding:12px 0;border-bottom:1px solid {{ $line }};font-size:14px;line-height:1.45;">
                         <strong>{{ $i->coffee_name_snapshot }}</strong><br>
-                        <span style="color:{{ $muted }};font-size:13px;">{{ $i->level_label }} · {{ $i->grind_label }} · {{ number_format($i->grams) }} g{{ $i->qty > 1 ? ' × '.$i->qty : '' }}</span>
+                        <span style="color:{{ $muted }};font-size:13px;">{{ $i->descr }}{{ $i->qty > 1 ? ($i->descr ? ' × ' : '× ').$i->qty : '' }}</span>
                     </td>
                     <td align="right" valign="top" style="padding:12px 0;border-bottom:1px solid {{ $line }};font-size:14px;white-space:nowrap;font-family:Consolas,Menlo,monospace;">{{ $rp($i->line_total) }}</td>
                 </tr>

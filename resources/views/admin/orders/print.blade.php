@@ -47,9 +47,9 @@
         <tbody>
         @foreach ($order->groupedItems() as $i)
             <tr>
-                <td>{{ $i->coffee_name_snapshot }}<div class="muted">{{ $i->level_label }} · {{ __($i->grind_label) }}</div></td>
+                <td>{{ $i->coffee_name_snapshot }}<div class="muted">{{ $i->detail }}</div></td>
                 <td class="r">{{ $i->qty }}</td>
-                <td class="r">{{ number_format($i->grams, 0, ',', '.') }} g</td>
+                <td class="r">{{ $i->is_product ? '—' : number_format($i->grams, 0, ',', '.').' g' }}</td>
                 <td class="r">Rp {{ number_format($i->unit_price, 0, ',', '.') }}</td>
                 <td class="r">Rp {{ number_format($i->line_total, 0, ',', '.') }}</td>
             </tr>

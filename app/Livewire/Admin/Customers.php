@@ -125,7 +125,7 @@ class Customers extends Component
             return ['coffee' => null, 'level' => null, 'grams' => 0];
         }
 
-        $items = OrderItem::whereHas('order', fn ($q) => $q->where('user_id', $c->id)->where('status', '!=', 'cancelled'))->get();
+        $items = OrderItem::whereHas('order', fn ($q) => $q->where('user_id', $c->id)->where('status', '!=', 'cancelled'))->whereNotNull('roast_profile_id')->get();
 
         return [
             'coffee' => $items->groupBy('coffee_name_snapshot')->map->sum('grams')->sortDesc()->keys()->first(),

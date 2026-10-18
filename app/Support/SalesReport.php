@@ -123,7 +123,7 @@ class SalesReport
     /** @return Collection<int, array{name:string,orders:int,grams:int,revenue:int}> */
     public function byCoffee(): Collection
     {
-        return $this->items()->groupBy('coffee_name_snapshot')->map(fn ($g, $name) => [
+        return $this->items()->reject->isProduct()->groupBy('coffee_name_snapshot')->map(fn ($g, $name) => [
             'name' => $name, 'orders' => $g->pluck('order_id')->unique()->count(), 'grams' => (int) $g->sum('grams'), 'revenue' => (int) $g->sum('line_total'),
         ])->sortByDesc('revenue')->values();
     }
@@ -132,8 +132,16 @@ class SalesReport
     public function byLevel(): Collection
     {
         // Snapshot lama bisa berupa kunci ("medium_light"), yang baru berupa label ("Medium Light"): samakan.
-        return $this->items()->groupBy(fn ($i) => ucwords(str_replace('_', ' ', strtolower($i->roast_level_snapshot))))->map(fn ($g, $level) => [
+        return $this->items()->reject->isProduct()->groupBy(fn ($i) => ucwords(str_replace('_', ' ', strtolower($i->roast_level_snapshot))))->map(fn ($g, $level) => [
             'level' => $level, 'orders' => $g->pluck('order_id')->unique()->count(), 'grams' => (int) $g->sum('grams'), 'revenue' => (int) $g->sum('line_total'),
+        ])->sortByDesc('revenue')->values();
+    }
+
+    /** Produk non-kopi; `units` = jumlah barang terjual. @return Collection<int, array{name:string,orders:int,units:int,revenue:int}> */
+    public function byProduct(): Collection
+    {
+        return $this->items()->filter->isProduct()->groupBy('coffee_name_snapshot')->map(fn ($g, $name) => [
+            'name' => $name, 'orders' => $g->pluck('order_id')->unique()->count(), 'units' => $g->count(), 'revenue' => (int) $g->sum('line_total'),
         ])->sortByDesc('revenue')->values();
     }
 

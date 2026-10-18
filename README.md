@@ -116,3 +116,7 @@ docs/screenshots/        gambar untuk README
 ## Lisensi
 
 Kode dirilis dengan [lisensi MIT](LICENSE). Logo, nama, dan foto kemasan BRÛLÉ adalah aset merek dan tidak termasuk dalam lisensi ini.
+
+## Perlengkapan (produk non-kopi)
+
+Halaman `/perlengkapan` menjual alat seduh, penggiling, filter, merchandise, dan aksesori. Stok dalam unit, tiap produk bisa punya pilihan (mis. ukuran kaos). Pesanan yang hanya berisi barang non-kopi melewati tahap sangrai dan giling (Antri → Dikemas → Dikirim). Pesanan campuran tetap lewat alur sangrai lengkap. Admin mengelola di **Admin → Perlengkapan**; laporan penjualan punya tabel "Per perlengkapan" terpisah. Data demo: `php artisan db:seed --class=ProductSeeder`.

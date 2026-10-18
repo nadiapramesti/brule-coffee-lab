@@ -189,7 +189,9 @@ class Checkout extends Component
         ]);
 
         // Satu bungkus = satu item pesanan, supaya tiap bungkus punya jurnal sangrai sendiri.
-        $lines = $this->lines->flatMap(fn ($l) => array_fill(0, $l->qty, ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind]))->all();
+        $lines = $this->lines->flatMap(fn ($l) => array_fill(0, $l->qty, $l->kind === 'product'
+            ? ['product' => $l->product, 'option' => $l->option]
+            : ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind]))->all();
 
         try {
             $order = Order::placeMany(

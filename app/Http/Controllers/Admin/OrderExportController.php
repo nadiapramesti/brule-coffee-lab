@@ -53,6 +53,6 @@ class OrderExportController extends Controller
 
     private function items(Order $o): string
     {
-        return $o->groupedItems()->map(fn ($i) => "{$i->coffee_name_snapshot} ({$i->level_label}, {$i->grind_label}) {$i->grams}g".($i->qty > 1 ? " ×{$i->qty}" : ''))->implode(' | ');
+        return $o->groupedItems()->map(fn ($i) => $i->coffee_name_snapshot.($i->descr ? " ({$i->descr})" : '').($i->qty > 1 ? " ×{$i->qty}" : ''))->implode(' | ');
     }
 }

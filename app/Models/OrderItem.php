@@ -21,7 +21,7 @@ class OrderItem extends Model
     ];
 
     protected $fillable = [
-        'order_id', 'roast_profile_id', 'grams', 'grind',
+        'order_id', 'roast_profile_id', 'product_id', 'grams', 'grind',
         'coffee_name_snapshot', 'roast_level_snapshot',
         'price_per_100g_snapshot', 'line_total',
     ];
@@ -38,6 +38,33 @@ class OrderItem extends Model
     public function order(): BelongsTo
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function product(): BelongsTo
+    {
+        return $this->belongsTo(Product::class);
+    }
+
+    /** Barang non-kopi: tidak disangrai, tidak digiling, tidak punya berat bungkus. */
+    public function isProduct(): bool
+    {
+        return $this->product_id !== null || $this->roast_profile_id === null;
+    }
+
+    /** Keterangan di bawah nama: "Medium · V60" untuk kopi, pilihan varian (mis. "Hitam") untuk produk. */
+    public function detail(): string
+    {
+        if ($this->isProduct()) {
+            return (string) $this->roast_level_snapshot;
+        }
+
+        return $this->level_label.' · '.__($this->grind_label);
+    }
+
+    /** "200 g" untuk kopi; kosong untuk produk. */
+    public function size(): string
+    {
+        return $this->isProduct() ? '' : $this->grams.' g';
     }
 
     public function roastProfile(): BelongsTo

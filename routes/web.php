@@ -17,12 +17,13 @@ Route::get('/syarat-ketentuan', \App\Livewire\StaticPage::class)->defaults('page
 Route::get('/kebijakan-privasi', \App\Livewire\StaticPage::class)->defaults('page', 'privacy')->name('policy.privacy');
 Route::get('/sitemap.xml', function () {
     $urls = collect([
-        route('landing'), route('builder'), route('track'), route('help'),
+        route('landing'), route('builder'), route('gear'), route('track'), route('help'),
         route('policy.shipping'), route('policy.terms'), route('policy.privacy'),
     ])->merge(\App\Models\Coffee::active()->orderBy('id')->pluck('slug')->map(fn ($s) => route('builder', ['kopi' => $s])));
 
     return response()->view('sitemap', ['urls' => $urls])->header('Content-Type', 'application/xml');
 })->name('sitemap');
+Route::get('/perlengkapan', \App\Livewire\Gear::class)->name('gear');
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/akun', \App\Livewire\Account::class)->middleware('auth')->name('account');
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/pesanan/export', \App\Http\Controllers\Admin\OrderExportController::class)->name('admin.orders.export');
     Route::get('/pesanan/{order:order_code}/cetak', \App\Http\Controllers\Admin\OrderPrintController::class)->name('admin.orders.print');
     Route::get('/kopi', \App\Livewire\Admin\CoffeeIndex::class)->name('admin.coffees');
+    Route::get('/produk', \App\Livewire\Admin\ProductIndex::class)->name('admin.products');
 });
 
 Route::middleware('guest')->group(function () {

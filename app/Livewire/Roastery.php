@@ -129,6 +129,7 @@ class Roastery extends Component
         return \App\Models\OrderItem::query()
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
             ->where('orders.status', 'queued')
+            ->whereNotNull('order_items.roast_profile_id')
             ->selectRaw('order_items.coffee_name_snapshot as name, order_items.roast_level_snapshot as lvl, SUM(order_items.grams) as g, COUNT(DISTINCT order_items.order_id) as n')
             ->groupBy('order_items.coffee_name_snapshot', 'order_items.roast_level_snapshot')
             ->orderByDesc('g')->limit(40)->get()

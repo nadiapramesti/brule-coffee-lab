@@ -15,6 +15,7 @@
         ],
         __('Katalog') => [
             ['admin.coffees*', route('admin.coffees'), __('Kelola kopi'), 'M5 8h11v6a5 5 0 01-5 5H10a5 5 0 01-5-5V8zM16 9h2a2 2 0 010 4h-2M8 3v2M12 3v2', true, null],
+            ['admin.products*', route('admin.products'), __('Perlengkapan'), 'M4 7l8-4 8 4-8 4-8-4zM4 7v10l8 4 8-4V7M12 11v10', true, null],
             ['admin.reviews', route('admin.reviews'), __('Ulasan'), 'M12 3l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 16.5 6.6 19.5l1.2-6L3.3 9.3l6.1-.7L12 3z', true, null],
             ['admin.stock', route('admin.stock'), __('Stok'), 'M3 8l9-5 9 5v8l-9 5-9-5V8zM3 8l9 5 9-5M12 13v8', true, $lowStock ?: null],
         ],
@@ -30,6 +31,7 @@
     $crumbs = match (true) {
         request()->routeIs('admin.dashboard') => ['Dashboard'],
         request()->routeIs('admin.coffees') => [__('Kelola kopi')],
+        request()->routeIs('admin.products') => [__('Perlengkapan')],
         request()->routeIs('admin.orders') => [__('Pesanan')],
         request()->routeIs('admin.customers') => [__('Pelanggan')],
         request()->routeIs('admin.reviews') => [__('Ulasan')],

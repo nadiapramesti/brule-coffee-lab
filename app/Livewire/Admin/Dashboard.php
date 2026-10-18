@@ -142,7 +142,7 @@ class Dashboard extends Component
     {
         $ids = $this->paid($this->start(), CarbonImmutable::tomorrow())->pluck('id');
 
-        return OrderItem::whereIn('order_id', $ids)
+        return OrderItem::whereIn('order_id', $ids)->whereNotNull('roast_profile_id')
             ->selectRaw('coffee_name_snapshot as name, sum(grams) as grams, sum(line_total) as revenue')
             ->groupBy('coffee_name_snapshot')->orderByDesc('grams')->limit(5)->get();
     }
@@ -152,7 +152,7 @@ class Dashboard extends Component
     {
         $ids = $this->paid($this->start(), CarbonImmutable::tomorrow())->pluck('id');
 
-        return OrderItem::whereIn('order_id', $ids)
+        return OrderItem::whereIn('order_id', $ids)->whereNotNull('roast_profile_id')
             ->selectRaw('roast_level_snapshot as level, sum(grams) as grams')
             ->groupBy('roast_level_snapshot')->orderByDesc('grams')->get();
     }

@@ -96,8 +96,8 @@ it('exports a multi-sheet xlsx and a multi-section pdf', function () {
     $tmp = tempnam(sys_get_temp_dir(), 't'); file_put_contents($tmp, $r->getContent());
     $zip = new ZipArchive; expect($zip->open($tmp))->toBeTrue();
     $wb = $zip->getFromName('xl/workbook.xml');
-    expect(substr_count($wb, '<sheet '))->toBe(6)->and($zip->getFromName('xl/worksheets/sheet6.xml'))->toContain($o->order_code);
-    foreach (range(1, 6) as $i) {
+    expect(substr_count($wb, '<sheet '))->toBe(7)->and($zip->getFromName('xl/worksheets/sheet7.xml'))->toContain($o->order_code);
+    foreach (range(1, 7) as $i) {
         expect(simplexml_load_string($zip->getFromName("xl/worksheets/sheet$i.xml")))->not->toBeFalse();
     }
 

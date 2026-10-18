@@ -8,7 +8,7 @@
 @endif
 
 @foreach ($items as $i)
-- {{ $i->coffee_name_snapshot }} · {{ $i->level_label }} · {{ $i->grind_label }} · {{ number_format($i->grams) }} g{{ $i->qty > 1 ? ' x '.$i->qty : '' }}: Rp{{ number_format($i->line_total, 0, ',', '.') }}
+- {{ $i->coffee_name_snapshot }}{{ $i->descr ? ' · '.$i->descr : '' }}{{ $i->qty > 1 ? ' x '.$i->qty : '' }}: Rp{{ number_format($i->line_total, 0, ',', '.') }}
 @endforeach
 
 {{ __('Subtotal') }}: Rp{{ number_format($o->subtotal, 0, ',', '.') }}

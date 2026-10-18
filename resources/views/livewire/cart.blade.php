@@ -14,15 +14,25 @@
                 <ul class="divide-y divide-kraft/15 rounded border border-kraft/20">
                     @foreach ($this->lines as $l)
                         <li wire:key="line-{{ $l->id }}" class="flex items-start gap-4 p-4 sm:gap-5 sm:p-5">
-                            <x-coffee-bag :coffee="$l->profile->coffee" :level="$l->profile->level" class="h-[84px] w-[68px] shrink-0" />
+                            @if ($l->kind === 'product')
+                                <x-product-thumb :product="$l->product" class="h-[84px] w-[68px]" />
+                            @else
+                                <x-coffee-bag :coffee="$l->profile->coffee" :level="$l->profile->level" class="h-[84px] w-[68px] shrink-0" />
+                            @endif
                             <div class="min-w-0 flex-1">
                                 <div class="flex items-start justify-between gap-3">
                                     <div class="min-w-0">
-                                        <p class="font-display text-[1.05rem] font-semibold leading-snug">{{ $l->profile->coffee->name }}</p>
-                                        <p class="mt-0.5 text-[13px] text-kraft/70">{{ $l->profile->level_label }}</p>
+                                        @if ($l->kind === 'product')
+                                            <p class="font-display text-[1.05rem] font-semibold leading-snug">{{ $l->product->localizedName() }}</p>
+                                            <p class="mt-0.5 text-[13px] text-kraft/70">{{ $l->product->categoryLabel() }}@if ($l->option) · {{ $l->option }}@endif</p>
+                                        @else
+                                            <p class="font-display text-[1.05rem] font-semibold leading-snug">{{ $l->profile->coffee->name }}</p>
+                                            <p class="mt-0.5 text-[13px] text-kraft/70">{{ $l->profile->level_label }}</p>
+                                        @endif
                                     </div>
                                     <span class="krm-readout shrink-0 text-[14px]">Rp{{ number_format($l->price, 0, ',', '.') }}</span>
                                 </div>
+                                @if ($l->kind === 'coffee')
                                 @php($sel = 'rounded border border-kraft/25 bg-surface py-1.5 pl-2.5 pr-7 text-[13px] text-labwhite focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40')
                                 <div class="mt-3 flex flex-wrap items-center gap-2">
                                     <select aria-label="{{ __('Berat') }}" wire:change="setGrams('{{ $l->id }}', $event.target.value)" class="{{ $sel }}">
@@ -32,6 +42,7 @@
                                         @foreach (\App\Models\OrderItem::GRINDS as $k => $label)<option value="{{ $k }}" @selected($k === $l->grind)>{{ __($label) }}</option>@endforeach
                                     </select>
                                 </div>
+                                @endif
                                 <div class="mt-3 flex items-center justify-between gap-3">
                                     <div class="inline-flex items-center rounded border border-kraft/25" role="group" aria-label="{{ __('Jumlah') }}">
                                         <button type="button" wire:click="step('{{ $l->id }}', -1)" @disabled($l->qty <= 1) aria-label="{{ __('Kurangi') }}" class="grid h-8 w-8 place-items-center text-[16px] text-kraft/80 transition-colors hover:text-labwhite disabled:opacity-30">&minus;</button>
@@ -45,12 +56,13 @@
                     @endforeach
                 </ul>
                 <a href="{{ route('builder') }}" wire:navigate class="mt-5 inline-block text-[13.5px] text-kraft/75 underline-offset-4 transition-colors hover:text-labwhite hover:underline">+ {{ __('Tambah kopi lain') }}</a>
+                <a href="{{ route('gear') }}" wire:navigate class="mt-5 ml-5 inline-block text-[13.5px] text-kraft/75 underline-offset-4 transition-colors hover:text-labwhite hover:underline">+ {{ __('Lihat perlengkapan') }}</a>
             </div>
 
             <aside class="lg:sticky lg:top-24 lg:self-start">
                 <div class="space-y-2.5 rounded border border-kraft/25 bg-surface p-6 text-[13.5px]">
                     <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN') }}</p>
-                    <div class="flex justify-between pt-3"><span class="text-kraft/65">{{ __('Kopi') }} ({{ $this->lines->sum('qty') }})</span><span class="krm-readout">Rp{{ number_format($this->subtotal, 0, ',', '.') }}</span></div>
+                    <div class="flex justify-between pt-3"><span class="text-kraft/65">{{ __('Barang') }} ({{ $this->lines->sum('qty') }})</span><span class="krm-readout">Rp{{ number_format($this->subtotal, 0, ',', '.') }}</span></div>
                     <div class="flex justify-between"><span class="text-kraft/65">{{ __('Ongkir') }}</span>
                         <span class="krm-readout">{{ $this->shipping ? 'Rp'.number_format($this->shipping, 0, ',', '.') : __('Gratis') }}</span></div>
                     <div class="flex items-end justify-between border-t border-dashed border-kraft/30 pt-4">

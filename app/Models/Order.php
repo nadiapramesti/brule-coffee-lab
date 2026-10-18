@@ -109,8 +109,25 @@ class Order extends Model
         return __(self::STATUS_LABELS[$this->status] ?? $this->status);
     }
 
+    /** Ada kopi yang harus disangrai? Pesanan hanya berisi produk non-kopi melewati sangrai dan giling. */
+    public function hasCoffee(): bool
+    {
+        return $this->items->contains(fn ($i) => ! $i->isProduct());
+    }
+
+    /** Tahap yang dilalui pesanan ini (tanpa sangrai/giling bila isinya hanya produk). */
+    public function flow(): array
+    {
+        return $this->hasCoffee() ? self::FLOW : array_values(array_diff(self::FLOW, ['roasting', 'grinding']));
+    }
+
     public function nextStatus(): ?string
     {
+        $flow = $this->flow();
+        $i = array_search($this->status, $flow, true);
+        if ($i !== false) {
+            return $flow[$i + 1] ?? null;
+        }
         $i = array_search($this->status, self::FLOW, true);
 
         return $i !== false && isset(self::FLOW[$i + 1])
@@ -120,9 +137,10 @@ class Order extends Model
 
     public function progressPercent(): int
     {
-        $i = array_search($this->status, self::FLOW, true);
+        $flow = $this->flow();
+        $i = array_search($this->status, $flow, true);
 
-        return $i === false ? 0 : (int) round(($i + 1) / count(self::FLOW) * 100);
+        return $i === false ? 0 : (int) round(($i + 1) / count($flow) * 100);
     }
 
     public static function generateCode(): string
@@ -251,7 +269,7 @@ class Order extends Model
      * selama transaksi supaya dua pembeli tidak bisa mengambil stok yang sama.
      * Item dari kopi yang sama dijumlahkan dulu sebelum stok dicek.
      *
-     * @param  array<int,array{profile:RoastProfile,grams:int,grind:string}>  $lines
+     * @param  array<int,array{profile?:RoastProfile,grams?:int,grind?:string,product?:Product,option?:?string}>  $lines  baris kopi punya `profile`, baris produk punya `product`
      * @param  array{gift_wrap?:bool,card_message?:?string}  $extras  add-on checkout; harganya dihitung di sini, bukan dipercaya dari browser
      * @throws \RuntimeException bila stok tidak cukup atau keranjang kosong
      */
@@ -270,11 +288,28 @@ class Order extends Model
 
         return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $lines, $ship, $voucherCode, $payment, $giftWrap, $card, $addon) {
             // Kunci kopi berurutan berdasarkan id supaya dua transaksi tidak saling tunggu (deadlock).
-            $coffees = Coffee::whereIn('id', collect($lines)->map(fn ($l) => $l['profile']->coffee_id)->unique())
+            $coffeeLines = array_values(array_filter($lines, fn ($l) => isset($l['profile'])));
+            $productLines = array_values(array_filter($lines, fn ($l) => isset($l['product'])));
+
+            $coffees = Coffee::whereIn('id', collect($coffeeLines)->map(fn ($l) => $l['profile']->coffee_id)->unique())
+                ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
+            $products = Product::whereIn('id', collect($productLines)->map(fn ($l) => $l['product']->id)->unique())
                 ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
 
+            $needUnits = [];
+            foreach ($productLines as $l) {
+                $p = $products[$l['product']->id] ?? null;
+                if (! $p || ! $p->is_active || ! $p->validOption($l['option'] ?? null)) {
+                    throw new \RuntimeException(__('Produk tidak tersedia lagi.'));
+                }
+                $needUnits[$p->id] = ($needUnits[$p->id] ?? 0) + 1;
+                if ($p->stock < $needUnits[$p->id]) {
+                    throw new \RuntimeException(__('Stok :n tidak cukup untuk jumlah yang kamu pilih.', ['n' => $p->localizedName()]));
+                }
+            }
+
             $need = [];
-            foreach ($lines as $l) {
+            foreach ($coffeeLines as $l) {
                 $c = $coffees[$l['profile']->coffee_id] ?? null;
                 if (! $c || ! $c->is_active) {
                     throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
@@ -287,7 +322,8 @@ class Order extends Model
                 }
             }
 
-            $subtotal = (int) collect($lines)->sum(fn ($l) => $l['profile']->priceFor($l['grams']));
+            $subtotal = (int) collect($coffeeLines)->sum(fn ($l) => $l['profile']->priceFor($l['grams']))
+                + (int) collect($productLines)->sum(fn ($l) => $products[$l['product']->id]->price);
             $shipping = self::shippingFor($subtotal);
 
             // Voucher dikunci & divalidasi ulang di sini, bukan dipercaya dari browser.
@@ -326,7 +362,21 @@ class Order extends Model
                 'shipping_address' => $ship['address'],
             ]);
 
-            foreach ($lines as $l) {
+            foreach ($productLines as $l) {
+                $p = $products[$l['product']->id];
+                $order->items()->create([
+                    'roast_profile_id'        => null,
+                    'product_id'              => $p->id,
+                    'grams'                   => 0,
+                    'grind'                   => null,
+                    'coffee_name_snapshot'    => $p->name,
+                    'roast_level_snapshot'    => (string) ($l['option'] ?? ''),
+                    'price_per_100g_snapshot' => $p->price,
+                    'line_total'              => $p->price,
+                ]);
+                $p->decrement('stock');
+            }
+            foreach ($coffeeLines as $l) {
                 $profile = $l['profile'];
                 $order->items()->create([
                     'roast_profile_id'        => $profile->id,
@@ -454,7 +504,12 @@ class Order extends Model
         }
 
         \Illuminate\Support\Facades\DB::transaction(function () use ($reason) {
-            foreach ($this->items()->with('roastProfile.coffee')->get() as $item) {
+            foreach ($this->items()->with('roastProfile.coffee', 'product')->get() as $item) {
+                if ($item->product_id) {
+                    $item->product?->increment('stock');
+
+                    continue;
+                }
                 $coffee = $item->roastProfile?->coffee;
                 $coffee?->moveStock('cancel', $coffee->greenBeanNeeded($item->grams), null, $this);
             }
@@ -479,14 +534,20 @@ class Order extends Model
      */
     public function groupedItems(): \Illuminate\Support\Collection
     {
-        return $this->items->groupBy(fn ($i) => implode('|', [$i->roast_profile_id, $i->coffee_name_snapshot, $i->roast_level_snapshot, $i->grind, $i->grams]))
+        return $this->items->groupBy(fn ($i) => implode('|', [$i->roast_profile_id, $i->product_id, $i->coffee_name_snapshot, $i->roast_level_snapshot, $i->grind, $i->grams]))
             ->map(function ($g) {
                 $f = $g->first();
 
                 return (object) [
                     'coffee_name_snapshot' => $f->coffee_name_snapshot,
-                    'level_label' => $f->level_label,
-                    'grind_label' => $f->grind_label,
+                    'is_product' => $f->isProduct(),
+                    'descr' => collect([$f->detail(), $f->size()])->filter()->implode(' · '),
+                    'short' => $f->coffee_name_snapshot.($f->isProduct() ? '' : ' '.$f->grams.'g').($g->count() > 1 ? ' ×'.$g->count() : ''),
+                    'product_id' => $f->product_id,
+                    'detail' => $f->detail(),
+                    'size' => $f->size(),
+                    'level_label' => $f->isProduct() ? $f->roast_level_snapshot : $f->level_label,
+                    'grind_label' => $f->isProduct() ? '' : $f->grind_label,
                     'grams' => $f->grams,
                     'qty' => $g->count(),
                     'unit_price' => (int) $f->line_total,
@@ -505,7 +566,9 @@ class Order extends Model
             return '';
         }
 
-        $text = "{$i->coffee_name_snapshot} · {$i->level_label} {$i->grams} g".($i->qty > 1 ? " × {$i->qty}" : '');
+        $text = $i->is_product
+            ? trim("{$i->coffee_name_snapshot} {$i->level_label}").($i->qty > 1 ? " × {$i->qty}" : '')
+            : "{$i->coffee_name_snapshot} · {$i->level_label} {$i->grams} g".($i->qty > 1 ? " × {$i->qty}" : '');
 
         return $groups->count() > 1 ? $text.' '.__('+:n lainnya', ['n' => $groups->count() - 1]) : $text;
     }

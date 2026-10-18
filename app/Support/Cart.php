@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\RoastProfile;
 use App\Models\User;
 use Illuminate\Support\Collection;
@@ -31,7 +32,11 @@ class Cart
 
         if ($user) {
             return DB::table('cart_lines')->where('user_id', $user->id)->orderBy('id')->get()
-                ->map(fn ($r) => ['id' => $r->line_id, 'profile_id' => (int) $r->roast_profile_id, 'grams' => (int) $r->grams, 'grind' => $r->grind, 'qty' => (int) $r->qty])
+                ->map(fn ($r) => [
+                    'id' => $r->line_id, 'kind' => $r->kind ?? 'coffee', 'profile_id' => (int) $r->roast_profile_id,
+                    'product_id' => (int) $r->product_id, 'option' => $r->option,
+                    'grams' => (int) $r->grams, 'grind' => (string) $r->grind, 'qty' => (int) $r->qty,
+                ])
                 ->all();
         }
 
@@ -53,8 +58,11 @@ class Cart
             DB::table('cart_lines')->where('user_id', $user->id)->delete();
             foreach ($lines as $l) {
                 DB::table('cart_lines')->insert([
-                    'user_id' => $user->id, 'line_id' => $l['id'], 'roast_profile_id' => $l['profile_id'],
-                    'grams' => $l['grams'], 'grind' => $l['grind'], 'qty' => self::qty($l),
+                    'user_id' => $user->id, 'line_id' => $l['id'], 'kind' => self::kind($l),
+                    'roast_profile_id' => self::kind($l) === 'coffee' ? $l['profile_id'] : null,
+                    'product_id' => self::kind($l) === 'product' ? $l['product_id'] : null,
+                    'option' => $l['option'] ?? null,
+                    'grams' => $l['grams'], 'grind' => $l['grind'] ?: 'whole_bean', 'qty' => self::qty($l),
                     'created_at' => now(), 'updated_at' => now(),
                 ]);
             }
@@ -72,7 +80,7 @@ class Cart
         $lines = self::raw($user);
         foreach ($guest as $g) {
             foreach ($lines as &$l) {
-                if ($l['profile_id'] === $g['profile_id'] && $l['grams'] === $g['grams'] && $l['grind'] === $g['grind']) {
+                if (self::same($l, $g)) {
                     $l['qty'] = min(self::MAX_QTY, self::qty($l) + self::qty($g));
                     continue 2;
                 }
@@ -93,6 +101,23 @@ class Cart
         return (int) array_sum(array_map(fn ($l) => self::qty($l), self::raw()));
     }
 
+    public static function kind(array $l): string
+    {
+        return ($l['kind'] ?? 'coffee') === 'product' ? 'product' : 'coffee';
+    }
+
+    /** Dua baris dianggap sama bila kopi/produk, ukuran, gilingan atau pilihannya identik. */
+    private static function same(array $a, array $b): bool
+    {
+        if (self::kind($a) !== self::kind($b)) {
+            return false;
+        }
+
+        return self::kind($a) === 'product'
+            ? ($a['product_id'] ?? 0) === ($b['product_id'] ?? 0) && ($a['option'] ?? null) === ($b['option'] ?? null)
+            : $a['profile_id'] === $b['profile_id'] && $a['grams'] === $b['grams'] && $a['grind'] === $b['grind'];
+    }
+
     private static function qty(array $l): int
     {
         return max(1, min(self::MAX_QTY, (int) ($l['qty'] ?? 1)));
@@ -110,7 +135,7 @@ class Cart
         $lines = self::raw();
         // Racikan yang sama persis digabung jadi qty, bukan baris baru.
         foreach ($lines as &$l) {
-            if ($l['profile_id'] === $profileId && $l['grams'] === $grams && $l['grind'] === $grind) {
+            if (self::kind($l) === 'coffee' && $l['profile_id'] === $profileId && $l['grams'] === $grams && $l['grind'] === $grind) {
                 if (self::qty($l) >= self::MAX_QTY) {
                     return false;
                 }
@@ -125,7 +150,39 @@ class Cart
         if (count($lines) >= self::MAX_LINES) {
             return false;
         }
-        $lines[] = ['id' => Str::random(8), 'profile_id' => $profileId, 'grams' => $grams, 'grind' => $grind, 'qty' => 1];
+        $lines[] = ['id' => Str::random(8), 'kind' => 'coffee', 'profile_id' => $profileId, 'product_id' => 0, 'option' => null, 'grams' => $grams, 'grind' => $grind, 'qty' => 1];
+        self::write($lines);
+
+        return true;
+    }
+
+    /** Tambah produk non-kopi. $option wajib salah satu varian bila produk punya varian. */
+    public static function addProduct(int $productId, ?string $option = null): bool
+    {
+        $product = Product::active()->find($productId);
+        if (! $product || ! $product->validOption($option)) {
+            return false;
+        }
+        $option = $option === '' ? null : $option;
+
+        $lines = self::raw();
+        foreach ($lines as &$l) {
+            if (self::kind($l) === 'product' && $l['product_id'] === $productId && ($l['option'] ?? null) === $option) {
+                if (self::qty($l) >= self::MAX_QTY) {
+                    return false;
+                }
+                $l['qty'] = self::qty($l) + 1;
+                self::write($lines);
+
+                return true;
+            }
+        }
+        unset($l);
+
+        if (count($lines) >= self::MAX_LINES) {
+            return false;
+        }
+        $lines[] = ['id' => Str::random(8), 'kind' => 'product', 'profile_id' => 0, 'product_id' => $productId, 'option' => $option, 'grams' => 0, 'grind' => '', 'qty' => 1];
         self::write($lines);
 
         return true;
@@ -142,7 +199,7 @@ class Cart
     {
         $lines = self::raw();
         $i = array_search($id, array_column($lines, 'id'), true);
-        if ($i === false) {
+        if ($i === false || self::kind($lines[$i]) !== 'coffee') {
             return;
         }
         if ($grams !== null && in_array($grams, self::GRAMS, true)) {
@@ -153,7 +210,7 @@ class Cart
         }
 
         foreach ($lines as $j => $o) {
-            if ($j !== $i && $o['profile_id'] === $lines[$i]['profile_id'] && $o['grams'] === $lines[$i]['grams'] && $o['grind'] === $lines[$i]['grind']) {
+            if ($j !== $i && self::same($o, $lines[$i])) {
                 $lines[$j]['qty'] = min(self::MAX_QTY, self::qty($o) + self::qty($lines[$i]));
                 unset($lines[$i]);
                 break;
@@ -176,40 +233,61 @@ class Cart
     }
 
     /**
-     * Baris keranjang beserta modelnya. Baris yang profilnya sudah dihapus
-     * atau kopinya dimatikan dibuang diam-diam.
+     * Baris keranjang beserta modelnya. Baris yang profil/produknya sudah dihapus
+     * atau dimatikan dibuang diam-diam. Baris kopi punya `profile`, baris produk punya `product`.
      *
-     * @return Collection<int,object{id:string,profile:RoastProfile,grams:int,grind:string,qty:int,unit:int,price:int}>
+     * @return Collection<int,object{id:string,kind:string,profile:?RoastProfile,product:?Product,option:?string,grams:int,grind:string,qty:int,unit:int,price:int}>
      */
     public static function lines(array $raw = null): Collection
     {
         $raw ??= self::raw();
-        $profiles = RoastProfile::with('coffee')->whereIn('id', collect($raw)->pluck('profile_id'))->get()->keyBy('id');
+        $profiles = RoastProfile::with('coffee')->whereIn('id', collect($raw)->where('kind', '!=', 'product')->pluck('profile_id'))->get()->keyBy('id');
+        $products = Product::whereIn('id', collect($raw)->where('kind', 'product')->pluck('product_id'))->get()->keyBy('id');
 
-        return collect($raw)->map(function ($l) use ($profiles) {
+        return collect($raw)->map(function ($l) use ($profiles, $products) {
+            $qty = self::qty($l);
+
+            if (self::kind($l) === 'product') {
+                $pr = $products[$l['product_id']] ?? null;
+                if (! $pr || ! $pr->is_active) {
+                    return null;
+                }
+
+                return (object) [
+                    'id' => $l['id'], 'kind' => 'product', 'profile' => null, 'product' => $pr, 'option' => $l['option'] ?? null,
+                    'grams' => 0, 'grind' => '', 'qty' => $qty, 'unit' => $pr->price, 'price' => $pr->price * $qty,
+                ];
+            }
+
             $p = $profiles[$l['profile_id']] ?? null;
             if (! $p || ! $p->coffee?->is_active) {
                 return null;
             }
 
-            $qty = self::qty($l);
             $unit = $p->priceFor((int) $l['grams']);
 
             return (object) [
-                'id' => $l['id'], 'profile' => $p, 'grams' => (int) $l['grams'],
-                'grind' => $l['grind'], 'qty' => $qty, 'unit' => $unit, 'price' => $unit * $qty,
+                'id' => $l['id'], 'kind' => 'coffee', 'profile' => $p, 'product' => null, 'option' => null,
+                'grams' => (int) $l['grams'], 'grind' => $l['grind'], 'qty' => $qty, 'unit' => $unit, 'price' => $unit * $qty,
             ];
         })->filter()->values();
     }
 
-    /** Pesan error bila stok biji mentah tidak cukup untuk seluruh isi keranjang (digabung per kopi). */
+    /** Pesan error bila stok biji mentah atau stok produk tidak cukup untuk seluruh isi keranjang. */
     public static function stockProblem(Collection $lines): ?string
     {
-        foreach ($lines->groupBy(fn ($l) => $l->profile->coffee_id) as $group) {
+        foreach ($lines->where('kind', 'coffee')->groupBy(fn ($l) => $l->profile->coffee_id) as $group) {
             $coffee = $group->first()->profile->coffee;
             $need = $group->sum(fn ($l) => $coffee->greenBeanNeeded($l->grams) * $l->qty);
             if ($coffee->stock_green_bean_gram < $need) {
                 return __('Stok :n tidak cukup untuk jumlah yang kamu pilih.', ['n' => $coffee->name]);
+            }
+        }
+
+        foreach ($lines->where('kind', 'product')->groupBy(fn ($l) => $l->product->id) as $group) {
+            $product = $group->first()->product;
+            if ($product->stock < $group->sum('qty')) {
+                return __('Stok :n tidak cukup untuk jumlah yang kamu pilih.', ['n' => $product->localizedName()]);
             }
         }
 

@@ -55,7 +55,7 @@ class Account extends Component
     #[Computed]
     public function orders()
     {
-        return auth()->user()->orders()->with('items.roastProfile.coffee')
+        return auth()->user()->orders()->with('items.roastProfile.coffee', 'items.product')
             ->when($this->filter === 'aktif', fn ($q) => $q->whereNotIn('status', ['completed', 'cancelled']))
             ->when($this->filter === 'selesai', fn ($q) => $q->where('status', 'completed'))
             ->when($this->filter === 'batal', fn ($q) => $q->where('status', 'cancelled'))
@@ -76,7 +76,10 @@ class Account extends Component
         $added = 0;
         $skipped = 0;
         foreach ($order->items as $i) {
-            Cart::add((int) $i->roast_profile_id, (int) $i->grams, (string) $i->grind) ? $added++ : $skipped++;
+            $ok = $i->isProduct()
+                ? ($i->product_id && Cart::addProduct((int) $i->product_id, $i->roast_level_snapshot !== '' ? $i->roast_level_snapshot : null))
+                : Cart::add((int) $i->roast_profile_id, (int) $i->grams, (string) $i->grind);
+            $ok ? $added++ : $skipped++;
         }
 
         if ($added === 0) {
@@ -96,7 +99,7 @@ class Account extends Component
         if ($o->status !== 'completed') {
             return collect();
         }
-        $coffees = $o->items->map(fn ($i) => $i->roastProfile?->coffee)->filter()->unique('id')->values();
+        $coffees = $o->items->filter(fn ($i) => ! $i->isProduct())->map(fn ($i) => $i->roastProfile?->coffee)->filter()->unique('id')->values();
         $mine = auth()->user()->reviews()->whereIn('coffee_id', $coffees->pluck('id'))->get()->keyBy('coffee_id');
 
         return $coffees->map(fn ($c) => (object) ['coffee' => $c, 'review' => $mine->get($c->id)]);

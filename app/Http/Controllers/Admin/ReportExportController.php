@@ -28,6 +28,7 @@ class ReportExportController extends Controller
         $series = array_map(fn ($x) => [$x['label'], $x['count'], $x['total']], $r->series());
         $coffee = $r->byCoffee()->map(fn ($x) => [$x['name'], $x['orders'], $x['grams'], $x['revenue']])->all();
         $level = $r->byLevel()->map(fn ($x) => [$x['level'], $x['orders'], $x['grams'], $x['revenue']])->all();
+        $product = $r->byProduct()->map(fn ($x) => [$x['name'], $x['orders'], $x['units'], $x['revenue']])->all();
         $voucher = $r->byVoucher()->map(fn ($x) => [$x['code'], $x['uses'], $x['discount']])->all();
 
         if ($request->query('format') === 'pdf') {
@@ -37,6 +38,7 @@ class ReportExportController extends Controller
                 ['heading' => $monthly ? __('Omzet per bulan') : __('Omzet per hari'), 'headers' => [$monthly ? __('Bulan') : __('Tanggal'), __('Pesanan'), __('Omzet')], 'rows' => $money($series, [2]), 'weights' => [3, 1, 2], 'right' => [1, 2]],
                 ['heading' => __('Per kopi'), 'headers' => [__('Kopi'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $money(array_map(fn ($r) => [$r[0], $r[1], number_format($r[2], 0, ',', '.'), $r[3]], $coffee), [3]), 'weights' => [4, 1, 1.4, 2], 'right' => [1, 2, 3]],
                 ['heading' => __('Per level roast'), 'headers' => [__('Level'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $money(array_map(fn ($r) => [$r[0], $r[1], number_format($r[2], 0, ',', '.'), $r[3]], $level), [3]), 'weights' => [4, 1, 1.4, 2], 'right' => [1, 2, 3]],
+                ['heading' => __('Per perlengkapan'), 'headers' => [__('Produk'), __('Pesanan'), __('Unit'), __('Penjualan')], 'rows' => $money($product, [3]), 'weights' => [4, 1, 1.4, 2], 'right' => [1, 2, 3]],
                 ['heading' => __('Pemakaian voucher'), 'headers' => [__('Kode'), __('Dipakai'), __('Total diskon')], 'rows' => $money($voucher, [2]), 'weights' => [3, 1, 2], 'right' => [1, 2]],
             ]);
 
@@ -53,6 +55,7 @@ class ReportExportController extends Controller
             ['name' => $monthly ? __('Per bulan') : __('Per hari'), 'headers' => [$monthly ? __('Bulan') : __('Tanggal'), __('Pesanan'), __('Omzet')], 'rows' => $series, 'widths' => [20, 12, 16]],
             ['name' => __('Per kopi'), 'headers' => [__('Kopi'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $coffee, 'widths' => [36, 12, 14, 16]],
             ['name' => __('Per level roast'), 'headers' => [__('Level'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $level, 'widths' => [24, 12, 14, 16]],
+            ['name' => __('Per perlengkapan'), 'headers' => [__('Produk'), __('Pesanan'), __('Unit'), __('Penjualan')], 'rows' => $product, 'widths' => [36, 12, 12, 16]],
             ['name' => __('Voucher'), 'headers' => [__('Kode'), __('Dipakai'), __('Total diskon')], 'rows' => $voucher, 'widths' => [24, 12, 16]],
             ['name' => __('Pesanan'), 'headers' => [__('Kode'), __('Dibayar'), __('Pelanggan'), __('Voucher'), __('Kopi'), __('Ongkir'), __('Tambahan'), __('Diskon'), __('Total'), __('Berat (g)')], 'rows' => $orders, 'widths' => [22, 17, 22, 16, 14, 12, 12, 12, 14, 12]],
         ]);

@@ -13,7 +13,7 @@
     @elseif ($this->order)
         @php
             $o = $this->order;
-            $flow = \App\Models\Order::FLOW;
+            $flow = $o->flow();
             $idx = array_search($o->status, $flow, true);
             $times = ['queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at];
         @endphp
@@ -80,7 +80,7 @@
                 @foreach ($o->groupedItems() as $item)
                     <div class="flex flex-wrap items-baseline justify-between gap-x-4 text-[14px]">
                         <span>{{ $item->coffee_name_snapshot }}</span>
-                        <span class="krm-readout text-[13px] text-kraft/70">{{ $item->level_label }} · {{ __($item->grind_label) }} · {{ number_format($item->grams) }} g{{ $item->qty > 1 ? ' × '.$item->qty : '' }}</span>
+                        <span class="krm-readout text-[13px] text-kraft/70">{{ $item->descr }}{{ $item->qty > 1 ? ($item->descr ? ' × ' : '× ').$item->qty : '' }}</span>
                     </div>
                 @endforeach
             </div>

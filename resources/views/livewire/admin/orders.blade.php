@@ -60,7 +60,7 @@
                         <tr wire:key="r-{{ $row->id }}" wire:click="show('{{ $row->order_code }}')" class="cursor-pointer transition-colors hover:bg-labwhite/[.03] {{ $open === $row->order_code ? 'bg-bluelab/10' : '' }}">
                             <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}@if ($row->hasAddons()) <span class="ml-1.5 rounded-[6px] border border-bluelab/50 px-1.5 py-px font-sans text-[10.5px] text-bluelab" title="{{ $row->addonLabel() }}">{{ __('Hadiah') }}</span>@endif</td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $row->user?->name ?? $row->recipient_name }}</td>
-                            <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->groupedItems()->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g' . ($i->qty > 1 ? ' ×' . $i->qty : ''))->implode(', ') }}</td>
+                            <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->groupedItems()->map(fn ($i) => $i->short)->implode(', ') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $row->created_at->translatedFormat('j M, H:i') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-right">{{ $rp($row->total) }}</td>
                             <td class="px-4 py-3"><span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $row->statusTone() }}">{{ $row->status_label }}</span></td>
@@ -126,7 +126,7 @@
                         <p class="rounded border border-kraft/25 bg-labwhite/[.03] px-4 py-3 text-[13px] text-kraft/70">{{ __('Dibatalkan') }} {{ $o->cancelled_at?->translatedFormat('j M Y, H:i') }}. {{ __('Stok biji dikembalikan.') }}</p>
                     @else
                         @php
-                            $flow = ['pending_payment' => $o->created_at] + collect(\App\Models\Order::FLOW)->mapWithKeys(fn ($s) => [$s => match ($s) { 'queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at, 'completed' => $o->completed_at, default => null }])->all();
+                            $flow = ['pending_payment' => $o->created_at] + collect($o->flow())->mapWithKeys(fn ($s) => [$s => match ($s) { 'queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at, 'completed' => $o->completed_at, default => null }])->all();
                             $order = array_keys($flow); $idx = array_search($o->status, $order, true);
                         @endphp
                         <ol class="flex items-start" aria-label="{{ __('Tahapan pesanan') }}">
@@ -202,7 +202,7 @@
                                 <li class="flex items-start justify-between gap-4 py-3">
                                     <div class="min-w-0">
                                         <p class="text-[13.5px] font-semibold">{{ $it->coffee_name_snapshot }}</p>
-                                        <p class="text-[12px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · <span class="krm-readout">{{ number_format($it->grams) }} g{{ $it->qty > 1 ? ' × '.$it->qty : '' }}</span></p>
+                                        <p class="text-[12px] text-kraft/60">{{ $it->descr }}@if ($it->qty > 1)<span class="krm-readout">{{ $it->descr ? ' · ' : '' }}× {{ $it->qty }}</span>@endif</p>
                                     </div>
                                     <span class="krm-readout shrink-0 text-[13px]">{{ $rp($it->line_total) }}</span>
                                 </li>
