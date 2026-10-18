@@ -38,6 +38,14 @@ class LoginForm extends Form
             ]);
         }
 
+        if (Auth::user()->isBlocked()) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'form.email' => \App\Http\Middleware\EnsureNotBlocked::message(),
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

@@ -7,73 +7,91 @@ use Livewire\Volt\Component;
 new class extends Component
 {
     public string $password = '';
+    public string $confirmText = '';
 
     /**
-     * Delete the currently authenticated user.
+     * Hapus akun pembeli. Data pribadi dibuang; pesanan dan ulasan tetap
+     * ada sebagai catatan toko tanpa nama (lihat User::deleteAccount).
      */
     public function deleteUser(Logout $logout): void
     {
-        $this->validate([
-            'password' => ['required', 'string', 'current_password'],
-        ]);
+        $user = Auth::user();
 
-        tap(Auth::user(), $logout(...))->delete();
+        if ($blocker = $user->selfDeleteBlocker()) {
+            $this->addError('password', $blocker);
+
+            return;
+        }
+
+        // Akun yang dibuat lewat Google/Facebook tidak punya password yang dikenal pemiliknya.
+        if ($user->provider) {
+            $this->validate(['confirmText' => ['required', 'in:HAPUS']], [
+                'confirmText.required' => __('Ketik HAPUS untuk melanjutkan.'),
+                'confirmText.in' => __('Ketik HAPUS (huruf besar semua) untuk melanjutkan.'),
+            ]);
+        } else {
+            $this->validate([
+                'password' => ['required', 'string', 'current_password'],
+            ], [
+                'password.required' => __('Masukkan password untuk memastikan ini kamu.'),
+                'password.current_password' => __('Password salah.'),
+            ]);
+        }
+
+        $user->deleteAccount();
+        $logout();
 
         $this->redirect('/', navigate: true);
     }
 }; ?>
 
-<section class="space-y-6">
-    <header>
-        <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Delete Account') }}
-        </h2>
+<section x-data="{ confirm: {{ $errors->isNotEmpty() ? 'true' : 'false' }} }">
+    @php $blocker = auth()->user()->selfDeleteBlocker(); @endphp
 
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+    <header>
+        <h2 class="text-lg font-medium text-redtext">{{ __('Hapus akun') }}</h2>
+        <p class="mt-1 text-sm text-kraft/70">
+            {{ __('Nama, email, nomor telepon, dan alamat tersimpanmu akan dihapus dan tidak bisa dikembalikan. Riwayat pesanan tetap disimpan toko tanpa namamu untuk pembukuan.') }}
         </p>
     </header>
 
-    <x-danger-button
-        x-data=""
-        x-on:click.prevent="$dispatch('open-modal', 'confirm-user-deletion')"
-    >{{ __('Delete Account') }}</x-danger-button>
+    @if (auth()->user()->isStaff())
+        <p class="mt-5 rounded border border-kraft/25 px-4 py-3 text-[13px] text-kraft/75">{{ $blocker }}</p>
+    @else
+        @if ($blocker)
+            <p class="mt-5 rounded border border-[#E8782A]/40 bg-[#E8782A]/10 px-4 py-3 text-[13px] text-ambertext">{{ $blocker }}</p>
+        @else
+            <button type="button" x-show="!confirm" @click="confirm = true"
+                    class="mt-5 rounded border border-redtext/50 px-5 py-2.5 text-[13.5px] font-semibold text-redtext transition-colors hover:bg-redtext/10">
+                {{ __('Hapus akunku') }}
+            </button>
 
-    <x-modal name="confirm-user-deletion" :show="$errors->isNotEmpty()" focusable>
-        <form wire:submit="deleteUser" class="p-6">
-
-            <h2 class="text-lg font-medium text-gray-900">
-                {{ __('Are you sure you want to delete your account?') }}
-            </h2>
-
-            <p class="mt-1 text-sm text-gray-600">
-                {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.') }}
-            </p>
-
-            <div class="mt-6">
-                <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-
-                <x-text-input
-                    wire:model="password"
-                    id="password"
-                    name="password"
-                    type="password"
-                    class="mt-1 block w-3/4"
-                    placeholder="{{ __('Password') }}"
-                />
-
-                <x-input-error :messages="$errors->get('password')" class="mt-2" />
-            </div>
-
-            <div class="mt-6 flex justify-end">
-                <x-secondary-button x-on:click="$dispatch('close')">
-                    {{ __('Cancel') }}
-                </x-secondary-button>
-
-                <x-danger-button class="ms-3">
-                    {{ __('Delete Account') }}
-                </x-danger-button>
-            </div>
-        </form>
-    </x-modal>
+            <form x-show="confirm" x-cloak wire:submit="deleteUser" class="mt-5 space-y-4 rounded border border-redtext/30 p-4">
+                @if (auth()->user()->provider)
+                    <p class="text-[13.5px] leading-relaxed">{{ __('Yakin? Ini tidak bisa dibatalkan. Ketik HAPUS untuk melanjutkan.') }}</p>
+                    <div>
+                        <label for="delete_confirm" class="sr-only">{{ __('Konfirmasi') }}</label>
+                        <x-text-input wire:model="confirmText" id="delete_confirm" name="confirm" type="text" class="block w-full" placeholder="HAPUS" autocomplete="off" />
+                        <x-input-error :messages="$errors->get('confirmText')" class="mt-2" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
+                @else
+                    <p class="text-[13.5px] leading-relaxed">{{ __('Yakin? Ini tidak bisa dibatalkan. Masukkan passwordmu untuk melanjutkan.') }}</p>
+                    <div>
+                        <label for="delete_password" class="sr-only">{{ __('Password') }}</label>
+                        <x-text-input wire:model="password" id="delete_password" name="password" type="password" class="block w-full"
+                                      placeholder="{{ __('Password akunmu') }}" autocomplete="current-password" />
+                        <x-input-error :messages="$errors->get('password')" class="mt-2" />
+                    </div>
+                @endif
+                <div class="flex flex-wrap items-center gap-3">
+                    <button type="submit" wire:loading.attr="disabled"
+                            class="rounded bg-[#B3261E] px-5 py-2.5 text-[13.5px] font-semibold text-white transition-colors hover:bg-[#8E1E18] disabled:opacity-60">
+                        {{ __('Ya, hapus akunku') }}
+                    </button>
+                    <button type="button" @click="confirm = false; $wire.set('password', ''); $wire.set('confirmText', '')" class="text-[13.5px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
+                </div>
+            </form>
+        @endif
+    @endif
 </section>

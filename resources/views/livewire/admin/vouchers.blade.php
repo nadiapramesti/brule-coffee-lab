@@ -39,44 +39,52 @@
         </div>
 
         <div wire:loading.class="opacity-60" class="transition-opacity">
-            <div class="hidden gap-3 border-b border-kraft/10 px-4 py-2 text-[10.5px] uppercase tracking-[0.12em] text-kraft/45 krm-readout lg:grid lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1.3fr)_90px_auto]">
-                <span>{{ __('Kode') }}</span><span>{{ __('Potongan') }}</span><span>{{ __('Min. belanja') }}</span><span>{{ __('Terpakai') }}</span><span>{{ __('Masa berlaku') }}</span><span>{{ __('Status') }}</span><span class="text-right">{{ __('Aksi') }}</span>
-            </div>
-            <ul class="divide-y divide-kraft/10">
-                @forelse ($this->vouchers as $v)
-                    @php $st = $v->state(); $pct = $v->quota ? min(100, round($v->used_count / $v->quota * 100)) : 0; @endphp
-                    <li wire:key="v-{{ $v->id }}" class="grid items-center gap-x-3 gap-y-2 px-4 py-3 lg:grid-cols-[minmax(0,1.7fr)_minmax(0,1.3fr)_minmax(0,1fr)_minmax(0,1.2fr)_minmax(0,1.3fr)_90px_auto]">
-                        <div class="flex items-start justify-between gap-3 lg:block">
-                            <div class="min-w-0">
-                                <p class="krm-readout text-[13.5px] font-semibold tracking-wide">{{ $v->code }}</p>
-                                @if ($v->note)<p class="truncate text-[12px] text-kraft/55">{{ $v->note }}</p>@endif
+            @if ($this->vouchers->isEmpty())
+                <p class="px-5 py-14 text-center text-[13px] text-kraft/45">{{ __('Belum ada voucher yang cocok.') }}</p>
+            @else
+                <ul class="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
+                    @foreach ($this->vouchers as $v)
+                        @php
+                            $st = $v->state(); $pct = $v->quota ? min(100, round($v->used_count / $v->quota * 100)) : 0;
+                            $fmt = fn ($d, $y = true) => $d->translatedFormat($y ? 'j M Y' : 'j M');
+                            $valid = match (true) {
+                                $v->starts_at && $v->expires_at => $fmt($v->starts_at, false) . ' – ' . $fmt($v->expires_at),
+                                (bool) $v->expires_at => __('s/d :d', ['d' => $fmt($v->expires_at)]),
+                                (bool) $v->starts_at => __('mulai :d', ['d' => $fmt($v->starts_at)]),
+                                default => __('Tanpa batas waktu'),
+                            };
+                        @endphp
+                        <li wire:key="v-{{ $v->id }}" class="flex flex-col rounded-[10px] border border-kraft/20 bg-surface/40 p-4 {{ $st === 'active' ? '' : 'opacity-80' }}">
+                            <div class="flex items-start justify-between gap-3">
+                                <p class="krm-readout break-all text-[15px] font-semibold tracking-wide">{{ $v->code }}</p>
+                                <span class="shrink-0 whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] {{ $chip[$st][1] }}">{{ __($chip[$st][0]) }}</span>
                             </div>
-                            <span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] lg:hidden {{ $chip[$st][1] }}">{{ __($chip[$st][0]) }}</span>
-                        </div>
-                        <p class="text-[13px]"><span class="text-kraft/45 lg:hidden">{{ __('Potongan') }}: </span>{{ $v->benefitLabel() }}</p>
-                        <p class="krm-readout text-[12.5px] text-kraft/70"><span class="font-sans text-kraft/45 lg:hidden">{{ __('Min. belanja') }}: </span>{{ $v->min_subtotal ? 'Rp' . $n($v->min_subtotal) : '—' }}</p>
-                        <div class="flex items-center gap-2.5">
-                            <span class="krm-readout shrink-0 text-[12.5px]">{{ $v->used_count }}{{ $v->quota ? '/' . $v->quota : '' }}</span>
-                            @if ($v->quota)<div class="h-[3px] flex-1 rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $pct >= 100 ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>@else<span class="text-[12px] text-kraft/45">{{ __('tanpa batas') }}</span>@endif
-                        </div>
-                        <p class="text-[12.5px] text-kraft/70">
-                            @if ($v->starts_at || $v->expires_at)
-                                {{ $v->starts_at ? $v->starts_at->translatedFormat('j M') : '…' }} – {{ $v->expires_at ? $v->expires_at->translatedFormat('j M Y') : '…' }}
-                            @else<span class="text-kraft/45">{{ __('tanpa batas waktu') }}</span>@endif
-                        </p>
-                        <span class="hidden w-fit whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] lg:inline-block {{ $chip[$st][1] }}">{{ __($chip[$st][0]) }}</span>
-                        <div class="flex items-center justify-end gap-3">
-                            <button type="button" role="switch" aria-checked="{{ $v->is_active ? 'true' : 'false' }}" aria-label="{{ $v->is_active ? __('Matikan') : __('Aktifkan') }}" title="{{ $v->is_active ? __('Matikan') : __('Aktifkan') }}" wire:click="toggle({{ $v->id }})"
-                                    class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors {{ $v->is_active ? 'bg-bluelab' : 'bg-labwhite/25' }}">
-                                <span class="absolute top-[3px] h-4 w-4 rounded-full bg-paper shadow transition-all {{ $v->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
-                            </button>
-                            <button wire:click="openForm({{ $v->id }})" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Ubah') }}</button>
-                        </div>
-                    </li>
-                @empty
-                    <li class="px-5 py-14 text-center text-[13px] text-kraft/45">{{ __('Belum ada voucher yang cocok.') }}</li>
-                @endforelse
-            </ul>
+                            <p class="mt-1 font-display text-[1.15rem] font-bold leading-tight">{{ $v->benefitLabel() }}</p>
+                            <p class="mt-1 min-h-[2.4em] text-[12.5px] leading-snug text-kraft/55">{{ $v->note ?: '—' }}</p>
+
+                            <dl class="mt-3 space-y-1.5 border-t border-kraft/10 pt-3 text-[12.5px]">
+                                <div class="flex justify-between gap-3"><dt class="text-kraft/50">{{ __('Min. belanja') }}</dt><dd class="krm-readout">{{ $v->min_subtotal ? 'Rp' . $n($v->min_subtotal) : '—' }}</dd></div>
+                                <div class="flex justify-between gap-3"><dt class="text-kraft/50">{{ __('Masa berlaku') }}</dt><dd class="krm-readout text-right">{{ $valid }}</dd></div>
+                                <div>
+                                    <div class="flex justify-between gap-3"><dt class="text-kraft/50">{{ __('Terpakai') }}</dt><dd class="krm-readout">{{ $v->used_count }}{{ $v->quota ? ' / ' . $v->quota : ' · ' . __('tanpa batas') }}</dd></div>
+                                    @if ($v->quota)<div class="mt-1.5 h-[3px] rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $pct >= 100 ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>@endif
+                                </div>
+                            </dl>
+
+                            <div class="mt-4 flex items-center justify-between gap-3 border-t border-kraft/10 pt-3">
+                                <label class="flex cursor-pointer items-center gap-2 text-[12.5px] text-kraft/70">
+                                    <button type="button" role="switch" aria-checked="{{ $v->is_active ? 'true' : 'false' }}" aria-label="{{ $v->is_active ? __('Matikan') : __('Aktifkan') }}" wire:click="toggle({{ $v->id }})"
+                                            class="relative h-[22px] w-[38px] shrink-0 rounded-full transition-colors {{ $v->is_active ? 'bg-bluelab' : 'bg-labwhite/25' }}">
+                                        <span class="absolute top-[3px] h-4 w-4 rounded-full bg-paper shadow transition-all {{ $v->is_active ? 'left-[19px]' : 'left-[3px]' }}"></span>
+                                    </button>
+                                    {{ $v->is_active ? __('Dinyalakan') : __('Dimatikan') }}
+                                </label>
+                                <button wire:click="openForm({{ $v->id }})" class="rounded border border-kraft/30 px-3.5 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Ubah') }}</button>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
     </section>
 

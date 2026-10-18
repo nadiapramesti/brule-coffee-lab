@@ -16,7 +16,7 @@ class Review extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function coffee(): BelongsTo
@@ -37,7 +37,11 @@ class Review extends Model
     /** Nama untuk ditampilkan publik: nama depan + inisial belakang ("Nadia P."). */
     public function displayName(): string
     {
-        $parts = preg_split('/\s+/', trim((string) $this->user?->name)) ?: [];
+        if (! $this->user || $this->user->trashed()) {
+            return __('Pembeli');
+        }
+
+        $parts = preg_split('/\s+/', trim((string) $this->user->name)) ?: [];
         $first = $parts[0] ?? __('Pembeli');
 
         return count($parts) > 1 ? $first.' '.mb_strtoupper(mb_substr(end($parts), 0, 1)).'.' : $first;

@@ -1,6 +1,6 @@
 @php
     $inp = 'w-full rounded border border-kraft/25 bg-transparent px-3 py-2.5 text-[14px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40';
-    $tabs = ['' => __('Semua')] + collect(\App\Livewire\Admin\Users::ROLES)->all();
+    $tabs = ['' => __('Semua')] + collect(\App\Livewire\Admin\Users::ROLES)->all() + ['blocked' => __('Diblokir')];
     $chip = ['admin' => 'border-[#E8782A]/50 text-ambertext', 'roaster' => 'border-bluelab/60 text-bluetext', 'customer' => 'border-kraft/30 text-kraft/70'];
     $desc = ['admin' => __('Akses penuh: semua menu panel, pengaturan, dan pengguna.'), 'roaster' => __('Hanya melihat dan menjalankan antrian roastery.'), 'customer' => __('Pembeli biasa: belanja dan lacak pesanan.')];
     $me = auth()->id();
@@ -36,28 +36,35 @@
 
         @php $users = $this->users; @endphp
         <div wire:loading.class="opacity-60" class="transition-opacity">
-            <div class="hidden gap-3 border-b border-kraft/10 px-4 py-2 text-[10.5px] uppercase tracking-[0.12em] text-kraft/45 krm-readout md:grid md:grid-cols-[minmax(0,2.2fr)_100px_minmax(0,1fr)_minmax(0,1fr)_70px_110px]">
+            <div class="hidden gap-3 border-b border-kraft/10 px-4 py-2 text-[10.5px] uppercase tracking-[0.12em] text-kraft/45 krm-readout md:grid md:grid-cols-[minmax(0,2.2fr)_100px_minmax(0,1fr)_minmax(0,1fr)_70px_150px]">
                 <span>{{ __('Pengguna') }}</span><span>{{ __('Role') }}</span><span>{{ __('Masuk lewat') }}</span><span>{{ __('Bergabung') }}</span><span class="text-right">{{ __('Pesanan') }}</span><span class="text-right">{{ __('Aksi') }}</span>
             </div>
             <ul class="divide-y divide-kraft/10">
                 @forelse ($users as $u)
-                    <li wire:key="u-{{ $u->id }}" class="grid items-center gap-x-3 gap-y-1.5 px-4 py-3 md:grid-cols-[minmax(0,2.2fr)_100px_minmax(0,1fr)_minmax(0,1fr)_70px_110px]">
+                    <li wire:key="u-{{ $u->id }}" class="grid items-center gap-x-3 gap-y-1.5 px-4 py-3 md:grid-cols-[minmax(0,2.2fr)_100px_minmax(0,1fr)_minmax(0,1fr)_70px_150px]">
                         <div class="flex min-w-0 items-center gap-3">
                             <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-bluelab/80 font-display text-[13.5px] font-semibold">{{ mb_strtoupper(mb_substr($u->name, 0, 1)) }}</span>
                             <div class="min-w-0">
                                 <p class="truncate text-[13.5px] font-semibold">{{ $u->name }} @if ($u->id === $me)<span class="krm-readout ml-1 text-[10.5px] font-normal text-kraft/50">({{ __('kamu') }})</span>@endif</p>
                                 <p class="truncate text-[12px] text-kraft/55">{{ $u->email }}</p>
+                                @if ($u->isBlocked())<p class="truncate text-[11.5px] text-redtext" title="{{ $u->blocked_reason }}">{{ __('Diblokir') }}@if ($u->blocked_reason) · {{ $u->blocked_reason }}@endif</p>@endif
                             </div>
                         </div>
                         <span class="w-fit whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] {{ $chip[$u->role] ?? $chip['customer'] }}">{{ \App\Livewire\Admin\Users::ROLES[$u->role] ?? $u->role }}</span>
                         <p class="text-[12.5px] text-kraft/70"><span class="text-kraft/45 md:hidden">{{ __('Masuk lewat') }}: </span>{{ match ($u->provider) { 'google' => 'Google', 'facebook' => 'Facebook', default => 'Email' } }}</p>
                         <p class="krm-readout text-[12px] text-kraft/60"><span class="font-sans text-kraft/45 md:hidden">{{ __('Bergabung') }}: </span>{{ $u->created_at->translatedFormat('j M Y') }}</p>
                         <p class="krm-readout text-[12.5px] text-kraft/70 md:text-right"><span class="font-sans text-kraft/45 md:hidden">{{ __('Pesanan') }}: </span>{{ $u->orders_count }}</p>
-                        <div class="flex md:justify-end">
+                        <div class="flex flex-wrap gap-1.5 md:justify-end">
                             @if ($u->id === $me)
                                 <span class="px-3 py-1.5 text-[12px] text-kraft/35">—</span>
+                            @elseif ($u->isStaff())
+                                <button wire:click="openRole({{ $u->id }})" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Edit') }}</button>
+                                <button wire:click="openDelete({{ $u->id }})" class="rounded border border-redtext/40 px-3 py-1.5 text-[12.5px] text-redtext transition-colors hover:border-redtext">{{ __('Hapus') }}</button>
+                            @elseif ($u->isBlocked())
+                                <button wire:click="unblock({{ $u->id }})" wire:confirm="{{ __('Buka blokir :n?', ['n' => $u->name]) }}" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Buka blokir') }}</button>
                             @else
-                                <button wire:click="openRole({{ $u->id }})" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Ubah role') }}</button>
+                                <button wire:click="openRole({{ $u->id }})" class="rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Role') }}</button>
+                                <button wire:click="openBlock({{ $u->id }})" class="rounded border border-redtext/40 px-3 py-1.5 text-[12.5px] text-redtext transition-colors hover:border-redtext">{{ __('Blokir') }}</button>
                             @endif
                         </div>
                     </li>
@@ -83,11 +90,38 @@
             <div class="krm-fade absolute inset-0 bg-black/70 backdrop-blur-[2px]" wire:click="closeRole"></div>
             <form wire:submit="saveRole" role="dialog" aria-modal="true" aria-labelledby="ur-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-surface shadow-[0_30px_80px_-20px_rgb(var(--shadow)/.95)] sm:max-w-[440px] sm:rounded-[14px]">
                 <header class="border-b border-kraft/15 px-5 py-4">
-                    <h2 id="ur-title" class="font-display text-[1.05rem] font-semibold">{{ __('Ubah role') }}</h2>
+                    <h2 id="ur-title" class="font-display text-[1.05rem] font-semibold">{{ $this->editing->isStaff() ? __('Edit akun staf') : __('Ubah role') }}</h2>
                     <p class="mt-0.5 truncate text-[12.5px] text-kraft/60">{{ $this->editing->name }} · {{ $this->editing->email }}</p>
                 </header>
+                @if ($this->editing->isStaff())
+                    <div class="space-y-4 border-b border-kraft/15 px-5 py-4">
+                        <div>
+                            <label for="en" class="text-[12.5px] text-kraft/75">{{ __('Nama lengkap') }}</label>
+                            <input id="en" wire:model="editName" autocomplete="off" placeholder="Dimas Prakoso" class="{{ $inp }} mt-1.5">
+                            @error('editName')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="ee" class="text-[12.5px] text-kraft/75">Email</label>
+                            <input id="ee" type="email" wire:model="editEmail" autocomplete="off" placeholder="roaster@brule.id" class="{{ $inp }} mt-1.5">
+                            @error('editEmail')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="ep" class="text-[12.5px] text-kraft/75">{{ __('Telepon') }}</label>
+                                <input id="ep" wire:model="editPhone" inputmode="tel" autocomplete="off" placeholder="0812xxxxxxxx" class="{{ $inp }} mt-1.5">
+                                @error('editPhone')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                            </div>
+                            <div>
+                                <label for="ew" class="text-[12.5px] text-kraft/75">{{ __('Kata sandi baru') }}</label>
+                                <input id="ew" type="text" wire:model="editPassword" autocomplete="off" placeholder="{{ __('kosongkan jika tetap') }}" class="{{ $inp }} mt-1.5">
+                                @error('editPassword')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                            </div>
+                        </div>
+                    </div>
+                @endif
                 <div class="space-y-2 px-5 py-4" role="radiogroup">
                     @foreach (\App\Livewire\Admin\Users::ROLES as $k => $l)
+                        @continue($this->editing->isStaff() && $k === 'customer')
                         <label class="flex cursor-pointer items-start gap-3 rounded border px-3.5 py-3 transition-colors {{ $newRole === $k ? 'border-bluelab bg-bluelab/10' : 'border-kraft/20 hover:border-kraft/45' }}">
                             <input type="radio" wire:model.live="newRole" value="{{ $k }}" class="mt-1 h-4 w-4 border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
                             <span><span class="block text-[13.5px] font-semibold">{{ $l }}</span><span class="block text-[12.5px] text-kraft/60">{{ $desc[$k] }}</span></span>
@@ -98,6 +132,52 @@
                 <footer class="flex items-center justify-end gap-2 border-t border-kraft/15 px-5 py-3.5">
                     <button type="button" wire:click="closeRole" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
                     <button type="submit" wire:loading.attr="disabled" class="rounded bg-bluelab px-6 py-2.5 font-display text-[14px] font-semibold hover:bg-[#234E94] disabled:opacity-60">{{ __('Simpan') }}</button>
+                </footer>
+            </form>
+        </div>
+    @endif
+
+    {{-- Modal blokir pelanggan --}}
+    @if ($this->blocking)
+        <div class="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" x-data="{ init() { document.body.style.overflow = 'hidden'; }, destroy() { document.body.style.overflow = ''; } }" @keydown.escape.window="$wire.closeBlock()">
+            <div class="krm-fade absolute inset-0 bg-black/70 backdrop-blur-[2px]" wire:click="closeBlock"></div>
+            <form wire:submit="confirmBlock" role="dialog" aria-modal="true" aria-labelledby="ub-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-surface shadow-[0_30px_80px_-20px_rgb(var(--shadow)/.95)] sm:max-w-[440px] sm:rounded-[14px]">
+                <header class="border-b border-kraft/15 px-5 py-4">
+                    <h2 id="ub-title" class="font-display text-[1.05rem] font-semibold">{{ __('Blokir pelanggan') }}</h2>
+                    <p class="mt-0.5 truncate text-[12.5px] text-kraft/60">{{ $this->blocking->name }} · {{ $this->blocking->email }}</p>
+                </header>
+                <div class="space-y-3 px-5 py-4">
+                    <p class="text-[13px] leading-relaxed text-kraft/75">{{ __('Dia langsung keluar dari semua perangkat dan tidak bisa masuk lagi sampai blokirnya kamu buka. Riwayat pesanannya tetap tersimpan.') }}</p>
+                    <div>
+                        <label for="ubr" class="text-[12.5px] text-kraft/75">{{ __('Alasan (catatan internal)') }}</label>
+                        <textarea id="ubr" wire:model="blockReason" rows="3" maxlength="300" placeholder="{{ __('Contoh: berkali-kali menolak paket COD') }}" class="{{ $inp }} mt-1.5"></textarea>
+                        @error('blockReason')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+                <footer class="flex items-center justify-end gap-2 border-t border-kraft/15 px-5 py-3.5">
+                    <button type="button" wire:click="closeBlock" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
+                    <button type="submit" wire:loading.attr="disabled" class="rounded bg-[#B3261E] px-6 py-2.5 font-display text-[14px] font-semibold text-white hover:bg-[#8F1F19] disabled:opacity-60">{{ __('Blokir') }}</button>
+                </footer>
+            </form>
+        </div>
+    @endif
+
+    {{-- Modal hapus staf --}}
+    @if ($this->deleting)
+        <div class="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6" x-data="{ init() { document.body.style.overflow = 'hidden'; }, destroy() { document.body.style.overflow = ''; } }" @keydown.escape.window="$wire.closeDelete()">
+            <div class="krm-fade absolute inset-0 bg-black/70 backdrop-blur-[2px]" wire:click="closeDelete"></div>
+            <form wire:submit="deleteStaff" role="dialog" aria-modal="true" aria-labelledby="ud-title" class="krm-pop relative w-full overflow-hidden rounded-t-[14px] border border-kraft/25 bg-surface shadow-[0_30px_80px_-20px_rgb(var(--shadow)/.95)] sm:max-w-[440px] sm:rounded-[14px]">
+                <header class="border-b border-kraft/15 px-5 py-4">
+                    <h2 id="ud-title" class="font-display text-[1.05rem] font-semibold">{{ __('Hapus akun staf') }}</h2>
+                    <p class="mt-0.5 truncate text-[12.5px] text-kraft/60">{{ $this->deleting->name }} · {{ $this->deleting->email }}</p>
+                </header>
+                <div class="space-y-2 px-5 py-4">
+                    <p class="text-[13px] leading-relaxed text-kraft/75">{{ __('Akun ini tidak bisa masuk lagi dan emailnya bisa dipakai ulang. Jejak aktivitasnya di log tetap ada.') }}</p>
+                    @error('delete')<p class="text-[12.5px] text-redtext">{{ $message }}</p>@enderror
+                </div>
+                <footer class="flex items-center justify-end gap-2 border-t border-kraft/15 px-5 py-3.5">
+                    <button type="button" wire:click="closeDelete" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 hover:text-labwhite">{{ __('Batal') }}</button>
+                    <button type="submit" wire:loading.attr="disabled" class="rounded bg-[#B3261E] px-6 py-2.5 font-display text-[14px] font-semibold text-white hover:bg-[#8F1F19] disabled:opacity-60">{{ __('Hapus akun') }}</button>
                 </footer>
             </form>
         </div>
