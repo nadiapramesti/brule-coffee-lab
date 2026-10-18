@@ -39,6 +39,5 @@ it('pouch label uses the BRÛLÉ logo, not the old wordmark', function () {
     $svg = file_get_contents(resource_path('views/components/coffee-bag.blade.php'));
 
     expect($svg)->toContain('logo-brule-light.svg')->not->toContain('>KROMATIK<');
-    expect(file_exists(public_path('images/steps/04-kemas-black-brule.jpg')))->toBeTrue();
-    expect(file_exists(public_path('images/steps/04-kemas-black-kromatik.jpg')))->toBeFalse();
+    expect(file_exists(public_path('images/step4-pack-brule.jpg')))->toBeTrue();
 });

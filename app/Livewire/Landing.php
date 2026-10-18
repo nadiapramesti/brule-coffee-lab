@@ -61,11 +61,11 @@ class Landing extends Component
     public function stages(): array
     {
         return [
-            ['name' => __('Antrian'),   'note' => __('Pesanan masuk papan roastery, biji mentah ditimbang.'), 'img' => 'steps/01-antrian-q12-dark.jpg'],
-            ['name' => __('Sangrai'),   'note' => __('Satu batch untuk satu pesanan, mengikuti kurva yang kamu pilih.'), 'img' => 'steps/02-sangrai-210c.jpg'],
-            ['name' => __('Giling'),    'note' => __('Digiling di ukuran alat seduhmu. Pilih biji utuh kalau punya grinder.'), 'img' => 'steps/03-giling.jpg'],
-            ['name' => __('Kemas'),     'note' => __('Masuk kantong berkatup, tanggal sangrai dicetak hari itu juga.'), 'img' => 'steps/04-kemas-black-brule.jpg'],
-            ['name' => __('Kirim'),     'note' => __('Berangkat maksimal 24 jam setelah biji keluar dari mesin.'), 'img' => 'steps/05-kirim.jpg'],
+            ['name' => __('Antrian'),   'note' => __('Pesanan masuk papan roastery, biji mentah ditimbang.'), 'img' => 'step1-queue-brule.jpg'],
+            ['name' => __('Sangrai'),   'note' => __('Satu batch untuk satu pesanan, mengikuti kurva yang kamu pilih.'), 'img' => 'step2-roast-brule.jpg'],
+            ['name' => __('Giling'),    'note' => __('Digiling di ukuran alat seduhmu. Pilih biji utuh kalau punya grinder.'), 'img' => 'step3-grind-brule.jpg'],
+            ['name' => __('Kemas'),     'note' => __('Masuk kantong BRÛLÉ berkatup, tanggal sangrai dicetak hari itu juga.'), 'img' => 'step4-pack-brule.jpg'],
+            ['name' => __('Kirim'),     'note' => __('Berangkat maksimal 24 jam setelah biji keluar dari mesin.'), 'img' => 'step5-ship-brule.jpg'],
         ];
     }
 

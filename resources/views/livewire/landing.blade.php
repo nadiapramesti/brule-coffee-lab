@@ -309,43 +309,32 @@
     </section>
 
 
-    {{-- ══════════════════ TAHAPAN: protokol satu foto, lima langkah ══════════════════ --}}
-    <section id="tahapan" class="krm-dark mt-16 scroll-mt-16 bg-kraft py-14 text-charcoal md:mt-20 md:py-16">
-        <div class="mx-auto max-w-[1180px] px-6">
+    {{-- ══════════════════ TAHAPAN: lima foto terpisah, satu per langkah ══════════════════ --}}
+    <section id="tahapan" class="krm-dark mt-16 scroll-mt-16 border-t border-white/5 bg-[#0a0a0a] py-20 text-white md:mt-20">
+        <div class="mx-auto max-w-6xl px-6">
 
             <div class="flex items-start justify-between gap-10" data-reveal>
                 <div>
                     <h2 class="krm-h2 max-w-[22ch] font-semibold">
                         {{ __('Yang terjadi setelah kamu bayar') }}
                     </h2>
-                    <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-kraftink">
+                    <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-neutral-400">
                         {{ __('Lima tahap, dan kamu bisa melihat pesananmu ada di tahap mana lewat halaman lacak.') }}
                     </p>
                 </div>
-                <x-brand-logo variant="stacked" force="light" class="hidden h-[130px] shrink-0 opacity-90 lg:block" />
+                <x-brand-logo variant="stacked" force="dark" class="hidden h-[130px] shrink-0 opacity-90 lg:block" />
             </div>
 
-            {{-- Lima kartu: foto 3:4 di atas, teks di bawah. Fotonya gelap
-                 (kayu tua) supaya kontras dengan kertas kraft. Di HP kartu
-                 digeser ke samping (scroll-snap), bukan ditumpuk 5 layar. --}}
-            <ol class="-mx-6 mt-10 flex scroll-px-6 snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
+            <div class="mx-auto mt-8 grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-5">
                 @foreach ($this->stages as $k => $stage)
-                    <li class="w-[64%] shrink-0 snap-start sm:w-auto" data-reveal style="--d: {{ $k * 90 }}ms">
-                        <div class="relative aspect-[3/4] overflow-hidden rounded border-t border-labwhite/20 bg-charcoal">
-                            <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}"
-                                 width="900" height="1200" loading="lazy" decoding="async"
-                                 class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]">
-                            {{-- Vinyet hangat: menggelapkan tepi, menjaga tengah --}}
-                            <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_52%,rgba(40,22,8,.5)_100%)]"></div>
-                            <span class="krm-readout absolute left-3 top-3 rounded-[6px] bg-charcoal/80 px-1.5 py-0.5 text-[11px] text-labwhite">
-                                {{ str_pad($k + 1, 2, '0', STR_PAD_LEFT) }}
-                            </span>
-                        </div>
-                        <h3 class="mt-4 text-[1.15rem] font-semibold">{{ $stage['name'] }}</h3>
-                        <p class="mt-1.5 text-[13px] leading-relaxed text-kraftink">{{ $stage['note'] }}</p>
-                    </li>
+                    <div data-reveal style="--d: {{ $k * 90 }}ms">
+                        <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}" width="800" height="1000"
+                             loading="lazy" decoding="async" class="aspect-[4/5] w-full border border-white/10 object-cover">
+                        <p class="mt-3 text-[12px] font-bold text-white">{{ $stage['name'] }}</p>
+                        <p class="text-[12px] text-neutral-400">{{ $stage['note'] }}</p>
+                    </div>
                 @endforeach
-            </ol>
+            </div>
         </div>
     </section>
 
