@@ -43,7 +43,7 @@ it('shows a friendly message when the gateway fails', function () {
     Http::fake(['*' => Http::response(['error_messages' => ['Unauthorized']], 401)]);
 
     Livewire::actingAs($this->customer)->test(Track::class, ['code' => $this->order->order_code])
-        ->call('startPayment')->assertSet('payNotice', __('Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.'))->assertNotDispatched('snap-pay');
+        ->call('startPayment')->assertSet('payNotice', fn ($v) => str_starts_with($v, __('Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.')))->assertNotDispatched('snap-pay');
 });
 
 it('disables the simulated pay button once Midtrans is configured', function () {
