@@ -4,9 +4,18 @@ import './embers';
 
 // Muncul saat masuk layar. Elemen yang sudah terlihat waktu halaman dibuka
 // ikut dianimasikan, jadi hero punya pembuka tanpa kode tambahan.
+//
+// Livewire me-render ulang komponen dan menyamakan atribut elemen dengan HTML
+// dari server, yang tidak punya `is-in`. Tanpa perlindungan, judul dan teks
+// yang sudah tampil malah jadi transparan lagi tiap pilihan diubah. Elemen
+// yang pernah tampil dicatat di `seen`, lalu kelasnya dipulihkan setelah
+// render ulang; elemen baru yang muncul dari render ikut diamati.
+const seen = new WeakSet();
+
 const reveal = new IntersectionObserver((entries) => {
     entries.forEach((e) => {
         if (e.isIntersecting) {
+            seen.add(e.target);
             e.target.classList.add('is-in');
             reveal.unobserve(e.target);
         }
@@ -14,10 +23,21 @@ const reveal = new IntersectionObserver((entries) => {
 }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' });
 
 const watchReveals = () =>
-    document.querySelectorAll('[data-reveal]:not(.is-in)').forEach((el) => reveal.observe(el));
+    document.querySelectorAll('[data-reveal]:not(.is-in)').forEach((el) => {
+        if (seen.has(el)) el.classList.add('is-in');
+        else reveal.observe(el);
+    });
 
 document.addEventListener('DOMContentLoaded', watchReveals);
 document.addEventListener('livewire:navigated', watchReveals);
+document.addEventListener('livewire:init', () => {
+    // Dipulihkan di tempat yang sama dengan pengubahan atribut, jadi tidak
+    // ada frame di mana elemen sempat transparan.
+    window.Livewire.hook('morph.updated', ({ el }) => {
+        if (seen.has(el)) el.classList.add('is-in');
+    });
+    window.Livewire.hook('morphed', watchReveals);
+});
 
 // Sidebar admin yang diciutkan: pulihkan setelah wire:navigate mengganti <html>.
 document.addEventListener('livewire:navigated', () => {
