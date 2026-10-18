@@ -50,6 +50,28 @@
             <p class="mt-5 text-center text-[12px] text-kraft/45 max-sm:hidden {{ $route === 'register' ? 'hidden' : '' }}">{{ __('Disangrai setelah pesanan masuk.') }}</p>
         </div>
     </main>
+
+    {{-- Ruang kosong yang hanya muncul di HP saat kolom isian fokus: tanpa ini halaman (setinggi 1 layar)
+         tidak bisa digulir, sehingga password dan tombol Masuk tertutup keyboard. --}}
+    <div class="krm-kbspacer" aria-hidden="true"></div>
 </div>
+<script>
+    if (!window.__krmKb) {
+        window.__krmKb = true;
+        var kbTimer;
+        document.addEventListener('focusin', function (e) {
+            if (!e.target.matches || !e.target.matches('input:not([type=checkbox]):not([type=radio]), textarea, select')) return;
+            clearTimeout(kbTimer);
+            document.body.classList.add('krm-kb');
+            setTimeout(function () {
+                var top = e.target.getBoundingClientRect().top;
+                window.scrollBy({ top: top - 140, behavior: 'smooth' });
+            }, 300);
+        });
+        document.addEventListener('focusout', function () {
+            kbTimer = setTimeout(function () { document.body.classList.remove('krm-kb'); }, 200);
+        });
+    }
+</script>
 </body>
 </html>

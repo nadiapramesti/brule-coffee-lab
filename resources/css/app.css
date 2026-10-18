@@ -336,3 +336,7 @@ html[data-theme="light"] :is(.text-kraft\/55, .text-kraft\/60, .text-kraft\/65):
 html[data-theme="light"] :is(.text-kraft\/70, .text-kraft\/75, .text-kraft\/80, .text-kraft\/85):not(.krm-dark *) { color: rgb(var(--c-muted) / .9); }
 html[data-theme="light"] ::placeholder { opacity: 1; color: rgb(var(--c-muted) / .55); }
 html[data-theme="light"] .krm-auth input:not([type=checkbox])::placeholder { color: rgb(var(--c-muted) / .55); }
+
+/* Halaman auth di HP: beri ruang gulir saat keyboard terbuka (lihat layouts/guest). */
+.krm-kbspacer { height: 0; }
+@media (max-width: 639px) { body.krm-kb .krm-kbspacer { height: 55vh; } }
