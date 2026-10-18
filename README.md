@@ -129,7 +129,7 @@ Di Roast builder, bagian "Campur dengan biji lain" menggabungkan dua biji dengan
 
 ## Lisensi
 
-Copyright © 2026 Nadia Pramesti. [All rights reserved](LICENSE): repositori ini dibuka untuk dilihat sebagai portofolio dan tugas kuliah, dan kode maupun asetnya (termasuk logo, nama, dan foto BRÛLÉ) tidak boleh disalin, dimodifikasi, atau dipakai tanpa izin tertulis. Pustaka pihak ketiga tetap di bawah lisensi masing-masing.
+Copyright © 2026 Nadia Pramesti. All Rights Reserved. Repositori ini dipublikasikan sebagai portofolio; kode, desain, logo, nama, dan foto BRÛLÉ tidak boleh digunakan, disalin, dimodifikasi, didistribusikan, atau dijual tanpa izin tertulis. Detail di [LICENSE](LICENSE).
 
 ## Kredit
 

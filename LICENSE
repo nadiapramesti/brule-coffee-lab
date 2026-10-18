@@ -1,15 +1,21 @@
-Copyright (c) 2026 Nadia Pramesti. All rights reserved.
+Copyright (c) 2026 Nadia Pramesti. All Rights Reserved.
 
-Kode sumber, desain, teks, logo, nama, dan foto dalam repositori ini adalah milik
-Nadia Pramesti. Repositori ini dibuka untuk dilihat sebagai portofolio dan tugas kuliah.
+Perangkat lunak ini ("BRÛLÉ – Specialty Coffee Lab") adalah milik pribadi dan
+dilindungi oleh hukum hak cipta yang berlaku. Seluruh hak cipta dan kekayaan
+intelektual atas kode sumber, desain, logo, nama, foto, dan dokumentasi dalam
+proyek ini dimiliki sepenuhnya oleh Nadia Pramesti, kecuali dinyatakan lain
+secara tertulis.
 
-Tanpa izin tertulis dari pemilik, dilarang menyalin, memodifikasi, menggabungkan,
-menerbitkan, mendistribusikan, menjual, atau memakai kode maupun aset ini, seluruhnya
-atau sebagian, untuk keperluan apa pun, termasuk keperluan komersial.
+Tidak ada bagian dari perangkat lunak ini yang boleh digunakan, disalin,
+dimodifikasi, didistribusikan, dijual, atau disublisensikan tanpa izin
+tertulis dari pemilik hak cipta.
 
-Pustaka pihak ketiga yang dipakai proyek ini (misalnya Laravel, Livewire, Tailwind CSS,
-Alpine.js, D3) tetap berada di bawah lisensi masing-masing.
+Repositori ini dipublikasikan sebagai bagian dari portofolio pengembang.
+Untuk pertanyaan mengenai lisensi, penggunaan komersial, atau akuisisi,
+silakan hubungi pemilik secara langsung.
 
-All rights reserved. No part of this repository may be copied, modified, distributed,
-or used without the prior written permission of the copyright holder. Third-party
-libraries remain under their own licenses.
+Pustaka pihak ketiga yang dipakai proyek ini (misalnya Laravel, Livewire,
+Tailwind CSS, Alpine.js, dan D3) tetap berada di bawah lisensi masing-masing.
+
+PERANGKAT LUNAK INI DISEDIAKAN "SEBAGAIMANA ADANYA", TANPA JAMINAN DALAM
+BENTUK APAPUN, BAIK TERSURAT MAUPUN TERSIRAT.
