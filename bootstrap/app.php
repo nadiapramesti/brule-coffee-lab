@@ -12,6 +12,9 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        // Di belakang tunnel/reverse proxy (Cloudflare Tunnel, ngrok, hosting) skema asli ada di header
+        // X-Forwarded-*; tanpa ini URL aset dan Livewire terbentuk http:// dan diblokir browser (mixed content).
+        $middleware->trustProxies(at: '*');
         $middleware->web(append: [\App\Http\Middleware\SetLocale::class, \App\Http\Middleware\EnsureNotBlocked::class]);
         $middleware->validateCsrfTokens(except: ['midtrans/notification']);
         $middleware->alias([

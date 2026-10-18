@@ -249,3 +249,10 @@ it('re-seeding keeps a single mug even from the old enamel slug', function () {
     expect(Product::where('slug', 'like', 'mug-%')->count())->toBe(1)
         ->and(Product::where('slug', 'mug-matte-black-brule')->value('name'))->toContain('Model C');
 });
+
+it('builds https urls behind a tunnel or reverse proxy', function () {
+    $html = $this->withHeaders(['X-Forwarded-Proto' => 'https', 'X-Forwarded-Host' => 'demo.trycloudflare.com', 'X-Forwarded-Port' => '443'])
+        ->get('/perlengkapan')->assertOk()->getContent();
+
+    expect($html)->toContain('https://demo.trycloudflare.com')->not->toContain('http://demo.trycloudflare.com');
+});
