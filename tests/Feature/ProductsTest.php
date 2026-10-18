@@ -239,7 +239,7 @@ it('uses the final product photos, per-option photos and merch alt text', functi
         ->and($this->v60->imageUrl())->toContain('v60-putih-final.jpg');
 
     $html = (string) view('components.product-thumb', ['product' => $this->tee]);
-    expect($html)->toContain('alt="BRÛLÉ merch - B chromatogram high contrast"');
+    expect($html)->toContain('alt="BRÛLÉ - Kaos BRÛLÉ - cream lab aesthetic - B chromatogram high contrast"')->toContain('bg-[#F5F1E8]');
 });
 
 it('re-seeding keeps a single mug even from the old enamel slug', function () {

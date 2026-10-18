@@ -37,8 +37,8 @@ class ProductSeeder extends Seeder
             'kertas-filter-v60' => '/products/filter-final.jpg',
             'timbangan-seduh' => '/products/timbangan-final.jpg',
             'gooseneck-kettle' => '/products/kettle-final.jpg',
-            'kaos-brule' => '/products/kaos-brule-final.jpg',
-            'tote-bag-brule' => '/products/tote-brule-final.jpg',
+            'kaos-brule' => '/products/kaos-brule-final-cream.jpg',
+            'tote-bag-brule' => '/products/tote-brule-final-cream.jpg',
             'mug-matte-black-brule' => '/products/mug-brule-black-final.jpg',
         ];
         // Foto per pilihan: dripper hitam punya foto sendiri.
