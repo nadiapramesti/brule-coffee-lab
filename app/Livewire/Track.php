@@ -66,7 +66,8 @@ class Track extends Component
             $token = Midtrans::token($this->order);
         } catch (\Throwable $e) {
             report($e);
-            $this->payNotice = __('Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.');
+            $this->payNotice = __('Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.')
+                . (config('app.debug') ? ' [' . \Illuminate\Support\Str::limit($e->getMessage(), 220) . ']' : '');
 
             return;
         }
@@ -89,7 +90,8 @@ class Track extends Component
             $p = Midtrans::status($o->midtrans_order_id);
         } catch (\Throwable $e) {
             report($e);
-            $this->payNotice = __('Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.');
+            $this->payNotice = __('Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.')
+                . (config('app.debug') ? ' [' . \Illuminate\Support\Str::limit($e->getMessage(), 220) . ']' : '');
 
             return;
         }
