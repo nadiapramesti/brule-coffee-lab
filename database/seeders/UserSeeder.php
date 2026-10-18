@@ -54,5 +54,12 @@ class UserSeeder extends Seeder
                 ]
             );
         }
+
+        // Alamat contoh supaya alur checkout di demo tinggal pilih.
+        $nadia = User::where('email', 'customer@kromatik.test')->first();
+        \App\Models\Address::updateOrCreate(
+            ['user_id' => $nadia->id, 'label' => 'Rumah'],
+            ['recipient' => 'Nadia Pramesti', 'phone' => '081200000003', 'address' => 'Jl. Dago No. 25, Coblong, Kota Bandung 40135', 'is_default' => true]
+        );
     }
 }

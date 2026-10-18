@@ -20,7 +20,7 @@ Tujuan: tunjukkan satu siklus penuh, dari pembeli memilih kopi sampai roastery m
 | 1 | Pembeli (belum login) | Landing → scroll ke katalog. Ketik "gayo" di pencarian, ubah sortir ke harga terendah. | "Katalog punya harga, stok, rating, cari, dan sortir." |
 | 2 | Pembeli | Klik **Racik kopi ini** → geser level sangrai, perhatikan flavor wheel dan kromatogram berubah. | "Ini pembeda kami: biji disangrai setelah pesanan masuk." |
 | 3 | Pembeli | **Tambah ke keranjang**, tambah satu racikan lagi (kopi/gilingan lain), buka keranjang. | "Keranjang multi-item, qty dan gilingan bisa diubah." |
-| 4 | Pembeli | Checkout (login `customer@kromatik.test`), pilih alamat tersimpan, pakai voucher `KOPIBARU10`. | "Harga dihitung ulang di server, voucher divalidasi." |
+| 4 | Pembeli | Checkout (login `customer@kromatik.test`), alamat "Rumah" sudah terpilih otomatis (data seed), pakai voucher `KOPIBARU10`. | "Harga dihitung ulang di server, voucher divalidasi." |
 | 5 | Pembeli | Pilih **Bayar online** → buat pesanan → **Bayar sekarang (simulasi)**. | "Gateway nyata (Midtrans) tinggal dipasang; sekarang simulasi." |
 | 6 | Roaster | Antrian roastery → majukan: Sangrai → Giling → Kemas → isi resi → Kirim. | "Tiap bungkus punya jurnal sangrai sendiri." |
 | 7 | Pembeli | Halaman **Lacak** ikut berubah; buka notifikasi lonceng. | "Pembeli melihat tahapnya real-time." |

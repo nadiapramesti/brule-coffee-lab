@@ -78,6 +78,7 @@ it('validates the address form', function () {
 });
 
 it('prefills checkout from the default address and can save a new one', function () {
+    Address::where('user_id', $this->user->id)->delete();
     Address::create(['user_id' => $this->user->id, 'label' => 'Rumah', 'recipient' => 'Budi', 'phone' => '081111111111',
         'address' => 'Jl. Merdeka No. 1, Bandung 40111', 'is_default' => true]);
     $this->actingAs($this->user);
@@ -89,4 +90,18 @@ it('prefills checkout from the default address and can save a new one', function
         ->call('submit')->assertHasNoErrors();
 
     expect(Address::where('user_id', $this->user->id)->count())->toBe(2);
+});
+
+it('seeds a default address for the demo customer', function () {
+    $this->seed(\Database\Seeders\UserSeeder::class);
+    $u = \App\Models\User::where('email', 'customer@kromatik.test')->first();
+
+    expect($u->addresses()->where('is_default', true)->count())->toBe(1);
+});
+
+it('names the address field in the Indonesian required message', function () {
+    app()->setLocale('id');
+    $m = validator(['address' => ''], ['address' => 'required'])->errors()->first('address');
+
+    expect($m)->toContain('Alamat lengkap')->not->toContain('address');
 });

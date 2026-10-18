@@ -24,5 +24,6 @@ return array_merge(require __DIR__.'/../en/validation.php', [
         'name' => 'Nama', 'email' => 'Email', 'phone' => 'Nomor WhatsApp', 'password' => 'Password',
         'password_confirmation' => 'Konfirmasi password', 'current_password' => 'Password saat ini',
         'form.email' => 'Email', 'form.password' => 'Password',
+        'address' => 'Alamat lengkap', 'payment' => 'Metode pembayaran',
     ],
 ]);
