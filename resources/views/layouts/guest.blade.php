@@ -59,7 +59,7 @@
 <script>
     if (!window.__krmKb) {
         window.__krmKb = true;
-        var kbTimer, TOP_GAP = 140;
+        var kbTimer, TOP_GAP = 220;
         document.addEventListener('focusin', function (e) {
             var el = e.target;
             if (!el.matches || !el.matches('input:not([type=checkbox]):not([type=radio]), textarea, select')) return;
