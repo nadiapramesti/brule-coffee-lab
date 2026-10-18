@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Coffee;
 use App\Models\OrderItem;
 use App\Models\RoastProfile;
+use App\Support\Blend;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
@@ -23,6 +24,11 @@ class Builder extends Component
     public string $grind = 'whole_bean';
 
     public int $grams = 200;
+
+    /** Biji kedua untuk blend (null = biji tunggal) dan porsi biji pertama (%). */
+    public ?int $blendCoffeeId = null;
+
+    public int $ratio = 70;
 
     public function mount(): void
     {
@@ -82,20 +88,78 @@ class Builder extends Component
             'floral' => 0, 'citrus' => 0, 'berry' => 0,
             'chocolate' => 0, 'nutty' => 0, 'spice' => 0,
         ];
+        $a = array_merge($empty, $this->profile?->flavor_values ?? []);
 
-        return array_merge($empty, $this->profile?->flavor_values ?? []);
+        if (! ($b = $this->blendProfile)) {
+            return $a;
+        }
+        $b = array_merge($empty, $b->flavor_values ?? []);
+
+        // Rata-rata berbobot sesuai porsi biji.
+        return collect($a)->map(fn ($v, $k) => (int) round($v * $this->ratio / 100 + $b[$k] * (100 - $this->ratio) / 100))->all();
+    }
+
+    /** Biji lain yang levelnya sama dengan pilihan sekarang, jadi bisa disangrai dan dicampur bareng. */
+    #[Computed]
+    public function blendOptions(): Collection
+    {
+        if (! $this->profile) {
+            return collect();
+        }
+
+        return RoastProfile::with('coffee.traceability')->where('level', $this->profile->level)
+            ->where('coffee_id', '!=', $this->coffeeId)
+            ->whereHas('coffee', fn ($q) => $q->where('is_active', true))
+            ->get()->sortBy('coffee_id')->values();
+    }
+
+    /** Profil biji kedua; null bila bukan blend atau pilihannya tidak cocok lagi. */
+    #[Computed]
+    public function blendProfile(): ?RoastProfile
+    {
+        if (! $this->blendCoffeeId || ! Blend::validRatio($this->ratio)) {
+            return null;
+        }
+
+        return $this->blendOptions->firstWhere('coffee_id', $this->blendCoffeeId);
     }
 
     #[Computed]
     public function price(): int
     {
-        return $this->profile?->priceFor($this->grams) ?? 0;
+        if (! $this->profile) {
+            return 0;
+        }
+
+        return $this->blendProfile
+            ? Blend::price($this->profile, $this->blendProfile, $this->grams, $this->ratio)
+            : $this->profile->priceFor($this->grams);
     }
 
     #[Computed]
     public function stockOk(): bool
     {
-        return (bool) $this->coffee?->hasStockFor($this->grams);
+        if (! $this->coffee) {
+            return false;
+        }
+        if (! $this->blendProfile) {
+            return $this->coffee->hasStockFor($this->grams);
+        }
+        [$ga, $gb] = Blend::split($this->grams, $this->ratio);
+
+        return $this->coffee->hasStockFor($ga) && (bool) $this->blendProfile->coffee->hasStockFor($gb);
+    }
+
+    /** Catatan rasa: dua dari tiap biji untuk blend, supaya chip tidak menumpuk. */
+    #[Computed]
+    public function notes(): array
+    {
+        $a = (array) ($this->profile?->tasting_notes ?? []);
+        if (! $this->blendProfile) {
+            return $a;
+        }
+
+        return collect(array_slice($a, 0, 2))->merge(array_slice((array) ($this->blendProfile->tasting_notes ?? []), 0, 2))->unique()->values()->all();
     }
 
     /** Nama sumbu flavor wheel dalam bahasa aktif (digambar D3). */
@@ -128,8 +192,9 @@ class Builder extends Component
 
         // Ganti kopi bisa bikin jumlah level berubah, jadi index-nya
         // dijepit ulang supaya tidak menunjuk ke profil yang tidak ada.
-        unset($this->levels, $this->profile, $this->coffee);
+        unset($this->levels, $this->profile, $this->coffee, $this->blendOptions, $this->blendProfile);
         $this->levelIndex = $this->safeIndex();
+        $this->syncBlend();
 
         $this->pushToWheel();
     }
@@ -137,7 +202,36 @@ class Builder extends Component
     public function updatedLevelIndex(): void
     {
         $this->levelIndex = $this->safeIndex();
+        unset($this->profile, $this->blendOptions, $this->blendProfile);
+        $this->syncBlend();
         $this->pushToWheel();
+    }
+
+    /** Pilih biji kedua (id kopi) atau null untuk kembali ke biji tunggal. */
+    public function setBlend(?int $coffeeId): void
+    {
+        $this->blendCoffeeId = $coffeeId;
+        unset($this->blendProfile);
+        $this->syncBlend();
+        $this->pushToWheel();
+    }
+
+    public function setRatio(int $ratio): void
+    {
+        if (Blend::validRatio($ratio)) {
+            $this->ratio = $ratio;
+            unset($this->blendProfile);
+            $this->pushToWheel();
+        }
+    }
+
+    /** Buang pilihan blend yang tidak cocok lagi setelah biji atau level berubah. */
+    private function syncBlend(): void
+    {
+        if ($this->blendCoffeeId && ! $this->blendOptions->firstWhere('coffee_id', $this->blendCoffeeId)) {
+            $this->blendCoffeeId = null;
+        }
+        unset($this->blendProfile);
     }
 
     /** Masukkan racikan ini ke keranjang. Harga tidak disimpan; keranjang menghitung ulang dari database. */
@@ -146,7 +240,8 @@ class Builder extends Component
         abort_if(auth()->user()?->isStaff(), 403, __('Akun admin dan roaster tidak untuk belanja.'));
         abort_unless($this->profile && $this->stockOk, 422);
 
-        if (! \App\Support\Cart::add($this->profile->id, $this->grams, $this->grind)) {
+        $blend = $this->blendProfile;
+        if (! \App\Support\Cart::add($this->profile->id, $this->grams, $this->grind, $blend?->id, $blend ? $this->ratio : null)) {
             $this->addError('cart', __('Keranjang penuh (maks :n item). Selesaikan checkout dulu.', ['n' => \App\Support\Cart::MAX_LINES]));
 
             return null;

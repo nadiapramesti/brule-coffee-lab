@@ -21,7 +21,7 @@ class OrderItem extends Model
     ];
 
     protected $fillable = [
-        'order_id', 'roast_profile_id', 'product_id', 'grams', 'grind',
+        'order_id', 'roast_profile_id', 'blend_profile_id', 'blend_ratio', 'product_id', 'grams', 'grind',
         'coffee_name_snapshot', 'roast_level_snapshot',
         'price_per_100g_snapshot', 'line_total',
     ];
@@ -58,7 +58,9 @@ class OrderItem extends Model
             return (string) $this->roast_level_snapshot;
         }
 
-        return $this->level_label.' · '.__($this->grind_label);
+        $blend = $this->blend_profile_id ? __('Blend').' · ' : '';
+
+        return $blend.$this->level_label.' · '.__($this->grind_label);
     }
 
     /** "200 g" untuk kopi; kosong untuk produk. */

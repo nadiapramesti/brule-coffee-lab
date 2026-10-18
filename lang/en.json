@@ -973,5 +973,13 @@
     "Produk ditampilkan di toko.": "Product shown in the shop.",
     "Produk disembunyikan dari toko.": "Product hidden from the shop.",
     "Per perlengkapan": "By gear",
-    "Unit": "Units"
+    "Unit": "Units",
+    "Blend": "Blend",
+    "Campur dengan biji lain": "Blend with another bean",
+    "Dua biji disangrai di level yang sama lalu dicampur. Harga dan stok dihitung per biji sesuai porsinya.": "Two beans are roasted at the same level, then mixed. Price and stock are calculated per bean by its share.",
+    "Belum ada biji lain di level sangrai ini.": "No other beans at this roast level yet.",
+    "Biji kedua": "Second bean",
+    "Biji tunggal": "Single bean",
+    "Porsi": "Share",
+    "Blend ini tidak tersedia lagi.": "This blend is no longer available."
 }

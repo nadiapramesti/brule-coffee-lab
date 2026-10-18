@@ -35,6 +35,7 @@ class Cart
                 ->map(fn ($r) => [
                     'id' => $r->line_id, 'kind' => $r->kind ?? 'coffee', 'profile_id' => (int) $r->roast_profile_id,
                     'product_id' => (int) $r->product_id, 'option' => $r->option,
+                    'blend_profile_id' => $r->blend_profile_id ? (int) $r->blend_profile_id : null, 'blend_ratio' => $r->blend_ratio ? (int) $r->blend_ratio : null,
                     'grams' => (int) $r->grams, 'grind' => (string) $r->grind, 'qty' => (int) $r->qty,
                 ])
                 ->all();
@@ -62,6 +63,7 @@ class Cart
                     'roast_profile_id' => self::kind($l) === 'coffee' ? $l['profile_id'] : null,
                     'product_id' => self::kind($l) === 'product' ? $l['product_id'] : null,
                     'option' => $l['option'] ?? null,
+                    'blend_profile_id' => $l['blend_profile_id'] ?? null, 'blend_ratio' => $l['blend_ratio'] ?? null,
                     'grams' => $l['grams'], 'grind' => $l['grind'] ?: 'whole_bean', 'qty' => self::qty($l),
                     'created_at' => now(), 'updated_at' => now(),
                 ]);
@@ -115,7 +117,8 @@ class Cart
 
         return self::kind($a) === 'product'
             ? ($a['product_id'] ?? 0) === ($b['product_id'] ?? 0) && ($a['option'] ?? null) === ($b['option'] ?? null)
-            : $a['profile_id'] === $b['profile_id'] && $a['grams'] === $b['grams'] && $a['grind'] === $b['grind'];
+            : $a['profile_id'] === $b['profile_id'] && $a['grams'] === $b['grams'] && $a['grind'] === $b['grind']
+                && ($a['blend_profile_id'] ?? null) === ($b['blend_profile_id'] ?? null) && ($a['blend_ratio'] ?? null) === ($b['blend_ratio'] ?? null);
     }
 
     private static function qty(array $l): int
@@ -123,19 +126,28 @@ class Cart
         return max(1, min(self::MAX_QTY, (int) ($l['qty'] ?? 1)));
     }
 
-    public static function add(int $profileId, int $grams, string $grind): bool
+    /** Tambah racikan. Dengan $blendProfileId + $ratio jadi blend dua biji (ratio = porsi biji pertama, %). */
+    public static function add(int $profileId, int $grams, string $grind, ?int $blendProfileId = null, ?int $ratio = null): bool
     {
         if (! in_array($grams, self::GRAMS, true) || ! array_key_exists($grind, OrderItem::GRINDS)) {
             return false;
         }
-        if (! RoastProfile::whereKey($profileId)->exists()) {
+        $a = RoastProfile::with('coffee')->find($profileId);
+        if (! $a) {
             return false;
+        }
+        if ($blendProfileId !== null || $ratio !== null) {
+            $b = $blendProfileId ? RoastProfile::with('coffee')->find($blendProfileId) : null;
+            if (! $b || ! $ratio || ! Blend::validRatio($ratio) || ! Blend::compatible($a, $b)) {
+                return false;
+            }
         }
 
         $lines = self::raw();
         // Racikan yang sama persis digabung jadi qty, bukan baris baru.
         foreach ($lines as &$l) {
-            if (self::kind($l) === 'coffee' && $l['profile_id'] === $profileId && $l['grams'] === $grams && $l['grind'] === $grind) {
+            if (self::kind($l) === 'coffee' && $l['profile_id'] === $profileId && $l['grams'] === $grams && $l['grind'] === $grind
+                && ($l['blend_profile_id'] ?? null) === $blendProfileId && ($l['blend_ratio'] ?? null) === $ratio) {
                 if (self::qty($l) >= self::MAX_QTY) {
                     return false;
                 }
@@ -150,7 +162,7 @@ class Cart
         if (count($lines) >= self::MAX_LINES) {
             return false;
         }
-        $lines[] = ['id' => Str::random(8), 'kind' => 'coffee', 'profile_id' => $profileId, 'product_id' => 0, 'option' => null, 'grams' => $grams, 'grind' => $grind, 'qty' => 1];
+        $lines[] = ['id' => Str::random(8), 'kind' => 'coffee', 'profile_id' => $profileId, 'product_id' => 0, 'option' => null, 'blend_profile_id' => $blendProfileId, 'blend_ratio' => $ratio, 'grams' => $grams, 'grind' => $grind, 'qty' => 1];
         self::write($lines);
 
         return true;
@@ -241,7 +253,7 @@ class Cart
     public static function lines(array $raw = null): Collection
     {
         $raw ??= self::raw();
-        $profiles = RoastProfile::with('coffee')->whereIn('id', collect($raw)->where('kind', '!=', 'product')->pluck('profile_id'))->get()->keyBy('id');
+        $profiles = RoastProfile::with('coffee')->whereIn('id', collect($raw)->where('kind', '!=', 'product')->flatMap(fn ($l) => [$l['profile_id'], $l['blend_profile_id'] ?? null])->filter()->unique())->get()->keyBy('id');
         $products = Product::whereIn('id', collect($raw)->where('kind', 'product')->pluck('product_id'))->get()->keyBy('id');
 
         return collect($raw)->map(function ($l) use ($profiles, $products) {
@@ -254,7 +266,7 @@ class Cart
                 }
 
                 return (object) [
-                    'id' => $l['id'], 'kind' => 'product', 'profile' => null, 'product' => $pr, 'option' => $l['option'] ?? null,
+                    'id' => $l['id'], 'kind' => 'product', 'profile' => null, 'blend' => null, 'ratio' => null, 'product' => $pr, 'option' => $l['option'] ?? null,
                     'grams' => 0, 'grind' => '', 'qty' => $qty, 'unit' => $pr->price, 'price' => $pr->price * $qty,
                 ];
             }
@@ -264,23 +276,51 @@ class Cart
                 return null;
             }
 
-            $unit = $p->priceFor((int) $l['grams']);
+            $blend = null;
+            $ratio = null;
+            if (! empty($l['blend_profile_id'])) {
+                $blend = $profiles[$l['blend_profile_id']] ?? null;
+                $ratio = (int) ($l['blend_ratio'] ?? 0);
+                if (! $blend || ! Blend::validRatio($ratio) || ! Blend::compatible($p, $blend)) {
+                    return null;
+                }
+            }
+
+            $unit = $blend ? Blend::price($p, $blend, (int) $l['grams'], $ratio) : $p->priceFor((int) $l['grams']);
 
             return (object) [
-                'id' => $l['id'], 'kind' => 'coffee', 'profile' => $p, 'product' => null, 'option' => null,
+                'id' => $l['id'], 'kind' => 'coffee', 'profile' => $p, 'blend' => $blend, 'ratio' => $ratio, 'product' => null, 'option' => null,
                 'grams' => (int) $l['grams'], 'grind' => $l['grind'], 'qty' => $qty, 'unit' => $unit, 'price' => $unit * $qty,
             ];
         })->filter()->values();
     }
 
+    /** @return array<int,array{0:\App\Models\Coffee,1:int}> kopi dan gram sangrai yang dipakai satu bungkus baris ini */
+    public static function coffeeGrams(object $l): array
+    {
+        if (! $l->blend) {
+            return [[$l->profile->coffee, $l->grams]];
+        }
+        [$ga, $gb] = Blend::split($l->grams, $l->ratio);
+
+        return [[$l->profile->coffee, $ga], [$l->blend->coffee, $gb]];
+    }
+
     /** Pesan error bila stok biji mentah atau stok produk tidak cukup untuk seluruh isi keranjang. */
     public static function stockProblem(Collection $lines): ?string
     {
-        foreach ($lines->where('kind', 'coffee')->groupBy(fn ($l) => $l->profile->coffee_id) as $group) {
-            $coffee = $group->first()->profile->coffee;
-            $need = $group->sum(fn ($l) => $coffee->greenBeanNeeded($l->grams) * $l->qty);
-            if ($coffee->stock_green_bean_gram < $need) {
-                return __('Stok :n tidak cukup untuk jumlah yang kamu pilih.', ['n' => $coffee->name]);
+        // Kebutuhan biji mentah dijumlahkan per kopi; blend memecah gramnya ke dua kopi.
+        $need = [];
+        $names = [];
+        foreach ($lines->where('kind', 'coffee') as $l) {
+            foreach (self::coffeeGrams($l) as [$coffee, $g]) {
+                $need[$coffee->id] = ($need[$coffee->id] ?? 0) + $coffee->greenBeanNeeded($g) * $l->qty;
+                $names[$coffee->id] = $coffee;
+            }
+        }
+        foreach ($need as $id => $gram) {
+            if ($names[$id]->stock_green_bean_gram < $gram) {
+                return __('Stok :n tidak cukup untuk jumlah yang kamu pilih.', ['n' => $names[$id]->name]);
             }
         }
 

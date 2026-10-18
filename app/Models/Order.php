@@ -257,6 +257,24 @@ class Order extends Model
             : null;
     }
 
+    /** @return array<int,array{0:RoastProfile,1:int}> profil dan gram sangrai tiap biji dalam satu bungkus (dua untuk blend). */
+    public static function roastParts(array $l): array
+    {
+        if (empty($l['blend'])) {
+            return [[$l['profile'], $l['grams']]];
+        }
+        [$ga, $gb] = \App\Support\Blend::split($l['grams'], (int) $l['ratio']);
+
+        return [[$l['profile'], $ga], [$l['blend'], $gb]];
+    }
+
+    public static function linePrice(array $l): int
+    {
+        return empty($l['blend'])
+            ? $l['profile']->priceFor($l['grams'])
+            : \App\Support\Blend::price($l['profile'], $l['blend'], $l['grams'], (int) $l['ratio']);
+    }
+
     /** Pesanan satu item; pintasan untuk placeMany. */
     public static function place(User $user, RoastProfile $profile, int $grams, string $grind, array $ship, ?string $voucherCode = null): self
     {
@@ -291,7 +309,14 @@ class Order extends Model
             $coffeeLines = array_values(array_filter($lines, fn ($l) => isset($l['profile'])));
             $productLines = array_values(array_filter($lines, fn ($l) => isset($l['product'])));
 
-            $coffees = Coffee::whereIn('id', collect($coffeeLines)->map(fn ($l) => $l['profile']->coffee_id)->unique())
+            // Blend memakai dua kopi; keduanya dikunci.
+            $coffeeIds = collect($coffeeLines)->flatMap(fn ($l) => [$l['profile']->coffee_id, isset($l['blend']) ? $l['blend']->coffee_id : null])->filter()->unique();
+            foreach ($coffeeLines as $l) {
+                if (isset($l['blend']) && (! \App\Support\Blend::validRatio((int) ($l['ratio'] ?? 0)) || ! \App\Support\Blend::compatible($l['profile'], $l['blend']))) {
+                    throw new \RuntimeException(__('Blend ini tidak tersedia lagi.'));
+                }
+            }
+            $coffees = Coffee::whereIn('id', $coffeeIds)
                 ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
             $products = Product::whereIn('id', collect($productLines)->map(fn ($l) => $l['product']->id)->unique())
                 ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
@@ -310,11 +335,13 @@ class Order extends Model
 
             $need = [];
             foreach ($coffeeLines as $l) {
-                $c = $coffees[$l['profile']->coffee_id] ?? null;
-                if (! $c || ! $c->is_active) {
-                    throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
+                foreach (self::roastParts($l) as [$profile, $g]) {
+                    $c = $coffees[$profile->coffee_id] ?? null;
+                    if (! $c || ! $c->is_active) {
+                        throw new \RuntimeException(__('Stok biji mentahnya tidak cukup untuk berat ini. Coba ukuran yang lebih kecil.'));
+                    }
+                    $need[$c->id] = ($need[$c->id] ?? 0) + $c->greenBeanNeeded($g);
                 }
-                $need[$c->id] = ($need[$c->id] ?? 0) + $c->greenBeanNeeded($l['grams']);
             }
             foreach ($need as $id => $gram) {
                 if ($coffees[$id]->stock_green_bean_gram < $gram) {
@@ -322,7 +349,7 @@ class Order extends Model
                 }
             }
 
-            $subtotal = (int) collect($coffeeLines)->sum(fn ($l) => $l['profile']->priceFor($l['grams']))
+            $subtotal = (int) collect($coffeeLines)->sum(fn ($l) => self::linePrice($l))
                 + (int) collect($productLines)->sum(fn ($l) => $products[$l['product']->id]->price);
             $shipping = self::shippingFor($subtotal);
 
@@ -378,16 +405,21 @@ class Order extends Model
             }
             foreach ($coffeeLines as $l) {
                 $profile = $l['profile'];
+                $blend = $l['blend'] ?? null;
                 $order->items()->create([
                     'roast_profile_id'        => $profile->id,
+                    'blend_profile_id'        => $blend?->id,
+                    'blend_ratio'             => $blend ? (int) $l['ratio'] : null,
                     'grams'                   => $l['grams'],
                     'grind'                   => $l['grind'],
-                    'coffee_name_snapshot'    => $coffees[$profile->coffee_id]->name,
+                    'coffee_name_snapshot'    => $blend ? \App\Support\Blend::name($profile, $blend, (int) $l['ratio']) : $coffees[$profile->coffee_id]->name,
                     'roast_level_snapshot'    => $profile->level_label,
-                    'price_per_100g_snapshot' => $profile->price_per_100g,
-                    'line_total'              => $profile->priceFor($l['grams']),
+                    'price_per_100g_snapshot' => $blend ? (int) round(self::linePrice($l) * 100 / $l['grams']) : $profile->price_per_100g,
+                    'line_total'              => self::linePrice($l),
                 ]);
-                $coffees[$profile->coffee_id]->reduceStock($l['grams'], $order);
+                foreach (self::roastParts($l) as [$part, $g]) {
+                    $coffees[$part->coffee_id]->reduceStock($g, $order);
+                }
             }
             $voucher?->increment('used_count');
 
@@ -510,6 +542,14 @@ class Order extends Model
 
                     continue;
                 }
+                if ($item->blend_profile_id) {
+                    [$ga, $gb] = \App\Support\Blend::split($item->grams, (int) $item->blend_ratio);
+                    $item->roastProfile?->coffee?->moveStock('cancel', $item->roastProfile->coffee->greenBeanNeeded($ga), null, $this);
+                    $other = RoastProfile::with('coffee')->find($item->blend_profile_id)?->coffee;
+                    $other?->moveStock('cancel', $other->greenBeanNeeded($gb), null, $this);
+
+                    continue;
+                }
                 $coffee = $item->roastProfile?->coffee;
                 $coffee?->moveStock('cancel', $coffee->greenBeanNeeded($item->grams), null, $this);
             }
@@ -534,7 +574,7 @@ class Order extends Model
      */
     public function groupedItems(): \Illuminate\Support\Collection
     {
-        return $this->items->groupBy(fn ($i) => implode('|', [$i->roast_profile_id, $i->product_id, $i->coffee_name_snapshot, $i->roast_level_snapshot, $i->grind, $i->grams]))
+        return $this->items->groupBy(fn ($i) => implode('|', [$i->roast_profile_id, $i->blend_profile_id, $i->blend_ratio, $i->product_id, $i->coffee_name_snapshot, $i->roast_level_snapshot, $i->grind, $i->grams]))
             ->map(function ($g) {
                 $f = $g->first();
 

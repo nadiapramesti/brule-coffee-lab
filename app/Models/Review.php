@@ -54,7 +54,9 @@ class Review extends Model
     public static function eligibleOrder(User $user, Coffee $coffee): ?Order
     {
         return $user->orders()->where('status', 'completed')
-            ->whereHas('items.roastProfile', fn ($q) => $q->where('coffee_id', $coffee->id))
+            ->whereHas('items', fn ($i) => $i
+                ->whereHas('roastProfile', fn ($q) => $q->where('coffee_id', $coffee->id))
+                ->orWhereIn('blend_profile_id', RoastProfile::where('coffee_id', $coffee->id)->select('id')))
             ->latest('id')->first();
     }
 }

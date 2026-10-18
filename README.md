@@ -120,3 +120,7 @@ Kode dirilis dengan [lisensi MIT](LICENSE). Logo, nama, dan foto kemasan BRÛLÉ
 ## Perlengkapan (produk non-kopi)
 
 Halaman `/perlengkapan` menjual alat seduh, penggiling, filter, merchandise, dan aksesori. Stok dalam unit, tiap produk bisa punya pilihan (mis. ukuran kaos). Pesanan yang hanya berisi barang non-kopi melewati tahap sangrai dan giling (Antri → Dikemas → Dikirim). Pesanan campuran tetap lewat alur sangrai lengkap. Admin mengelola di **Admin → Perlengkapan**; laporan penjualan punya tabel "Per perlengkapan" terpisah. Data demo: `php artisan db:seed --class=ProductSeeder`.
+
+## Blend builder
+
+Di Roast builder, bagian "Campur dengan biji lain" menggabungkan dua biji dengan level sangrai yang sama, porsi 70/30, 60/40, atau 50/50. Harga dihitung per biji sesuai gramnya, stok biji mentah dipotong per biji, dan dikembalikan ke keduanya bila pesanan dibatalkan. Radar rasa dan catatan rasa ikut dirata-ratakan. Ulasan boleh ditulis untuk kedua biji.

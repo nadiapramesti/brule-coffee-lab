@@ -20,7 +20,7 @@
             {{-- Ringkasan pilihan: jadi penunjuk langkah sekaligus rekap --}}
             <ol class="mt-9 grid grid-cols-2 gap-2.5 sm:grid-cols-4" data-reveal style="--d:240ms">
                 @foreach ([
-                    ['01', __('Biji'), $this->coffee?->name],
+                    ['01', __('Biji'), $this->blendProfile ? $this->coffee?->shortName().' + '.$this->blendProfile->coffee->shortName() : $this->coffee?->name],
                     ['02', __('Sangrai'), $this->profile?->level_label],
                     ['03', __('Gilingan'), __($this->grindOptions[$grind])],
                     ['04', __('Berat'), number_format($grams) . ' g'],
@@ -192,6 +192,56 @@
                 @endif
             </section>
 
+            {{-- Blend (opsional): biji kedua dengan level sangrai yang sama --}}
+            <section aria-labelledby="blend-title">
+                <h2 id="blend-title" class="krm-h3 flex items-baseline gap-3 font-semibold">
+                    <span class="krm-readout text-[12px] text-bluelab">+</span>
+                    {{ __('Campur dengan biji lain') }} <span class="text-[13px] font-normal text-kraft/55">{{ __('opsional') }}</span>
+                </h2>
+                <p class="mt-2 max-w-[60ch] text-[13.5px] leading-relaxed text-kraft/70">{{ __('Dua biji disangrai di level yang sama lalu dicampur. Harga dan stok dihitung per biji sesuai porsinya.') }}</p>
+
+                @if ($this->blendOptions->isEmpty())
+                    <p class="mt-4 text-[13px] text-kraft/55">{{ __('Belum ada biji lain di level sangrai ini.') }}</p>
+                @else
+                    <div class="mt-4 flex flex-wrap gap-2" role="radiogroup" aria-label="{{ __('Biji kedua') }}">
+                        <button type="button" role="radio" aria-checked="{{ $blendCoffeeId ? 'false' : 'true' }}" wire:click="setBlend(null)"
+                                class="rounded border px-3.5 py-2 text-[13px] transition-colors {{ $blendCoffeeId ? 'border-kraft/25 text-kraft/75 hover:border-kraft/50' : 'border-bluelab bg-bluelab/12 text-labwhite' }}">
+                            {{ __('Biji tunggal') }}
+                        </button>
+                        @foreach ($this->blendOptions as $bp)
+                            @php $onB = $blendCoffeeId === $bp->coffee_id; @endphp
+                            <button type="button" role="radio" aria-checked="{{ $onB ? 'true' : 'false' }}" wire:click="setBlend({{ $bp->coffee_id }})" wire:key="bl-{{ $bp->id }}"
+                                    class="rounded border px-3.5 py-2 text-[13px] transition-colors {{ $onB ? 'border-bluelab bg-bluelab/12 text-labwhite' : 'border-kraft/25 text-kraft/75 hover:border-kraft/50' }}">
+                                {{ $bp->coffee->shortName() }}
+                            </button>
+                        @endforeach
+                    </div>
+
+                    @if ($this->blendProfile)
+                        <div class="mt-5 max-w-md" role="radiogroup" aria-label="{{ __('Porsi') }}">
+                            <p class="text-[12.5px] text-kraft/60">{{ __('Porsi') }}</p>
+                            <div class="mt-2 grid grid-cols-3 gap-2.5">
+                                @foreach (\App\Support\Blend::RATIOS as $r)
+                                    @php $onR = $ratio === $r; @endphp
+                                    <button type="button" role="radio" aria-checked="{{ $onR ? 'true' : 'false' }}" wire:click="setRatio({{ $r }})"
+                                            class="rounded border px-3 py-3 text-center transition-colors {{ $onR ? 'border-bluelab bg-bluelab/12 shadow-[0_0_0_1px_#2A5DB0]' : 'border-kraft/20 hover:border-kraft/50' }}">
+                                        <span class="krm-readout block text-[1.05rem] leading-none">{{ $r }} / {{ 100 - $r }}</span>
+                                    </button>
+                                @endforeach
+                            </div>
+                            <div class="mt-3 flex h-2 overflow-hidden rounded-full bg-labwhite/10" aria-hidden="true">
+                                <div class="bg-bluelab transition-all duration-300" style="width: {{ $ratio }}%"></div>
+                                <div class="bg-kraft/50 transition-all duration-300" style="width: {{ 100 - $ratio }}%"></div>
+                            </div>
+                            <p class="mt-2 flex justify-between text-[12px] text-kraft/65">
+                                <span>{{ $this->coffee?->shortName() }} {{ $ratio }}%</span>
+                                <span>{{ $this->blendProfile->coffee->shortName() }} {{ 100 - $ratio }}%</span>
+                            </p>
+                        </div>
+                    @endif
+                @endif
+            </section>
+
             {{-- Langkah 3 --}}
             <section>
                 <h2 class="krm-h3 flex items-baseline gap-3 font-semibold">
@@ -235,7 +285,7 @@
                             <span class="mt-1.5 block text-[12px] text-kraft/65">{{ $g >= 1000 ? __('kilogram') : __('gram') }}</span>
                             @if ($this->profile)
                                 <span class="krm-readout mt-3 block border-t border-kraft/15 pt-2.5 text-[12px] text-kraft/60">
-                                    Rp{{ number_format($this->profile->priceFor($g), 0, ',', '.') }}
+                                    Rp{{ number_format($this->blendProfile ? \App\Support\Blend::price($this->profile, $this->blendProfile, $g, $ratio) : $this->profile->priceFor($g), 0, ',', '.') }}
                                 </span>
                             @endif
                         </button>
@@ -266,9 +316,9 @@
                         <div x-ref="wheel" class="flex justify-center"></div>
                     </div>
 
-                    @if ($this->profile?->tasting_notes)
+                    @if ($this->notes)
                         <div class="mt-4 flex flex-wrap gap-1.5 pb-4">
-                            @foreach ($this->profile->tasting_notes as $note)
+                            @foreach ($this->notes as $note)
                                 <span class="rounded-[6px] border border-kraft/25 px-2.5 py-1 text-[12.5px] text-labwhite">{{ $note }}</span>
                             @endforeach
                         </div>
@@ -281,7 +331,7 @@
                         <x-coffee-bag :coffee="$this->coffee" :level="$this->profile?->level ?? 'medium'" class="mx-auto mb-5 h-[120px]" />
                     @endif
                     <dl class="krm-settling space-y-2.5 text-[13px]" wire:loading.delay.class="opacity-50">
-                        <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Biji kopi') }}</dt><dd class="text-right">{{ $this->coffee?->name }}</dd></div>
+                        <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Biji kopi') }}</dt><dd class="text-right">{{ $this->blendProfile ? \App\Support\Blend::name($this->profile, $this->blendProfile, $ratio) : $this->coffee?->name }}</dd></div>
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Sangrai') }}</dt><dd class="text-right">{{ $this->profile?->level_label }}</dd></div>
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Gilingan') }}</dt><dd class="text-right">{{ __($this->grindOptions[$grind]) }}</dd></div>
                         <div class="flex justify-between gap-4"><dt class="text-kraft/60">{{ __('Berat') }}</dt><dd class="krm-readout text-right">{{ number_format($grams) }} g</dd></div>
@@ -322,7 +372,7 @@
         <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-surface/95 px-4 py-3 backdrop-blur lg:hidden">
             <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-4">
                 <div class="min-w-0">
-                    <p class="truncate text-[12px] text-kraft/60">{{ $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>
+                    <p class="truncate text-[12px] text-kraft/60">{{ $this->blendProfile ? \App\Support\Blend::name($this->profile, $this->blendProfile, $ratio) : $this->coffee?->name }} · {{ $this->profile?->level_label }} · {{ number_format($grams) }} g</p>
                     <p class="krm-readout text-[1.15rem] leading-tight">Rp{{ number_format($this->price, 0, ',', '.') }}</p>
                 </div>
                 <button type="button" wire:click="addToCart" class="shrink-0 rounded bg-bluelab px-5 py-3 font-display text-[14px] font-semibold">{{ __('Tambah ke keranjang') }}</button>

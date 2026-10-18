@@ -78,7 +78,7 @@ class Account extends Component
         foreach ($order->items as $i) {
             $ok = $i->isProduct()
                 ? ($i->product_id && Cart::addProduct((int) $i->product_id, $i->roast_level_snapshot !== '' ? $i->roast_level_snapshot : null))
-                : Cart::add((int) $i->roast_profile_id, (int) $i->grams, (string) $i->grind);
+                : Cart::add((int) $i->roast_profile_id, (int) $i->grams, (string) $i->grind, $i->blend_profile_id ? (int) $i->blend_profile_id : null, $i->blend_ratio ? (int) $i->blend_ratio : null);
             $ok ? $added++ : $skipped++;
         }
 
@@ -99,7 +99,9 @@ class Account extends Component
         if ($o->status !== 'completed') {
             return collect();
         }
-        $coffees = $o->items->filter(fn ($i) => ! $i->isProduct())->map(fn ($i) => $i->roastProfile?->coffee)->filter()->unique('id')->values();
+        $blendIds = $o->items->pluck('blend_profile_id')->filter();
+        $partners = $blendIds->isEmpty() ? collect() : \App\Models\RoastProfile::with('coffee')->whereIn('id', $blendIds)->get()->map->coffee;
+        $coffees = $o->items->filter(fn ($i) => ! $i->isProduct())->map(fn ($i) => $i->roastProfile?->coffee)->concat($partners)->filter()->unique('id')->values();
         $mine = auth()->user()->reviews()->whereIn('coffee_id', $coffees->pluck('id'))->get()->keyBy('coffee_id');
 
         return $coffees->map(fn ($c) => (object) ['coffee' => $c, 'review' => $mine->get($c->id)]);

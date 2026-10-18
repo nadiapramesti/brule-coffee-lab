@@ -26,8 +26,8 @@
                                             <p class="font-display text-[1.05rem] font-semibold leading-snug">{{ $l->product->localizedName() }}</p>
                                             <p class="mt-0.5 text-[13px] text-kraft/70">{{ $l->product->categoryLabel() }}@if ($l->option) · {{ $l->option }}@endif</p>
                                         @else
-                                            <p class="font-display text-[1.05rem] font-semibold leading-snug">{{ $l->profile->coffee->name }}</p>
-                                            <p class="mt-0.5 text-[13px] text-kraft/70">{{ $l->profile->level_label }}</p>
+                                            <p class="font-display text-[1.05rem] font-semibold leading-snug">{{ $l->blend ? \App\Support\Blend::name($l->profile, $l->blend, $l->ratio) : $l->profile->coffee->name }}</p>
+                                            <p class="mt-0.5 text-[13px] text-kraft/70">{{ $l->blend ? __('Blend').' · ' : '' }}{{ $l->profile->level_label }}</p>
                                         @endif
                                     </div>
                                     <span class="krm-readout shrink-0 text-[14px]">Rp{{ number_format($l->price, 0, ',', '.') }}</span>
