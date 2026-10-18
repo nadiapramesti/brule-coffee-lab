@@ -109,11 +109,11 @@
                 <header class="flex shrink-0 items-start justify-between gap-3 border-b border-kraft/15 px-5 py-4">
                     <div class="min-w-0">
                         <p class="krm-readout text-[11px] uppercase tracking-[0.16em] text-kraft/50">{{ __('Pesanan') }}</p>
-                        <h2 id="od-title" class="krm-readout text-[1.15rem] font-semibold">{{ $o->order_code }}</h2>
+                        <h2 id="od-title" class="krm-readout whitespace-nowrap text-[1.15rem] font-semibold max-[400px]:text-[1.02rem]">{{ $o->order_code }}</h2>
                         <p class="mt-0.5 text-[12px] text-kraft/55">{{ $o->created_at->translatedFormat('j F Y, H:i') }}</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <span class="rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $o->statusTone() }}">{{ $o->status_label }}</span>
+                        <span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $o->statusTone() }}">{{ $o->status_label }}</span>
                         <button type="button" wire:click="close" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 hover:bg-labwhite/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
                             <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>
                         </button>
@@ -129,14 +129,19 @@
                             $flow = ['pending_payment' => $o->created_at] + collect($o->flow())->mapWithKeys(fn ($s) => [$s => match ($s) { 'queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at, 'completed' => $o->completed_at, default => null }])->all();
                             $order = array_keys($flow); $idx = array_search($o->status, $order, true);
                         @endphp
-                        <ol class="flex items-start" aria-label="{{ __('Tahapan pesanan') }}">
+                        <ol class="flex flex-col sm:flex-row sm:items-start" aria-label="{{ __('Tahapan pesanan') }}">
                             @foreach ($flow as $s => $at)
-                                @php $done = array_search($s, $order, true) <= $idx; @endphp
-                                <li class="relative flex-1 text-center">
-                                    @unless ($loop->first)<span class="absolute right-1/2 top-[7px] h-px w-full {{ $done ? 'bg-bluelab' : 'bg-kraft/20' }}"></span>@endunless
-                                    <span class="relative mx-auto block h-[15px] w-[15px] rounded-full border-2 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-surface' }} {{ $s === $o->status ? 'ring-4 ring-bluelab/25' : '' }}"></span>
-                                    <span class="mt-1.5 block text-[10px] leading-tight {{ $done ? 'text-labwhite' : 'text-kraft/40' }}">{{ __(\App\Models\Order::STATUS_LABELS[$s]) }}</span>
-                                    @if ($at)<span class="krm-readout block text-[9.5px] text-kraft/45">{{ $at->translatedFormat('j M H:i') }}</span>@endif
+                                @php $pos = array_search($s, $order, true); $done = $pos <= $idx; $nextDone = $pos + 1 <= $idx; @endphp
+                                <li class="relative flex items-start gap-3 pb-5 last:pb-0 sm:flex-1 sm:block sm:pb-0 sm:text-center" @if ($s === $o->status) aria-current="step" @endif>
+                                    {{-- garis ke tahap berikutnya (vertikal di HP) --}}
+                                    @unless ($loop->last)<span class="absolute left-[7px] top-[19px] h-[calc(100%-15px)] w-px sm:hidden {{ $nextDone ? 'bg-bluelab' : 'bg-kraft/20' }}"></span>@endunless
+                                    {{-- garis dari tahap sebelumnya (horizontal di layar lebar) --}}
+                                    @unless ($loop->first)<span class="absolute right-1/2 top-[7px] hidden h-px w-full sm:block {{ $done ? 'bg-bluelab' : 'bg-kraft/20' }}"></span>@endunless
+                                    <span class="relative z-[1] mt-[2px] block h-[15px] w-[15px] shrink-0 rounded-full border-2 sm:mx-auto sm:mt-0 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-surface' }} {{ $s === $o->status ? 'ring-4 ring-bluelab/25' : '' }}"></span>
+                                    <span class="flex min-w-0 flex-1 items-baseline justify-between gap-3 sm:mt-1.5 sm:block">
+                                        <span class="block text-[13px] leading-tight sm:text-[10px] {{ $done ? 'text-labwhite' : 'text-kraft/45' }} {{ $s === $o->status ? 'font-semibold' : '' }}">{{ __(\App\Models\Order::STATUS_LABELS[$s]) }}</span>
+                                        @if ($at)<span class="krm-readout block whitespace-nowrap text-[11.5px] text-kraft/55 sm:text-[9.5px] sm:text-kraft/45">{{ $at->translatedFormat('j M H:i') }}</span>@endif
+                                    </span>
                                 </li>
                             @endforeach
                         </ol>
