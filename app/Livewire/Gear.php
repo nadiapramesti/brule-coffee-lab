@@ -20,6 +20,10 @@ class Gear extends Component
     /** @var array<int,string> varian terpilih per produk */
     public array $choice = [];
 
+    /** Produk yang detailnya sedang dibuka (dialog). */
+    #[Url(as: 'produk')]
+    public ?string $detail = null;
+
     public ?int $addedId = null;
     public ?string $error = null;
 
@@ -37,6 +41,26 @@ class Gear extends Component
     public function categories(): array
     {
         return Product::active()->selectRaw('category, count(*) as n')->groupBy('category')->pluck('n', 'category')->all();
+    }
+
+    #[Computed]
+    public function detailProduct(): ?Product
+    {
+        return $this->detail ? Product::active()->where('slug', $this->detail)->first() : null;
+    }
+
+    public function openDetail(string $slug): void
+    {
+        $this->detail = $slug;
+        $this->error = null;
+        $this->addedId = null;
+        unset($this->detailProduct);
+    }
+
+    public function closeDetail(): void
+    {
+        $this->detail = null;
+        unset($this->detailProduct);
     }
 
     public function setCategory(string $key): void

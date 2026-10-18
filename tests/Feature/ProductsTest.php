@@ -208,3 +208,19 @@ it('is only reachable by admins on the admin side', function () {
     $this->get('/admin/produk')->assertForbidden();
     $this->actingAs($this->admin)->get('/admin/produk')->assertOk()->assertSee('Hario V60 Dripper 02');
 });
+
+it('opens a product detail dialog and adds from it', function () {
+    Livewire::test(Gear::class)->call('openDetail', 'kaos-brule')
+        ->assertSee('Potongan unisex')->assertSee('Tambah ke keranjang')
+        ->set("choice.{$this->tee->id}", 'L')->call('add', $this->tee->id)->assertSet('addedId', $this->tee->id)
+        ->call('closeDetail')->assertSet('detail', null);
+
+    Livewire::withQueryParams(['produk' => 'tote-bag-brule'])->test(Gear::class)->assertSee('Kanvas tebal');
+});
+
+it('draws an illustration for every seeded product when there is no photo', function () {
+    foreach (Product::all() as $p) {
+        $html = (string) view('components.product-art', ['product' => $p]);
+        expect($html)->toContain('<svg')->toContain($p->name);
+    }
+});
