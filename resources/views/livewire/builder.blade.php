@@ -166,7 +166,7 @@
                                 {{-- Titik harus sejajar dengan posisi thumb slider: thumb 18px, jadi pusatnya
                                      bergerak dari 9px sampai (lebar - 9px), bukan dari tepi ke tepi. --}}
                                 @php $last = max(1, $this->levels->count() - 1); @endphp
-                                <div class="relative mt-2 h-11">
+                                <div class="relative mt-2 h-[3.25rem] sm:h-11">
                                     @foreach ($this->levels as $i => $lv)
                                         @php $x = "calc(9px + (100% - 18px) * {$i} / {$last})"; $on = $i === $this->levelIndex; @endphp
                                         <button type="button" wire:click="setLevel({{ $i }})" aria-label="{{ $lv->level_label }}"
@@ -174,9 +174,9 @@
                                             <span class="absolute left-1/2 top-[7px] h-2.5 w-2.5 -translate-x-1/2 rounded-full border border-labwhite/20 transition-transform duration-300 {{ $on ? 'scale-125' : '' }}"
                                                   style="background: {{ $this->beanColor($lv->agtron) }}"></span>
                                         </button>
-                                        <span class="pointer-events-none absolute top-[22px] whitespace-nowrap text-[11px] transition-colors
+                                        <span class="pointer-events-none absolute top-[22px] w-14 text-[11px] leading-[1.15] transition-colors sm:w-auto sm:whitespace-nowrap
                                                      {{ $on ? 'text-labwhite' : 'text-kraft/50' }}
-                                                     {{ $loop->first ? 'left-0' : ($loop->last ? 'right-0' : '-translate-x-1/2') }}"
+                                                     {{ $loop->first ? 'left-0 text-left' : ($loop->last ? 'right-0 text-right' : '-translate-x-1/2 text-center') }}"
                                               @unless ($loop->first || $loop->last) style="left: {{ $x }}" @endunless>{{ $lv->level_label }}</span>
                                     @endforeach
                                 </div>
