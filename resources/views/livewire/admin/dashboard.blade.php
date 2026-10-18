@@ -216,15 +216,25 @@
             @endforelse
 
             @if ($this->levels->isNotEmpty())
-                @php $lsum = max(1, (int) $this->levels->sum('grams')); @endphp
+                @php
+                    $lsum = max(1, (int) $this->levels->sum('grams'));
+                    // Satu warna per level, dari emas (light) ke cokelat tua (dark), dipakai di bar dan legenda.
+                    $lvColor = ['light' => '#E8B96A', 'medium_light' => '#D08F3F', 'medium' => '#A9652B', 'medium_dark' => '#7C4421', 'dark' => '#55301B'];
+                @endphp
                 <h3 class="mt-7 text-[12.5px] text-kraft/60">{{ __('Level sangrai favorit') }}</h3>
-                <div class="mt-2 flex h-2 overflow-hidden rounded-full bg-labwhite/10">
-                    @foreach ($this->levels as $i => $lv)
-                        <div style="width: {{ round($lv->grams / $lsum * 100, 1) }}%; opacity: {{ 1 - $i * 0.17 }}" class="bg-bluelab" title="{{ \App\Models\RoastProfile::LEVELS[$lv->level] ?? $lv->level }}"></div>
+                <div class="mt-2 flex h-3 gap-px overflow-hidden rounded-full bg-labwhite/10" role="img" aria-label="{{ __('Level sangrai favorit') }}">
+                    @foreach ($this->levels as $lv)
+                        <div style="width: {{ round($lv->grams / $lsum * 100, 1) }}%; background: {{ $lvColor[$lv->level] ?? '#2A5DB0' }}" title="{{ \App\Models\RoastProfile::LEVELS[$lv->level] ?? $lv->level }} {{ round($lv->grams / $lsum * 100) }}%"></div>
                     @endforeach
                 </div>
-                <ul class="mt-2.5 flex flex-wrap gap-x-4 gap-y-1 text-[12px] text-kraft/70">
-                    @foreach ($this->levels as $lv)<li><span class="krm-readout">{{ \App\Models\RoastProfile::LEVELS[$lv->level] ?? $lv->level }}</span> {{ round($lv->grams / $lsum * 100) }}%</li>@endforeach
+                <ul class="mt-3 grid grid-cols-2 gap-x-5 gap-y-2 text-[12.5px] sm:flex sm:flex-wrap sm:gap-x-5">
+                    @foreach ($this->levels as $lv)
+                        <li class="flex min-w-0 items-center gap-2">
+                            <span class="h-2.5 w-2.5 shrink-0 rounded-[3px] border border-kraft/30" style="background: {{ $lvColor[$lv->level] ?? '#2A5DB0' }}"></span>
+                            <span class="min-w-0 flex-1 truncate text-kraft/80 sm:flex-none">{{ \App\Models\RoastProfile::LEVELS[$lv->level] ?? $lv->level }}</span>
+                            <span class="krm-readout shrink-0 text-kraft/60">{{ round($lv->grams / $lsum * 100) }}%</span>
+                        </li>
+                    @endforeach
                 </ul>
             @endif
         </section>
