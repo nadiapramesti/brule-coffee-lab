@@ -82,7 +82,7 @@
                         </button>
                         <div x-show="menu" x-cloak x-transition.opacity.duration.150ms
                              class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-surface py-1.5 shadow-[0_18px_40px_-12px_rgb(var(--shadow)/.8)]">
-                            <a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Akun saya')) }}</a>
+                            @unless ($staff)<a href="{{ route('dashboard') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Akun saya') }}</a>@endunless
                             @if (auth()->user()->isAdmin())
                                 <a href="{{ route('roastery') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Antrian') }}</a>
                                 <a href="{{ route('admin.coffees') }}" class="block px-4 py-2.5 text-[14px] text-kraft transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">{{ __('Kelola kopi') }}</a>
@@ -101,7 +101,7 @@
                 @endauth
                 {{-- Satu aksi utama per layar. Pembeli: racik kopi. Admin/roaster: kembali ke panel kerjanya. --}}
                 @if ($staff)
-                    <a href="{{ route(auth()->user()->homeRoute()) }}"
+                    <a href="{{ route(auth()->user()->homeRoute()) }}" x-show="!land" x-cloak
                        class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
                         {{ __('Buka panel') }}
                     </a>
