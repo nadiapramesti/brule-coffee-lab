@@ -309,29 +309,32 @@
     </section>
 
 
-    {{-- ══════════════════ TAHAPAN: lima foto terpisah, satu per langkah ══════════════════ --}}
-    <section id="tahapan" class="krm-dark mt-16 scroll-mt-16 border-t border-white/5 bg-[#0a0a0a] py-20 text-white md:mt-20">
-        <div class="mx-auto max-w-6xl px-6">
+    {{-- ══════════════════ TAHAPAN: lima kartu foto terpisah, satu per langkah ══════════════════ --}}
+    <section id="tahapan" class="krm-dark relative mt-16 scroll-mt-16 overflow-hidden bg-[#111111] py-24 text-white md:mt-20">
+        <div class="pointer-events-none absolute left-0 right-0 top-0 h-24 bg-gradient-to-b from-white to-transparent opacity-[0.03]"></div>
+        <x-brand-logo variant="stacked" force="dark" class="pointer-events-none absolute -right-10 top-1/2 hidden h-[460px] -translate-y-1/2 opacity-[0.04] lg:block" aria-hidden="true" />
 
-            <div class="flex items-start justify-between gap-10" data-reveal>
-                <div>
-                    <h2 class="krm-h2 max-w-[22ch] font-semibold">
-                        {{ __('Yang terjadi setelah kamu bayar') }}
-                    </h2>
-                    <p class="mt-3 max-w-[56ch] text-[15px] leading-relaxed text-neutral-400">
-                        {{ __('Lima tahap, dan kamu bisa melihat pesananmu ada di tahap mana lewat halaman lacak.') }}
-                    </p>
-                </div>
-                <x-brand-logo variant="stacked" force="dark" class="hidden h-[130px] shrink-0 opacity-90 lg:block" />
+        <div class="relative mx-auto max-w-[1200px] px-6">
+            <div data-reveal>
+                <h2 class="text-[32px] font-bold tracking-tight text-white">
+                    {{ __('Yang terjadi setelah kamu bayar') }}
+                </h2>
+                <p class="mt-3 max-w-lg text-[14px] text-[#a3a3a3]">
+                    {{ __('Lima tahap, dan kamu bisa melihat pesananmu ada di tahap mana lewat halaman lacak.') }}
+                </p>
             </div>
 
-            <div class="mx-auto mt-8 grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-5">
+            <div class="mt-10 grid grid-cols-1 gap-6 md:grid-cols-5">
                 @foreach ($this->stages as $k => $stage)
-                    <div data-reveal style="--d: {{ $k * 90 }}ms">
-                        <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}" width="800" height="1000"
-                             loading="lazy" decoding="async" class="aspect-[4/5] w-full border border-white/10 object-cover">
-                        <p class="mt-3 text-[12px] font-bold text-white">{{ $stage['name'] }}</p>
-                        <p class="text-[12px] text-neutral-400">{{ $stage['note'] }}</p>
+                    <div data-reveal style="--d: {{ $k * 90 }}ms"
+                         class="overflow-hidden rounded-[12px] border border-white/[0.08] bg-[#1a1a1a] p-2 shadow-[0_0_40px_-12px_rgba(255,255,255,0.10)] transition hover:border-white/15">
+                        <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}" width="1200" height="900"
+                             loading="lazy" decoding="async"
+                             class="aspect-[4/3] w-full rounded-[8px] object-cover brightness-[0.9] contrast-[1.1]">
+                        <div class="px-1 pb-2">
+                            <p class="mt-4 text-[13px] font-semibold text-white">{{ $stage['name'] }}</p>
+                            <p class="mt-1 line-clamp-2 text-[12px] leading-[1.5] text-[#888888]">{{ $stage['note'] }}</p>
+                        </div>
                     </div>
                 @endforeach
             </div>
