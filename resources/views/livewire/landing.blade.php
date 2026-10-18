@@ -134,7 +134,15 @@
 
         <div class="mt-10" x-data="{
                 f: 'semua', q: '', sort: 'default', items: @js($catalog),
-                get list() {
+                res: [], posMap: {}, limit: 9, step: 9,
+                init() {
+                    // Banyaknya kartu per tampilan mengikuti lebar layar: HP 4, tablet 6, laptop 9.
+                    this.step = innerWidth < 640 ? 4 : (innerWidth < 1024 ? 6 : 9);
+                    this.limit = this.step;
+                    this.recalc();
+                    ['f', 'q', 'sort'].forEach(k => this.$watch(k, () => { this.limit = this.step; this.recalc(); }));
+                },
+                recalc() {
                     const words = this.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
                     let l = this.items.filter(i => (this.f === 'semua' || i.process === this.f) && words.every(w => i.hay.includes(w)));
                     const by = {
@@ -144,12 +152,20 @@
                         rating: (a, b) => b.rating - a.rating || b.score - a.score,
                         name: (a, b) => a.name.localeCompare(b.name),
                     };
-                    return by[this.sort] ? [...l].sort(by[this.sort]) : l;
+                    if (by[this.sort]) l = [...l].sort(by[this.sort]);
+                    const m = {}; l.forEach((i, k) => m[i.id] = k);
+                    this.res = l; this.posMap = m;
                 },
-                show(id) { return this.list.some(i => i.id === id) },
-                pos(id) { return this.list.findIndex(i => i.id === id) },
+                show(id) { const p = this.posMap[id]; return p !== undefined && p < this.limit },
+                pos(id) { return this.posMap[id] ?? 0 },
+                more() { this.limit += this.step },
                 reset() { this.f = 'semua'; this.q = ''; this.sort = 'default' },
-                get count() { return @js(__(':n lot ditampilkan')).replace(':n', this.list.length) },
+                get remaining() { return Math.max(0, this.res.length - this.limit) },
+                get count() {
+                    return this.res.length > this.limit
+                        ? @js(__('Menampilkan :shown dari :n lot')).replace(':shown', this.limit).replace(':n', this.res.length)
+                        : @js(__(':n lot ditampilkan')).replace(':n', this.res.length);
+                },
             }">
 
             <div class="flex flex-col gap-3 sm:flex-row">
@@ -195,7 +211,7 @@
 
             <p class="krm-readout mt-5 text-[12px] text-kraft/55" aria-live="polite" x-text="count">{{ $this->coffees->count() }}</p>
 
-            <div x-show="list.length === 0" x-cloak class="mt-4 rounded border border-dashed border-kraft/30 px-6 py-12 text-center">
+            <div x-show="res.length === 0" x-cloak class="mt-4 rounded border border-dashed border-kraft/30 px-6 py-12 text-center">
                 <p class="font-display text-[1.1rem] font-semibold">{{ __('Tidak ada biji yang cocok') }}</p>
                 <p class="mx-auto mt-2 max-w-[44ch] text-[14px] text-kraft/65">{{ __('Coba kata kunci lain, atau hapus saringan proses.') }}</p>
                 <button type="button" @click="reset()" class="mt-5 rounded border border-kraft/35 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">{{ __('Reset pencarian') }}</button>
@@ -305,6 +321,15 @@
                     </article>
                 @endforeach
             </div>
+
+            {{-- Banyak produk: tampilkan bertahap, bukan satu halaman super panjang. --}}
+            <div x-show="remaining > 0" x-cloak class="mt-8 flex flex-col items-center gap-2">
+                <button type="button" @click="more()"
+                        class="rounded border border-kraft/35 px-7 py-3 font-display text-[14.5px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/50">
+                    <span x-text="@js(__('Tampilkan :n lot lagi')).replace(':n', Math.min(step, remaining))"></span>
+                </button>
+                <p class="krm-readout text-[11.5px] text-kraft/50" x-text="@js(__('Sisa :n lot')).replace(':n', remaining)"></p>
+            </div>
         </div>
     </section>
 
@@ -328,21 +353,25 @@
             {{-- Lima kartu: foto 3:4 di atas, teks di bawah. Fotonya gelap
                  (kayu tua) supaya kontras dengan kertas kraft. Di HP kartu
                  digeser ke samping (scroll-snap), bukan ditumpuk 5 layar. --}}
-            <ol class="-mx-6 mt-10 flex scroll-px-6 snap-x snap-mandatory gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:grid sm:grid-cols-3 sm:gap-5 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
+            {{-- HP: daftar vertikal (foto kecil di kiri, teks di kanan) supaya semua tahap langsung
+                 terlihat tanpa perlu menggeser. Tablet ke atas: kartu foto 3:4 dalam grid. --}}
+            <ol class="mt-10 grid gap-5 sm:grid-cols-3 sm:gap-5 lg:grid-cols-5">
                 @foreach ($this->stages as $k => $stage)
-                    <li class="w-[64%] shrink-0 snap-start sm:w-auto" data-reveal style="--d: {{ $k * 90 }}ms">
-                        <div class="relative aspect-[3/4] overflow-hidden rounded border-t border-labwhite/20 bg-charcoal">
+                    <li class="flex items-center gap-4 sm:block" data-reveal style="--d: {{ $k * 90 }}ms">
+                        <div class="relative aspect-square w-[7.5rem] shrink-0 overflow-hidden rounded border-t border-labwhite/20 bg-charcoal sm:aspect-[3/4] sm:w-full">
                             <img src="{{ asset('images/' . $stage['img']) }}" alt="{{ $stage['name'] }}"
                                  width="900" height="1200" loading="lazy" decoding="async"
                                  class="h-full w-full object-cover transition-transform duration-700 ease-out hover:scale-[1.04]">
                             {{-- Vinyet hangat: menggelapkan tepi, menjaga tengah --}}
                             <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_50%_45%,transparent_52%,rgba(40,22,8,.5)_100%)]"></div>
-                            <span class="krm-readout absolute left-3 top-3 rounded-[6px] bg-charcoal/80 px-1.5 py-0.5 text-[11px] text-labwhite">
+                            <span class="krm-readout absolute left-2 top-2 rounded-[6px] bg-charcoal/80 px-1.5 py-0.5 text-[11px] text-labwhite sm:left-3 sm:top-3">
                                 {{ str_pad($k + 1, 2, '0', STR_PAD_LEFT) }}
                             </span>
                         </div>
-                        <h3 class="mt-4 text-[1.15rem] font-semibold text-[#1a1208]">{{ $stage['name'] }}</h3>
-                        <p class="mt-1.5 text-[13px] leading-relaxed text-kraftink">{{ $stage['note'] }}</p>
+                        <div class="min-w-0">
+                            <h3 class="text-[1.15rem] font-semibold text-[#1a1208] sm:mt-4">{{ $stage['name'] }}</h3>
+                            <p class="mt-1 text-[13.5px] leading-relaxed text-kraftink sm:mt-1.5 sm:text-[13px]">{{ $stage['note'] }}</p>
+                        </div>
                     </li>
                 @endforeach
             </ol>

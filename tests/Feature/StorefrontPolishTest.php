@@ -68,3 +68,17 @@ it('renders the catalog search box and sort options', function () {
         ->assertSee('Rating tertinggi')
         ->assertSee('Tidak ada biji yang cocok');
 });
+
+it('shows the catalog in steps with a load-more button instead of one endless page', function () {
+    $this->seed();
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect($html)->toContain('more()')->toContain('remaining > 0')->toContain('innerWidth < 640');
+});
+
+it('lays out the post-payment stages as a vertical list on phones, not a hidden swipe row', function () {
+    $this->seed();
+    $html = $this->get('/')->assertOk()->getContent();
+
+    expect($html)->not->toContain('snap-x')->not->toContain('overflow-x-auto px-6');
+});

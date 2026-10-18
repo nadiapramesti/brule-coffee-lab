@@ -822,5 +822,8 @@
     "RINCIAN PESANAN": "ORDER DETAILS",
     "DIKIRIM KE": "SHIP TO",
     "Email ini dikirim otomatis karena kamu memesan di :store.": "This email was sent automatically because you ordered at :store.",
-    "Ada pertanyaan? Balas email ini atau tulis ke :mail.": "Questions? Reply to this email or write to :mail."
+    "Ada pertanyaan? Balas email ini atau tulis ke :mail.": "Questions? Reply to this email or write to :mail.",
+    "Menampilkan :shown dari :n lot": "Showing :shown of :n lots",
+    "Tampilkan :n lot lagi": "Show :n more lots",
+    "Sisa :n lot": ":n lots left"
 }
