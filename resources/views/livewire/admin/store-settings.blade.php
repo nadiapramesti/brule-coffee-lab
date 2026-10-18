@@ -61,7 +61,7 @@
                         <label for="ci" class="text-[12.5px] text-kraft/75">Instagram</label>
                         <div class="relative mt-1.5">
                             <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-kraft/45">@</span>
-                            <input id="ci" wire:model="instagram" placeholder="kromatik.lab" class="{{ $inp }} pl-7">
+                            <input id="ci" wire:model="instagram" placeholder="brule.coffeelab" class="{{ $inp }} pl-7">
                         </div>
                         @error('instagram')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
