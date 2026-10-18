@@ -26,15 +26,15 @@
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-kraft/15 px-3">
-            <div class="flex gap-1" role="tablist">
+            <div class="flex max-w-full gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px" role="tablist">
                 @foreach (['all' => __('Semua'), 'live' => __('Berjalan'), 'ended' => __('Tidak aktif')] as $k => $l)
                     <button role="tab" aria-selected="{{ $show === $k ? 'true' : 'false' }}" wire:click="$set('show', '{{ $k }}')"
-                            class="-mb-px border-b-2 px-3 py-3 text-[13px] transition-colors {{ $show === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
+                            class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $show === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
                 @endforeach
             </div>
-            <div class="py-2">
+            <div class="w-full py-2 sm:w-auto">
                 <label class="sr-only" for="vq">{{ __('Cari voucher') }}</label>
-                <input id="vq" wire:model.live.debounce.300ms="search" placeholder="{{ __('Cari kode, cth: KOPIBARU') }}" class="{{ $inp }} !py-2 !text-[13px] sm:w-64">
+                <input id="vq" wire:model.live.debounce.300ms="search" placeholder="{{ __('Cari kode, cth: KOPIBARU') }}" class="{{ $inp }} !py-2 !text-[13px] max-sm:w-full sm:w-64">
             </div>
         </div>
 

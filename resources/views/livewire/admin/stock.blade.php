@@ -30,10 +30,10 @@
     </dl>
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
-        <div class="flex gap-1 border-b border-kraft/15 px-3" role="tablist">
+        <div class="flex gap-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px sm:flex-wrap sm:overflow-visible" role="tablist">
             @foreach (['overview' => __('Ringkasan stok'), 'history' => __('Riwayat pergerakan')] as $k => $label)
                 <button type="button" role="tab" aria-selected="{{ $tab === $k ? 'true' : 'false' }}" wire:click="setTab('{{ $k }}')"
-                        class="-mb-px border-b-2 px-3 py-3 text-[13px] transition-colors {{ $tab === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $label }}</button>
+                        class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $tab === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $label }}</button>
             @endforeach
         </div>
 

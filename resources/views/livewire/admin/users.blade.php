@@ -22,15 +22,15 @@
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-kraft/15 px-3">
-            <div class="flex flex-wrap gap-1" role="tablist">
+            <div class="flex max-w-full gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px" role="tablist">
                 @foreach ($tabs as $k => $l)
                     <button role="tab" aria-selected="{{ $role === (string) $k ? 'true' : 'false' }}" wire:click="setRole('{{ $k }}')"
-                            class="-mb-px border-b-2 px-3 py-3 text-[13px] transition-colors {{ $role === (string) $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
+                            class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $role === (string) $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
                 @endforeach
             </div>
-            <div class="py-2">
+            <div class="w-full py-2 sm:w-auto">
                 <label class="sr-only" for="uq">{{ __('Cari pengguna') }}</label>
-                <input id="uq" type="search" wire:model.live.debounce.350ms="search" placeholder="{{ __('Nama, email, atau telepon') }}" class="{{ $inp }} !py-2 !text-[13px] sm:w-64">
+                <input id="uq" type="search" wire:model.live.debounce.350ms="search" placeholder="{{ __('Nama, email, atau telepon') }}" class="{{ $inp }} !py-2 !text-[13px] max-sm:w-full sm:w-64">
             </div>
         </div>
 

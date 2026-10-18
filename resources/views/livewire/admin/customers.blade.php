@@ -29,23 +29,23 @@
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center gap-3 px-4 pt-4">
-            <div class="relative min-w-[220px] flex-1 sm:max-w-sm">
+            <div class="relative w-full flex-1 sm:min-w-[220px] sm:max-w-sm">
                 <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
                 <label class="sr-only" for="q">{{ __('Cari pelanggan') }}</label>
                 <input id="q" type="search" wire:model.live.debounce.350ms="search" placeholder="{{ __('Nama, email, atau telepon, cth: Sinta') }}" class="{{ $inp }} w-full pl-9">
             </div>
-            <div class="ml-auto flex items-center gap-2 text-[12.5px] text-kraft/60">
+            <div class="flex w-full items-center gap-2 text-[12.5px] text-kraft/60 sm:ml-auto sm:w-auto">
                 <label for="sort">{{ __('Urutkan') }}</label>
-                <select id="sort" wire:model.live="sort" class="{{ $inp }} py-1.5">
+                <select id="sort" wire:model.live="sort" class="{{ $inp }} min-w-0 flex-1 py-1.5 pr-8 sm:flex-none">
                     @foreach (\App\Livewire\Admin\Customers::SORTS as $k => $l)<option class="bg-charcoal" value="{{ $k }}">{{ __($l) }}</option>@endforeach
                 </select>
             </div>
         </div>
 
-        <div class="mt-3 flex flex-wrap gap-x-1 border-b border-kraft/15 px-3" role="tablist">
+        <div class="mt-3 flex gap-x-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px sm:flex-wrap sm:overflow-visible" role="tablist">
             @foreach (\App\Livewire\Admin\Customers::TABS as $key => $label)
                 <button type="button" role="tab" aria-selected="{{ $tab === $key ? 'true' : 'false' }}" wire:click="setTab('{{ $key }}')"
-                        class="-mb-px flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
+                        class="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
                     {{ __($label) }}<span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
                 </button>
             @endforeach

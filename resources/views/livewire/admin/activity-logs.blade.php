@@ -11,25 +11,25 @@
     </div>
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
-        <div class="flex flex-wrap gap-1 border-b border-kraft/15 px-3" role="tablist">
+        <div class="flex gap-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px sm:flex-wrap sm:overflow-visible" role="tablist">
             @foreach ($tabs as $k => $l)
                 <button role="tab" aria-selected="{{ $group === (string) $k ? 'true' : 'false' }}" wire:click="setGroup('{{ $k }}')"
-                        class="-mb-px border-b-2 px-3 py-3 text-[13px] transition-colors {{ $group === (string) $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }}</button>
+                        class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $group === (string) $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }}</button>
             @endforeach
         </div>
 
-        <div class="flex flex-wrap items-center gap-3 border-b border-kraft/10 px-4 py-3">
+        <div class="grid gap-3 border-b border-kraft/10 px-4 py-3 sm:flex sm:flex-wrap sm:items-center">
             <label class="sr-only" for="lb">{{ __('Dilakukan oleh') }}</label>
-            <select id="lb" wire:model.live="by" class="{{ $inp }}">
+            <select id="lb" wire:model.live="by" class="{{ $inp }} w-full sm:w-auto">
                 <option class="bg-charcoal" value="">{{ __('Semua pengguna') }}</option>
                 @foreach ($actors as $a)<option class="bg-charcoal" value="{{ $a->id }}">{{ $a->name }}</option>@endforeach
             </select>
-            <div class="flex items-center gap-2">
+            <div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:flex">
                 <label class="sr-only" for="lf">{{ __('Dari tanggal') }}</label>
-                <input id="lf" type="date" wire:model.live="from" placeholder="2026-10-01" class="{{ $inp }} krm-readout">
+                <input id="lf" type="date" wire:model.live="from" placeholder="2026-10-01" class="{{ $inp }} krm-readout w-full min-w-0 max-sm:px-2 max-sm:text-[12.5px] sm:w-auto">
                 <span class="text-kraft/45">–</span>
                 <label class="sr-only" for="lt">{{ __('Sampai tanggal') }}</label>
-                <input id="lt" type="date" wire:model.live="to" placeholder="2026-10-16" class="{{ $inp }} krm-readout">
+                <input id="lt" type="date" wire:model.live="to" placeholder="2026-10-16" class="{{ $inp }} krm-readout w-full min-w-0 max-sm:px-2 max-sm:text-[12.5px] sm:w-auto">
             </div>
         </div>
 

@@ -38,7 +38,7 @@
             <article class="mt-4 overflow-hidden rounded border border-kraft/20 bg-surface" wire:key="o-{{ $o->id }}">
                 <div class="flex flex-wrap items-start justify-between gap-3 p-5">
                     <div class="min-w-0">
-                        <p class="krm-readout text-[12.5px] text-kraft/60">{{ $o->order_code }} · {{ $o->created_at->timezone('Asia/Jakarta')->format('d M Y') }}</p>
+                        <p class="krm-readout text-[12.5px] text-kraft/60">{{ $o->order_code }} · {{ $o->created_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y') }}</p>
                         <p class="mt-1.5 text-[14.5px] font-semibold">{{ $o->itemSummary() }}</p>
                         <p class="mt-1 text-[13px] font-semibold {{ $tone }}">
                             {{ $o->status_label }}@if ($o->isCod()) <span class="krm-readout ml-1.5 rounded-[6px] border border-kraft/35 px-1.5 py-0.5 text-[10.5px] font-normal text-kraft/70">COD</span>@endif

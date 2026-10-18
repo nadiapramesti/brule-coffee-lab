@@ -20,10 +20,10 @@
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5">
-            <div class="flex gap-1" role="tablist">
+            <div class="-mx-1 flex w-full gap-1 overflow-x-auto px-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden sm:mx-0 sm:w-auto sm:px-0" role="tablist">
                 @foreach (['' => __('Semua'), 'active' => __('Tampil'), 'hidden' => __('Tersembunyi')] as $k => $label)
                     <button type="button" role="tab" aria-selected="{{ $show === $k ? 'true' : 'false' }}" wire:click="$set('show', '{{ $k }}')"
-                            class="flex items-center gap-1.5 rounded px-3 py-1.5 text-[12.5px] transition-colors {{ $show === $k ? 'bg-bluelab/20 text-labwhite' : 'text-kraft/60 hover:text-labwhite' }}">
+                            class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-3 py-1.5 text-[12.5px] transition-colors {{ $show === $k ? 'bg-bluelab/20 text-labwhite' : 'text-kraft/60 hover:text-labwhite' }}">
                         {{ $label }}<span class="krm-readout text-[11px] text-kraft/50">{{ $this->counts[$k] }}</span>
                     </button>
                 @endforeach
