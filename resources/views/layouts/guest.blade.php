@@ -50,26 +50,32 @@
             <p class="mt-5 text-center text-[12px] text-kraft/45 max-sm:hidden {{ $route === 'register' ? 'hidden' : '' }}">{{ __('Disangrai setelah pesanan masuk.') }}</p>
         </div>
     </main>
-
-    {{-- Ruang kosong yang hanya muncul di HP saat kolom isian fokus: tanpa ini halaman (setinggi 1 layar)
-         tidak bisa digulir, sehingga password dan tombol Masuk tertutup keyboard. --}}
-    <div class="krm-kbspacer" aria-hidden="true"></div>
 </div>
+
+{{-- Ruang gulir yang hanya muncul di HP saat kolom isian fokus, dan tingginya dihitung PAS: cukup untuk
+     menaikkan kolom yang fokus ke dekat atas layar (di atas keyboard), tidak lebih. Letaknya di luar
+     wadah min-h-screen supaya tinggi halaman = 1 layar + ruang ini, bukan lebih. --}}
+<div class="krm-kbspacer" aria-hidden="true"></div>
 <script>
     if (!window.__krmKb) {
         window.__krmKb = true;
-        var kbTimer;
+        var kbTimer, TOP_GAP = 140;
         document.addEventListener('focusin', function (e) {
-            if (!e.target.matches || !e.target.matches('input:not([type=checkbox]):not([type=radio]), textarea, select')) return;
+            var el = e.target;
+            if (!el.matches || !el.matches('input:not([type=checkbox]):not([type=radio]), textarea, select')) return;
+            if (!window.matchMedia('(max-width: 639px)').matches) return;
             clearTimeout(kbTimer);
-            document.body.classList.add('krm-kb');
-            setTimeout(function () {
-                var top = e.target.getBoundingClientRect().top;
-                window.scrollBy({ top: top - 140, behavior: 'smooth' });
-            }, 300);
+            var sp = document.querySelector('.krm-kbspacer');
+            var natural = document.documentElement.scrollHeight - sp.offsetHeight;
+            var target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - TOP_GAP);
+            sp.style.height = Math.max(0, target - Math.max(0, natural - window.innerHeight)) + 'px';
+            setTimeout(function () { window.scrollTo({ top: target, behavior: 'smooth' }); }, 300);
         });
         document.addEventListener('focusout', function () {
-            kbTimer = setTimeout(function () { document.body.classList.remove('krm-kb'); }, 200);
+            kbTimer = setTimeout(function () {
+                var sp = document.querySelector('.krm-kbspacer');
+                if (sp) sp.style.height = '0px';
+            }, 200);
         });
     }
 </script>
