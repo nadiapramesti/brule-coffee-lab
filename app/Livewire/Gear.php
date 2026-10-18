@@ -33,7 +33,7 @@ class Gear extends Component
         return Product::active()
             ->when(array_key_exists($this->category, Product::CATEGORIES), fn ($q) => $q->where('category', $this->category))
             ->orderBy('name')->get()
-            ->sortBy(fn ($p) => array_search($p->category, array_keys(Product::CATEGORIES), true))->values();
+            ->sortBy(fn ($p) => ($p->stock < 1 ? 100 : 0) + (int) array_search($p->category, array_keys(Product::CATEGORIES), true))->values();
     }
 
     /** @return array<string,int> jumlah produk aktif per kategori yang ada isinya */

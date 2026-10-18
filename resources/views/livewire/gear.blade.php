@@ -3,15 +3,19 @@
     <h1 class="krm-h2 mt-2 font-bold" data-reveal>{{ __('Alat dan barang pendamping seduhmu') }}</h1>
     <p class="mt-3 max-w-[58ch] text-[14.5px] text-kraft/75">{{ __('Dipilih seperlunya, yang kami pakai sendiri di lab. Barang non-kopi langsung dikemas tanpa antre sangrai, jadi dikirim lebih cepat.') }}</p>
 
-    <div class="mt-8 flex flex-wrap gap-2" role="tablist" aria-label="{{ __('Kategori') }}">
-        @php $total = array_sum($this->categories); @endphp
-        @foreach (['' => __('Semua')] + collect(\App\Models\Product::CATEGORIES)->map(fn ($l) => __($l))->all() as $key => $label)
-            @continue($key !== '' && empty($this->categories[$key]))
-            <button type="button" role="tab" aria-selected="{{ $category === $key ? 'true' : 'false' }}" wire:click="setCategory('{{ $key }}')"
-                    class="rounded-full border px-4 py-1.5 text-[13px] transition-colors {{ $category === $key ? 'border-bluelab bg-bluelab/20 text-labwhite' : 'border-kraft/25 text-kraft/70 hover:border-kraft/50 hover:text-labwhite' }}">
-                {{ $label }}<span class="krm-readout ml-1.5 text-[11px] text-kraft/50">{{ $key === '' ? $total : $this->categories[$key] }}</span>
-            </button>
-        @endforeach
+
+    {{-- Kategori: satu baris yang bisa digeser di HP, membungkus di layar lebar --}}
+    <div class="-mx-6 mt-8 overflow-x-auto px-6 [scrollbar-width:none] sm:mx-0 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
+        <div class="flex w-max gap-2 sm:w-auto sm:flex-wrap" role="tablist" aria-label="{{ __('Kategori') }}">
+            @php $total = array_sum($this->categories); @endphp
+            @foreach (['' => __('Semua')] + collect(\App\Models\Product::CATEGORIES)->map(fn ($l) => __($l))->all() as $key => $label)
+                @continue($key !== '' && empty($this->categories[$key]))
+                <button type="button" role="tab" aria-selected="{{ $category === $key ? 'true' : 'false' }}" wire:click="setCategory('{{ $key }}')"
+                        class="whitespace-nowrap rounded-full border px-4 py-1.5 text-[13px] transition-colors {{ $category === $key ? 'border-bluelab bg-bluelab/20 text-labwhite' : 'border-kraft/25 text-kraft/70 hover:border-kraft/50 hover:text-labwhite' }}">
+                    {{ $label }}<span class="krm-readout ml-1.5 text-[11px] text-kraft/50">{{ $key === '' ? $total : $this->categories[$key] }}</span>
+                </button>
+            @endforeach
+        </div>
     </div>
 
     @if ($error)
@@ -21,42 +25,45 @@
     @if ($this->products->isEmpty())
         <p class="mt-12 text-[14px] text-kraft/60">{{ __('Belum ada perlengkapan di kategori ini.') }}</p>
     @else
-        <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul class="mt-6 grid grid-cols-2 gap-3 sm:mt-8 sm:gap-5 lg:grid-cols-3">
             @foreach ($this->products as $p)
                 @php $state = $p->stockState(); @endphp
-                <li wire:key="p-{{ $p->id }}" class="flex flex-col overflow-hidden rounded border border-kraft/20 bg-surface">
-                    <button type="button" wire:click="openDetail('{{ $p->slug }}')" aria-label="{{ __('Lihat detail :n', ['n' => $p->localizedName()]) }}" class="block text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/60">
-                        <x-product-thumb :product="$p" :option="$choice[$p->id] ?? null" class="aspect-[4/3] w-full rounded-none border-0 border-b border-kraft/15" />
-                    </button>
-                    <div class="flex flex-1 flex-col p-5">
-                        <p class="krm-readout text-[10.5px] tracking-[0.14em] text-kraft/50">{{ mb_strtoupper($p->categoryLabel()) }}</p>
-                        <h2 class="mt-1 font-display text-[1.1rem] font-semibold leading-snug"><button type="button" wire:click="openDetail('{{ $p->slug }}')" class="text-left underline-offset-4 hover:underline">{{ $p->localizedName() }}</button></h2>
-                        <p class="mt-2 text-[13.5px] leading-relaxed text-kraft/75">{{ $p->localizedDescription() }}</p>
+                <li wire:key="p-{{ $p->id }}" class="flex flex-col overflow-hidden rounded border border-kraft/20 bg-surface transition-shadow duration-300 hover:shadow-[0_18px_40px_-22px_rgb(var(--shadow)/.7)]">
+                    <div class="relative">
+                        <button type="button" wire:click="openDetail('{{ $p->slug }}')" aria-label="{{ __('Lihat detail :n', ['n' => $p->localizedName()]) }}"
+                                class="block w-full overflow-hidden text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/60 [&_img]:transition-transform [&_img]:duration-500 hover:[&_img]:scale-[1.04]">
+                            <x-product-thumb :product="$p" :option="$choice[$p->id] ?? null" class="aspect-[4/3] w-full rounded-none border-0 border-b border-kraft/15 {{ $state === 'soldout' ? '[&_img]:grayscale [&_img]:opacity-60' : '' }}" />
+                        </button>
+                        @if ($state !== 'ok')
+                            <span class="krm-readout pointer-events-none absolute left-2 top-2 rounded-[6px] px-2 py-0.5 text-[10.5px] sm:left-3 sm:top-3 {{ $state === 'low' ? 'bg-[#E8782A] text-white' : 'bg-black/75 text-white' }}">
+                                {{ $state === 'soldout' ? __('Stok habis') : __('Sisa :n', ['n' => $p->stock]) }}
+                            </span>
+                        @endif
+                    </div>
+                    <div class="flex flex-1 flex-col p-3 sm:p-5">
+                        <p class="krm-readout text-[9.5px] tracking-[0.14em] text-kraft/50 sm:text-[10.5px]">{{ mb_strtoupper($p->categoryLabel()) }}</p>
+                        <h2 class="mt-1 font-display text-[0.95rem] font-semibold leading-snug sm:text-[1.1rem]"><button type="button" wire:click="openDetail('{{ $p->slug }}')" class="text-left underline-offset-4 hover:underline">{{ $p->localizedName() }}</button></h2>
+                        <p class="mt-1.5 line-clamp-2 text-[12.5px] leading-relaxed text-kraft/75 sm:mt-2 sm:line-clamp-3 sm:text-[13.5px]">{{ $p->localizedDescription() }}</p>
 
                         @if ($p->hasOptions())
-                            <div class="mt-4" role="radiogroup" aria-label="{{ $p->option_label ?: __('Varian') }}">
-                                <p class="text-[12px] text-kraft/55">{{ $p->option_label ?: __('Varian') }}</p>
+                            <div class="mt-3 sm:mt-4" role="radiogroup" aria-label="{{ $p->option_label ?: __('Varian') }}">
+                                <p class="text-[11.5px] text-kraft/55 sm:text-[12px]">{{ $p->option_label ?: __('Varian') }}</p>
                                 <div class="mt-1.5 flex flex-wrap gap-1.5">
                                     @foreach ($p->optionList() as $opt)
                                         <label class="cursor-pointer">
                                             <input type="radio" class="peer sr-only" name="opt-{{ $p->id }}" value="{{ $opt }}" wire:model.live="choice.{{ $p->id }}">
-                                            <span class="block rounded border border-kraft/25 px-3 py-1 text-[12.5px] text-kraft/75 transition-colors peer-checked:border-bluelab peer-checked:bg-bluelab/20 peer-checked:text-labwhite peer-focus-visible:ring-2 peer-focus-visible:ring-bluelab/50">{{ $opt }}</span>
+                                            <span class="block rounded border border-kraft/25 px-2.5 py-1 text-[12px] text-kraft/75 transition-colors peer-checked:border-bluelab peer-checked:bg-bluelab/20 peer-checked:text-labwhite peer-focus-visible:ring-2 peer-focus-visible:ring-bluelab/50 sm:px-3 sm:text-[12.5px]">{{ $opt }}</span>
                                         </label>
                                     @endforeach
                                 </div>
                             </div>
                         @endif
 
-                        <div class="mt-auto flex items-end justify-between gap-3 pt-5">
-                            <div>
-                                <p class="krm-readout text-[1.15rem] leading-none">Rp{{ number_format($p->price, 0, ',', '.') }}</p>
-                                <p class="mt-1.5 text-[12px] {{ $state === 'ok' ? 'text-kraft/50' : ($state === 'low' ? 'text-ambertext' : 'text-redtext') }}">
-                                    {{ $state === 'soldout' ? __('Stok habis') : ($state === 'low' ? __('Sisa :n', ['n' => $p->stock]) : __('Tersedia')) }}
-                                </p>
-                            </div>
+                        <div class="mt-auto flex flex-col gap-2.5 pt-4 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:pt-5">
+                            <p class="krm-readout text-[1rem] leading-none sm:text-[1.15rem]">Rp{{ number_format($p->price, 0, ',', '.') }}</p>
                             <button type="button" wire:click="add({{ $p->id }})" @disabled($state === 'soldout')
                                     class="rounded bg-bluelab px-4 py-2.5 font-display text-[13.5px] font-semibold text-paper transition-colors hover:bg-[#234E94] disabled:cursor-not-allowed disabled:opacity-40">
-                                {{ $addedId === $p->id ? __('Masuk keranjang ✓') : __('Tambah') }}
+                                @if ($addedId === $p->id)<span class="sm:hidden">✓</span><span class="hidden sm:inline">{{ __('Masuk keranjang ✓') }}</span>@else{{ __('Tambah') }}@endif
                             </button>
                         </div>
                     </div>
@@ -64,6 +71,7 @@
             @endforeach
         </ul>
     @endif
+
 
     @if ($d = $this->detailProduct)
         @php $ds = $d->stockState(); @endphp
