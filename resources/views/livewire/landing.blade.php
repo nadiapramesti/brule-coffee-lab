@@ -157,7 +157,7 @@
                     <label for="cari-biji" class="sr-only">{{ __('Cari biji') }}</label>
                     <svg viewBox="0 0 20 20" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/50" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2L17 17"/></svg>
                     <input id="cari-biji" type="search" x-model="q" autocomplete="off"
-                           placeholder="{{ __('Cari nama, asal, atau rasa. Contoh: Gayo, chocolate, citrus') }}"
+                           placeholder="{{ __('Contoh: Gayo, chocolate, citrus') }}"
                            class="w-full rounded border border-kraft/25 bg-transparent py-3 pl-10 pr-4 text-[14.5px] text-labwhite placeholder:text-kraft/40 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
                 </div>
                 <div>
