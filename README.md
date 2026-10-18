@@ -15,6 +15,7 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 | ![Katalog](docs/screenshots/02-katalog.jpg)<br>**Katalog**: harga, stok, rating, cari, sortir | ![Roast builder](docs/screenshots/03-builder.jpg)<br>**Roast builder**: level sangrai, flavor wheel |
 | ![Keranjang](docs/screenshots/04-keranjang.jpg)<br>**Keranjang** multi-item | ![Checkout](docs/screenshots/05-checkout.jpg)<br>**Checkout**: alamat tersimpan, voucher, online / COD |
 | ![Lacak](docs/screenshots/06-lacak.jpg)<br>**Lacak pesanan** per tahap produksi | ![Akun](docs/screenshots/07-akun.jpg)<br>**Akun saya**: riwayat, Beli lagi, ulasan |
+| ![Perlengkapan](docs/screenshots/14-perlengkapan.jpg)<br>**Perlengkapan**: alat seduh, merchandise, aksesori | |
 
 **Panel admin** (tema gelap)
 
@@ -28,6 +29,7 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 <p>
 <img src="docs/screenshots/12-mobile-landing.jpg" width="260" alt="Landing mobile">
 <img src="docs/screenshots/13-mobile-builder.jpg" width="260" alt="Builder mobile">
+<img src="docs/screenshots/15-mobile-perlengkapan.jpg" width="260" alt="Perlengkapan mobile">
 </p>
 
 ## Fitur
@@ -37,6 +39,8 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 - Roast builder dengan flavor wheel dan kromatogram aroma; kantong kemasan dirender SVG per kopi.
 - Keranjang multi-item (tamu di session, user login di database; keranjang tamu digabung saat login).
 - Roast builder: 14 biji demo (6 proses, termasuk Carbonic Maceration), 4 level sangrai, 6 gilingan, berat 100 g / 200 g / 250 g / 500 g / 1 kg.
+- **Blend builder**: campur dua biji dengan level sangrai sama (70/30, 60/40, 50/50); harga dan stok dihitung per biji.
+- **Perlengkapan** (`/perlengkapan`): 10 produk non-kopi (alat seduh, penggiling, filter, merchandise, aksesori) dengan foto per varian, detail produk, badge stok, dan filter kategori. Pesanan yang hanya berisi barang non-kopi melewati tahap sangrai dan giling.
 - Checkout dengan add-on opsional (kemasan hadiah, kartu ucapan; harga diatur admin, disimpan per pesanan), voucher, ongkir (gratis di atas batas tertentu), bayar online (simulasi) atau COD (bisa dimatikan / dibatasi nominalnya).
 - Lacak pesanan per tahap produksi, riwayat pesanan + "Beli lagi", buku alamat, ulasan pembeli terverifikasi.
 - Email transaksi (pesanan diterima, lunas, dikirim + resi, dibatalkan), notifikasi dalam aplikasi, login Google/Facebook (opsional).
@@ -45,8 +49,8 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 **Panel internal (admin & roastery)**
 - Dashboard, pesanan (cetak invoice/label kirim, hanya setelah lunas), jurnal sangrai.
 - Antrian roastery siap banyak pesanan: hitungan lewat query agregat (diuji 5.000 pesanan, <100 ms), batas kartu per kolom, cari, filter terlambat (>24 jam), rencana sangrai per biji + level, centang banyak pesanan untuk dilanjutkan sekaligus dan cetak label massal, serta stok biji mentah yang bisa dicari.
-- Kelola kopi (termasuk foto), stok dengan riwayat pergerakan, voucher, pelanggan, ulasan (moderasi), pengguna & peran, log aktivitas, pengaturan toko.
-- Laporan penjualan dengan ekspor Excel dan PDF.
+- Kelola kopi dan perlengkapan (termasuk foto), stok dengan riwayat pergerakan, voucher, pelanggan, ulasan (moderasi), pengguna & peran, log aktivitas, pengaturan toko.
+- Laporan penjualan dengan ekspor Excel dan PDF (7 sheet, termasuk "Per perlengkapan").
 
 ## Menjalankan di lokal
 
@@ -69,7 +73,7 @@ npm run build                 # atau: npm run dev
 php artisan serve
 ```
 
-Setelah `git pull` berikutnya: `php artisan migrate`, `npm run build`, `php artisan view:clear`, lalu hard refresh (Ctrl+F5).
+Setelah `git pull` berikutnya: `php artisan migrate`, `php artisan db:seed --class=ProductSeeder` (bila foto/produk berubah), `npm run build`, `php artisan view:clear`, lalu hard refresh (Ctrl+F5). Folder `public/build` tidak ikut git, jadi `npm run build` wajib di setiap mesin.
 
 ### Akun demo (dari seeder)
 
@@ -92,14 +96,16 @@ Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pe
 php artisan test
 ```
 
-Suite Pest mencakup alur pesanan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, dan hak akses admin.
+Suite Pest (258 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, dan hak akses admin.
 
 ## Struktur singkat
 
 ```
 app/Livewire/            halaman toko dan panel (satu komponen per halaman)
 app/Livewire/Admin/      modul admin
-app/Models/              Order (logika pesanan), Coffee (stok), Cart di app/Support
+app/Models/              Order (logika pesanan), Coffee (stok), Product (perlengkapan)
+app/Support/             Cart (keranjang), Blend (campuran dua biji), SalesReport
+public/products/         foto produk perlengkapan
 app/Mail/ + Support/     email transaksi, keranjang
 resources/views/         blade (layouts/brule = toko, layouts/panel = admin)
 lang/                    terjemahan ID/EN (en.json, pages.php untuk halaman statis)
@@ -113,10 +119,6 @@ docs/screenshots/        gambar untuk README
 - Stok biji mentah dikunci per kopi saat checkout supaya dua pembeli tidak bisa memesan sisa yang sama.
 - Pembayaran online memakai Midtrans Snap (sandbox) bila `MIDTRANS_SERVER_KEY` dan `MIDTRANS_CLIENT_KEY` diisi di `.env`. Tanpa kunci, tombol kembali ke mode simulasi. Webhook: `POST /midtrans/notification` (butuh URL publik, mis. ngrok; di localhost pakai tombol "Cek status pembayaran").
 
-## Lisensi
-
-Kode dirilis dengan [lisensi MIT](LICENSE). Logo, nama, dan foto kemasan BRÛLÉ adalah aset merek dan tidak termasuk dalam lisensi ini.
-
 ## Perlengkapan (produk non-kopi)
 
 Halaman `/perlengkapan` menjual alat seduh, penggiling, filter, merchandise, dan aksesori. Stok dalam unit, tiap produk bisa punya pilihan (mis. ukuran kaos). Pesanan yang hanya berisi barang non-kopi melewati tahap sangrai dan giling (Antri → Dikemas → Dikirim). Pesanan campuran tetap lewat alur sangrai lengkap. Admin mengelola di **Admin → Perlengkapan**; laporan penjualan punya tabel "Per perlengkapan" terpisah. Data demo: `php artisan db:seed --class=ProductSeeder`.
@@ -124,3 +126,11 @@ Halaman `/perlengkapan` menjual alat seduh, penggiling, filter, merchandise, dan
 ## Blend builder
 
 Di Roast builder, bagian "Campur dengan biji lain" menggabungkan dua biji dengan level sangrai yang sama, porsi 70/30, 60/40, atau 50/50. Harga dihitung per biji sesuai gramnya, stok biji mentah dipotong per biji, dan dikembalikan ke keduanya bila pesanan dibatalkan. Radar rasa dan catatan rasa ikut dirata-ratakan. Ulasan boleh ditulis untuk kedua biji.
+
+## Lisensi
+
+Kode dirilis dengan [lisensi MIT](LICENSE). Logo, nama, dan foto kemasan BRÛLÉ adalah aset merek dan tidak termasuk dalam lisensi ini.
+
+## Kredit
+
+Dikerjakan sendiri oleh Nadia Pramesti sebagai tugas kuliah. Kode dibangun dengan bantuan [Claude](https://claude.ai) (Anthropic) sebagai pair-programmer. Foto produk perlengkapan dan merchandise dibuat dengan AI generatif, dan data demo (nama petani, koperasi, Q-grader) adalah contoh fiktif.
