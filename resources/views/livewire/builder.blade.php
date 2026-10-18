@@ -49,39 +49,73 @@
                     {{ __('Pilih biji') }}
                 </h2>
 
-                <div class="-mx-6 mt-5 flex snap-x snap-mandatory scroll-px-6 gap-3 overflow-x-auto px-6 pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 xl:grid-cols-4">
-                    @foreach ($this->coffees as $bean)
-                        @php $on = $this->coffeeId === $bean->id; @endphp
-                        <button type="button"
-                                wire:click="selectCoffee({{ $bean->id }})"
-                                aria-pressed="{{ $on ? 'true' : 'false' }}"
-                                class="group relative flex w-[68%] shrink-0 snap-start flex-col items-start justify-start rounded border p-4 text-left transition-all duration-300 sm:w-auto
-                                       {{ $on
-                                            ? 'border-bluelab bg-bluelab/12 shadow-[0_0_0_1px_#2A5DB0,0_12px_32px_-14px_rgba(42,93,176,.7)]'
-                                            : 'border-kraft/20 hover:-translate-y-0.5 hover:border-kraft/50' }}">
-                            <span class="flex w-full items-center justify-between gap-2">
-                                <span class="krm-readout rounded-[6px] border border-kraft/25 px-1.5 py-0.5 text-[10.5px] text-kraft/75">
-                                    {{ $bean->traceability?->process }}
+                {{-- HP: daftar baris (foto kecil + nama + skor), semua terlihat tanpa geser.
+                     Tablet ke atas: kartu. Kalau bijinya banyak, tampil sebagian dulu + tombol "semua". --}}
+                @php $beanCount = $this->coffees->count(); @endphp
+                <div x-data="{ all: false, max: innerWidth < 640 ? 5 : 8 }" class="mt-5">
+                    <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+                        @foreach ($this->coffees as $bean)
+                            @php
+                                $on = $this->coffeeId === $bean->id;
+                                $short = \Illuminate\Support\Str::of($bean->name)->replace([' Washed',' Natural',' Honey',' Wet-Hulled',' Anaerobic'], '');
+                                $reg = \Illuminate\Support\Str::before($bean->traceability?->region ?? '', ',');
+                                $ctry = \Illuminate\Support\Str::afterLast($bean->traceability?->region ?? '', ', ');
+                            @endphp
+                            <button type="button"
+                                    wire:click="selectCoffee({{ $bean->id }})"
+                                    aria-pressed="{{ $on ? 'true' : 'false' }}"
+                                    @if ($loop->index >= 5) x-show="all || {{ $on ? 'true' : 'false' }} || {{ $loop->index }} < max" @endif
+                                    class="group relative block w-full rounded border text-left transition-all duration-300
+                                           {{ $on
+                                                ? 'border-bluelab bg-bluelab/12 shadow-[0_0_0_1px_#2A5DB0,0_12px_32px_-14px_rgba(42,93,176,.7)]'
+                                                : 'border-kraft/20 hover:border-kraft/50 sm:hover:-translate-y-0.5' }}">
+
+                                {{-- Tampilan HP: satu baris --}}
+                                <span class="grid grid-cols-[3.75rem_minmax(0,1fr)_auto] items-center gap-3 p-3 sm:hidden">
+                                    <x-coffee-bag :coffee="$bean" class="h-[75px] w-[60px]" />
+                                    <span class="min-w-0">
+                                        <span class="block truncate font-display text-[15.5px] font-semibold leading-snug text-labwhite">{{ $short }}</span>
+                                        <span class="mt-0.5 block truncate text-[12.5px] text-kraft/65">{{ $reg }} <span class="text-kraft/40">·</span> {{ $ctry }}</span>
+                                        <span class="krm-readout mt-1.5 flex items-center gap-2 text-[11px] text-kraft/70">
+                                            <span class="rounded-[6px] border border-kraft/25 px-1.5 py-0.5 text-[10.5px]">{{ $bean->traceability?->process }}</span>
+                                            <span class="text-bluelab"><span class="text-[13px]">{{ number_format($bean->cupping_score, 1) }}</span> SCA</span>
+                                        </span>
+                                    </span>
+                                    <span class="grid h-6 w-6 place-items-center rounded-full bg-bluelab text-paper transition-all duration-300 {{ $on ? 'scale-100 opacity-100' : 'scale-50 opacity-0' }}">
+                                        <svg viewBox="0 0 12 12" class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.4 2.4 4.6-5"/></svg>
+                                    </span>
                                 </span>
-                                <span class="grid h-5 w-5 place-items-center rounded-full bg-bluelab text-paper transition-all duration-300 {{ $on ? 'scale-100 opacity-100' : 'scale-50 opacity-0' }}">
-                                    <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.4 2.4 4.6-5"/></svg>
+
+                                {{-- Tampilan tablet ke atas: kartu --}}
+                                <span class="hidden flex-col items-start justify-start p-4 sm:flex">
+                                    <span class="flex w-full items-center justify-between gap-2">
+                                        <span class="krm-readout rounded-[6px] border border-kraft/25 px-1.5 py-0.5 text-[10.5px] text-kraft/75">
+                                            {{ $bean->traceability?->process }}
+                                        </span>
+                                        <span class="grid h-5 w-5 place-items-center rounded-full bg-bluelab text-paper transition-all duration-300 {{ $on ? 'scale-100 opacity-100' : 'scale-50 opacity-0' }}">
+                                            <svg viewBox="0 0 12 12" class="h-3 w-3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3l2.4 2.4 4.6-5"/></svg>
+                                        </span>
+                                    </span>
+                                    <x-coffee-bag :coffee="$bean" class="mx-auto mt-3 h-[128px] transition-transform duration-300 group-hover:-translate-y-0.5" />
+                                    <span class="mt-3 block font-display text-[15.5px] font-semibold leading-snug text-labwhite">{{ $short }}</span>
+                                    <span class="mt-1.5 block text-[12.5px] leading-snug text-kraft/65">
+                                        {{ $reg }} <span class="text-kraft/40">·</span> {{ $ctry }}
+                                    </span>
+                                    <span class="krm-readout mt-4 flex items-baseline gap-1 text-bluelab">
+                                        <span class="text-[1.15rem]">{{ number_format($bean->cupping_score, 1) }}</span>
+                                        <span class="text-[10.5px] text-kraft/50">SCA</span>
+                                    </span>
                                 </span>
-                            </span>
-                            <x-coffee-bag :coffee="$bean" class="mx-auto mt-3 h-[128px] transition-transform duration-300 group-hover:-translate-y-0.5" />
-                            <span class="mt-3 block font-display text-[15.5px] font-semibold leading-snug text-labwhite">
-                                {{ \Illuminate\Support\Str::of($bean->name)->replace([' Washed',' Natural',' Honey',' Wet-Hulled',' Anaerobic'], '') }}
-                            </span>
-                            <span class="mt-1.5 block text-[12.5px] leading-snug text-kraft/65">
-                                {{ \Illuminate\Support\Str::before($bean->traceability?->region ?? '', ',') }}
-                                <span class="text-kraft/40">·</span>
-                                {{ \Illuminate\Support\Str::afterLast($bean->traceability?->region ?? '', ', ') }}
-                            </span>
-                            <span class="krm-readout mt-4 flex items-baseline gap-1 text-bluelab">
-                                <span class="text-[1.15rem]">{{ number_format($bean->cupping_score, 1) }}</span>
-                                <span class="text-[10.5px] text-kraft/50">SCA</span>
-                            </span>
+                            </button>
+                        @endforeach
+                    </div>
+
+                    @if ($beanCount > 5)
+                        <button type="button" x-show="!all && {{ $beanCount }} > max" x-cloak @click="all = true"
+                                class="mt-3 w-full rounded border border-kraft/30 py-2.5 text-[13.5px] font-semibold text-kraft transition-colors hover:border-kraft/60 hover:text-labwhite">
+                            {{ __('Tampilkan semua :n biji', ['n' => $beanCount]) }}
                         </button>
-                    @endforeach
+                    @endif
                 </div>
 
                 @if ($this->coffee?->story)

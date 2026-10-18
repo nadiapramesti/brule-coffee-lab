@@ -82,3 +82,10 @@ it('lays out the post-payment stages as a vertical list on phones, not a hidden 
 
     expect($html)->not->toContain('snap-x')->not->toContain('overflow-x-auto px-6');
 });
+
+it('lists the builder beans as phone rows and collapses long lists behind a show-all button', function () {
+    $this->seed();
+    $html = $this->get('/builder')->assertOk()->getContent();
+
+    expect($html)->not->toContain('snap-x')->toContain('sm:hidden')->toContain('innerWidth < 640');
+});
