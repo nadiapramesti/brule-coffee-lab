@@ -51,8 +51,8 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 Butuh PHP 8.3+, Composer, Node 20+, dan MySQL (Laragon cukup).
 
 ```bash
-git clone https://github.com/nadiapramesti/kromatik-coffee-lab.git
-cd kromatik-coffee-lab
+git clone https://github.com/nadiapramesti/brule-coffee-lab.git
+cd brule-coffee-lab
 composer install
 npm install
 
