@@ -27,7 +27,7 @@ class NoticeSeeder extends Seeder
         ];
         if ($customer) {
             $mine = Order::where('user_id', $customer->id)->latest('id')->first();
-            $rows[] = [$customer, 'ship', 'Pesananmu dikirim', ':code · resi :r', ['code' => $mine?->order_code ?? 'KRM-0000', 'r' => 'JNE0012345678'], $mine ? route('track', $mine->order_code, false) : null, now()->subHours(2)];
+            $rows[] = [$customer, 'ship', 'Pesananmu dikirim', ':code · resi :r', ['code' => $mine?->order_code ?? 'BRL-0000', 'r' => 'JNE0012345678'], $mine ? route('track', $mine->order_code, false) : null, now()->subHours(2)];
         }
 
         foreach ($rows as [$u, $type, $title, $body, $params, $url, $at]) {

@@ -42,7 +42,7 @@ class OrderSeeder extends Seeder
         foreach ($orders as $i => [$email, $status, $daysAgo, $lines]) {
             $user = User::where('email', $email)->firstOrFail();
             $at   = now()->subDays($daysAgo)->setTime(9 + ($i % 8), 15 + $i * 3);
-            $code = sprintf('KRM-%s-%04d', $at->format('Ymd'), $i + 1);
+            $code = sprintf('BRL-%s-%04d', $at->format('Ymd'), $i + 1);
 
             $order = Order::firstOrNew(['order_code' => $code]);
             $order->items()->delete();

@@ -84,7 +84,7 @@ it('shows only own notices, marks read and opens target', function () {
 });
 
 it('marks all as read and follows the viewer locale', function () {
-    Notice::send($this->customer, 'status', 'Pesanan selesai', 'Pesanan :code selesai. Selamat menyeduh!', ['code' => 'KRM-1']);
+    Notice::send($this->customer, 'status', 'Pesanan selesai', 'Pesanan :code selesai. Selamat menyeduh!', ['code' => 'BRL-1']);
     Notice::send($this->customer, 'status', 'Pesanan selesai', null);
 
     $t = Livewire::actingAs($this->customer)->test(Notifications::class);

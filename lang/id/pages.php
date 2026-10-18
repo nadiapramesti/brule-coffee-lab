@@ -24,7 +24,7 @@ return [
             ]],
             ['title' => 'Pengiriman', 'items' => [
                 ['q' => 'Berapa ongkos kirimnya?', 'a' => 'Ongkir flat Rp:flat per pesanan. :free'],
-                ['q' => 'Bagaimana melacak pesanan?', 'a' => 'Masukkan kode pesanan (format KRM-TANGGAL-NOMOR) di halaman Lacak pesanan. Tahapannya: Masuk Antrian, Disangrai, Digiling, Dikemas, Dikirim, Selesai. Nomor resi muncul begitu paket dikirim.'],
+                ['q' => 'Bagaimana melacak pesanan?', 'a' => 'Masukkan kode pesanan (format BRL-TANGGAL-NOMOR) di halaman Lacak pesanan. Tahapannya: Masuk Antrian, Disangrai, Digiling, Dikemas, Dikirim, Selesai. Nomor resi muncul begitu paket dikirim.'],
                 ['q' => 'Saya salah menulis alamat. Bagaimana?', 'a' => 'Hubungi kami di WhatsApp :wa secepatnya, sebelum pesanan berstatus Dikirim, dengan menyebutkan kode pesananmu.'],
             ]],
             ['title' => 'Pembatalan', 'items' => [

@@ -3,7 +3,7 @@
 
     <form wire:submit="search" class="mt-6 flex gap-2.5">
         <label for="q" class="sr-only">{{ __('Kode pesanan') }}</label>
-        <input id="q" wire:model="query" placeholder="KRM-20261016-0001" autocomplete="off"
+        <input id="q" wire:model="query" placeholder="BRL-20261016-0001" autocomplete="off"
                class="krm-readout min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-4 py-3.5 text-[15px] uppercase text-labwhite placeholder:normal-case placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
         <button class="rounded bg-bluelab px-6 font-display text-[15px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Cari') }}</button>
     </form>

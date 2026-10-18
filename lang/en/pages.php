@@ -21,7 +21,7 @@ return [
             ]],
             ['title' => 'Shipping', 'items' => [
                 ['q' => 'How much is shipping?', 'a' => 'Flat Rp:flat per order. :free'],
-                ['q' => 'How do I track my order?', 'a' => 'Enter your order code (format KRM-DATE-NUMBER) on the Track order page. Stages: In queue, Roasting, Grinding, Packing, Shipped, Completed. The tracking number appears as soon as the parcel ships.'],
+                ['q' => 'How do I track my order?', 'a' => 'Enter your order code (format BRL-DATE-NUMBER) on the Track order page. Stages: In queue, Roasting, Grinding, Packing, Shipped, Completed. The tracking number appears as soon as the parcel ships.'],
                 ['q' => 'I typed the wrong address. What now?', 'a' => 'Message us on WhatsApp :wa as soon as possible, before the order is Shipped, with your order code.'],
             ]],
             ['title' => 'Cancellation', 'items' => [

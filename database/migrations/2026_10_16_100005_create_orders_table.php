@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
-            $table->string('order_code')->unique(); // KRM-20261016-0001
+            $table->string('order_code')->unique(); // BRL-20261016-0001
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
 
             $table->enum('status', [
