@@ -57,25 +57,50 @@
      wadah min-h-screen supaya tinggi halaman = 1 layar + ruang ini, bukan lebih. --}}
 <div class="krm-kbspacer" aria-hidden="true"></div>
 <script>
+    /* Naikkan kolom yang fokus ke dekat atas area yang terlihat (di atas keyboard).
+       Diukur dari visualViewport dan digeser sebesar selisihnya saja, karena Chrome HP sering
+       sudah menggeser sendiri saat keyboard muncul; menghitung dari layout saja bikin dobel. */
     if (!window.__krmKb) {
         window.__krmKb = true;
-        var kbTimer, TOP_GAP = 220;
+        var kbTimer, placeTimer, current = null;
+        var vv = window.visualViewport;
+        function place(el) {
+            if (!el || el !== document.activeElement) return;
+            var sp = document.querySelector('.krm-kbspacer');
+            var viewH = vv ? vv.height : window.innerHeight;
+            var offTop = vv ? vv.offsetTop : 0;
+            var gap = Math.min(180, viewH * 0.3);
+            var visTop = el.getBoundingClientRect().top - offTop;
+            var delta = visTop - gap;
+            if (!(delta > 8 || visTop < 40)) return;
+            var natural = document.documentElement.scrollHeight - sp.offsetHeight;
+            var wanted = Math.max(0, window.scrollY + delta);
+            var need = Math.max(0, wanted + window.innerHeight - natural);
+            if (need > sp.offsetHeight) sp.style.height = need + 'px';
+            window.scrollTo({ top: wanted, behavior: 'smooth' });
+        }
         document.addEventListener('focusin', function (e) {
             var el = e.target;
             if (!el.matches || !el.matches('input:not([type=checkbox]):not([type=radio]), textarea, select')) return;
             if (!window.matchMedia('(max-width: 639px)').matches) return;
             clearTimeout(kbTimer);
-            var sp = document.querySelector('.krm-kbspacer');
-            var natural = document.documentElement.scrollHeight - sp.offsetHeight;
-            var target = Math.max(0, el.getBoundingClientRect().top + window.scrollY - TOP_GAP);
-            sp.style.height = Math.max(0, target - Math.max(0, natural - window.innerHeight)) + 'px';
-            setTimeout(function () { window.scrollTo({ top: target, behavior: 'smooth' }); }, 300);
+            current = el;
+            clearTimeout(placeTimer);
+            placeTimer = setTimeout(function () { place(el); }, 350);
+        });
+        if (vv) vv.addEventListener('resize', function () {
+            if (!current) return;
+            clearTimeout(placeTimer);
+            placeTimer = setTimeout(function () { place(current); }, 250);
         });
         document.addEventListener('focusout', function () {
+            clearTimeout(placeTimer);
             kbTimer = setTimeout(function () {
+                if (document.activeElement && document.activeElement.matches && document.activeElement.matches('input, textarea, select')) return;
+                current = null;
                 var sp = document.querySelector('.krm-kbspacer');
                 if (sp) sp.style.height = '0px';
-            }, 200);
+            }, 250);
         });
     }
 </script>
