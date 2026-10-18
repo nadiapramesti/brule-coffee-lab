@@ -129,7 +129,7 @@ Di Roast builder, bagian "Campur dengan biji lain" menggabungkan dua biji dengan
 
 ## Lisensi
 
-Kode dirilis dengan [lisensi MIT](LICENSE). Logo, nama, dan foto kemasan BRÛLÉ adalah aset merek dan tidak termasuk dalam lisensi ini.
+Copyright © 2026 Nadia Pramesti. [All rights reserved](LICENSE): repositori ini dibuka untuk dilihat sebagai portofolio dan tugas kuliah, dan kode maupun asetnya (termasuk logo, nama, dan foto BRÛLÉ) tidak boleh disalin, dimodifikasi, atau dipakai tanpa izin tertulis. Pustaka pihak ketiga tetap di bawah lisensi masing-masing.
 
 ## Kredit
 
