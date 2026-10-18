@@ -58,7 +58,7 @@
                 <tbody class="divide-y divide-kraft/10">
                     @foreach ($orders as $row)
                         <tr wire:key="r-{{ $row->id }}" wire:click="show('{{ $row->order_code }}')" class="cursor-pointer transition-colors hover:bg-labwhite/[.03] {{ $open === $row->order_code ? 'bg-bluelab/10' : '' }}">
-                            <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}</td>
+                            <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}@if ($row->hasAddons()) <span class="ml-1.5 rounded-[6px] border border-bluelab/50 px-1.5 py-px font-sans text-[10.5px] text-bluelab" title="{{ $row->addonLabel() }}">{{ __('Hadiah') }}</span>@endif</td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $row->user?->name ?? $row->recipient_name }}</td>
                             <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->groupedItems()->map(fn ($i) => $i->coffee_name_snapshot . ' ' . $i->grams . 'g' . ($i->qty > 1 ? ' ×' . $i->qty : ''))->implode(', ') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $row->created_at->translatedFormat('j M, H:i') }}</td>
