@@ -225,7 +225,7 @@
                 <button type="button" @click="reset()" class="mt-5 rounded border border-kraft/35 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">{{ __('Reset pencarian') }}</button>
             </div>
 
-            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 has-[[aria-expanded=true]]:items-start">
                 @foreach ($this->coffees as $bean)
                     @php
                         $t = $bean->traceability; $sig = $bean->signatureProfile();
