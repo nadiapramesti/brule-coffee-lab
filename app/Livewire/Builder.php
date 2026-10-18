@@ -143,6 +143,7 @@ class Builder extends Component
     /** Masukkan racikan ini ke keranjang. Harga tidak disimpan; keranjang menghitung ulang dari database. */
     public function addToCart()
     {
+        abort_if(auth()->user()?->isStaff(), 403, __('Akun admin dan roaster tidak untuk belanja.'));
         abort_unless($this->profile && $this->stockOk, 422);
 
         if (! \App\Support\Cart::add($this->profile->id, $this->grams, $this->grind)) {

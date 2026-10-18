@@ -37,8 +37,12 @@ class Account extends Component
     public int $rating = 0;
     public string $reviewBody = '';
 
-    public function mount(): void
+    public function mount()
     {
+        if (auth()->user()->isStaff()) {
+            return $this->redirectRoute(auth()->user()->homeRoute());
+        }
+
         $this->tab = in_array($this->tab, ['pesanan', 'alamat'], true) ? $this->tab : 'pesanan';
         $this->filter = in_array($this->filter, self::FILTERS, true) ? $this->filter : 'semua';
     }

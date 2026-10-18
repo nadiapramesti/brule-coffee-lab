@@ -292,7 +292,12 @@
                         <span class="krm-readout text-[1.9rem] font-medium leading-none">Rp{{ number_format($this->price, 0, ',', '.') }}</span>
                     </div>
 
-                    @if ($this->stockOk)
+                    @if (auth()->user()?->isStaff())
+                        <div class="mt-6 rounded border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/75">
+                            {{ __('Kamu masuk sebagai :role, jadi ini mode lihat saja. Belanja memakai akun pembeli.', ['role' => auth()->user()->isAdmin() ? 'admin' : 'roaster']) }}
+                            <a href="{{ route(auth()->user()->homeRoute()) }}" class="mt-3 block font-display text-[14px] font-semibold text-bluetext hover:underline">{{ __('Buka panel') }} &rarr;</a>
+                        </div>
+                    @elseif ($this->stockOk)
                         <button type="button" wire:click="addToCart"
                                 class="mt-6 w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] hover:shadow-[0_10px_28px_-10px_rgba(42,93,176,.9)] active:scale-[.99]">
                             {{ __('Tambah ke keranjang') }}
@@ -313,7 +318,7 @@
     </div>
 
     {{-- Bar total untuk layar kecil: panel asli ada jauh di bawah --}}
-    @if ($this->stockOk)
+    @if ($this->stockOk && ! auth()->user()?->isStaff())
         <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-surface/95 px-4 py-3 backdrop-blur lg:hidden">
             <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-4">
                 <div class="min-w-0">

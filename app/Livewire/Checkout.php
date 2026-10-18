@@ -33,6 +33,10 @@ class Checkout extends Component
 
     public function mount()
     {
+        if (auth()->user()?->isStaff()) {
+            return $this->redirectRoute(auth()->user()->homeRoute());
+        }
+
         if (request()->query('p')) {
             $g = (int) request()->query('g');
             $grind = (string) request()->query('grind');

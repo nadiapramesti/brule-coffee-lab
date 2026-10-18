@@ -51,6 +51,22 @@ class User extends Authenticatable
         return $this->role === 'admin';
     }
 
+    /** Admin dan roaster bekerja di panel, bukan belanja di toko. */
+    public function isStaff(): bool
+    {
+        return in_array($this->role, ['admin', 'roaster'], true);
+    }
+
+    /** Nama rute tempat kerja masing-masing peran. */
+    public function homeRoute(): string
+    {
+        return match (true) {
+            $this->isAdmin() => 'admin.dashboard',
+            $this->isRoaster() => 'roastery',
+            default => 'account',
+        };
+    }
+
     /** Admin boleh melakukan apa pun yang boleh dilakukan roaster. */
     public function isRoaster(): bool
     {

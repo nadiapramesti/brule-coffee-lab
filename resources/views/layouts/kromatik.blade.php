@@ -6,7 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     @php
-        $seoTitle = $title ?? 'KROMATIK — Specialty Coffee Lab';
+        $staff = auth()->check() && auth()->user()->isStaff();
+        $seoTitle = $title ?? 'BRÛLÉ — Specialty Coffee Lab';
         $seoDesc = $description ?? __('Kopi specialty yang disangrai setelah pesanan masuk. Pilih bijinya, level sangrainya, dan ukuran gilingannya.');
         $seoUrl = url()->current();
     @endphp
@@ -14,7 +15,7 @@
     <meta name="description" content="{{ $seoDesc }}">
     <link rel="canonical" href="{{ $seoUrl }}">
     <meta property="og:type" content="website">
-    <meta property="og:site_name" content="KROMATIK">
+    <meta property="og:site_name" content="BRÛLÉ">
     <meta property="og:title" content="{{ $seoTitle }}">
     <meta property="og:description" content="{{ $seoDesc }}">
     <meta property="og:url" content="{{ $seoUrl }}">
@@ -43,7 +44,7 @@
     </a>
 
     @php $freeFrom = \App\Models\Setting::int('free_shipping_from'); @endphp
-    @if ($freeFrom > 0)
+    @if ($freeFrom > 0 && ! $staff)
         <div class="krm-dark bg-bluelab px-6 py-2 text-center text-[12.5px] text-paper" data-promo-bar>
             {{ __('Gratis ongkir untuk belanja mulai Rp:n', ['n' => number_format($freeFrom, 0, ',', '.')]) }}
             <span class="hidden sm:inline"><span class="mx-2 opacity-50" aria-hidden="true">•</span>{{ __('Disangrai setelah pesanan masuk') }}</span>
@@ -69,7 +70,7 @@
             <div class="hidden items-center gap-3 md:flex"><x-lang-switch class="flex" /><x-theme-toggle /></div>
 
             <div class="hidden items-center gap-3 sm:flex">
-                <livewire:cart-badge />
+                @unless ($staff)<livewire:cart-badge />@endunless
                 @auth
                     <livewire:notifications />
                     <div class="relative" x-data="{ menu: false }" @click.outside="menu = false" @keydown.escape.window="menu = false">
@@ -98,16 +99,23 @@
                         {{ __('Masuk') }}
                     </a>
                 @endauth
-                {{-- Satu aksi utama per layar: di beranda tombol ini baru muncul setelah hero lewat, di builder tidak perlu. --}}
-                <a href="{{ route('builder') }}" x-show="land ? !top : !build" x-cloak x-transition.opacity.duration.200ms
-                   class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
-                    {{ __('Racik kopimu') }}
-                </a>
+                {{-- Satu aksi utama per layar. Pembeli: racik kopi. Admin/roaster: kembali ke panel kerjanya. --}}
+                @if ($staff)
+                    <a href="{{ route(auth()->user()->homeRoute()) }}"
+                       class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
+                        {{ __('Buka panel') }}
+                    </a>
+                @else
+                    <a href="{{ route('builder') }}" x-show="land ? !top : !build" x-cloak x-transition.opacity.duration.200ms
+                       class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
+                        {{ __('Racik kopimu') }}
+                    </a>
+                @endif
             </div>
 
             <div class="flex items-center gap-2 md:hidden">
                 <x-theme-toggle />
-                <livewire:cart-badge />
+                @unless ($staff)<livewire:cart-badge />@endunless
                 @auth<div class="sm:hidden"><livewire:notifications /></div>@endauth
             {{-- Tombol menu, hanya di layar sempit --}}
             <button type="button"
@@ -139,7 +147,11 @@
             @else
                 <a href="{{ route('login') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Masuk') }}</a>
             @endauth
-            <a href="{{ route('builder') }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Racik kopimu') }}</a>
+            @if ($staff)
+                <a href="{{ route(auth()->user()->homeRoute()) }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Buka panel') }}</a>
+            @else
+                <a href="{{ route('builder') }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Racik kopimu') }}</a>
+            @endif
             <x-lang-switch class="mt-4 flex pb-1" />
         </nav>
     </header>

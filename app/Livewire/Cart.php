@@ -13,6 +13,13 @@ use Livewire\Component;
 #[Title('Keranjang - BRÛLÉ')]
 class Cart extends Component
 {
+    public function mount()
+    {
+        if (auth()->user()?->isStaff()) {
+            return $this->redirectRoute(auth()->user()->homeRoute());
+        }
+    }
+
     #[Computed]
     public function lines()
     {

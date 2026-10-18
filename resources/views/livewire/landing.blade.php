@@ -37,10 +37,18 @@
                 </p>
 
                 <div class="mt-9 flex flex-wrap items-center gap-3" data-reveal style="--d:240ms">
-                    <a href="{{ route('builder') }}"
-                       class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
-                        {{ __('Racik kopimu') }}
-                    </a>
+                    {{-- Pembeli diajak meracik; admin/roaster diarahkan ke panel kerjanya. --}}
+                    @if (auth()->user()?->isStaff())
+                        <a href="{{ route(auth()->user()->homeRoute()) }}"
+                           class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
+                            {{ __('Buka panel') }}
+                        </a>
+                    @else
+                        <a href="{{ route('builder') }}"
+                           class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
+                            {{ __('Racik kopimu') }}
+                        </a>
+                    @endif
                     <a href="#biji"
                        class="group inline-flex items-center gap-2 px-2 py-3.5 font-display text-[15px] font-semibold text-kraft transition-colors hover:text-labwhite">
                         {{ __('Lihat biji yang ada') }}

@@ -826,5 +826,8 @@
     "Menampilkan :shown dari :n lot": "Showing :shown of :n lots",
     "Tampilkan :n lot lagi": "Show :n more lots",
     "Sisa :n lot": ":n lots left",
-    "Tampilkan semua :n biji": "Show all :n beans"
+    "Tampilkan semua :n biji": "Show all :n beans",
+    "Buka panel": "Open panel",
+    "Akun admin dan roaster tidak untuk belanja.": "Admin and roaster accounts cannot place orders.",
+    "Kamu masuk sebagai :role, jadi ini mode lihat saja. Belanja memakai akun pembeli.": "You are signed in as :role, so this is view-only. Use a customer account to place orders."
 }
