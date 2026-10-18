@@ -87,6 +87,7 @@ class SalesReport
             'revenue' => $revenue,
             'goods' => (int) $o->sum('subtotal'),
             'shipping' => (int) $o->sum('shipping_cost'),
+            'addons' => (int) $o->sum('addon_cost'),
             'discount' => (int) $o->sum('discount'),
             'grams' => (int) $o->flatMap->items->sum('grams'),
             'aov' => $o->count() ? (int) round($revenue / $o->count()) : 0,

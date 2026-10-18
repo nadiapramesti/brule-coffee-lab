@@ -16,6 +16,14 @@ class Coffee extends Model
         'stock_green_bean_gram', 'cupping_score', 'is_active',
     ];
 
+    /** Nama proses yang ikut di belakang nama kopi; dibuang untuk nama pendek di kartu dan label kemasan. */
+    public const PROCESS_WORDS = [' Washed', ' Natural', ' Honey', ' Wet-Hulled', ' Anaerobic', ' Carbonic Maceration'];
+
+    public function shortName(): string
+    {
+        return trim(str_replace(self::PROCESS_WORDS, '', $this->name));
+    }
+
     /** Cerita kopi sesuai bahasa aktif; jatuh ke Indonesia kalau terjemahannya kosong. */
     public function localizedStory(): ?string
     {

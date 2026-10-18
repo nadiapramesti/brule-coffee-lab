@@ -36,7 +36,8 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 - Landing dengan katalog kartu produk: harga mulai dari, status stok, rating, pencarian, sortir, dan filter proses.
 - Roast builder dengan flavor wheel dan kromatogram aroma; kantong kemasan dirender SVG per kopi.
 - Keranjang multi-item (tamu di session, user login di database; keranjang tamu digabung saat login).
-- Checkout dengan voucher, ongkir (gratis di atas batas tertentu), bayar online (simulasi) atau COD (bisa dimatikan / dibatasi nominalnya).
+- Roast builder: 14 biji demo (6 proses, termasuk Carbonic Maceration), 4 level sangrai, 6 gilingan, berat 100 g / 200 g / 250 g / 500 g / 1 kg.
+- Checkout dengan add-on opsional (kemasan hadiah, kartu ucapan; harga diatur admin, disimpan per pesanan), voucher, ongkir (gratis di atas batas tertentu), bayar online (simulasi) atau COD (bisa dimatikan / dibatasi nominalnya).
 - Lacak pesanan per tahap produksi, riwayat pesanan + "Beli lagi", buku alamat, ulasan pembeli terverifikasi.
 - Email transaksi (pesanan diterima, lunas, dikirim + resi, dibatalkan), notifikasi dalam aplikasi, login Google/Facebook (opsional).
 - FAQ dan kebijakan (ID/EN), tema terang/gelap, dua bahasa ID/EN, halaman error bermerek, SEO dasar + sitemap.

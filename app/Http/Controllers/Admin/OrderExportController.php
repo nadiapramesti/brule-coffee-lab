@@ -38,14 +38,14 @@ class OrderExportController extends Controller
 
         $bin = SimpleXlsx::build(
             __('Pesanan'),
-            ['Kode', 'Tanggal', 'Status', 'Pelanggan', 'Email', 'Penerima', 'Telepon', 'Alamat', 'Item', 'Berat (g)', 'Subtotal', 'Ongkir', 'Total', 'Resi', 'Dibayar', 'Dikirim'],
+            ['Kode', 'Tanggal', 'Status', 'Pelanggan', 'Email', 'Penerima', 'Telepon', 'Alamat', 'Item', 'Berat (g)', 'Subtotal', 'Ongkir', 'Tambahan', 'Total', 'Resi', 'Dibayar', 'Dikirim'],
             $orders->map(fn ($o) => [
                 $o->order_code, $o->created_at->format('Y-m-d H:i'), __(Order::STATUS_LABELS[$o->status] ?? $o->status),
                 $o->user?->name, $o->user?->email, $o->recipient_name, $o->recipient_phone, $o->shipping_address,
-                $this->items($o), (int) $o->items->sum('grams'), (int) $o->subtotal, (int) $o->shipping_cost, (int) $o->total, $o->tracking_number,
+                $this->items($o), (int) $o->items->sum('grams'), (int) $o->subtotal, (int) $o->shipping_cost, (int) $o->addon_cost, (int) $o->total, $o->tracking_number,
                 $o->paid_at?->format('Y-m-d H:i'), $o->shipped_at?->format('Y-m-d H:i'),
             ]),
-            [16, 17, 18, 20, 26, 20, 15, 38, 52, 10, 12, 10, 12, 18, 17, 17],
+            [16, 17, 18, 20, 26, 20, 15, 38, 52, 10, 12, 10, 11, 12, 18, 17, 17],
         );
 
         return response($bin, 200, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Content-Disposition' => "attachment; filename=\"$base.xlsx\""]);

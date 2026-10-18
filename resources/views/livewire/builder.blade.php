@@ -57,7 +57,7 @@
                         @foreach ($this->coffees as $bean)
                             @php
                                 $on = $this->coffeeId === $bean->id;
-                                $short = \Illuminate\Support\Str::of($bean->name)->replace([' Washed',' Natural',' Honey',' Wet-Hulled',' Anaerobic'], '');
+                                $short = $bean->shortName();
                                 $reg = \Illuminate\Support\Str::before($bean->traceability?->region ?? '', ',');
                                 $ctry = \Illuminate\Support\Str::afterLast($bean->traceability?->region ?? '', ', ');
                             @endphp
@@ -222,8 +222,8 @@
                     {{ __('Berat') }}
                 </h2>
 
-                <div class="mt-5 grid max-w-xl grid-cols-3 gap-3">
-                    @foreach ([200, 500, 1000] as $g)
+                <div class="mt-5 grid max-w-2xl grid-cols-3 gap-3 sm:grid-cols-5">
+                    @foreach (\App\Support\Cart::GRAMS as $g)
                         @php $on = $grams === $g; @endphp
                         <button type="button" wire:click="setGrams({{ $g }})"
                                 aria-pressed="{{ $on ? 'true' : 'false' }}"

@@ -57,6 +57,7 @@
             <tr><td colspan="4" class="r muted">{{ __('Subtotal') }}</td><td class="r">Rp {{ number_format($order->subtotal, 0, ',', '.') }}</td></tr>
             @if ($order->discount ?? 0)<tr><td colspan="4" class="r muted">{{ __('Diskon') }}@if ($order->voucher_code) ({{ $order->voucher_code }})@endif</td><td class="r">- Rp {{ number_format($order->discount, 0, ',', '.') }}</td></tr>@endif
             <tr><td colspan="4" class="r muted">{{ __('Ongkir') }}</td><td class="r">{{ $order->shipping_cost ? 'Rp ' . number_format($order->shipping_cost, 0, ',', '.') : __('Gratis') }}</td></tr>
+            @if ($order->addon_cost)<tr><td colspan="4" class="r muted">{{ __('Tambahan') }} ({{ $order->addonLabel() }})</td><td class="r">Rp {{ number_format($order->addon_cost, 0, ',', '.') }}</td></tr>@endif
             <tr><td colspan="4" class="r"><b>{{ __('Total') }}</b></td><td class="r"><b>Rp {{ number_format($order->total, 0, ',', '.') }}</b></td></tr>
         </tfoot>
     </table>
@@ -71,6 +72,8 @@
         <b>{{ $order->recipient_name }}</b> · {{ $order->recipient_phone }}<br>
         {{ $order->shipping_address }}
         <div class="muted" style="margin-top:8px">{{ __('Isi paket') }}: <b style="color:#111">{{ $order->items->count() }} {{ __('bungkus') }} · {{ number_format($order->items->sum('grams'), 0, ',', '.') }} g</b></div>
+        @if ($order->gift_wrap)<div class="muted" style="margin-top:4px">{{ __('Kemasan hadiah') }}: <b style="color:#111">{{ __('Ya') }}</b></div>@endif
+        @if (filled($order->card_message))<div class="muted" style="margin-top:4px">{{ __('Kartu ucapan') }}: <b style="color:#111">&ldquo;{{ $order->card_message }}&rdquo;</b></div>@endif
         @if ($order->tracking_number)<div class="muted" style="margin-top:4px">{{ __('Resi') }}: <b style="color:#111">{{ $order->tracking_number }}</b></div>@endif
     </div>
     <p class="muted" style="margin-top:22px">{{ __('Disangrai setelah pesanan masuk. Terima kasih sudah memilih BRÛLÉ.') }}</p>

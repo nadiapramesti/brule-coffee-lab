@@ -212,9 +212,20 @@
                             <div class="flex justify-between text-kraft/65"><dt>{{ __('Subtotal') }}</dt><dd class="krm-readout">{{ $rp($o->subtotal) }}</dd></div>
                             @if ($o->discount ?? 0)<div class="flex justify-between text-kraft/65"><dt>{{ __('Diskon') }}@if ($o->voucher_code) ({{ $o->voucher_code }})@endif</dt><dd class="krm-readout">- {{ $rp($o->discount) }}</dd></div>@endif
                             <div class="flex justify-between text-kraft/65"><dt>{{ __('Ongkir') }}</dt><dd class="krm-readout">{{ $o->shipping_cost ? $rp($o->shipping_cost) : __('Gratis') }}</dd></div>
+                            @if ($o->addon_cost)<div class="flex justify-between text-kraft/65"><dt>{{ __('Tambahan') }} ({{ $o->addonLabel() }})</dt><dd class="krm-readout">{{ $rp($o->addon_cost) }}</dd></div>@endif
                             <div class="flex justify-between border-t border-kraft/10 pt-2 text-[14px] font-semibold"><dt>{{ __('Total') }}</dt><dd class="krm-readout">{{ $rp($o->total) }}</dd></div>
                         </dl>
                     </section>
+
+                    @if ($o->hasAddons())
+                        <section class="rounded border border-bluelab/40 bg-bluelab/[.07] p-4">
+                            <h3 class="text-[12.5px] font-semibold">{{ __('Untuk tim roastery') }}</h3>
+                            <ul class="mt-2 space-y-1.5 text-[13px]">
+                                @if ($o->gift_wrap)<li>{{ __('Pakai kemasan hadiah (kotak kraft + pita).') }}</li>@endif
+                                @if (filled($o->card_message))<li>{{ __('Selipkan kartu ucapan:') }} <span class="italic">&ldquo;{{ $o->card_message }}&rdquo;</span></li>@endif
+                            </ul>
+                        </section>
+                    @endif
 
                     {{-- Catatan --}}
                     <section class="rounded border border-kraft/20 p-4">

@@ -23,7 +23,7 @@ class ReportExportController extends Controller
 
         $summary = [
             [__('Jumlah pesanan dibayar'), $s['orders']], [__('Omzet (total dibayar)'), $s['revenue']], [__('Penjualan kopi'), $s['goods']],
-            [__('Ongkir'), $s['shipping']], [__('Diskon voucher'), $s['discount']], [__('Rata-rata per pesanan'), $s['aov']], [__('Berat terjual (g)'), $s['grams']],
+            [__('Ongkir'), $s['shipping']], [__('Tambahan (kemasan hadiah, kartu)'), $s['addons']], [__('Diskon voucher'), $s['discount']], [__('Rata-rata per pesanan'), $s['aov']], [__('Berat terjual (g)'), $s['grams']],
         ];
         $series = array_map(fn ($x) => [$x['label'], $x['count'], $x['total']], $r->series());
         $coffee = $r->byCoffee()->map(fn ($x) => [$x['name'], $x['orders'], $x['grams'], $x['revenue']])->all();
@@ -44,7 +44,7 @@ class ReportExportController extends Controller
         }
 
         $orders = $r->orders()->map(fn ($o) => [
-            $o->order_code, $o->paid_at->format('Y-m-d H:i'), $o->user?->name, $o->voucher_code, (int) $o->subtotal, (int) $o->shipping_cost, (int) $o->discount, (int) $o->total,
+            $o->order_code, $o->paid_at->format('Y-m-d H:i'), $o->user?->name, $o->voucher_code, (int) $o->subtotal, (int) $o->shipping_cost, (int) $o->addon_cost, (int) $o->discount, (int) $o->total,
             (int) $o->items->sum('grams'),
         ])->all();
 
@@ -54,7 +54,7 @@ class ReportExportController extends Controller
             ['name' => __('Per kopi'), 'headers' => [__('Kopi'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $coffee, 'widths' => [36, 12, 14, 16]],
             ['name' => __('Per level roast'), 'headers' => [__('Level'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $level, 'widths' => [24, 12, 14, 16]],
             ['name' => __('Voucher'), 'headers' => [__('Kode'), __('Dipakai'), __('Total diskon')], 'rows' => $voucher, 'widths' => [24, 12, 16]],
-            ['name' => __('Pesanan'), 'headers' => [__('Kode'), __('Dibayar'), __('Pelanggan'), __('Voucher'), __('Kopi'), __('Ongkir'), __('Diskon'), __('Total'), __('Berat (g)')], 'rows' => $orders, 'widths' => [22, 17, 22, 16, 14, 12, 12, 14, 12]],
+            ['name' => __('Pesanan'), 'headers' => [__('Kode'), __('Dibayar'), __('Pelanggan'), __('Voucher'), __('Kopi'), __('Ongkir'), __('Tambahan'), __('Diskon'), __('Total'), __('Berat (g)')], 'rows' => $orders, 'widths' => [22, 17, 22, 16, 14, 12, 12, 12, 14, 12]],
         ]);
 
         return response($bin, 200, ['Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Content-Disposition' => "attachment; filename=\"$base.xlsx\""]);

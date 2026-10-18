@@ -50,6 +50,40 @@
                 </label>
             @endif
 
+            @if (\App\Models\Order::addonsEnabled())
+                @php
+                    $addonPrice = fn (int $n) => $n > 0 ? '+ Rp'.number_format($n, 0, ',', '.') : __('Gratis');
+                @endphp
+                <fieldset>
+                    <legend class="text-[13px] text-kraft/75">{{ __('Tambahan (opsional)') }}</legend>
+                    <div class="mt-2 space-y-3">
+                        <label class="flex cursor-pointer gap-3 rounded border p-4 transition-colors {{ $giftWrap ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 hover:border-kraft/50' }}">
+                            <input type="checkbox" wire:model.live="giftWrap" class="mt-1 h-4 w-4 shrink-0 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                            <span class="min-w-0 flex-1">
+                                <span class="flex items-baseline justify-between gap-3">
+                                    <span class="text-[14.5px] font-semibold">{{ __('Kemasan hadiah') }}</span>
+                                    <span class="krm-readout shrink-0 text-[13px] text-kraft/75">{{ $addonPrice(\App\Models\Order::giftWrapPrice()) }}</span>
+                                </span>
+                                <span class="mt-0.5 block text-[12.5px] leading-relaxed text-kraft/65">{{ __('Bungkus kopi dimasukkan ke kotak kraft dan diikat pita, siap diberikan.') }}</span>
+                            </span>
+                        </label>
+
+                        <div class="rounded border p-4 transition-colors {{ trim($cardMessage) !== '' ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25' }}">
+                            <div class="flex items-baseline justify-between gap-3">
+                                <label for="card" class="text-[14.5px] font-semibold">{{ __('Kartu ucapan') }}</label>
+                                <span class="krm-readout shrink-0 text-[13px] text-kraft/75">{{ $addonPrice(\App\Models\Order::cardPrice()) }}</span>
+                            </div>
+                            <p class="mt-0.5 text-[12.5px] leading-relaxed text-kraft/65">{{ __('Pesanmu ditulis tangan dan diselipkan di paket. Kosongkan kalau tidak perlu kartu.') }}</p>
+                            <textarea id="card" rows="2" maxlength="{{ \App\Models\Order::CARD_MAX }}" wire:model.live.debounce.400ms="cardMessage"
+                                      placeholder="{{ __('Contoh: Selamat ulang tahun, Rani! Semoga harimu semanis kopi ini.') }}"
+                                      class="mt-3 w-full rounded border border-kraft/25 bg-transparent px-4 py-3 text-[14.5px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40"></textarea>
+                            <p class="krm-readout mt-1 text-right text-[11.5px] text-kraft/50">{{ mb_strlen($cardMessage) }}/{{ \App\Models\Order::CARD_MAX }}</p>
+                            @error('cardMessage')<p class="mt-1 text-[12.5px] text-redtext">{{ $message }}</p>@enderror
+                        </div>
+                    </div>
+                </fieldset>
+            @endif
+
             <fieldset>
                 <legend class="text-[13px] text-kraft/75">{{ __('Metode pembayaran') }}</legend>
                 <div class="mt-2 grid gap-3 sm:grid-cols-2">
@@ -117,13 +151,17 @@
                     <div class="flex justify-between"><span class="text-kraft/65">{{ __('Kopi') }}</span><span class="krm-readout">Rp{{ number_format($this->subtotal, 0, ',', '.') }}</span></div>
                     <div class="flex justify-between"><span class="text-kraft/65">{{ __('Ongkir') }}</span>
                         <span class="krm-readout">{{ $this->shipping ? 'Rp'.number_format($this->shipping, 0, ',', '.') : __('Gratis') }}</span></div>
+                    @if ($this->addon)
+                        <div class="flex justify-between"><span class="text-kraft/65">{{ __('Tambahan') }}</span>
+                            <span class="krm-readout">Rp{{ number_format($this->addon, 0, ',', '.') }}</span></div>
+                    @endif
                     @if ($this->discount)
                         <div class="flex justify-between"><span class="text-kraft/65">{{ __('Diskon') }} <span class="krm-readout text-bluetext">{{ $voucher }}</span></span>
                             <span class="krm-readout text-bluetext">- Rp{{ number_format($this->discount, 0, ',', '.') }}</span></div>
                     @endif
                     <div class="flex items-end justify-between border-t border-dashed border-kraft/30 pt-4">
                         <span class="text-kraft/65">{{ __('Total') }}</span>
-                        <span class="krm-readout text-[1.7rem] leading-none">Rp{{ number_format($this->subtotal + $this->shipping - $this->discount, 0, ',', '.') }}</span>
+                        <span class="krm-readout text-[1.7rem] leading-none">Rp{{ number_format($this->total, 0, ',', '.') }}</span>
                     </div>
                     <button type="button" wire:click="submit" wire:loading.attr="disabled"
                             class="mt-4 hidden w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] disabled:opacity-60 lg:block">
@@ -131,7 +169,7 @@
                     </button>
                     <p class="text-center text-[12px] leading-relaxed text-kraft/50">{{ __('Dengan membuat pesanan, kamu menyetujui') }} <a href="{{ route('policy.terms') }}" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-labwhite">{{ __('Syarat & Ketentuan') }}</a>.</p>
                     <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">
-                        @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ $payment === 'cod' ? __('COD: siapkan uang tunai sebesar total saat paket tiba.') : __('Pembayaran disimulasikan di halaman berikutnya.') }}
+                        @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ $payment === 'cod' ? __('COD: siapkan uang tunai sebesar total saat paket tiba.') : (\App\Support\Midtrans::enabled() ? __('Pembayaran lewat Midtrans di halaman berikutnya.') : __('Pembayaran disimulasikan di halaman berikutnya.')) }}
                     </p>
                 </div>
             </div>

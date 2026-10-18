@@ -10,7 +10,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 /**
- * 12 pesanan contoh dengan status campur, supaya antrian roastery
+ * 13 pesanan contoh dengan status campur, supaya antrian roastery
  * dan riwayat customer kelihatan hidup sejak migrate:fresh --seed.
  */
 class OrderSeeder extends Seeder
@@ -35,11 +35,15 @@ class OrderSeeder extends Seeder
             ['sinta@brule.test',    'completed',       8, [['flores-bajawa-washed', 'medium', 500, 'espresso']]],
             ['raka@brule.test',     'completed',      11, [['sumatra-mandheling-natural', 'medium_dark', 1000, 'whole_bean']]],
             ['sinta@brule.test',    'cancelled',       5, [['java-preanger-anaerobic-natural', 'light', 200, 'v60']]],
+            // Pesanan dengan add-on (kemasan hadiah + kartu ucapan), lihat antrian roastery.
+            ['raka@brule.test',     'queued',          0, [['ethiopia-yirgacheffe-washed', 'light', 250, 'whole_bean']], ['gift_wrap' => true, 'card_message' => 'Selamat ulang tahun, Rani! Semoga harimu semanis kopi ini.']],
         ];
 
         $createdItems = [];
 
-        foreach ($orders as $i => [$email, $status, $daysAgo, $lines]) {
+        foreach ($orders as $i => $row) {
+            [$email, $status, $daysAgo, $lines] = $row;
+            $extras = $row[4] ?? [];
             $user = User::where('email', $email)->firstOrFail();
             $at   = now()->subDays($daysAgo)->setTime(9 + ($i % 8), 15 + $i * 3);
             $code = sprintf('BRL-%s-%04d', $at->format('Ymd'), $i + 1);
@@ -57,6 +61,10 @@ class OrderSeeder extends Seeder
                 $rows[] = [$coffee, $profile, $grams, $grind, $line];
             }
 
+            $giftWrap = (bool) ($extras['gift_wrap'] ?? false);
+            $card     = Order::cleanCardMessage($extras['card_message'] ?? null);
+            $addon    = Order::addonCostFor($giftWrap, $card);
+
             $past = ! in_array($status, ['pending_payment', 'cancelled'], true);
             $step = array_search($status, Order::FLOW, true);
 
@@ -65,7 +73,10 @@ class OrderSeeder extends Seeder
                 'status'           => $status,
                 'subtotal'         => $subtotal,
                 'shipping_cost'    => self::SHIPPING,
-                'total'            => $subtotal + self::SHIPPING,
+                'gift_wrap'        => $giftWrap,
+                'card_message'     => $card,
+                'addon_cost'       => $addon,
+                'total'            => $subtotal + self::SHIPPING + $addon,
                 'recipient_name'   => $user->name,
                 'recipient_phone'  => $user->phone,
                 'shipping_address' => 'Jl. Contoh No. ' . (10 + $i) . ', Kota Contoh',

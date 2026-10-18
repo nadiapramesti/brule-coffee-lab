@@ -44,7 +44,7 @@ class Order extends Model
 
     protected $fillable = [
         'order_code', 'user_id', 'status', 'payment_method', 'snap_token', 'midtrans_order_id', 'payment_channel',
-        'subtotal', 'shipping_cost', 'discount', 'voucher_id', 'voucher_code', 'total',
+        'subtotal', 'shipping_cost', 'gift_wrap', 'card_message', 'addon_cost', 'discount', 'voucher_id', 'voucher_code', 'total',
         'recipient_name', 'recipient_phone', 'shipping_address',
         'tracking_number', 'admin_note', 'roaster_id',
         'paid_at', 'roasted_at', 'shipped_at', 'completed_at', 'cancelled_at',
@@ -53,6 +53,8 @@ class Order extends Model
     protected function casts(): array
     {
         return [
+            'gift_wrap'  => 'boolean',
+            'addon_cost' => 'integer',
             'paid_at'    => 'datetime',
             'roasted_at' => 'datetime',
             'shipped_at' => 'datetime',
@@ -172,6 +174,58 @@ class Order extends Model
         return $free > 0 && $subtotal >= $free ? 0 : Setting::int('shipping_flat');
     }
 
+    /** Panjang maksimal pesan kartu ucapan (karakter). */
+    public const CARD_MAX = 160;
+
+    /** Add-on checkout (kemasan hadiah, kartu ucapan) bisa dimatikan admin; harganya diatur di Pengaturan. */
+    public static function addonsEnabled(): bool
+    {
+        return (bool) Setting::int('addons_enabled');
+    }
+
+    public static function giftWrapPrice(): int
+    {
+        return max(0, Setting::int('addon_gift_wrap'));
+    }
+
+    public static function cardPrice(): int
+    {
+        return max(0, Setting::int('addon_card'));
+    }
+
+    /** Pesan kartu yang sudah dirapikan (null bila kosong). Spasi dan baris ganda dipadatkan. */
+    public static function cleanCardMessage(?string $message): ?string
+    {
+        $m = trim((string) preg_replace('/\s+/u', ' ', strip_tags((string) $message)));
+
+        return $m === '' ? null : mb_substr($m, 0, self::CARD_MAX);
+    }
+
+    /** Pesanan ini memakai add-on (kemasan hadiah dan/atau kartu ucapan). */
+    public function hasAddons(): bool
+    {
+        return $this->gift_wrap || filled($this->card_message);
+    }
+
+    /** Nama add-on yang dipilih, mis. "kemasan hadiah, kartu ucapan"; kosong bila tidak ada. */
+    public function addonLabel(): string
+    {
+        return collect([
+            $this->gift_wrap ? __('kemasan hadiah') : null,
+            filled($this->card_message) ? __('kartu ucapan') : null,
+        ])->filter()->implode(', ');
+    }
+
+    /** Biaya add-on untuk pilihan ini; 0 bila add-on dimatikan admin. */
+    public static function addonCostFor(bool $giftWrap, ?string $card): int
+    {
+        if (! self::addonsEnabled()) {
+            return 0;
+        }
+
+        return ($giftWrap ? self::giftWrapPrice() : 0) + (self::cleanCardMessage($card) !== null ? self::cardPrice() : 0);
+    }
+
     /** Alasan COD tidak boleh dipakai untuk total ini, atau null bila boleh. Diatur admin di Pengaturan. */
     public static function codProblem(int $total): ?string
     {
@@ -198,9 +252,10 @@ class Order extends Model
      * Item dari kopi yang sama dijumlahkan dulu sebelum stok dicek.
      *
      * @param  array<int,array{profile:RoastProfile,grams:int,grind:string}>  $lines
+     * @param  array{gift_wrap?:bool,card_message?:?string}  $extras  add-on checkout; harganya dihitung di sini, bukan dipercaya dari browser
      * @throws \RuntimeException bila stok tidak cukup atau keranjang kosong
      */
-    public static function placeMany(User $user, array $lines, array $ship, ?string $voucherCode = null, string $payment = 'online'): self
+    public static function placeMany(User $user, array $lines, array $ship, ?string $voucherCode = null, string $payment = 'online', array $extras = []): self
     {
         if ($lines === []) {
             throw new \RuntimeException(__('Keranjangmu masih kosong.'));
@@ -208,7 +263,12 @@ class Order extends Model
 
         $payment = $payment === 'cod' ? 'cod' : 'online';
 
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $lines, $ship, $voucherCode, $payment) {
+        // Add-on yang dimatikan admin diabaikan, jadi tidak ada yang tercatat tanpa biaya.
+        $giftWrap = self::addonsEnabled() && ! empty($extras['gift_wrap']);
+        $card = self::addonsEnabled() ? self::cleanCardMessage($extras['card_message'] ?? null) : null;
+        $addon = self::addonCostFor($giftWrap, $card);
+
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($user, $lines, $ship, $voucherCode, $payment, $giftWrap, $card, $addon) {
             // Kunci kopi berurutan berdasarkan id supaya dua transaksi tidak saling tunggu (deadlock).
             $coffees = Coffee::whereIn('id', collect($lines)->map(fn ($l) => $l['profile']->coffee_id)->unique())
                 ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
@@ -242,7 +302,7 @@ class Order extends Model
                 $discount = $voucher->discountFor($subtotal);
             }
 
-            if ($payment === 'cod' && ($problem = self::codProblem($subtotal + $shipping - $discount))) {
+            if ($payment === 'cod' && ($problem = self::codProblem($subtotal + $shipping + $addon - $discount))) {
                 throw new \RuntimeException($problem);
             }
 
@@ -254,10 +314,13 @@ class Order extends Model
                 'payment_method'   => $payment,
                 'subtotal'         => $subtotal,
                 'shipping_cost'    => $shipping,
+                'gift_wrap'        => $giftWrap,
+                'card_message'     => $card,
+                'addon_cost'       => $addon,
                 'discount'         => $discount,
                 'voucher_id'       => $voucher?->id,
                 'voucher_code'     => $voucher?->code,
-                'total'            => $subtotal + $shipping - $discount,
+                'total'            => $subtotal + $shipping + $addon - $discount,
                 'recipient_name'   => $ship['name'],
                 'recipient_phone'  => $ship['phone'],
                 'shipping_address' => $ship['address'],

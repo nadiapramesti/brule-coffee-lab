@@ -34,6 +34,8 @@ Opsional (±1 menit, kalau ada waktu): **Admin → Pengguna**. Tunjukkan tab **D
 
 Cadangan singkat kalau waktu mepet: lewati #9 dan tunjukkan cuma Laporan.
 
+Variasi add-on (30 detik): di checkout centang **Kemasan hadiah** dan tulis **Kartu ucapan**; total ikut berubah, lalu pesan itu muncul di invoice, label kirim, dan kartu antrian roastery. Harganya diatur di Admin → Pengaturan → Add-on pesanan (voucher dan batas gratis ongkir tidak menghitung add-on).
+
 Variasi COD (30 detik, kalau ditanya): checkout → pilih COD → pesanan langsung masuk antrian, label invoice bertanda COD. Admin bisa mematikan COD atau membatasi nominalnya di Pengaturan.
 
 ## Pertanyaan yang mungkin muncul

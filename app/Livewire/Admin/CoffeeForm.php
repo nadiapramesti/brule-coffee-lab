@@ -17,7 +17,7 @@ class CoffeeForm extends Component
     use WithFileUploads;
 
     public const FLAVORS = ['floral', 'citrus', 'berry', 'chocolate', 'nutty', 'spice'];
-    public const PROCESSES = ['Washed', 'Honey', 'Natural', 'Anaerobic', 'Wet-Hulled'];
+    public const PROCESSES = ['Washed', 'Honey', 'Natural', 'Anaerobic', 'Wet-Hulled', 'Carbonic Maceration'];
 
     public ?int $coffeeId = null;
 

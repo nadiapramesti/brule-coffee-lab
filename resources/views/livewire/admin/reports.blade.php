@@ -63,7 +63,7 @@
                 </div>
             @endforeach
         </dl>
-        <p class="mt-2 text-[12px] text-kraft/50">{{ __('Omzet') }} {{ $rp($s['revenue']) }} = {{ __('kopi') }} {{ $rp($s['goods']) }} + {{ __('ongkir') }} {{ $rp($s['shipping']) }} − {{ __('diskon') }} {{ $rp($s['discount']) }}</p>
+        <p class="mt-2 text-[12px] text-kraft/50">{{ __('Omzet') }} {{ $rp($s['revenue']) }} = {{ __('kopi') }} {{ $rp($s['goods']) }} + {{ __('ongkir') }} {{ $rp($s['shipping']) }} + {{ __('tambahan') }} {{ $rp($s['addons']) }} − {{ __('diskon') }} {{ $rp($s['discount']) }}</p>
 
         <section class="mt-4 rounded border border-kraft/20 bg-charcoal p-5">
             <h2 class="font-display text-[1rem] font-semibold">{{ $r->granularity() === 'month' ? __('Omzet per bulan') : __('Omzet per hari') }}</h2>

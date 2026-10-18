@@ -181,7 +181,7 @@ class Builder extends Component
 
     public function setGrams(int $grams): void
     {
-        if (in_array($grams, [200, 500, 1000], true)) {
+        if (in_array($grams, \App\Support\Cart::GRAMS, true)) {
             $this->grams = $grams;
         }
     }

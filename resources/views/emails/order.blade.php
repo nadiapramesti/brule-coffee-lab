@@ -52,6 +52,9 @@
             @endforeach
             <tr><td style="padding:12px 0 0;font-size:14px;color:{{ $muted }};">{{ __('Subtotal') }}</td><td align="right" style="padding:12px 0 0;font-size:14px;font-family:Consolas,Menlo,monospace;">{{ $rp($o->subtotal) }}</td></tr>
             <tr><td style="padding:6px 0 0;font-size:14px;color:{{ $muted }};">{{ __('Ongkir') }}</td><td align="right" style="padding:6px 0 0;font-size:14px;font-family:Consolas,Menlo,monospace;">{{ $o->shipping_cost ? $rp($o->shipping_cost) : __('Gratis') }}</td></tr>
+            @if ($o->addon_cost)
+                <tr><td style="padding:6px 0 0;font-size:14px;color:{{ $muted }};">{{ __('Tambahan') }} ({{ $o->addonLabel() }})</td><td align="right" style="padding:6px 0 0;font-size:14px;font-family:Consolas,Menlo,monospace;">{{ $rp($o->addon_cost) }}</td></tr>
+            @endif
             @if ($o->discount)
                 <tr><td style="padding:6px 0 0;font-size:14px;color:{{ $muted }};">{{ __('Diskon') }}{{ $o->voucher_code ? ' ('.$o->voucher_code.')' : '' }}</td><td align="right" style="padding:6px 0 0;font-size:14px;font-family:Consolas,Menlo,monospace;">-{{ $rp($o->discount) }}</td></tr>
             @endif

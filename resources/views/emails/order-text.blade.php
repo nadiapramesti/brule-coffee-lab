@@ -13,6 +13,9 @@
 
 {{ __('Subtotal') }}: Rp{{ number_format($o->subtotal, 0, ',', '.') }}
 {{ __('Ongkir') }}: {{ $o->shipping_cost ? 'Rp'.number_format($o->shipping_cost, 0, ',', '.') : __('Gratis') }}
+@if ($o->addon_cost)
+{{ __('Tambahan') }} ({{ $o->addonLabel() }}): Rp{{ number_format($o->addon_cost, 0, ',', '.') }}
+@endif
 @if ($o->discount)
 {{ __('Diskon') }}: -Rp{{ number_format($o->discount, 0, ',', '.') }}
 @endif

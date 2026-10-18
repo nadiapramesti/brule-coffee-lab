@@ -38,6 +38,12 @@
                                 <p class="truncate text-[11.5px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · {{ number_format($it->grams) }} g{{ $it->qty > 1 ? ' × '.$it->qty : '' }}</p>
                             @endforeach
                             <p class="mt-0.5 truncate text-[11px] text-kraft/40">{{ $o->recipient_name }}</p>
+                            @if ($o->hasAddons())
+                                <div class="mt-1.5 rounded border border-bluelab/40 bg-bluelab/10 px-2 py-1.5 text-[11.5px] leading-snug">
+                                    @if ($o->gift_wrap)<p class="font-semibold">{{ __('Kemasan hadiah') }}</p>@endif
+                                    @if (filled($o->card_message))<p class="{{ $o->gift_wrap ? 'mt-0.5' : '' }}"><span class="text-kraft/60">{{ __('Kartu') }}:</span> <span class="italic">&ldquo;{{ $o->card_message }}&rdquo;</span></p>@endif
+                                </div>
+                            @endif
 
                             @if ($status === 'packing')
                                 <label class="sr-only" for="resi-{{ $o->id }}">{{ __('Nomor resi') }}</label>

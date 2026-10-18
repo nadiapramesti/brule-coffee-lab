@@ -24,6 +24,8 @@ class Checkout extends Component
     public string $phone = '';
     public string $address = '';
     public string $payment = 'online';
+    public bool $giftWrap = false;
+    public string $cardMessage = '';
     public ?int $savedId = null;
     public bool $saveAddress = false;
     public ?string $error = null;
@@ -111,11 +113,36 @@ class Checkout extends Component
         return $v && ! $v->problemFor($this->subtotal, auth()->user()) ? $v->discountFor($this->subtotal) : 0;
     }
 
+    /** Biaya add-on (kemasan hadiah + kartu ucapan) dari pilihan saat ini. */
+    #[Computed]
+    public function addon(): int
+    {
+        return Order::addonCostFor($this->giftWrap, $this->cardMessage);
+    }
+
+    #[Computed]
+    public function total(): int
+    {
+        return $this->subtotal + $this->shipping + $this->addon - $this->discount;
+    }
+
     /** Alasan COD tidak tersedia untuk total saat ini (dimatikan admin / melebihi batas), atau null. */
     #[Computed]
     public function codProblem(): ?string
     {
-        return Order::codProblem($this->subtotal + $this->shipping - $this->discount);
+        return Order::codProblem($this->total);
+    }
+
+    /** Pilihan add-on berubah: COD bisa jadi tidak boleh lagi karena total naik melewati batas. */
+    public function updatedGiftWrap(): void
+    {
+        unset($this->addon, $this->total, $this->codProblem);
+    }
+
+    public function updatedCardMessage(): void
+    {
+        $this->cardMessage = mb_substr($this->cardMessage, 0, Order::CARD_MAX);
+        unset($this->addon, $this->total, $this->codProblem);
     }
 
     public function applyVoucher(): void
@@ -154,6 +181,8 @@ class Checkout extends Component
             'phone'   => ['required', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
             'address' => ['required', 'string', 'min:15', 'max:400'],
             'payment' => ['required', 'in:online,cod'],
+            'giftWrap' => ['boolean'],
+            'cardMessage' => ['nullable', 'string', 'max:' . Order::CARD_MAX],
         ], [
             'phone.regex'  => __('Nomor WhatsApp tidak valid. Contoh: 0812xxxxxxxx'),
             'address.min'  => __('Alamat terlalu pendek. Tulis jalan, nomor, kota, dan kode pos.'),
@@ -163,7 +192,10 @@ class Checkout extends Component
         $lines = $this->lines->flatMap(fn ($l) => array_fill(0, $l->qty, ['profile' => $l->profile, 'grams' => $l->grams, 'grind' => $l->grind]))->all();
 
         try {
-            $order = Order::placeMany(auth()->user(), $lines, collect($data)->only(['name', 'phone', 'address'])->all(), $this->voucher, $this->payment);
+            $order = Order::placeMany(
+                auth()->user(), $lines, collect($data)->only(['name', 'phone', 'address'])->all(), $this->voucher, $this->payment,
+                ['gift_wrap' => $this->giftWrap, 'card_message' => $this->cardMessage],
+            );
         } catch (\RuntimeException $e) {
             $this->error = $e->getMessage();
             $this->voucher = null;

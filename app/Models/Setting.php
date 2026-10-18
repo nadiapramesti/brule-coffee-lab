@@ -25,6 +25,9 @@ class Setting extends Model
         'shipping_flat' => '15000',
         'free_shipping_from' => '500000',
         'low_stock_gram' => '5000',
+        'addons_enabled' => '1',
+        'addon_gift_wrap' => '15000',
+        'addon_card' => '5000',
         'cod_enabled' => '1',
         'cod_max' => '0',
     ];

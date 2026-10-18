@@ -97,6 +97,30 @@
             </div>
         </section>
 
+        {{-- Add-on pesanan --}}
+        <section class="rounded border border-kraft/20 bg-charcoal">
+            <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Add-on pesanan') }}</h2></header>
+            <div class="space-y-4 p-5">
+                <label class="flex cursor-pointer items-center gap-3 text-[14px]">
+                    <input type="checkbox" wire:model.live="addonsEnabled" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                    {{ __('Tawarkan kemasan hadiah dan kartu ucapan di checkout') }}
+                </label>
+                <div class="grid gap-4 sm:grid-cols-2 {{ $addonsEnabled ? '' : 'opacity-50' }}">
+                    <div>
+                        <label for="gw" class="text-[12.5px] text-kraft/75">{{ __('Harga kemasan hadiah (Rp)') }}</label>
+                        <input id="gw" type="number" inputmode="numeric" wire:model="giftWrapPrice" @disabled(! $addonsEnabled) placeholder="15000" class="{{ $inp }} krm-readout mt-1.5">
+                        @error('giftWrapPrice')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                    </div>
+                    <div>
+                        <label for="cp" class="text-[12.5px] text-kraft/75">{{ __('Harga kartu ucapan (Rp)') }}</label>
+                        <input id="cp" type="number" inputmode="numeric" wire:model="cardPrice" @disabled(! $addonsEnabled) placeholder="5000" class="{{ $inp }} krm-readout mt-1.5">
+                        @error('cardPrice')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                    </div>
+                </div>
+                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Isi 0 untuk add-on gratis. Biaya add-on tidak ikut menghitung gratis ongkir dan voucher. Pesanan yang sudah dibuat tidak berubah.') }}</p>
+            </div>
+        </section>
+
         {{-- Pembayaran --}}
         <section class="rounded border border-kraft/20 bg-charcoal">
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pembayaran') }}</h2></header>

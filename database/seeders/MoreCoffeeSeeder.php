@@ -6,7 +6,10 @@ use App\Models\Coffee;
 use Illuminate\Database\Seeder;
 
 /**
- * Lima kopi tambahan (4 dari Indonesia + Kenya) supaya katalog tidak sepi.
+ * Sebelas kopi tambahan di luar tiga kopi dasar CoffeeSeeder, jadi katalog
+ * demo berisi 14 kopi: tujuh dari Indonesia dan tujuh dari luar negeri
+ * (Ethiopia, Kolombia dua kali, Kenya, Brazil, Guatemala, Rwanda). Satu kopi
+ * memakai proses Carbonic Maceration.
  *
  * Profil rasa per level sangrai tidak ditulis satu-satu: tiap kopi punya
  * rasa dasar di sangrai light, lalu dihitung turun-naiknya. Makin gelap,
@@ -190,6 +193,138 @@ class MoreCoffeeSeeder extends Seeder
                     'light'        => ['Blackcurrant', 'Grapefruit', 'Tomato Leaf'],
                     'medium_light' => ['Blackcurrant', 'Lime', 'Brown Sugar'],
                     'medium'       => ['Dark Berry', 'Orange', 'Molasses'],
+                    'medium_dark'  => ['Dark Fruit', 'Cocoa', 'Toasted Sugar'],
+                ],
+            ],
+            [
+                'slug' => 'bali-kintamani-natural',
+                'name' => 'Bali Kintamani Natural',
+                'story' => 'Tumbuh di dataran tinggi Kintamani, di antara kebun jeruk '
+                         . 'dan sawah bersistem subak. Proses natural memberi manis seperti '
+                         . 'sirup jeruk dengan aroma bunga yang bersih, kopi yang ramah '
+                         . 'untuk diseduh pagi hari.',
+                'story_en' => 'Grown in the Kintamani highlands, between orange groves and subak-irrigated terraces. The natural process gives a sweetness like citrus syrup with a clean floral aroma, an easy cup for the morning.',
+                'stock' => 14_000, 'cupping' => 85.9, 'price' => 48_000,
+                'traceability' => [
+                    'farmer' => 'Subak Abian Mekar Sari', 'region' => 'Kintamani, Bangli, Bali, Indonesia',
+                    'altitude' => 1350, 'varietal' => 'Typica, Kartika', 'process' => 'Natural',
+                    'harvest_date' => '2026-07-18', 'q_grader' => 'D. Kurniawan (Q-Arabica #30412)',
+                ],
+                'base' => ['floral' => 62, 'citrus' => 70, 'berry' => 52, 'chocolate' => 26, 'nutty' => 22, 'spice' => 24],
+                'levels' => [
+                    'light'        => ['Orange Blossom', 'Citrus Syrup', 'Honey'],
+                    'medium_light' => ['Mandarin', 'Jasmine', 'Brown Sugar'],
+                    'medium'       => ['Orange Zest', 'Caramel', 'Milk Chocolate'],
+                    'medium_dark'  => ['Dark Caramel', 'Cocoa', 'Toasted Almond'],
+                ],
+            ],
+            [
+                'slug' => 'papua-wamena-washed',
+                'name' => 'Papua Wamena Washed',
+                'story' => 'Dari Lembah Baliem di pegunungan Papua, dipetik dan dicuci '
+                         . 'oleh kelompok tani setempat. Rasanya bersih dan manis dengan '
+                         . 'cokelat susu dan kacang, kopi yang jarang ditemui di rak toko '
+                         . 'biasa.',
+                'story_en' => 'From the Baliem Valley in the Papuan highlands, picked and washed by local farmer groups. A clean, sweet cup of milk chocolate and nuts, a coffee you rarely see on an ordinary shelf.',
+                'stock' => 9_000, 'cupping' => 85.4, 'price' => 50_000,
+                'traceability' => [
+                    'farmer' => 'Kelompok Tani Lembah Baliem', 'region' => 'Wamena, Jayawijaya, Papua Pegunungan, Indonesia',
+                    'altitude' => 1650, 'varietal' => 'Typica, Catimor', 'process' => 'Washed',
+                    'harvest_date' => '2026-06-30', 'q_grader' => 'R. Mahendra (Q-Arabica #21884)',
+                ],
+                'base' => ['floral' => 38, 'citrus' => 42, 'berry' => 30, 'chocolate' => 56, 'nutty' => 44, 'spice' => 40],
+                'levels' => [
+                    'medium_light' => ['Black Tea', 'Brown Sugar', 'Red Apple'],
+                    'medium'       => ['Milk Chocolate', 'Walnut', 'Caramel'],
+                    'medium_dark'  => ['Dark Chocolate', 'Toasted Nuts', 'Cedar'],
+                    'dark'         => ['Bittersweet Chocolate', 'Roasted Almond', 'Smoke'],
+                ],
+            ],
+            [
+                'slug' => 'brazil-cerrado-natural',
+                'name' => 'Brazil Cerrado Natural',
+                'story' => 'Dari dataran Cerrado Mineiro di Minas Gerais. Kebunnya luas '
+                         . 'dan datar, dipanen dengan mesin lalu dijemur utuh. Hasilnya '
+                         . 'kopi bertubuh tebal, rendah asam, dengan cokelat dan kacang '
+                         . 'yang akrab di lidah.',
+                'story_en' => 'From the Cerrado Mineiro plateau in Minas Gerais. Wide, flat farms harvested by machine and dried whole. The result is a heavy-bodied, low-acid coffee with familiar chocolate and nut notes.',
+                'stock' => 20_000, 'cupping' => 84.6, 'price' => 42_000,
+                'traceability' => [
+                    'farmer' => 'Fazenda Santa Aurora', 'region' => 'Cerrado Mineiro, Minas Gerais, Brazil',
+                    'altitude' => 1100, 'varietal' => 'Yellow Bourbon, Catuai', 'process' => 'Natural',
+                    'harvest_date' => '2026-08-05', 'q_grader' => 'D. Kurniawan (Q-Arabica #30412)',
+                ],
+                'base' => ['floral' => 22, 'citrus' => 24, 'berry' => 40, 'chocolate' => 70, 'nutty' => 72, 'spice' => 28],
+                'levels' => [
+                    'medium_light' => ['Hazelnut', 'Milk Chocolate', 'Raw Sugar'],
+                    'medium'       => ['Dark Chocolate', 'Roasted Peanut', 'Caramel'],
+                    'medium_dark'  => ['Cocoa', 'Toasted Almond', 'Molasses'],
+                    'dark'         => ['Dark Cocoa', 'Roasted Nuts', 'Smoke'],
+                ],
+            ],
+            [
+                'slug' => 'guatemala-antigua-washed',
+                'name' => 'Guatemala Antigua Washed',
+                'story' => 'Dari lembah Antigua yang dikelilingi tiga gunung berapi. '
+                         . 'Abu vulkanik membuat tanahnya kaya mineral, dan kopinya '
+                         . 'berkarakter cokelat pekat dengan sedikit rempah manis di '
+                         . 'ujung tegukan.',
+                'story_en' => 'From the Antigua valley, ringed by three volcanoes. Volcanic ash makes the soil rich in minerals, and the cup is deep chocolate with a hint of sweet spice at the finish.',
+                'stock' => 11_000, 'cupping' => 86.1, 'price' => 52_000,
+                'traceability' => [
+                    'farmer' => 'Cooperativa Volcán de Agua', 'region' => 'Antigua, Sacatepéquez, Guatemala',
+                    'altitude' => 1650, 'varietal' => 'Bourbon, Caturra', 'process' => 'Washed',
+                    'harvest_date' => '2026-03-12', 'q_grader' => 'R. Mahendra (Q-Arabica #21884)',
+                ],
+                'base' => ['floral' => 34, 'citrus' => 46, 'berry' => 36, 'chocolate' => 62, 'nutty' => 40, 'spice' => 54],
+                'levels' => [
+                    'light'        => ['Red Apple', 'Cocoa Nibs', 'Honey'],
+                    'medium_light' => ['Orange', 'Milk Chocolate', 'Brown Sugar'],
+                    'medium'       => ['Dark Chocolate', 'Baking Spice', 'Caramel'],
+                    'medium_dark'  => ['Bittersweet Cocoa', 'Clove', 'Toasted Sugar'],
+                ],
+            ],
+            [
+                'slug' => 'colombia-pitalito-carbonic-maceration',
+                'name' => 'Colombia Pitalito Carbonic Maceration',
+                'story' => 'Dari kebun kecil di Pitalito, Huila. Ceri kopi utuh disimpan '
+                         . 'dalam tangki tertutup yang diisi karbon dioksida sebelum '
+                         . 'dikupas, teknik yang dipinjam dari pembuatan anggur. Rasa '
+                         . 'buahnya pekat dan manis seperti selai ceri. Stok terbatas.',
+                'story_en' => 'From a small farm in Pitalito, Huila. Whole cherries rest in sealed tanks filled with carbon dioxide before pulping, a technique borrowed from winemaking. The fruit is dense and sweet like cherry jam. Limited stock.',
+                'stock' => 6_000, 'cupping' => 87.1, 'price' => 62_000,
+                'traceability' => [
+                    'farmer' => 'Finca Alto Bonito', 'region' => 'Pitalito, Huila, Colombia',
+                    'altitude' => 1750, 'varietal' => 'Caturra, Castillo', 'process' => 'Carbonic Maceration',
+                    'harvest_date' => '2026-05-20', 'q_grader' => 'R. Mahendra (Q-Arabica #21884)',
+                ],
+                'base' => ['floral' => 66, 'citrus' => 40, 'berry' => 86, 'chocolate' => 22, 'nutty' => 12, 'spice' => 44],
+                'levels' => [
+                    'light'        => ['Cherry Cola', 'Red Wine', 'Rose'],
+                    'medium_light' => ['Black Cherry', 'Cinnamon', 'Brown Sugar'],
+                    'medium'       => ['Dark Berry', 'Cacao Nibs', 'Plum'],
+                    'medium_dark'  => ['Dark Cherry', 'Cocoa', 'Spiced Rum'],
+                ],
+            ],
+            [
+                'slug' => 'rwanda-nyamasheke-washed',
+                'name' => 'Rwanda Nyamasheke Washed',
+                'story' => 'Dari perbukitan Nyamasheke di tepi Danau Kivu. Biji Red '
+                         . 'Bourbon dipetik tangan, dicuci, lalu dijemur di rak tinggi. '
+                         . 'Rasanya seperti teh hitam dengan buah merah, ringan dan '
+                         . 'sangat bersih.',
+                'story_en' => 'From the hills of Nyamasheke on the shore of Lake Kivu. Hand-picked Red Bourbon, washed and dried on raised beds. It tastes of black tea and red fruit, light and very clean.',
+                'stock' => 8_000, 'cupping' => 86.3, 'price' => 56_000,
+                'traceability' => [
+                    'farmer' => 'Koperasi Kawa Nyamasheke', 'region' => 'Nyamasheke, Western Province, Rwanda',
+                    'altitude' => 1750, 'varietal' => 'Red Bourbon', 'process' => 'Washed',
+                    'harvest_date' => '2026-04-15', 'q_grader' => 'D. Kurniawan (Q-Arabica #30412)',
+                ],
+                'base' => ['floral' => 70, 'citrus' => 62, 'berry' => 64, 'chocolate' => 24, 'nutty' => 20, 'spice' => 28],
+                'levels' => [
+                    'light'        => ['Black Tea', 'Red Currant', 'Orange Blossom'],
+                    'medium_light' => ['Black Tea', 'Plum', 'Brown Sugar'],
+                    'medium'       => ['Red Apple', 'Milk Chocolate', 'Caramel'],
                     'medium_dark'  => ['Dark Fruit', 'Cocoa', 'Toasted Sugar'],
                 ],
             ],

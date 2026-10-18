@@ -21,7 +21,8 @@ class Cart
     public const KEY = 'krm.cart';
     public const MAX_LINES = 10;
     public const MAX_QTY = 10;
-    public const GRAMS = [200, 500, 1000];
+    /** Ukuran bungkus yang boleh dipesan (gram). Satu-satunya sumber: builder, keranjang, dan checkout membaca daftar ini. */
+    public const GRAMS = [100, 200, 250, 500, 1000];
 
     /** @return array<int,array{id:string,profile_id:int,grams:int,grind:string,qty:int}> */
     public static function raw(?User $user = null): array

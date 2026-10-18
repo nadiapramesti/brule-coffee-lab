@@ -4,11 +4,11 @@
 
     $t = $coffee->traceability;
     $process = $t?->process;
-    $accents = ['Washed' => '#2A5DB0', 'Natural' => '#E8782A', 'Honey' => '#D9A441', 'Wet-Hulled' => '#5E8C6A', 'Anaerobic' => '#2FA3A3'];
+    $accents = ['Washed' => '#2A5DB0', 'Natural' => '#E8782A', 'Honey' => '#D9A441', 'Wet-Hulled' => '#5E8C6A', 'Anaerobic' => '#2FA3A3', 'Carbonic Maceration' => '#8E6BBF'];
     $accent = $accents[$process] ?? '#2A5DB0';
 
     // Nama pendek di label: buang kata proses, kata pertama jadi baris besar.
-    $short = trim((string) Str::of($coffee->name)->replace([' Washed', ' Natural', ' Honey', ' Wet-Hulled', ' Anaerobic'], ''));
+    $short = $coffee->shortName();
     $words = explode(' ', $short);
     $line1 = array_shift($words);
     $line2 = implode(' ', $words);
