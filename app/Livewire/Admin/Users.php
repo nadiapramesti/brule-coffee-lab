@@ -13,7 +13,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.panel')]
-#[Title('Pengguna - KROMATIK')]
+#[Title('Pengguna - BRÛLÉ')]
 class Users extends Component
 {
     use WithPagination;
@@ -138,7 +138,7 @@ class Users extends Component
         ], [
             'name.required' => __('Nama wajib diisi.'),
             'email.required' => __('Email wajib diisi.'),
-            'email.email' => __('Format email belum benar. Contoh: roaster@kromatik.id'),
+            'email.email' => __('Format email belum benar. Contoh: roaster@brule.id'),
             'email.unique' => __('Email ini sudah terdaftar.'),
             'password.required' => __('Kata sandi sementara wajib diisi.'),
             'password.min' => __('Kata sandi minimal 8 karakter.'),

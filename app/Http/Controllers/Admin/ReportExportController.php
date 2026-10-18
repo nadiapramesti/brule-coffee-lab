@@ -32,7 +32,7 @@ class ReportExportController extends Controller
 
         if ($request->query('format') === 'pdf') {
             $money = fn (array $rows, array $cols) => array_map(fn ($row) => array_map(fn ($v, $i) => in_array($i, $cols, true) ? $rp($v) : $v, $row, array_keys($row)), $rows);
-            $pdf = SimplePdf::report('KROMATIK - ' . __('Laporan penjualan'), $period . ' · ' . __('dibuat') . ' ' . now()->translatedFormat('j M Y, H:i'), [
+            $pdf = SimplePdf::report('BRÛLÉ - ' . __('Laporan penjualan'), $period . ' · ' . __('dibuat') . ' ' . now()->translatedFormat('j M Y, H:i'), [
                 ['heading' => __('Ringkasan'), 'headers' => [__('Metrik'), __('Nilai')], 'rows' => array_map(fn ($x) => [$x[0], str_contains($x[0], 'Jumlah') || str_contains($x[0], '(g)') ? number_format($x[1], 0, ',', '.') : $rp($x[1])], $summary), 'weights' => [3, 2], 'right' => [1]],
                 ['heading' => $monthly ? __('Omzet per bulan') : __('Omzet per hari'), 'headers' => [$monthly ? __('Bulan') : __('Tanggal'), __('Pesanan'), __('Omzet')], 'rows' => $money($series, [2]), 'weights' => [3, 1, 2], 'right' => [1, 2]],
                 ['heading' => __('Per kopi'), 'headers' => [__('Kopi'), __('Pesanan'), __('Berat (g)'), __('Penjualan')], 'rows' => $money(array_map(fn ($r) => [$r[0], $r[1], number_format($r[2], 0, ',', '.'), $r[3]], $coffee), [3]), 'weights' => [4, 1, 1.4, 2], 'right' => [1, 2, 3]],

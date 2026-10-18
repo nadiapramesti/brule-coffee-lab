@@ -13,7 +13,7 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'admin@kromatik.test'],
             [
-                'name'     => 'Admin Kromatik',
+                'name'     => 'Admin BRÛLÉ',
                 'password' => Hash::make('password'),
                 'role'     => 'admin',
                 'phone'    => '081200000001',

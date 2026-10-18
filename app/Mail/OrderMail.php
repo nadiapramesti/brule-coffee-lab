@@ -41,7 +41,7 @@ class OrderMail extends Mailable
         $reply = Setting::get('contact_email');
 
         return new Envelope(
-            from: new Address(config('mail.from.address'), Setting::get('store_name') ?: 'KROMATIK'),
+            from: new Address(config('mail.from.address'), Setting::get('store_name') ?: 'BRÛLÉ'),
             replyTo: $reply ? [new Address($reply)] : [],
             subject: $this->subjectLine(),
         );
@@ -57,7 +57,7 @@ class OrderMail extends Mailable
                 'kind' => $this->kind,
                 'items' => $this->order->groupedItems(),
                 'url' => route('track', $this->order->order_code),
-                'store' => Setting::get('store_name') ?: 'KROMATIK',
+                'store' => Setting::get('store_name') ?: 'BRÛLÉ',
                 'contact' => Setting::get('contact_email'),
                 'headline' => $this->headline(),
                 'lead' => $this->lead(),

@@ -11,7 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
-#[Title('Voucher - KROMATIK')]
+#[Title('Voucher - BRÛLÉ')]
 class Vouchers extends Component
 {
     #[Url(as: 'tampil')] public string $show = 'all';

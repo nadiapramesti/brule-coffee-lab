@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
-#[Title('Antrian roastery - KROMATIK')]
+#[Title('Antrian roastery - BRÛLÉ')]
 class Roastery extends Component
 {
     /** @var array<int,string> nomor resi per pesanan */

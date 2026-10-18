@@ -15,7 +15,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.panel')]
-#[Title('Dashboard admin - KROMATIK')]
+#[Title('Dashboard admin - BRÛLÉ')]
 class Dashboard extends Component
 {
     use WithPagination;

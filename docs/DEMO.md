@@ -1,4 +1,4 @@
-# Skenario demo KROMATIK (±8 menit)
+# Skenario demo BRÛLÉ (±8 menit)
 
 Tujuan: tunjukkan satu siklus penuh, dari pembeli memilih kopi sampai roastery mengirim dan pembeli mengulas. Hafalkan urutannya, bukan kalimatnya.
 
@@ -55,6 +55,6 @@ Variasi COD (30 detik, kalau ditanya): checkout → pilih COD → pesanan langsu
 ## Tips presentasi
 
 - Jangan menjelaskan kode; jelaskan **masalah yang dipecahkan** di tiap langkah.
-- Satu kalimat pembuka: "KROMATIK menjual kopi yang baru disangrai setelah kamu memesan."
+- Satu kalimat pembuka: "BRÛLÉ menjual kopi yang baru disangrai setelah kamu memesan."
 - Kalau lupa urutan, kembali ke tabel di atas; itu sudah urut.
 - Kalau ditanya sesuatu yang belum ada, jawab jujur: "Belum, rencananya …" Itu lebih baik daripada mengarang.

@@ -117,7 +117,7 @@
                     </div>
                     <div>
                         <label for="ue" class="text-[12.5px] text-kraft/75">Email</label>
-                        <input id="ue" type="email" wire:model="email" autocomplete="off" placeholder="roaster@kromatik.id" class="{{ $inp }} mt-1.5">
+                        <input id="ue" type="email" wire:model="email" autocomplete="off" placeholder="roaster@brule.id" class="{{ $inp }} mt-1.5">
                         @error('email')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div class="grid grid-cols-2 gap-3">

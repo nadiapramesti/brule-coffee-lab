@@ -11,7 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
-#[Title('Ulasan - KROMATIK')]
+#[Title('Ulasan - BRÛLÉ')]
 class Reviews extends Component
 {
     #[Url(as: 'tampil')] public string $show = 'all';

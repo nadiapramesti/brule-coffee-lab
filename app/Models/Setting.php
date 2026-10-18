@@ -15,10 +15,10 @@ class Setting extends Model
     protected $fillable = ['key', 'value'];
 
     public const DEFAULTS = [
-        'store_name' => 'KROMATIK',
+        'store_name' => 'BRÛLÉ',
         'store_tagline' => 'Specialty Coffee Lab',
         'store_city' => 'Bandung',
-        'store_address' => 'Roastery Kromatik, Bandung, Jawa Barat',
+        'store_address' => 'Roastery BRÛLÉ, Bandung, Jawa Barat',
         'contact_email' => 'halo@kromatik.test',
         'contact_whatsapp' => '6281200000000',
         'instagram' => 'kromatik.lab',

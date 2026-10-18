@@ -11,7 +11,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
-#[Title('Kelola kopi - KROMATIK')]
+#[Title('Kelola kopi - BRÛLÉ')]
 class CoffeeIndex extends Component
 {
     /** @var array<int,string> tambahan stok (gram) per kopi */

@@ -12,7 +12,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
-    <title>{{ $code }} · KROMATIK</title>
+    <title>{{ $code }} · BRÛLÉ</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     @include('layouts.partials.theme-boot')

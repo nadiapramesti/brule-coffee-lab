@@ -60,17 +60,17 @@ it('creates staff accounts with validation', function () {
     $t = Livewire::actingAs($this->admin)->test(Users::class)->call('openCreate')
         ->set('name', '')->set('email', 'bukan-email')->set('password', '123')->call('createStaff')->assertHasErrors(['name', 'email', 'password']);
     $t->set('name', 'Dimas')->set('email', $this->customer->email)->set('password', 'rahasia123')->call('createStaff')->assertHasErrors('email');
-    $t->set('email', 'Dimas@Kromatik.ID')->set('staffRole', 'roaster')->call('createStaff')->assertHasNoErrors();
+    $t->set('email', 'Dimas@Brule.ID')->set('staffRole', 'roaster')->call('createStaff')->assertHasNoErrors();
 
-    $u = User::where('email', 'dimas@kromatik.id')->first();
+    $u = User::where('email', 'dimas@brule.id')->first();
     expect($u)->not->toBeNull()->and($u->role)->toBe('roaster')->and($u->isRoaster())->toBeTrue();
-    expect(\Illuminate\Support\Facades\Auth::validate(['email' => 'dimas@kromatik.id', 'password' => 'rahasia123']))->toBeTrue();
+    expect(\Illuminate\Support\Facades\Auth::validate(['email' => 'dimas@brule.id', 'password' => 'rahasia123']))->toBeTrue();
 });
 
 it('cannot create a staff account with the customer role through a tampered request', function () {
     Livewire::actingAs($this->admin)->test(Users::class)->call('openCreate')
-        ->set('name', 'X')->set('email', 'x@kromatik.id')->set('password', 'rahasia123')->set('staffRole', 'superuser')->call('createStaff')->assertHasErrors('staffRole');
-    expect(User::where('email', 'x@kromatik.id')->exists())->toBeFalse();
+        ->set('name', 'X')->set('email', 'x@brule.id')->set('password', 'rahasia123')->set('staffRole', 'superuser')->call('createStaff')->assertHasErrors('staffRole');
+    expect(User::where('email', 'x@brule.id')->exists())->toBeFalse();
 });
 
 it('records activity from coffees, vouchers and stock and filters the log', function () {

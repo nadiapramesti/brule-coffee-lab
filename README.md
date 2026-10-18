@@ -1,4 +1,4 @@
-# KROMATIK — Specialty Coffee Lab
+# BRÛLÉ — Specialty Coffee Lab
 
 Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan masuk. Pembeli memilih biji, level sangrai, ukuran, dan gilingan lewat *roast builder*; roastery dan admin mengurus antrian, stok, dan laporan dari panel internal. Dikerjakan sebagai tugas kuliah web e-commerce.
 

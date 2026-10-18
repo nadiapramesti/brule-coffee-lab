@@ -30,13 +30,13 @@ it('falls back to the built-in defaults when nothing is stored', function () {
 
 it('saves normalised values and writes an activity log', function () {
     Livewire::actingAs($this->admin)->test(StoreSettings::class)
-        ->set('storeName', 'Kromatik Lab')->set('city', 'Cimahi')->set('whatsapp', '+62 812-3456-7890')->set('instagram', 'https://instagram.com/@kromatik.id/')
-        ->set('email', 'hi@kromatik.id')->set('shippingFlat', '20000')->set('freeFrom', '300000')->set('lowStock', '8000')
+        ->set('storeName', 'BRÛLÉ Lab')->set('city', 'Cimahi')->set('whatsapp', '+62 812-3456-7890')->set('instagram', 'https://instagram.com/@brule.id/')
+        ->set('email', 'hi@brule.id')->set('shippingFlat', '20000')->set('freeFrom', '300000')->set('lowStock', '8000')
         ->call('save')->assertHasNoErrors();
 
-    expect(Setting::get('store_name'))->toBe('Kromatik Lab')
+    expect(Setting::get('store_name'))->toBe('BRÛLÉ Lab')
         ->and(Setting::get('contact_whatsapp'))->toBe('6281234567890')
-        ->and(Setting::get('instagram'))->toBe('kromatik.id')
+        ->and(Setting::get('instagram'))->toBe('brule.id')
         ->and(Setting::int('low_stock_gram'))->toBe(8000)
         ->and(ActivityLog::where('action', 'settings.updated')->count())->toBe(1);
 });

@@ -15,7 +15,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.kromatik')]
-#[Title('Akun saya - KROMATIK')]
+#[Title('Akun saya - BRÛLÉ')]
 class Account extends Component
 {
     use WithPagination;

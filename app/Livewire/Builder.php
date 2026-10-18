@@ -12,7 +12,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.kromatik')]
-#[Title('Roast Builder - KROMATIK')]
+#[Title('Roast Builder - BRÛLÉ')]
 class Builder extends Component
 {
     public ?int $coffeeId = null;

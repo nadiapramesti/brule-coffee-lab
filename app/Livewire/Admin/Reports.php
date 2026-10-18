@@ -10,7 +10,7 @@ use Livewire\Attributes\Url;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
-#[Title('Laporan - KROMATIK')]
+#[Title('Laporan - BRÛLÉ')]
 class Reports extends Component
 {
     #[Url(as: 'periode')] public string $preset = '30d';

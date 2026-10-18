@@ -12,7 +12,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.panel')]
-#[Title('Pelanggan - KROMATIK')]
+#[Title('Pelanggan - BRÛLÉ')]
 class Customers extends Component
 {
     use WithPagination;

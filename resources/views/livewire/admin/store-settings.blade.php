@@ -20,7 +20,7 @@
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label for="sn" class="text-[12.5px] text-kraft/75">{{ __('Nama toko') }}</label>
-                        <input id="sn" wire:model="storeName" placeholder="KROMATIK" class="{{ $inp }} mt-1.5">
+                        <input id="sn" wire:model="storeName" placeholder="BRÛLÉ" class="{{ $inp }} mt-1.5">
                         @error('storeName')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                     <div>
@@ -48,7 +48,7 @@
             <div class="space-y-4 p-5">
                 <div>
                     <label for="ce" class="text-[12.5px] text-kraft/75">Email</label>
-                    <input id="ce" type="email" wire:model="email" placeholder="halo@kromatik.id" class="{{ $inp }} mt-1.5">
+                    <input id="ce" type="email" wire:model="email" placeholder="halo@brule.id" class="{{ $inp }} mt-1.5">
                     @error('email')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
                 <div class="grid gap-4 sm:grid-cols-2">

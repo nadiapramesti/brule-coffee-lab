@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $order->order_code }} - KROMATIK</title>
+    <title>{{ $order->order_code }} - BRÛLÉ</title>
     <style>
         * { box-sizing: border-box; }
         body { font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; color: #111; margin: 0; background: #eee; }
@@ -73,7 +73,7 @@
         <div class="muted" style="margin-top:8px">{{ __('Isi paket') }}: <b style="color:#111">{{ $order->items->count() }} {{ __('bungkus') }} · {{ number_format($order->items->sum('grams'), 0, ',', '.') }} g</b></div>
         @if ($order->tracking_number)<div class="muted" style="margin-top:4px">{{ __('Resi') }}: <b style="color:#111">{{ $order->tracking_number }}</b></div>@endif
     </div>
-    <p class="muted" style="margin-top:22px">{{ __('Disangrai setelah pesanan masuk. Terima kasih sudah memilih KROMATIK.') }}</p>
+    <p class="muted" style="margin-top:22px">{{ __('Disangrai setelah pesanan masuk. Terima kasih sudah memilih BRÛLÉ.') }}</p>
 </div>
 </body>
 </html>

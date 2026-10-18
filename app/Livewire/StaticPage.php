@@ -60,6 +60,6 @@ class StaticPage extends Component
     {
         $c = $this->content();
 
-        return view('livewire.static-page', ['c' => $c])->title($c['title'].' - KROMATIK');
+        return view('livewire.static-page', ['c' => $c])->title($c['title'].' - BRÛLÉ');
     }
 }

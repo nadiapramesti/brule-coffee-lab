@@ -27,7 +27,7 @@ class OrderExportController extends Controller
             ])->all();
 
             $bin = SimplePdf::table(
-                'KROMATIK - ' . __('Daftar pesanan'),
+                'BRÛLÉ - ' . __('Daftar pesanan'),
                 now()->translatedFormat('j F Y, H:i') . ' · ' . $orders->count() . ' ' . __('pesanan') . ' · ' . __('Total') . ' Rp' . number_format($orders->where('status', '!=', 'cancelled')->sum('total'), 0, ',', '.'),
                 [__('Kode'), __('Tanggal'), __('Status'), __('Penerima'), __('Item'), __('Total'), __('Resi')],
                 $rows, [1.3, 1.2, 1.2, 1.6, 4, 1.3, 1.6], [5],

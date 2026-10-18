@@ -9,7 +9,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.kromatik')]
-#[Title('Lacak pesanan - KROMATIK')]
+#[Title('Lacak pesanan - BRÛLÉ')]
 class Track extends Component
 {
     public ?string $code = null;

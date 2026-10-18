@@ -10,7 +10,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.kromatik')]
-#[Title('KROMATIK - Specialty Coffee Lab')]
+#[Title('BRÛLÉ - Specialty Coffee Lab')]
 class Landing extends Component
 {
     #[Computed]

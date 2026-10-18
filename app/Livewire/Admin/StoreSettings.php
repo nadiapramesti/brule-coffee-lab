@@ -9,7 +9,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.panel')]
-#[Title('Pengaturan - KROMATIK')]
+#[Title('Pengaturan - BRÛLÉ')]
 class StoreSettings extends Component
 {
     public string $storeName = '';
@@ -63,7 +63,7 @@ class StoreSettings extends Component
             'codMax' => ['required', 'integer', 'min:0', 'max:100000000'],
         ], [
             'required' => __('Wajib diisi.'),
-            'email.email' => __('Format email belum benar. Contoh: halo@kromatik.id'),
+            'email.email' => __('Format email belum benar. Contoh: halo@brule.id'),
             'whatsapp.regex' => __('Nomor WhatsApp tidak valid. Contoh: 0812xxxxxxxx'),
             'instagram.regex' => __('Username Instagram hanya huruf, angka, titik, dan garis bawah.'),
             'integer' => __('Harus angka bulat.'),

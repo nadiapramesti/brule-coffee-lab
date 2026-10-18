@@ -13,7 +13,7 @@ use Livewire\Attributes\Title;
 use Livewire\Component;
 
 #[Layout('layouts.kromatik')]
-#[Title('Checkout - KROMATIK')]
+#[Title('Checkout - BRÛLÉ')]
 class Checkout extends Component
 {
     /** Baris yang dibeli: dari keranjang, atau satu baris langsung bila datang lewat ?p=&g=&grind=. */

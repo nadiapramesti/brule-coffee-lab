@@ -9,7 +9,7 @@ it('shows a branded 404 page', function () {
     $this->get('/halaman-yang-tidak-ada')
         ->assertNotFound()
         ->assertSee('Halaman ini tidak ketemu')
-        ->assertSee('KROMATIK');
+        ->assertSee('BRÛLÉ');
 });
 
 it('shows the 404 page in English when the session locale is en', function () {

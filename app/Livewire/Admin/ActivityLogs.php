@@ -12,7 +12,7 @@ use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('layouts.panel')]
-#[Title('Log aktivitas - KROMATIK')]
+#[Title('Log aktivitas - BRÛLÉ')]
 class ActivityLogs extends Component
 {
     use WithPagination;
