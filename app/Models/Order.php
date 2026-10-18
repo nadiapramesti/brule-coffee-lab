@@ -43,7 +43,7 @@ class Order extends Model
     ];
 
     protected $fillable = [
-        'order_code', 'user_id', 'status', 'payment_method',
+        'order_code', 'user_id', 'status', 'payment_method', 'snap_token', 'midtrans_order_id', 'payment_channel',
         'subtotal', 'shipping_cost', 'discount', 'voucher_id', 'voucher_code', 'total',
         'recipient_name', 'recipient_phone', 'shipping_address',
         'tracking_number', 'admin_note', 'roaster_id',

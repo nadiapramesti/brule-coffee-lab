@@ -109,4 +109,4 @@ docs/screenshots/        gambar untuk README
 
 - Harga dan stok selalu dihitung ulang di server saat pesanan dibuat; keranjang hanya menyimpan pilihan, bukan harga.
 - Stok biji mentah dikunci per kopi saat checkout supaya dua pembeli tidak bisa memesan sisa yang sama.
-- Pembayaran online masih simulasi (tombol "Bayar sekarang"). Integrasi gateway (mis. Midtrans) belum dipasang.
+- Pembayaran online memakai Midtrans Snap (sandbox) bila `MIDTRANS_SERVER_KEY` dan `MIDTRANS_CLIENT_KEY` diisi di `.env`. Tanpa kunci, tombol kembali ke mode simulasi. Webhook: `POST /midtrans/notification` (butuh URL publik, mis. ngrok; di localhost pakai tombol "Cek status pembayaran").

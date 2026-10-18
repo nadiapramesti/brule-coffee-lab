@@ -26,6 +26,7 @@ Route::get('/sitemap.xml', function () {
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/akun', \App\Livewire\Account::class)->middleware('auth')->name('account');
+Route::post('/midtrans/notification', \App\Http\Controllers\MidtransNotificationController::class)->name('midtrans.notification');
 Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
 

@@ -36,8 +36,21 @@
                 <div class="border-t border-dashed border-kraft/30 bg-surface p-6">
                     <p class="text-[14px] leading-relaxed text-kraft/75">{{ __('Biji untukmu sudah ditahan di gudang. Selesaikan pembayaran supaya masuk antrian sangrai.') }}</p>
                     @if ($this->canManage)
-                        <div class="mt-5 flex flex-wrap gap-3">
-                            <button wire:click="pay" class="rounded bg-bluelab px-6 py-3 font-display text-[14.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Bayar sekarang (simulasi)') }}</button>
+                        @php $gw = \App\Support\Midtrans::enabled(); @endphp
+                        @if ($payNotice)<p role="status" class="mt-4 rounded border border-kraft/25 px-4 py-2.5 text-[13px] text-kraft/80">{{ $payNotice }}</p>@endif
+                        <div class="mt-5 flex flex-wrap gap-3"
+                             @if ($gw) x-data x-on:snap-pay.window="
+                                const t = $event.detail.token;
+                                const run = () => window.snap.pay(t, { onSuccess: () => $wire.syncPayment(), onPending: () => $wire.syncPayment(), onError: () => $wire.syncPayment(), onClose: () => $wire.syncPayment() });
+                                if (window.snap) run(); else { const s = document.createElement('script'); s.src = '{{ \App\Support\Midtrans::snapJsUrl() }}'; s.dataset.clientKey = '{{ \App\Support\Midtrans::clientKey() }}'; s.onload = run; document.head.appendChild(s); }" @endif>
+                            @if ($gw)
+                                <button wire:click="startPayment" wire:loading.attr="disabled" wire:target="startPayment" class="rounded bg-bluelab px-6 py-3 font-display text-[14.5px] font-semibold transition-colors hover:bg-[#234E94] disabled:opacity-60">{{ __('Bayar sekarang') }}</button>
+                                @if ($o->midtrans_order_id)
+                                    <button wire:click="syncPayment" wire:loading.attr="disabled" wire:target="syncPayment" class="rounded border border-kraft/30 px-6 py-3 text-[14.5px] text-kraft/80 transition-colors hover:border-kraft/60 disabled:opacity-60">{{ __('Cek status pembayaran') }}</button>
+                                @endif
+                            @else
+                                <button wire:click="pay" class="rounded bg-bluelab px-6 py-3 font-display text-[14.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ __('Bayar sekarang (simulasi)') }}</button>
+                            @endif
                             <button wire:click="cancel" wire:confirm="{{ __('Batalkan pesanan ini?') }}" class="rounded border border-kraft/30 px-6 py-3 text-[14.5px] text-kraft/80 transition-colors hover:border-kraft/60">{{ __('Batalkan') }}</button>
                         </div>
                     @else

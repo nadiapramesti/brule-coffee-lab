@@ -859,5 +859,10 @@
     "Tanpa batas waktu": "No time limit",
     "Dinyalakan": "On",
     "Dimatikan": "Off",
-    "Kembali ke panel": "Back to panel"
+    "Kembali ke panel": "Back to panel",
+    "Bayar sekarang": "Pay now",
+    "Cek status pembayaran": "Check payment status",
+    "Gateway pembayaran sedang tidak bisa dihubungi. Coba lagi sebentar lagi.": "The payment gateway can't be reached right now. Please try again shortly.",
+    "Pembayaran gagal atau kedaluwarsa. Kamu bisa mencoba bayar lagi.": "The payment failed or expired. You can try paying again.",
+    "Pembayaran belum kami terima. Kalau sudah membayar, tunggu beberapa saat lalu cek lagi.": "We haven't received the payment yet. If you've already paid, wait a moment and check again."
 }
