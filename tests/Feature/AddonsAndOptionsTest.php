@@ -154,3 +154,25 @@ it('derives a short name without process words', function () {
 it('lets the admin pick Carbonic Maceration as a process', function () {
     expect(CoffeeForm::PROCESSES)->toContain('Carbonic Maceration');
 });
+
+it('keeps the roastery stock list compact: preview, search, and low-stock filter', function () {
+    $this->seed(MoreCoffeeSeeder::class);
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    Coffee::first()->update(['stock_green_bean_gram' => 0]);
+    Coffee::skip(1)->first()->update(['stock_green_bean_gram' => 500]);
+
+    $c = Livewire::actingAs($roaster)->test(\App\Livewire\Roastery::class);
+    expect($c->get('stockRows')['rows'])->toHaveCount(\App\Livewire\Roastery::STOCK_PREVIEW)
+        ->and($c->get('stockRows')['hidden'])->toBe(14 - \App\Livewire\Roastery::STOCK_PREVIEW);
+    expect($c->get('stockRows')['rows']->first()->stock_green_bean_gram)->toBe(0); // paling tipis di atas
+
+    $c->set('stockAll', true);
+    expect($c->get('stockRows')['rows'])->toHaveCount(14);
+
+    $c->set('stockAll', false)->set('stockLowOnly', true);
+    expect($c->get('stockRows')['rows'])->toHaveCount(2)->and($c->get('stockRows')['filtered'])->toBeTrue();
+
+    $c->set('stockLowOnly', false)->set('stockSearch', 'carbonic');
+    expect($c->get('stockRows')['rows'])->toHaveCount(1);
+    $c->set('stockSearch', 'zzz')->assertSee('Tidak ada biji yang cocok');
+});

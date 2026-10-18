@@ -887,5 +887,13 @@
     "Harga kemasan hadiah (Rp)": "Gift packaging price (Rp)",
     "Harga kartu ucapan (Rp)": "Greeting card price (Rp)",
     "Isi 0 untuk add-on gratis. Biaya add-on tidak ikut menghitung gratis ongkir dan voucher. Pesanan yang sudah dibuat tidak berubah.": "Enter 0 to make an extra free. Extras don't count toward free shipping or vouchers. Existing orders don't change.",
-    "Hadiah": "Gift"
+    "Hadiah": "Gift",
+    "biji": "beans",
+    "habis": "sold out",
+    "menipis": "low",
+    "Semua aman": "All stocked",
+    "Contoh: Gayo, Natural, atau Flores": "Example: Gayo, Natural, or Flores",
+    "Hanya yang menipis": "Low stock only",
+    "Menampilkan :a dari :b": "Showing :a of :b",
+    "Ringkas": "Show less"
 }

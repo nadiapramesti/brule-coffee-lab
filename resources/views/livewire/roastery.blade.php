@@ -67,16 +67,60 @@
         @endforeach
     </div>
 
-    <section class="mt-4 rounded border border-kraft/20 bg-charcoal px-4 py-3">
-        <h2 class="text-[12.5px] font-semibold">{{ __('Stok biji mentah') }}</h2>
-        <ul class="mt-2.5 grid gap-x-8 gap-y-2 sm:grid-cols-2 xl:grid-cols-4">
-            @foreach ($this->stock as $c)
-                @php $pct = min(100, round($c->stock_green_bean_gram / 20000 * 100)); @endphp
-                <li>
-                    <div class="flex justify-between gap-2 text-[12px]"><span class="truncate">{{ $c->name }}</span><span class="krm-readout shrink-0 text-kraft/65">{{ number_format($c->stock_green_bean_gram) }} g</span></div>
-                    <div class="mt-1 h-[3px] rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $pct < 25 ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>
+    @php $sum = $this->stockSummary; $res = $this->stockRows; @endphp
+    <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
+        <header class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-kraft/15 px-4 py-3">
+            <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <h2 class="text-[12.5px] font-semibold">{{ __('Stok biji mentah') }}</h2>
+                <p class="krm-readout text-[11.5px] text-kraft/55">{{ $sum['total'] }} {{ __('biji') }} · {{ number_format($sum['kg'], 1, ',', '.') }} kg</p>
+            </div>
+            <div class="flex flex-wrap gap-1.5 text-[11.5px]">
+                @if ($sum['soldout'])<span class="rounded-[6px] border border-[#C0392B]/50 px-2 py-0.5 text-[#C0392B]">{{ $sum['soldout'] }} {{ __('habis') }}</span>@endif
+                @if ($sum['low'])<span class="rounded-[6px] border border-[#E8782A]/60 px-2 py-0.5 text-[#E8782A]">{{ $sum['low'] }} {{ __('menipis') }}</span>@endif
+                @if (! $sum['soldout'] && ! $sum['low'])<span class="rounded-[6px] border border-kraft/25 px-2 py-0.5 text-kraft/60">{{ __('Semua aman') }}</span>@endif
+            </div>
+        </header>
+
+        <div class="flex flex-wrap items-center gap-2 px-4 pt-3">
+            <label class="sr-only" for="stock-q">{{ __('Cari biji') }}</label>
+            <input id="stock-q" type="search" wire:model.live.debounce.300ms="stockSearch" placeholder="{{ __('Contoh: Gayo, Natural, atau Flores') }}"
+                   class="min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50 sm:max-w-[320px]">
+            <label class="flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-[12.5px] transition-colors {{ $stockLowOnly ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 hover:border-kraft/50' }}">
+                <input type="checkbox" wire:model.live="stockLowOnly" class="h-3.5 w-3.5 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                {{ __('Hanya yang menipis') }}
+            </label>
+        </div>
+
+        <ul class="mt-3 divide-y divide-kraft/10 px-4 {{ $stockAll || $res['filtered'] ? 'max-h-[26rem] overflow-y-auto' : '' }}">
+            @forelse ($res['rows'] as $c)
+                @php
+                    $st = $c->stockState();
+                    $pct = min(100, round($c->stock_green_bean_gram / $sum['max'] * 100));
+                    $bar = $st === 'soldout' ? 'bg-[#C0392B]' : ($st === 'low' ? 'bg-[#E8782A]' : 'bg-bluelab');
+                @endphp
+                <li wire:key="st-{{ $c->id }}" class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 py-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,220px)_112px]">
+                    <div class="min-w-0">
+                        <p class="truncate text-[12.5px]">{{ $c->name }}</p>
+                        <p class="truncate text-[11px] text-kraft/45">{{ $c->traceability?->process }}</p>
+                    </div>
+                    <div class="order-3 col-span-2 h-[3px] rounded-full bg-labwhite/10 sm:order-none sm:col-span-1"><div class="h-[3px] rounded-full {{ $bar }}" style="width: {{ $pct }}%"></div></div>
+                    <p class="krm-readout shrink-0 text-right text-[12px] {{ $st === 'ok' ? 'text-kraft/65' : ($st === 'low' ? 'text-[#E8782A]' : 'text-[#C0392B]') }}">
+                        {{ number_format($c->stock_green_bean_gram) }} g
+                        @if ($st !== 'ok')<span class="ml-1 text-[10.5px]">{{ $st === 'soldout' ? __('Habis') : __('Menipis') }}</span>@endif
+                    </p>
                 </li>
-            @endforeach
+            @empty
+                <li class="py-6 text-center text-[12.5px] text-kraft/45">{{ __('Tidak ada biji yang cocok') }}</li>
+            @endforelse
         </ul>
+
+        <div class="flex items-center justify-between gap-3 border-t border-kraft/15 px-4 py-2.5 text-[12px]">
+            <p class="krm-readout text-kraft/50">{{ __('Menampilkan :a dari :b', ['a' => count($res['rows']), 'b' => $res['matched']]) }}</p>
+            @if (! $res['filtered'] && $sum['total'] > \App\Livewire\Roastery::STOCK_PREVIEW)
+                <button type="button" wire:click="$toggle('stockAll')" class="text-kraft/75 underline-offset-4 hover:text-labwhite hover:underline">
+                    {{ $stockAll ? __('Ringkas') : __('Tampilkan semua :n biji', ['n' => $sum['total']]) }}
+                </button>
+            @endif
+        </div>
     </section>
 </div>

@@ -18,6 +18,15 @@ class Roastery extends Component
 
     public const COLUMNS = ['queued', 'roasting', 'grinding', 'packing'];
 
+    /** Stok biji: berapa baris tampil sebelum "Tampilkan semua". */
+    public const STOCK_PREVIEW = 8;
+
+    public string $stockSearch = '';
+
+    public bool $stockLowOnly = false;
+
+    public bool $stockAll = false;
+
     #[Computed]
     public function columns(): array
     {
@@ -37,10 +46,41 @@ class Roastery extends Component
         ];
     }
 
+    /** Semua biji aktif, stok paling tipis di atas. */
     #[Computed]
     public function stock()
     {
-        return Coffee::active()->orderBy('stock_green_bean_gram')->get();
+        return Coffee::active()->with('traceability')->orderBy('stock_green_bean_gram')->orderBy('name')->get();
+    }
+
+    #[Computed]
+    public function stockSummary(): array
+    {
+        $all = $this->stock;
+
+        return [
+            'total' => $all->count(),
+            'low' => $all->filter(fn ($c) => $c->stockState() === 'low')->count(),
+            'soldout' => $all->filter(fn ($c) => $c->stockState() === 'soldout')->count(),
+            'kg' => round($all->sum('stock_green_bean_gram') / 1000, 1),
+            'max' => max(1, (int) $all->max('stock_green_bean_gram')),
+        ];
+    }
+
+    /** Hasil setelah cari / filter; tanpa filter hanya sebagian sampai "Tampilkan semua". */
+    #[Computed]
+    public function stockRows(): array
+    {
+        $q = mb_strtolower(trim($this->stockSearch));
+        $rows = $this->stock
+            ->when($q !== '', fn ($c) => $c->filter(fn ($b) => str_contains(mb_strtolower($b->name . ' ' . $b->traceability?->process . ' ' . $b->traceability?->region), $q)))
+            ->when($this->stockLowOnly, fn ($c) => $c->filter(fn ($b) => $b->stockState() !== 'ok'))
+            ->values();
+
+        $filtered = $q !== '' || $this->stockLowOnly;
+        $shown = ($filtered || $this->stockAll) ? $rows : $rows->take(self::STOCK_PREVIEW);
+
+        return ['rows' => $shown, 'matched' => $rows->count(), 'hidden' => $rows->count() - $shown->count(), 'filtered' => $filtered];
     }
 
     public function advance(int $id): void
