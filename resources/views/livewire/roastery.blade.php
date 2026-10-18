@@ -58,23 +58,26 @@
         <p wire:key="notice" class="mt-3 rounded border border-bluelab/40 bg-bluelab/10 px-3 py-2 text-[12.5px]" x-data x-init="setTimeout(() => $wire.set('notice', ''), 6000)">{{ $notice }}</p>
     @endif
 
-    <div class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+    {{-- Di HP tiap tahap jadi section yang bisa dibuka/tutup (tanpa gulir bersarang); mulai dari md tetap kolom. --}}
+    @php $firstOpen = collect($this->columns)->search(fn ($c) => $c['total'] > 0); @endphp
+    <div class="mt-3 grid gap-2 md:grid-cols-2 md:gap-3 xl:grid-cols-4">
         @foreach ($this->columns as $status => $col)
-            <section class="flex min-w-0 flex-col rounded border border-kraft/20 bg-charcoal">
-                <header class="border-b border-kraft/15 px-3 py-2">
-                    <div class="flex items-center justify-between">
-                        <h2 class="text-[12.5px] font-semibold">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</h2>
-                        <div class="flex items-center gap-2">
-                            @if ($col['total'] > 0)<button type="button" wire:click="selectColumn('{{ $status }}')" class="text-[11px] text-kraft/55 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Pilih semua') }}</button>@endif
+            <section wire:key="col-{{ $status }}" x-data="{ open: @js($status === $firstOpen) }" class="flex min-w-0 flex-col rounded border border-kraft/20 bg-charcoal">
+                <header class="flex items-start justify-between gap-2 px-3 py-2.5 md:border-b md:border-kraft/15 md:py-2" :class="open ? 'max-md:border-b max-md:border-kraft/15' : ''">
+                    <button type="button" @click="open = !open" :aria-expanded="open.toString()" aria-controls="col-body-{{ $status }}" class="flex min-w-0 flex-1 flex-col text-left md:cursor-default">
+                        <span class="flex items-center gap-2">
+                            <svg viewBox="0 0 12 12" class="h-3 w-3 shrink-0 text-kraft/60 transition-transform md:hidden" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg>
+                            <span class="text-[13px] font-semibold md:text-[12.5px]">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</span>
                             <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $col['total'] }}</span>
-                        </div>
-                    </div>
-                    <p class="krm-readout mt-0.5 flex items-center gap-2 text-[11px] text-kraft/50">
-                        {{ number_format($col['grams']) }} g
-                        @if ($col['late'])<span class="rounded-[6px] border border-[#C0392B]/50 px-1.5 text-[10.5px] text-[#C0392B]">{{ $col['late'] }} {{ __('terlambat') }}</span>@endif
-                    </p>
+                        </span>
+                        <span class="krm-readout mt-0.5 flex items-center gap-2 pl-5 text-[11px] text-kraft/50 md:pl-0">
+                            {{ number_format($col['grams']) }} g
+                            @if ($col['late'])<span class="rounded-[6px] border border-[#C0392B]/50 px-1.5 text-[10.5px] text-[#C0392B]">{{ $col['late'] }} {{ __('terlambat') }}</span>@endif
+                        </span>
+                    </button>
+                    @if ($col['total'] > 0)<button type="button" wire:click="selectColumn('{{ $status }}')" class="shrink-0 py-1 text-[11.5px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline md:text-[11px]">{{ __('Pilih semua') }}</button>@endif
                 </header>
-                <div class="max-h-[34rem] space-y-2 overflow-y-auto overscroll-contain p-2">
+                <div id="col-body-{{ $status }}" :class="open ? '' : 'max-md:hidden'" class="space-y-2 p-2 md:max-h-[34rem] md:overflow-y-auto md:overscroll-contain">
                     @forelse ($col['orders'] as $o)
                         @php $late = $this->isLate($o); $since = ($o->paid_at ?? $o->created_at); @endphp
                         <article wire:key="o-{{ $o->id }}" class="rounded border bg-surface px-2.5 py-2 {{ $late ? 'border-[#C0392B]/45' : 'border-kraft/15' }}">
