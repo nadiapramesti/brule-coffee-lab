@@ -62,10 +62,11 @@
     <circle cx="152" cy="56" r="6.5" fill="#1d1d1d" stroke="#3a3a3a"/><circle cx="152" cy="56" r="2.2" fill="#0c0c0c"/>
 
     {{-- label kraft --}}
-    <rect x="38" y="76" width="124" height="134" rx="3" fill="#D8C5A6"/>
-    <rect x="42" y="80" width="116" height="126" rx="2" fill="none" stroke="#5C4B33" stroke-opacity=".45"/>
+    <rect x="38" y="64" width="124" height="158" rx="3" fill="#D8C5A6"/>
+    <rect x="42" y="68" width="116" height="150" rx="2" fill="none" stroke="#5C4B33" stroke-opacity=".45"/>
 
-    <image href="{{ asset('logo-brule-light.svg') }}" x="76" y="80" width="48" height="19.6" preserveAspectRatio="xMidYMid meet" aria-label="BRÛLÉ"/>
+    <image href="{{ asset('logo-brule-light.svg') }}" x="64" y="76" width="72" height="29.4" preserveAspectRatio="xMidYMid meet" aria-label="BRÛLÉ"/>
+    <g transform="translate(0 11)">
     <polyline points="{{ implode(' ', $pts) }}" fill="none" stroke="{{ $accent }}" stroke-width="1" stroke-linejoin="round" transform="translate(0 -2)"/>
     <line x1="50" x2="150" y1="111" y2="111" stroke="#1a1208" stroke-opacity=".35"/>
 
@@ -81,6 +82,7 @@
         <circle cx="{{ 64 + $i * 18 }}" cy="193" r="2.7" fill="{{ $i <= $lv ? $accent : 'none' }}" stroke="{{ $i <= $lv ? $accent : '#5C4B33' }}" stroke-opacity="{{ $i <= $lv ? 1 : .6 }}" stroke-width=".9"/>
     @endforeach
     <text x="100" y="204" text-anchor="middle" font-family="'IBM Plex Mono', monospace" font-size="5.2" letter-spacing=".8" fill="#5C4B33">{{ $lvLabel }}</text>
+    </g>
 
     {{-- pita warna proses di dasar kantong --}}
     <rect x="24" y="228" width="152" height="4" rx="2" fill="{{ $accent }}"/>
