@@ -21,12 +21,12 @@ class Product extends Model
 
     protected $fillable = [
         'slug', 'name', 'name_en', 'category', 'description', 'description_en',
-        'price', 'stock', 'option_label', 'options', 'image', 'is_active',
+        'price', 'stock', 'option_label', 'options', 'image', 'option_images', 'is_active',
     ];
 
     protected function casts(): array
     {
-        return ['price' => 'integer', 'stock' => 'integer', 'options' => 'array', 'is_active' => 'boolean'];
+        return ['price' => 'integer', 'stock' => 'integer', 'options' => 'array', 'option_images' => 'array', 'is_active' => 'boolean'];
     }
 
     public function getRouteKeyName(): string
@@ -75,13 +75,15 @@ class Product extends Model
         return $this->hasOptions() ? in_array($option, $this->optionList(), true) : $option === null || $option === '';
     }
 
-    public function imageUrl(): ?string
+    /** Foto pilihan tertentu bila ada, kalau tidak foto utama. */
+    public function imageUrl(?string $option = null): ?string
     {
-        if (! $this->image) {
+        $path = ($option !== null && $option !== '' ? ($this->option_images[$option] ?? null) : null) ?: $this->image;
+        if (! $path) {
             return null;
         }
 
-        return Str::startsWith($this->image, ['http://', 'https://', '/']) ? $this->image : asset('storage/'.ltrim($this->image, '/'));
+        return Str::startsWith($path, ['http://', 'https://', '/']) ? $path : asset('storage/'.ltrim($path, '/'));
     }
 
     /** soldout | low | ok */

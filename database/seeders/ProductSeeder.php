@@ -13,6 +13,9 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
+        // Slug lama mug enamel dipindah ke mug hitam matte supaya tidak muncul dua mug.
+        Product::where('slug', 'mug-enamel-brule')->update(['slug' => 'mug-matte-black-brule']);
+
         $products = [
             ['hario-v60-dripper-02', 'Hario V60 Dripper 02', 'Hario V60 Dripper 02', 'brewer', 'Dripper keramik untuk 1–4 cangkir. Aliran stabil, mudah dibersihkan.', 'Ceramic dripper for 1–4 cups. Steady flow, easy to clean.', 185000, 24, 'Warna', ['Putih', 'Hitam']],
             ['aeropress-original', 'AeroPress Original', 'AeroPress Original', 'brewer', 'Seduh cepat 1–2 menit, ringan dibawa. Hasil bersih dan manis.', 'Brews in 1–2 minutes and packs light. Clean, sweet cups.', 520000, 12, null, null],
@@ -21,13 +24,29 @@ class ProductSeeder extends Seeder
             ['kertas-filter-v60', 'Kertas Filter V60 (100 lembar)', 'V60 Paper Filters (100 sheets)', 'filter', 'Kertas putih tanpa rasa kertas, pas untuk dripper 02.', 'White, taste-free paper that fits the 02 dripper.', 55000, 60, null, null],
             ['timbangan-seduh', 'Timbangan Seduh 0,1 g', 'Brew Scale 0.1 g', 'accessory', 'Timer bawaan, tahan cipratan, baterai isi ulang USB-C.', 'Built-in timer, splash resistant, USB-C rechargeable.', 410000, 15, null, null],
             ['gooseneck-kettle', 'Gooseneck Kettle 600 ml', 'Gooseneck Kettle 600 ml', 'accessory', 'Cerat ramping untuk tuang terkontrol. Cocok untuk semua kompor dan induksi.', 'Slim spout for controlled pouring. Works on any stove and induction.', 450000, 0, null, null],
-            ['kaos-brule', 'Kaos BRÛLÉ', 'BRÛLÉ T-shirt', 'merch', 'Katun combed 24s, sablon kromatogram di dada. Potongan unisex.', 'Combed cotton 24s with the chromatogram printed on the chest. Unisex cut.', 175000, 30, 'Ukuran', ['S', 'M', 'L', 'XL']],
-            ['tote-bag-brule', 'Tote Bag Kanvas', 'Canvas Tote Bag', 'merch', 'Kanvas tebal, muat 2 kantong kopi dan satu dripper.', 'Heavy canvas, fits two coffee bags and a dripper.', 95000, 40, null, null],
-            ['mug-enamel-brule', 'Mug Enamel 300 ml', 'Enamel Mug 300 ml', 'merch', 'Mug enamel ringan, aman untuk api kecil dan perjalanan.', 'Light enamel mug, camp-stove safe and travel friendly.', 85000, 4, 'Warna', ['Krem', 'Hitam']],
+            ['kaos-brule', 'Kaos BRÛLÉ', 'BRÛLÉ T-shirt', 'merch', 'Katun combed 24s, logo B kromatogram bordir hitam di dada kiri. Potongan unisex.', 'Combed cotton 24s with the black B chromatogram logo embroidered on the left chest. Unisex cut.', 175000, 30, 'Ukuran', ['S', 'M', 'L', 'XL']],
+            ['tote-bag-brule', 'Tote Bag Kanvas', 'Canvas Tote Bag', 'merch', 'Kanvas tebal warna natural, muat 2 kantong kopi dan satu dripper. Logo B kromatogram hitam di tengah.', 'Heavy natural canvas, fits two coffee bags and a dripper. Black B chromatogram logo at the center.', 95000, 40, null, null],
+            ['mug-matte-black-brule', 'Mug Matte Black Ceramic 300 ml Model C', 'Matte Black Ceramic Mug 300 ml Model C', 'merch', 'Keramik hitam matte bergagang kotak, logo B kromatogram putih di samping.', 'Matte black ceramic with a square handle and the white B chromatogram logo on the side.', 85000, 4, null, null],
         ];
+
+        $images = [
+            'hario-v60-dripper-02' => '/products/v60-putih-final.jpg',
+            'aeropress-original' => '/products/aeropress-final.jpg',
+            'french-press-600' => '/products/french-press-final.jpg',
+            'hand-grinder-burr' => '/products/grinder-final.jpg',
+            'kertas-filter-v60' => '/products/filter-final.jpg',
+            'timbangan-seduh' => '/products/timbangan-final.jpg',
+            'gooseneck-kettle' => '/products/kettle-final.jpg',
+            'kaos-brule' => '/products/kaos-brule-final.jpg',
+            'tote-bag-brule' => '/products/tote-brule-final.jpg',
+            'mug-matte-black-brule' => '/products/mug-brule-black-final.jpg',
+        ];
+        // Foto per pilihan: dripper hitam punya foto sendiri.
+        $optionImages = ['hario-v60-dripper-02' => ['Putih' => '/products/v60-putih-final.jpg', 'Hitam' => '/products/v60-hitam-final.jpg']];
 
         foreach ($products as [$slug, $name, $nameEn, $cat, $desc, $descEn, $price, $stock, $label, $options]) {
             Product::updateOrCreate(['slug' => $slug], [
+                'image' => $images[$slug] ?? null, 'option_images' => $optionImages[$slug] ?? null,
                 'name' => $name, 'name_en' => $nameEn, 'category' => $cat,
                 'description' => $desc, 'description_en' => $descEn,
                 'price' => $price, 'stock' => $stock,

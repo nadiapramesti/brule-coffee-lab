@@ -224,3 +224,28 @@ it('draws an illustration for every seeded product when there is no photo', func
         expect($html)->toContain('<svg')->toContain($p->name);
     }
 });
+
+it('uses the final product photos, per-option photos and merch alt text', function () {
+    expect(Product::whereNull('image')->count())->toBe(0)
+        ->and(Product::where('slug', 'mug-matte-black-brule')->value('name'))->toBe('Mug Matte Black Ceramic 300 ml Model C')
+        ->and(Product::where('slug', 'mug-enamel-brule')->exists())->toBeFalse();
+
+    foreach (Product::all() as $p) {
+        expect(file_exists(public_path(ltrim($p->image, '/'))))->toBeTrue("foto {$p->slug} tidak ada");
+    }
+
+    expect($this->v60->imageUrl('Hitam'))->toContain('v60-hitam-final.jpg')
+        ->and($this->v60->imageUrl('Putih'))->toContain('v60-putih-final.jpg')
+        ->and($this->v60->imageUrl())->toContain('v60-putih-final.jpg');
+
+    $html = (string) view('components.product-thumb', ['product' => $this->tee]);
+    expect($html)->toContain('alt="BRÛLÉ merch - B chromatogram high contrast"');
+});
+
+it('re-seeding keeps a single mug even from the old enamel slug', function () {
+    Product::where('slug', 'mug-matte-black-brule')->update(['slug' => 'mug-enamel-brule', 'name' => 'Mug Enamel 300 ml']);
+    $this->seed(ProductSeeder::class);
+
+    expect(Product::where('slug', 'like', 'mug-%')->count())->toBe(1)
+        ->and(Product::where('slug', 'mug-matte-black-brule')->value('name'))->toContain('Model C');
+});

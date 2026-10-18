@@ -26,7 +26,7 @@
                 @php $state = $p->stockState(); @endphp
                 <li wire:key="p-{{ $p->id }}" class="flex flex-col overflow-hidden rounded border border-kraft/20 bg-surface">
                     <button type="button" wire:click="openDetail('{{ $p->slug }}')" aria-label="{{ __('Lihat detail :n', ['n' => $p->localizedName()]) }}" class="block text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/60">
-                        <x-product-thumb :product="$p" class="aspect-[4/3] w-full rounded-none border-0 border-b border-kraft/15" />
+                        <x-product-thumb :product="$p" :option="$choice[$p->id] ?? null" class="aspect-[4/3] w-full rounded-none border-0 border-b border-kraft/15" />
                     </button>
                     <div class="flex flex-1 flex-col p-5">
                         <p class="krm-readout text-[10.5px] tracking-[0.14em] text-kraft/50">{{ mb_strtoupper($p->categoryLabel()) }}</p>
@@ -39,7 +39,7 @@
                                 <div class="mt-1.5 flex flex-wrap gap-1.5">
                                     @foreach ($p->optionList() as $opt)
                                         <label class="cursor-pointer">
-                                            <input type="radio" class="peer sr-only" name="opt-{{ $p->id }}" value="{{ $opt }}" wire:model="choice.{{ $p->id }}">
+                                            <input type="radio" class="peer sr-only" name="opt-{{ $p->id }}" value="{{ $opt }}" wire:model.live="choice.{{ $p->id }}">
                                             <span class="block rounded border border-kraft/25 px-3 py-1 text-[12.5px] text-kraft/75 transition-colors peer-checked:border-bluelab peer-checked:bg-bluelab/20 peer-checked:text-labwhite peer-focus-visible:ring-2 peer-focus-visible:ring-bluelab/50">{{ $opt }}</span>
                                         </label>
                                     @endforeach
@@ -73,7 +73,7 @@
             <div class="krm-fade absolute inset-0 bg-black/65" wire:click="closeDetail"></div>
             <div role="dialog" aria-modal="true" aria-labelledby="gear-title" x-trap="true"
                  class="krm-pop relative flex max-h-[92dvh] w-full flex-col overflow-hidden rounded-t-xl border border-kraft/25 bg-surface text-labwhite shadow-2xl sm:max-w-[760px] sm:rounded-lg sm:flex-row">
-                <x-product-thumb :product="$d" class="aspect-[4/3] w-full shrink-0 rounded-none border-0 sm:aspect-auto sm:w-[46%]" />
+                <x-product-thumb :product="$d" :option="$choice[$d->id] ?? null" class="aspect-[4/3] w-full shrink-0 rounded-none border-0 sm:aspect-auto sm:w-[46%]" />
                 <div class="flex min-h-0 flex-1 flex-col">
                     <div class="flex items-start justify-between gap-3 px-5 pt-5">
                         <div class="min-w-0">
