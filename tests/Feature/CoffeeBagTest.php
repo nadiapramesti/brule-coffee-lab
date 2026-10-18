@@ -10,7 +10,7 @@ it('renders a branded pouch svg for a coffee without a photo', function () {
     $c = Coffee::with('traceability')->first();
     $html = Blade::render('<x-coffee-bag :coffee="$c" level="medium_dark" />', ['c' => $c]);
 
-    expect($html)->toContain('<svg')->toContain('KROMATIK')->toContain('MEDIUM DARK')
+    expect($html)->toContain('<svg')->toContain('logo-brule-light.svg')->not->toContain('KROMATIK')->toContain('MEDIUM DARK')
         ->and(strtoupper($html))->toContain(strtoupper(explode(' ', $c->name)[0]));
 });
 

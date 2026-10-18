@@ -65,7 +65,7 @@
     <rect x="38" y="76" width="124" height="134" rx="3" fill="#D8C5A6"/>
     <rect x="42" y="80" width="116" height="126" rx="2" fill="none" stroke="#5C4B33" stroke-opacity=".45"/>
 
-    <text x="100" y="96" text-anchor="middle" font-family="'IBM Plex Sans Condensed', system-ui, sans-serif" font-weight="700" font-size="7.6" letter-spacing="2.8" fill="#1a1208">KROMATIK</text>
+    <image href="{{ asset('logo-brule-light.svg') }}" x="76" y="80" width="48" height="19.6" preserveAspectRatio="xMidYMid meet" aria-label="BRÛLÉ"/>
     <polyline points="{{ implode(' ', $pts) }}" fill="none" stroke="{{ $accent }}" stroke-width="1" stroke-linejoin="round" transform="translate(0 -2)"/>
     <line x1="50" x2="150" y1="111" y2="111" stroke="#1a1208" stroke-opacity=".35"/>
 

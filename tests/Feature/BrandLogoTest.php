@@ -34,3 +34,11 @@ it('keeps the logo CSS rules that swap by theme and by dark zones', function () 
 
     expect($css)->toContain('.krm-logo-dark')->toContain('.krm-logo-light');
 })->skip(fn () => glob(public_path('build/assets/*.css')) === [], 'butuh npm run build');
+
+it('pouch label uses the BRÛLÉ logo, not the old wordmark', function () {
+    $svg = file_get_contents(resource_path('views/components/coffee-bag.blade.php'));
+
+    expect($svg)->toContain('logo-brule-light.svg')->not->toContain('>KROMATIK<');
+    expect(file_exists(public_path('images/steps/04-kemas-black-brule.jpg')))->toBeTrue();
+    expect(file_exists(public_path('images/steps/04-kemas-black-kromatik.jpg')))->toBeFalse();
+});

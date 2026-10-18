@@ -64,7 +64,7 @@ class Landing extends Component
             ['name' => __('Antrian'),   'note' => __('Pesanan masuk papan roastery, biji mentah ditimbang.'), 'img' => 'steps/01-antrian-q12-dark.jpg'],
             ['name' => __('Sangrai'),   'note' => __('Satu batch untuk satu pesanan, mengikuti kurva yang kamu pilih.'), 'img' => 'steps/02-sangrai-210c.jpg'],
             ['name' => __('Giling'),    'note' => __('Digiling di ukuran alat seduhmu. Pilih biji utuh kalau punya grinder.'), 'img' => 'steps/03-giling.jpg'],
-            ['name' => __('Kemas'),     'note' => __('Masuk kantong berkatup, tanggal sangrai dicetak hari itu juga.'), 'img' => 'steps/04-kemas-black-kromatik.jpg'],
+            ['name' => __('Kemas'),     'note' => __('Masuk kantong berkatup, tanggal sangrai dicetak hari itu juga.'), 'img' => 'steps/04-kemas-black-brule.jpg'],
             ['name' => __('Kirim'),     'note' => __('Berangkat maksimal 24 jam setelah biji keluar dari mesin.'), 'img' => 'steps/05-kirim.jpg'],
         ];
     }
