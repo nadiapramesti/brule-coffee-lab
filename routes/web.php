@@ -29,6 +29,7 @@ Route::get('/akun', \App\Livewire\Account::class)->middleware('auth')->name('acc
 Route::post('/midtrans/notification', \App\Http\Controllers\MidtransNotificationController::class)->name('midtrans.notification');
 Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');
+Route::get('/roastery/label', \App\Http\Controllers\Roastery\LabelController::class)->middleware(['auth', 'roaster'])->name('roastery.labels');
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::get('/', \App\Livewire\Admin\Dashboard::class)->name('admin.dashboard');

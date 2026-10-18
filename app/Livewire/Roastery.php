@@ -33,33 +33,68 @@ class Roastery extends Component
     /** Lebih dari ini sejak dibayar = ditandai terlambat (janji toko: berangkat 24 jam). */
     public const LATE_HOURS = 24;
 
+    /** Batas aman satu aksi massal / satu halaman cetak. */
+    public const BULK_MAX = 100;
+
     public string $search = '';
+
+    public bool $onlyLate = false;
 
     /** @var array<string,int> tambahan kartu yang dibuka per kolom */
     public array $extra = [];
 
+    /** @var array<int,int|string> id pesanan yang dicentang */
+    public array $selected = [];
+
+    public string $notice = '';
+
+    private const SINCE = 'COALESCE(orders.paid_at, orders.created_at)';
+
+    /** Pasang cari + filter terlambat ke query apa pun yang memakai tabel `orders` (Eloquent maupun query builder). */
+    private function applyFilter($query)
+    {
+        $q = trim($this->search);
+
+        return $query->whereIn('orders.status', self::COLUMNS)
+            ->when($q !== '', function ($query) use ($q) {
+                $like = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $q) . '%';
+                $query->where(fn ($w) => $w->where('orders.order_code', 'like', $like)->orWhere('orders.recipient_name', 'like', $like)
+                    ->orWhereRaw('EXISTS (SELECT 1 FROM order_items oi WHERE oi.order_id = orders.id AND oi.coffee_name_snapshot LIKE ?)', [$like]));
+            })
+            ->when($this->onlyLate, fn ($query) => $query->whereRaw(self::SINCE . ' < ?', [now()->subHours(self::LATE_HOURS)]));
+    }
+
+    private function filtered(): \Illuminate\Database\Eloquent\Builder
+    {
+        return $this->applyFilter(Order::query());
+    }
+
+    /** Hitungan per kolom lewat query teragregasi (tidak memuat semua pesanan), lalu hanya kartu yang tampil yang dimuat. */
     #[Computed]
     public function columns(): array
     {
-        $q = trim($this->search);
-        $orders = Order::with('items')->whereIn('status', self::COLUMNS)
-            ->when($q !== '', function ($query) use ($q) {
-                $like = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $q) . '%';
-                $query->where(fn ($w) => $w->where('order_code', 'like', $like)->orWhere('recipient_name', 'like', $like)
-                    ->orWhereHas('items', fn ($i) => $i->where('coffee_name_snapshot', 'like', $like)));
-            })
-            ->orderByRaw('COALESCE(paid_at, created_at)')->get()->groupBy('status');
+        $cut = now()->subHours(self::LATE_HOURS);
 
-        return collect(self::COLUMNS)->mapWithKeys(function ($s) use ($orders) {
-            $all = $orders->get($s, collect());
+        $counts = $this->filtered()
+            ->selectRaw('orders.status as st, COUNT(*) as c, SUM(CASE WHEN ' . self::SINCE . ' < ? THEN 1 ELSE 0 END) as late', [$cut])
+            ->groupBy('orders.status')->get()->keyBy('st');
+
+        $grams = $this->applyFilter(\Illuminate\Support\Facades\DB::table('orders')->join('order_items', 'order_items.order_id', '=', 'orders.id'))
+            ->selectRaw('orders.status as st, SUM(order_items.grams) as g')
+            ->groupBy('orders.status')->pluck('g', 'st');
+
+        return collect(self::COLUMNS)->mapWithKeys(function ($s) use ($counts, $grams) {
+            $total = (int) ($counts[$s]->c ?? 0);
             $limit = self::PER_COLUMN + (int) ($this->extra[$s] ?? 0);
+            $orders = $total === 0 ? collect() : $this->filtered()->where('orders.status', $s)
+                ->with('items')->orderByRaw(self::SINCE)->orderBy('orders.id')->limit($limit)->get();
 
             return [$s => [
-                'orders' => $all->take($limit),
-                'total' => $all->count(),
-                'hidden' => max(0, $all->count() - $limit),
-                'grams' => (int) $all->sum(fn ($o) => $o->items->sum('grams')),
-                'late' => $all->filter(fn ($o) => $this->isLate($o))->count(),
+                'orders' => $orders,
+                'total' => $total,
+                'hidden' => max(0, $total - $orders->count()),
+                'grams' => (int) ($grams[$s] ?? 0),
+                'late' => (int) ($counts[$s]->late ?? 0),
             ]];
         })->all();
     }
@@ -76,15 +111,28 @@ class Roastery extends Component
         }
     }
 
-    /** Rencana sangrai: pesanan masuk antrian dikelompokkan per biji + level, supaya disangrai sekali jalan. */
+    public function filterBy(string $text): void
+    {
+        $this->search = $text;
+        $this->extra = [];
+    }
+
+    public function updatedSearch(): void
+    {
+        $this->extra = [];
+    }
+
+    /** Rencana sangrai: antrian masuk dikelompokkan per biji + level lewat satu query agregat. */
     #[Computed]
     public function batches(): \Illuminate\Support\Collection
     {
-        return Order::with('items')->where('status', 'queued')->get()
-            ->flatMap(fn ($o) => $o->items->map(fn ($i) => ['o' => $o->id, 'name' => $i->coffee_name_snapshot, 'level' => $i->level_label, 'grams' => (int) $i->grams]))
-            ->groupBy(fn ($r) => $r['name'] . '|' . $r['level'])
-            ->map(fn ($g) => ['name' => $g[0]['name'], 'level' => $g[0]['level'], 'grams' => $g->sum('grams'), 'orders' => $g->pluck('o')->unique()->count()])
-            ->sortByDesc('grams')->values();
+        return \App\Models\OrderItem::query()
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->where('orders.status', 'queued')
+            ->selectRaw('order_items.coffee_name_snapshot as name, order_items.roast_level_snapshot as lvl, SUM(order_items.grams) as g, COUNT(DISTINCT order_items.order_id) as n')
+            ->groupBy('order_items.coffee_name_snapshot', 'order_items.roast_level_snapshot')
+            ->orderByDesc('g')->limit(40)->get()
+            ->map(fn ($r) => ['name' => $r->name, 'level' => (new \App\Models\OrderItem(['roast_level_snapshot' => $r->lvl]))->level_label, 'grams' => (int) $r->g, 'orders' => (int) $r->n]);
     }
 
     #[Computed]
@@ -135,10 +183,69 @@ class Roastery extends Component
         return ['rows' => $shown, 'matched' => $rows->count(), 'hidden' => $rows->count() - $shown->count(), 'filtered' => $filtered];
     }
 
+    /** Centang semua kartu yang sedang tampil di satu kolom (atau lepas kalau sudah semuanya tercentang). */
+    public function selectColumn(string $status): void
+    {
+        if (! in_array($status, self::COLUMNS, true)) {
+            return;
+        }
+        $ids = $this->columns[$status]['orders']->pluck('id')->map(fn ($i) => (string) $i)->all();
+        $current = array_map('strval', $this->selected);
+        $this->selected = count(array_diff($ids, $current)) === 0
+            ? array_values(array_diff($current, $ids))
+            : array_values(array_unique(array_merge($current, $ids)));
+    }
+
+    public function clearSelection(): void
+    {
+        $this->selected = [];
+    }
+
+    /** Info untuk bar aksi massal: berapa yang dicentang, bisa dilanjutkan, dan bisa dicetak. */
+    #[Computed]
+    public function selection(): array
+    {
+        $ids = $this->selectedIds();
+        if ($ids === []) {
+            return ['count' => 0, 'advance' => 0, 'print' => 0, 'ids' => []];
+        }
+        $orders = Order::whereIn('id', $ids)->whereIn('status', self::COLUMNS)->get();
+
+        return [
+            'count' => $orders->count(),
+            'advance' => $orders->filter(fn ($o) => in_array($o->status, ['queued', 'roasting', 'grinding'], true))->count(),
+            'print' => $orders->filter->canPrint()->count(),
+            'ids' => $orders->pluck('id')->all(),
+        ];
+    }
+
+    /** @return array<int,int> */
+    private function selectedIds(): array
+    {
+        return array_slice(array_values(array_unique(array_filter(array_map('intval', $this->selected)))), 0, self::BULK_MAX);
+    }
+
+    /** Majukan semua pesanan tercentang satu tahap. Kolom Dikemas dilewati karena butuh nomor resi per paket. */
+    public function advanceSelected(): void
+    {
+        $moved = 0;
+        foreach (Order::whereIn('id', $this->selectedIds())->orderByRaw(self::SINCE)->get() as $o) {
+            if ($o->advance()) {
+                $moved++;
+            }
+        }
+        $skipped = count($this->selectedIds()) - $moved;
+        $this->notice = $moved > 0
+            ? __(':n pesanan dilanjutkan.', ['n' => $moved]) . ($skipped > 0 ? ' ' . __(':n dilewati (tahap Dikemas butuh resi).', ['n' => $skipped]) : '')
+            : __('Tidak ada yang bisa dilanjutkan. Tahap Dikemas butuh nomor resi per paket.');
+        $this->selected = [];
+        unset($this->columns, $this->stats, $this->batches, $this->selection);
+    }
+
     public function advance(int $id): void
     {
         Order::findOrFail($id)->advance();
-        unset($this->columns, $this->stats, $this->batches);
+        unset($this->columns, $this->stats, $this->batches, $this->selection);
     }
 
     public function ship(int $id): void
@@ -149,7 +256,7 @@ class Roastery extends Component
         ]);
 
         if (Order::findOrFail($id)->ship($this->tracking[$id])) {
-            unset($this->tracking[$id], $this->columns, $this->stats, $this->batches);
+            unset($this->tracking[$id], $this->columns, $this->stats, $this->batches, $this->selection);
         }
     }
 

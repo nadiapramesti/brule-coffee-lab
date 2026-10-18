@@ -43,7 +43,8 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 - FAQ dan kebijakan (ID/EN), tema terang/gelap, dua bahasa ID/EN, halaman error bermerek, SEO dasar + sitemap.
 
 **Panel internal (admin & roastery)**
-- Dashboard, pesanan (cetak invoice/label kirim, hanya setelah lunas), antrian roastery, jurnal sangrai.
+- Dashboard, pesanan (cetak invoice/label kirim, hanya setelah lunas), jurnal sangrai.
+- Antrian roastery siap banyak pesanan: hitungan lewat query agregat (diuji 5.000 pesanan, <100 ms), batas kartu per kolom, cari, filter terlambat (>24 jam), rencana sangrai per biji + level, centang banyak pesanan untuk dilanjutkan sekaligus dan cetak label massal, serta stok biji mentah yang bisa dicari.
 - Kelola kopi (termasuk foto), stok dengan riwayat pergerakan, voucher, pelanggan, ulasan (moderasi), pengguna & peran, log aktivitas, pengaturan toko.
 - Laporan penjualan dengan ekspor Excel dan PDF.
 

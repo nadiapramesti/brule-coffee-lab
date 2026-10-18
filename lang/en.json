@@ -901,5 +901,19 @@
     "Contoh: BRL-20261018-0003, Sinta, atau Gayo": "Example: BRL-20261018-0003, Sinta, or Gayo",
     "terlambat": "late",
     "Tidak ada yang cocok": "No matches",
-    "Tampilkan :n lagi": "Show :n more"
+    "Tampilkan :n lagi": "Show :n more",
+    "Tampilkan pesanan biji ini": "Show orders for this bean",
+    "Hanya yang terlambat": "Late only",
+    "Pilih semua": "Select all",
+    "Pilih :code": "Select :code",
+    "Aksi untuk pesanan terpilih": "Actions for selected orders",
+    ":n dipilih": ":n selected",
+    "Lanjutkan :n pesanan ke tahap berikutnya?": "Move :n orders to the next stage?",
+    "Lanjutkan :n ke tahap berikutnya": "Move :n to next stage",
+    "Cetak label :n": "Print :n labels",
+    ":n pesanan dilanjutkan.": ":n orders moved forward.",
+    ":n dilewati (tahap Dikemas butuh resi).": ":n skipped (Packing needs a tracking number).",
+    "Tidak ada yang bisa dilanjutkan. Tahap Dikemas butuh nomor resi per paket.": "Nothing to move forward. Packing needs a tracking number per parcel.",
+    "Label": "Label",
+    "Tidak ada pesanan yang bisa dicetak (belum lunas atau dibatalkan).": "No orders can be printed (unpaid or cancelled)."
 }

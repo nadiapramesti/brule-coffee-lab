@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ $order->order_code }} - BRÛLÉ</title>
+    @php $orders = $orders ?? collect([$order]); @endphp
+    <title>{{ $orders->count() > 1 ? __('Label') . ' (' . $orders->count() . ')' : $orders->first()->order_code }} - BRÛLÉ</title>
     <style>
         * { box-sizing: border-box; }
         body { font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; color: #111; margin: 0; background: #eee; }
@@ -24,11 +25,12 @@
         .label b { font-size: 16px; }
         .bar { text-align: center; padding: 12px; }
         button { font: inherit; padding: 8px 18px; cursor: pointer; }
-        @media print { body { background: #fff; } .sheet { margin: 0; width: auto; padding: 0; } .bar { display: none; } }
+        @media print { body { background: #fff; } .sheet { margin: 0; width: auto; padding: 0; } .bar { display: none; } .sheet + .sheet { break-before: page; } }
     </style>
 </head>
 <body>
-<div class="bar"><button onclick="window.print()">{{ __('Cetak') }}</button></div>
+<div class="bar"><button onclick="window.print()">{{ __('Cetak') }}@if ($orders->count() > 1) ({{ $orders->count() }})@endif</button></div>
+@foreach ($orders as $order)
 <div class="sheet">
     <div class="row">
         <div><h1>{{ \App\Models\Setting::get('store_name') }}</h1><div class="muted">{{ \App\Models\Setting::get('store_tagline') }} · {{ \App\Models\Setting::get('store_city') }}</div></div>
@@ -78,5 +80,6 @@
     </div>
     <p class="muted" style="margin-top:22px">{{ __('Disangrai setelah pesanan masuk. Terima kasih sudah memilih BRÛLÉ.') }}</p>
 </div>
+@endforeach
 </body>
 </html>

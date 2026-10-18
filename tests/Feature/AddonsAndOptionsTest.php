@@ -207,3 +207,77 @@ it('scales the roastery queue: per-column limit, search, late flag and roast-pla
     $c->set('search', $this->profile->coffee->name);
     expect($c->get('columns')['queued']['total'])->toBe(12);
 });
+
+it('filters the queue to late orders only', function () {
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    foreach ([2, 30, 50] as $h) {
+        $o = place($this); $o->markPaid(); $o->forceFill(['paid_at' => now()->subHours($h)])->save();
+    }
+    $c = Livewire::actingAs($roaster)->test(\App\Livewire\Roastery::class);
+    expect($c->get('columns')['queued']['total'])->toBe(3);
+    $c->set('onlyLate', true);
+    expect($c->get('columns')['queued']['total'])->toBe(2)->and($c->get('columns')['queued']['late'])->toBe(2);
+});
+
+it('moves selected orders one stage at once, skips packing, and clears the selection', function () {
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    $ids = [];
+    foreach (range(1, 3) as $i) { $o = place($this); $o->markPaid(); $ids[] = $o->id; }
+    $packing = place($this); $packing->markPaid(); $packing->advance(); $packing->advance(); $packing->advance();
+    expect($packing->fresh()->status)->toBe('packing');
+
+    $c = Livewire::actingAs($roaster)->test(\App\Livewire\Roastery::class)
+        ->set('selected', array_merge($ids, [$packing->id]));
+    expect($c->get('selection'))->toMatchArray(['count' => 4, 'advance' => 3]);
+
+    $c->call('advanceSelected')->assertSet('selected', []);
+    expect(Order::whereIn('id', $ids)->pluck('status')->unique()->all())->toBe(['roasting'])
+        ->and($packing->fresh()->status)->toBe('packing');
+});
+
+it('ignores bogus or oversized selections and never advances unselected orders', function () {
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    $a = place($this); $a->markPaid();
+    $b = place($this); $b->markPaid();
+
+    Livewire::actingAs($roaster)->test(\App\Livewire\Roastery::class)
+        ->set('selected', [(string) $a->id, 'x', '99999', '0'])->call('advanceSelected');
+
+    expect($a->fresh()->status)->toBe('roasting')->and($b->fresh()->status)->toBe('queued');
+});
+
+it('prints many labels at once for the roastery, one sheet per printable order', function () {
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    $paid1 = place($this, ['card_message' => 'Halo A']); $paid1->markPaid();
+    $paid2 = place($this); $paid2->markPaid();
+    $unpaid = place($this);
+    $cancelled = place($this); $cancelled->cancelAndRestock();
+
+    $ids = implode(',', [$paid1->id, $paid2->id, $unpaid->id, $cancelled->id]);
+    $res = $this->actingAs($roaster)->get(route('roastery.labels', ['ids' => $ids]))->assertOk();
+
+    expect(substr_count($res->getContent(), 'class="sheet"'))->toBe(2);
+    $res->assertSee($paid1->order_code)->assertSee($paid2->order_code)->assertSee('Halo A')
+        ->assertDontSee($unpaid->order_code)->assertDontSee($cancelled->order_code);
+
+    $this->actingAs($roaster)->get(route('roastery.labels', ['ids' => (string) $unpaid->id]))->assertNotFound();
+    $this->actingAs($this->customer)->get(route('roastery.labels', ['ids' => $ids]))->assertForbidden();
+    auth()->logout();
+    $this->get(route('roastery.labels', ['ids' => $ids]))->assertRedirect();
+});
+
+it('keeps the queue query count constant no matter how many orders exist', function () {
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    $count = function () use ($roaster) {
+        \Illuminate\Support\Facades\DB::enableQueryLog();
+        \Illuminate\Support\Facades\DB::flushQueryLog();
+        Livewire::actingAs($roaster)->test(\App\Livewire\Roastery::class);
+        return count(\Illuminate\Support\Facades\DB::getQueryLog());
+    };
+    foreach (range(1, 5) as $i) { place($this)->markPaid(); }
+    $few = $count();
+    foreach (range(1, 40) as $i) { place($this)->markPaid(); }
+    $many = $count();
+
+    expect($many)->toBe($few);
+});

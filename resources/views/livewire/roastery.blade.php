@@ -28,22 +28,35 @@
             </div>
             <ul class="mt-2.5 flex max-h-[7.5rem] flex-wrap gap-2 overflow-y-auto">
                 @foreach ($this->batches as $bt)
-                    <li wire:key="bt-{{ $loop->index }}" class="flex items-baseline gap-2 rounded border border-kraft/20 bg-surface px-2.5 py-1.5 text-[12px]">
-                        <span class="font-semibold">{{ $bt['name'] }}</span>
-                        <span class="text-kraft/60">{{ $bt['level'] }}</span>
-                        <span class="krm-readout">{{ number_format($bt['grams']) }} g</span>
-                        <span class="text-[11px] text-kraft/45">{{ $bt['orders'] }} {{ __('pesanan') }}</span>
+                    <li wire:key="bt-{{ $loop->index }}">
+                        <button type="button" wire:click="filterBy(@js($bt['name']))" title="{{ __('Tampilkan pesanan biji ini') }}"
+                                class="flex items-baseline gap-2 rounded border bg-surface px-2.5 py-1.5 text-left text-[12px] transition-colors hover:border-bluelab {{ trim($search) === $bt['name'] ? 'border-bluelab' : 'border-kraft/20' }}">
+                            <span class="font-semibold">{{ $bt['name'] }}</span>
+                            <span class="text-kraft/60">{{ $bt['level'] }}</span>
+                            <span class="krm-readout">{{ number_format($bt['grams']) }} g</span>
+                            <span class="text-[11px] text-kraft/45">{{ $bt['orders'] }} {{ __('pesanan') }}</span>
+                        </button>
                     </li>
                 @endforeach
             </ul>
         </section>
     @endif
 
-    <div class="mt-4">
+    <div class="mt-4 flex flex-wrap items-center gap-2">
         <label class="sr-only" for="q-orders">{{ __('Cari pesanan') }}</label>
         <input id="q-orders" type="search" wire:model.live.debounce.300ms="search" placeholder="{{ __('Contoh: BRL-20261018-0003, Sinta, atau Gayo') }}"
-               class="w-full rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50 sm:max-w-[400px]">
+               class="min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50 sm:max-w-[400px]">
+        <label class="flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-[12.5px] transition-colors {{ $onlyLate ? 'border-[#C0392B] bg-[#C0392B]/10' : 'border-kraft/25 hover:border-kraft/50' }}">
+            <input type="checkbox" wire:model.live="onlyLate" class="h-3.5 w-3.5 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+            {{ __('Hanya yang terlambat') }}
+        </label>
+        @if (trim($search) !== '' || $onlyLate)
+            <button type="button" wire:click="$set('search', ''); $set('onlyLate', false)" class="text-[12.5px] text-kraft/65 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Reset') }}</button>
+        @endif
     </div>
+    @if ($notice)
+        <p wire:key="notice" class="mt-3 rounded border border-bluelab/40 bg-bluelab/10 px-3 py-2 text-[12.5px]" x-data x-init="setTimeout(() => $wire.set('notice', ''), 6000)">{{ $notice }}</p>
+    @endif
 
     <div class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
         @foreach ($this->columns as $status => $col)
@@ -51,7 +64,10 @@
                 <header class="border-b border-kraft/15 px-3 py-2">
                     <div class="flex items-center justify-between">
                         <h2 class="text-[12.5px] font-semibold">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</h2>
-                        <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $col['total'] }}</span>
+                        <div class="flex items-center gap-2">
+                            @if ($col['total'] > 0)<button type="button" wire:click="selectColumn('{{ $status }}')" class="text-[11px] text-kraft/55 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Pilih semua') }}</button>@endif
+                            <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $col['total'] }}</span>
+                        </div>
                     </div>
                     <p class="krm-readout mt-0.5 flex items-center gap-2 text-[11px] text-kraft/50">
                         {{ number_format($col['grams']) }} g
@@ -63,7 +79,10 @@
                         @php $late = $this->isLate($o); $since = ($o->paid_at ?? $o->created_at); @endphp
                         <article wire:key="o-{{ $o->id }}" class="rounded border bg-surface px-2.5 py-2 {{ $late ? 'border-[#C0392B]/45' : 'border-kraft/15' }}">
                             <div class="flex items-center justify-between gap-2">
-                                <p class="krm-readout truncate text-[10.5px] text-kraft/50">{{ $o->order_code }}</p>
+                                <label class="flex min-w-0 cursor-pointer items-center gap-2">
+                                    <input type="checkbox" wire:model.live="selected" value="{{ $o->id }}" aria-label="{{ __('Pilih :code', ['code' => $o->order_code]) }}" class="h-3.5 w-3.5 shrink-0 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                                    <span class="krm-readout truncate text-[10.5px] text-kraft/50">{{ $o->order_code }}</span>
+                                </label>
                                 <p class="krm-readout shrink-0 text-[12.5px]">{{ number_format($o->items->sum('grams')) }} g</p>
                             </div>
                             @foreach ($o->groupedItems() as $it)
@@ -107,6 +126,24 @@
             </section>
         @endforeach
     </div>
+
+    @php $selInfo = $this->selection; @endphp
+    @if ($selInfo['count'] > 0)
+        <div class="sticky bottom-3 z-30 mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 rounded border border-bluelab/60 bg-surface px-4 py-3 shadow-lg" role="region" aria-label="{{ __('Aksi untuk pesanan terpilih') }}">
+            <p class="text-[13px] font-semibold">{{ __(':n dipilih', ['n' => $selInfo['count']]) }}</p>
+            <div class="ml-auto flex flex-wrap items-center gap-2">
+                @if ($selInfo['advance'] > 0)
+                    <button type="button" wire:click="advanceSelected" wire:loading.attr="disabled" wire:confirm="{{ __('Lanjutkan :n pesanan ke tahap berikutnya?', ['n' => $selInfo['advance']]) }}"
+                            class="rounded bg-bluelab px-4 py-2 text-[12.5px] font-semibold transition-colors hover:bg-[#234E94] disabled:opacity-60">{{ __('Lanjutkan :n ke tahap berikutnya', ['n' => $selInfo['advance']]) }}</button>
+                @endif
+                @if ($selInfo['print'] > 0)
+                    <a href="{{ route('roastery.labels') }}?ids={{ implode(',', $selInfo['ids']) }}" target="_blank" rel="noopener"
+                       class="rounded border border-bluelab/60 px-4 py-2 text-[12.5px] font-semibold transition-colors hover:bg-bluelab">{{ __('Cetak label :n', ['n' => $selInfo['print']]) }}</a>
+                @endif
+                <button type="button" wire:click="clearSelection" class="px-2 py-2 text-[12.5px] text-kraft/70 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Batal pilih') }}</button>
+            </div>
+        </div>
+    @endif
 
     @php $sum = $this->stockSummary; $res = $this->stockRows; @endphp
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
