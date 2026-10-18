@@ -11,7 +11,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed();
-    $this->user = User::where('email', 'customer@kromatik.test')->first();
+    $this->user = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
     $this->coffee = $this->profile->coffee;
     // pesanan seed milik customer bisa ikut berisi kopi ini, jadi kosongkan dulu
@@ -67,7 +67,7 @@ it('shows rating and reviews in the catalog, with a shortened reviewer name', fu
 it('hides moderated reviews from the shop and from the rating', function () {
     $u = User::factory()->create();
     $r = Review::create(['user_id' => $u->id, 'coffee_id' => $this->coffee->id, 'rating' => 1, 'body' => 'Konten tidak pantas']);
-    $admin = User::where('email', 'admin@kromatik.test')->first();
+    $admin = User::where('email', 'admin@brule.test')->first();
 
     Livewire::actingAs($admin)->test(AdminReviews::class)->assertSee('Konten tidak pantas')->call('toggle', $r->id);
 
@@ -79,5 +79,5 @@ it('hides moderated reviews from the shop and from the rating', function () {
 it('keeps the reviews admin page away from non-admins', function () {
     $this->get('/admin/ulasan')->assertRedirect('/login');
     $this->actingAs($this->user)->get('/admin/ulasan')->assertForbidden();
-    $this->actingAs(User::where('email', 'admin@kromatik.test')->first())->get('/admin/ulasan')->assertOk();
+    $this->actingAs(User::where('email', 'admin@brule.test')->first())->get('/admin/ulasan')->assertOk();
 });

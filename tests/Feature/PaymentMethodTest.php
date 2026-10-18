@@ -11,8 +11,8 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
     $this->profile = RoastProfile::first();
     $this->actingAs($this->customer);
     $this->ship = ['name' => 'Nadia', 'phone' => '081234567890', 'address' => 'Jl. Merdeka No. 10, Bandung 40111'];

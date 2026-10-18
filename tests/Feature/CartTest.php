@@ -14,7 +14,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->profiles = RoastProfile::with('coffee')->get();
     $this->p1 = $this->profiles->first();
     $this->p2 = $this->profiles->first(fn ($p) => $p->coffee_id !== $this->p1->coffee_id);
@@ -184,7 +184,7 @@ it('groups identical items for display while keeping one row per pack', function
         ->and($g[1]->qty)->toBe(1)
         ->and($o->itemSummary())->toContain('× 3')->toContain('+1');
 
-    $admin = User::where('email', 'admin@kromatik.test')->first();
+    $admin = User::where('email', 'admin@brule.test')->first();
     Livewire::actingAs($admin)->test(\App\Livewire\Admin\Orders::class)->assertSee('×3')->call('show', $o->order_code)->assertSee('× 3');
     Livewire::actingAs($this->customer)->test(\App\Livewire\Track::class, ['code' => $o->order_code])->assertSee('× 3');
 });
@@ -202,7 +202,7 @@ it('keeps a logged-in cart in the database, per user', function () {
     expect(Store::count())->toBe(2);
 
     // user lain tidak melihatnya
-    $this->actingAs(User::where('email', 'admin@kromatik.test')->first());
+    $this->actingAs(User::where('email', 'admin@brule.test')->first());
     expect(Store::count())->toBe(0);
 });
 
@@ -230,7 +230,7 @@ it('logs in through the real form and keeps the guest cart', function () {
     Store::add($this->p1->id, 200, 'v60');
 
     \Livewire\Volt\Volt::test('pages.auth.login')
-        ->set('form.email', 'customer@kromatik.test')->set('form.password', 'password')
+        ->set('form.email', 'customer@brule.test')->set('form.password', 'password')
         ->call('login')->assertHasNoErrors();
 
     $this->assertAuthenticatedAs($this->customer);

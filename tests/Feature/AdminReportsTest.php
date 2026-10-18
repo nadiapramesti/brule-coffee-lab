@@ -13,8 +13,8 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
     $this->ship = ['name' => 'N', 'phone' => '081234567890', 'address' => 'Jl. Merdeka No. 10, Bandung'];
 });
@@ -31,7 +31,7 @@ function paidOrder($t, int $daysAgo, int $grams = 200, ?string $voucher = null):
 it('keeps the report pages admin-only', function () {
     $this->get(route('admin.reports'))->assertRedirect(route('login'));
     foreach (['customer', 'roaster'] as $r) {
-        $u = User::where('email', "$r@kromatik.test")->first();
+        $u = User::where('email', "$r@brule.test")->first();
         $this->actingAs($u)->get(route('admin.reports'))->assertForbidden();
         $this->actingAs($u)->get(route('admin.reports.export'))->assertForbidden();
     }
@@ -67,7 +67,7 @@ it('compares with the previous period and fills empty days in the series', funct
 it('groups by coffee, roast level and voucher', function () {
     Voucher::create(['code' => 'HEMAT', 'type' => 'fixed', 'value' => 10000, 'is_active' => true]);
     $o = paidOrder($this, 1, 200, 'HEMAT');
-    paidOrder($this, 2, 500)->update(['user_id' => User::where('email', 'raka@kromatik.test')->first()->id]);
+    paidOrder($this, 2, 500)->update(['user_id' => User::where('email', 'raka@brule.test')->first()->id]);
 
     $r = SalesReport::forPreset('7d');
     expect($r->byCoffee()->sum('grams'))->toBe(700)->and($r->byLevel()->sum('grams'))->toBe(700)

@@ -12,8 +12,8 @@ class NoticeSeeder extends Seeder
 {
     public function run(): void
     {
-        $admin = User::where('email', 'admin@kromatik.test')->first();
-        $customer = User::where('email', 'customer@kromatik.test')->first();
+        $admin = User::where('email', 'admin@brule.test')->first();
+        $customer = User::where('email', 'customer@brule.test')->first();
         $order = Order::latest('id')->first();
         if (! $admin || ! $order) {
             return;

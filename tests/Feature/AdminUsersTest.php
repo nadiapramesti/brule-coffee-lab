@@ -11,9 +11,9 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
-    $this->roaster = User::where('email', 'roaster@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
+    $this->roaster = User::where('email', 'roaster@brule.test')->first();
 });
 
 it('keeps users and log pages admin-only', function () {
@@ -30,7 +30,7 @@ it('keeps users and log pages admin-only', function () {
 it('lists, filters and searches users', function () {
     $t = Livewire::actingAs($this->admin)->test(Users::class)->assertSee($this->customer->email);
     $t->call('setRole', 'roaster')->assertSee($this->roaster->email)->assertDontSee($this->customer->email);
-    $t->call('setRole', 'bogus')->assertSet('role', '')->set('search', 'raka')->assertSee('raka@kromatik.test')->assertDontSee($this->roaster->email);
+    $t->call('setRole', 'bogus')->assertSet('role', '')->set('search', 'raka')->assertSee('raka@brule.test')->assertDontSee($this->roaster->email);
     expect($t->get('counts')[''])->toBe(User::count());
 });
 

@@ -12,9 +12,9 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->roaster = User::where('email', 'roaster@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->roaster = User::where('email', 'roaster@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
 });
 

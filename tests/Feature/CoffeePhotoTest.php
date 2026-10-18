@@ -12,7 +12,7 @@ use Livewire\Livewire;
 beforeEach(function () {
     Storage::fake('public');
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
     $this->coffee = Coffee::first();
 });
 

@@ -11,7 +11,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed();
-    $this->user = User::where('email', 'customer@kromatik.test')->first();
+    $this->user = User::where('email', 'customer@brule.test')->first();
 });
 
 function acctOrder(User $u, int $qty = 2): Order
@@ -28,7 +28,7 @@ it('requires login for the account page', function () {
 
 it('lists only my orders and filters by status', function () {
     $mine = acctOrder($this->user);
-    $other = acctOrder(User::where('email', 'roaster@kromatik.test')->first(), 1);
+    $other = acctOrder(User::where('email', 'roaster@brule.test')->first(), 1);
     $mine->cancelAndRestock();
 
     Livewire::actingAs($this->user)->test(Account::class)
@@ -47,7 +47,7 @@ it('buys again by putting the old items back into the cart', function () {
 });
 
 it('cannot reorder someone else\'s order', function () {
-    $o = acctOrder(User::where('email', 'roaster@kromatik.test')->first(), 1);
+    $o = acctOrder(User::where('email', 'roaster@brule.test')->first(), 1);
 
     Livewire::actingAs($this->user)->test(Account::class)->call('reorder', $o->order_code);
 })->throws(\Illuminate\Database\Eloquent\ModelNotFoundException::class);
@@ -94,7 +94,7 @@ it('prefills checkout from the default address and can save a new one', function
 
 it('seeds a default address for the demo customer', function () {
     $this->seed(\Database\Seeders\UserSeeder::class);
-    $u = \App\Models\User::where('email', 'customer@kromatik.test')->first();
+    $u = \App\Models\User::where('email', 'customer@brule.test')->first();
 
     expect($u->addresses()->where('is_default', true)->count())->toBe(1);
 });

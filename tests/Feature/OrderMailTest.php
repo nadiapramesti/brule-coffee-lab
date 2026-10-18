@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Mail;
 beforeEach(function () {
     $this->seed();
     Mail::fake();
-    $this->user = User::where('email', 'customer@kromatik.test')->first();
+    $this->user = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
 });
 

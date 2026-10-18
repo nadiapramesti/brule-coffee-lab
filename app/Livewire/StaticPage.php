@@ -7,7 +7,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 /** Halaman bantuan (FAQ) dan kebijakan. Isinya di lang/{id,en}/pages.php. */
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.brule')]
 class StaticPage extends Component
 {
     public const PAGES = [

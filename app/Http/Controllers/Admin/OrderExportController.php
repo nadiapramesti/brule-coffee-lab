@@ -18,7 +18,7 @@ class OrderExportController extends Controller
             ->adminFilter((string) $request->query('tab'), (string) $request->query('q'), $request->query('from') ?: null, $request->query('to') ?: null)
             ->latest()->get();
 
-        $base = 'pesanan-kromatik-' . now()->format('Ymd-His');
+        $base = 'pesanan-brule-' . now()->format('Ymd-His');
 
         if ($request->query('format') === 'pdf') {
             $rows = $orders->map(fn ($o) => [

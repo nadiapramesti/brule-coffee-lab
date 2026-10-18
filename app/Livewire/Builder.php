@@ -11,7 +11,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.brule')]
 #[Title('Roast Builder - BRÛLÉ')]
 class Builder extends Component
 {

@@ -6,7 +6,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.brule')]
 #[Title('Profil - BRÛLÉ')]
 class Profile extends Component
 {

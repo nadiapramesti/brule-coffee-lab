@@ -12,14 +12,14 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
 });
 
 it('keeps settings admin-only', function () {
     $this->get(route('admin.settings'))->assertRedirect(route('login'));
     foreach (['customer', 'roaster'] as $r) {
-        $this->actingAs(User::where('email', "$r@kromatik.test")->first())->get(route('admin.settings'))->assertForbidden();
+        $this->actingAs(User::where('email', "$r@brule.test")->first())->get(route('admin.settings'))->assertForbidden();
     }
     $this->actingAs($this->admin)->get(route('admin.settings'))->assertOk()->assertSee('Pengaturan toko');
 });

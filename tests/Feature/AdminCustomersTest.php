@@ -10,8 +10,8 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
 });
 
@@ -23,7 +23,7 @@ function placeFor(User $u, int $g = 200): Order
 it('keeps the customers page admin-only', function () {
     $this->get(route('admin.customers'))->assertRedirect(route('login'));
     $this->actingAs($this->customer)->get(route('admin.customers'))->assertForbidden();
-    $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())->get(route('admin.customers'))->assertForbidden();
+    $this->actingAs(User::where('email', 'roaster@brule.test')->first())->get(route('admin.customers'))->assertForbidden();
     $this->actingAs($this->admin)->get(route('admin.customers'))->assertOk()->assertSee($this->customer->name);
 });
 
@@ -32,7 +32,7 @@ it('lists only customers, with spend counted from paid non-cancelled orders', fu
     $unpaid = placeFor($this->customer, 200);
     $cancelled = placeFor($this->customer, 200); $cancelled->cancelAndRestock();
 
-    $row = Livewire::actingAs($this->admin)->test(Customers::class)->assertDontSee('admin@kromatik.test')
+    $row = Livewire::actingAs($this->admin)->test(Customers::class)->assertDontSee('admin@brule.test')
         ->get('customers')->getCollection()->firstWhere('id', $this->customer->id);
 
     expect((int) $row->spent)->toBe($paid->total)

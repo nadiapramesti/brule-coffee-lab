@@ -58,8 +58,8 @@ npm install
 
 cp .env.example .env
 php artisan key:generate
-# edit .env: DB_CONNECTION=mysql, DB_DATABASE=kromatik, DB_USERNAME, DB_PASSWORD
-# buat database kosong "kromatik" dulu
+# edit .env: DB_CONNECTION=mysql, DB_DATABASE=brule, DB_USERNAME, DB_PASSWORD
+# buat database kosong "brule" dulu
 
 php artisan migrate --seed
 php artisan storage:link      # supaya foto produk yang diupload tampil
@@ -73,9 +73,9 @@ Setelah `git pull` berikutnya: `php artisan migrate`, `npm run build`, `php arti
 
 | Peran | Email | Password |
 |---|---|---|
-| Admin | `admin@kromatik.test` | `password` |
-| Roaster | `roaster@kromatik.test` | `password` |
-| Pembeli | `customer@kromatik.test` | `password` |
+| Admin | `admin@brule.test` | `password` |
+| Roaster | `roaster@brule.test` | `password` |
+| Pembeli | `customer@brule.test` | `password` |
 
 Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pengaturan) sebelum dipakai di luar demo.
 
@@ -99,7 +99,7 @@ app/Livewire/            halaman toko dan panel (satu komponen per halaman)
 app/Livewire/Admin/      modul admin
 app/Models/              Order (logika pesanan), Coffee (stok), Cart di app/Support
 app/Mail/ + Support/     email transaksi, keranjang
-resources/views/         blade (layouts/kromatik = toko, layouts/panel = admin)
+resources/views/         blade (layouts/brule = toko, layouts/panel = admin)
 lang/                    terjemahan ID/EN (en.json, pages.php untuk halaman statis)
 docs/DEMO.md             skenario dan checklist demo
 docs/screenshots/        gambar untuk README

@@ -11,7 +11,7 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         User::updateOrCreate(
-            ['email' => 'admin@kromatik.test'],
+            ['email' => 'admin@brule.test'],
             [
                 'name'     => 'Admin BRÛLÉ',
                 'password' => Hash::make('password'),
@@ -21,7 +21,7 @@ class UserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'roaster@kromatik.test'],
+            ['email' => 'roaster@brule.test'],
             [
                 'name'     => 'Head Roaster',
                 'password' => Hash::make('password'),
@@ -31,7 +31,7 @@ class UserSeeder extends Seeder
         );
 
         User::updateOrCreate(
-            ['email' => 'customer@kromatik.test'],
+            ['email' => 'customer@brule.test'],
             [
                 'name'     => 'Nadia Pramesti',
                 'password' => Hash::make('password'),
@@ -41,8 +41,8 @@ class UserSeeder extends Seeder
         );
 
         foreach ([
-            ['raka@kromatik.test',  'Raka Pratama', '081200000004'],
-            ['sinta@kromatik.test', 'Sinta Dewi',   '081200000005'],
+            ['raka@brule.test',  'Raka Pratama', '081200000004'],
+            ['sinta@brule.test', 'Sinta Dewi',   '081200000005'],
         ] as [$email, $name, $phone]) {
             User::updateOrCreate(
                 ['email' => $email],
@@ -56,7 +56,7 @@ class UserSeeder extends Seeder
         }
 
         // Alamat contoh supaya alur checkout di demo tinggal pilih.
-        $nadia = User::where('email', 'customer@kromatik.test')->first();
+        $nadia = User::where('email', 'customer@brule.test')->first();
         \App\Models\Address::updateOrCreate(
             ['user_id' => $nadia->id, 'label' => 'Rumah'],
             ['recipient' => 'Nadia Pramesti', 'phone' => '081200000003', 'address' => 'Jl. Dago No. 25, Coblong, Kota Bandung 40135', 'is_default' => true]

@@ -11,13 +11,13 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
 });
 
 it('blocks non-admins from the admin area', function () {
     $this->get(route('admin.coffees'))->assertRedirect(route('login'));
     foreach (['customer', 'roaster'] as $r) {
-        $this->actingAs(User::where('email', "$r@kromatik.test")->first())
+        $this->actingAs(User::where('email', "$r@brule.test")->first())
             ->get(route('admin.coffees'))->assertForbidden();
     }
     $this->actingAs($this->admin)->get(route('admin.coffees'))->assertOk()->assertSee(Coffee::first()->name);
@@ -101,12 +101,12 @@ it('sends admins to the admin dashboard and shows the numbers', function () {
     $this->actingAs($this->admin)->get(route('admin.dashboard'))
         ->assertOk()->assertSee('Dashboard admin')->assertSee('Omzet')->assertSee('Kopi terlaris');
 
-    $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())
+    $this->actingAs(User::where('email', 'roaster@brule.test')->first())
         ->get(route('admin.dashboard'))->assertForbidden();
 });
 
 it('computes revenue only from paid, non-cancelled orders in range', function () {
-    $c = User::where('email', 'customer@kromatik.test')->first();
+    $c = User::where('email', 'customer@brule.test')->first();
     $mk = fn ($status, $paid, $total) => \App\Models\Order::create([
         'order_code' => 'T-'.uniqid(), 'user_id' => $c->id, 'status' => $status, 'subtotal' => $total,
         'total' => $total, 'recipient_name' => 'x', 'recipient_phone' => '08', 'shipping_address' => 'y',

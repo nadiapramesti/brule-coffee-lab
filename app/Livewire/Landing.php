@@ -9,7 +9,7 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.brule')]
 #[Title('BRÛLÉ - Specialty Coffee Lab')]
 class Landing extends Component
 {

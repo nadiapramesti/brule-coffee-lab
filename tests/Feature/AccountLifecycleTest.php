@@ -11,9 +11,9 @@ use Livewire\Volt\Volt;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
-    $this->roaster = User::where('email', 'roaster@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
+    $this->roaster = User::where('email', 'roaster@brule.test')->first();
 });
 
 it('blocks a customer with a reason, logs it, and unblocks', function () {
@@ -79,7 +79,7 @@ it('lets a customer delete their account but keeps order history anonymised', fu
 
     $this->assertGuest();
     $u = User::withTrashed()->find($id);
-    expect($u->trashed())->toBeTrue()->and($u->name)->toBe('Akun dihapus')->and($u->email)->not->toBe('customer@kromatik.test');
+    expect($u->trashed())->toBeTrue()->and($u->name)->toBe('Akun dihapus')->and($u->email)->not->toBe('customer@brule.test');
     expect(Order::where('user_id', $id)->count())->toBe($orders);
 });
 

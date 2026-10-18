@@ -11,8 +11,8 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->admin = User::where('email', 'admin@kromatik.test')->first();
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->admin = User::where('email', 'admin@brule.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
 });
 
@@ -27,7 +27,7 @@ it('keeps order pages admin-only', function () {
     $o = newOrder($this);
     $this->get(route('admin.orders'))->assertRedirect(route('login'));
     foreach (['customer', 'roaster'] as $r) {
-        $u = User::where('email', "$r@kromatik.test")->first();
+        $u = User::where('email', "$r@brule.test")->first();
         $this->actingAs($u)->get(route('admin.orders'))->assertForbidden();
         $this->actingAs($u)->get(route('admin.orders.export'))->assertForbidden();
         $this->actingAs($u)->get(route('admin.orders.print', $o))->assertForbidden();

@@ -19,22 +19,22 @@ class OrderSeeder extends Seeder
 
     public function run(): void
     {
-        $roaster = User::where('email', 'roaster@kromatik.test')->first();
+        $roaster = User::where('email', 'roaster@brule.test')->first();
 
         // [email, status, hari lalu, [[slug, level, gram, grind], ...]]
         $orders = [
-            ['customer@kromatik.test', 'pending_payment', 0, [['ethiopia-yirgacheffe-washed', 'light', 200, 'v60']]],
-            ['raka@kromatik.test',     'queued',          0, [['colombia-huila-honey', 'medium', 500, 'espresso']]],
-            ['sinta@kromatik.test',    'queued',          0, [['kenya-aa-nyeri-washed', 'light', 200, 'v60'], ['flores-bajawa-washed', 'medium_light', 200, 'whole_bean']]],
-            ['customer@kromatik.test', 'queued',          1, [['sumatra-mandheling-natural', 'dark', 1000, 'french_press']]],
-            ['raka@kromatik.test',     'roasting',        1, [['java-preanger-anaerobic-natural', 'medium_light', 200, 'aeropress']]],
-            ['sinta@kromatik.test',    'grinding',        1, [['gayo-aceh-wet-hulled', 'medium_dark', 500, 'tubruk']]],
-            ['customer@kromatik.test', 'packing',         2, [['toraja-sapan-wet-hulled', 'medium', 200, 'v60']]],
-            ['raka@kromatik.test',     'shipped',         3, [['ethiopia-yirgacheffe-washed', 'medium_light', 500, 'v60']]],
-            ['customer@kromatik.test', 'completed',       6, [['colombia-huila-honey', 'medium_light', 200, 'v60'], ['kenya-aa-nyeri-washed', 'medium', 200, 'v60']]],
-            ['sinta@kromatik.test',    'completed',       8, [['flores-bajawa-washed', 'medium', 500, 'espresso']]],
-            ['raka@kromatik.test',     'completed',      11, [['sumatra-mandheling-natural', 'medium_dark', 1000, 'whole_bean']]],
-            ['sinta@kromatik.test',    'cancelled',       5, [['java-preanger-anaerobic-natural', 'light', 200, 'v60']]],
+            ['customer@brule.test', 'pending_payment', 0, [['ethiopia-yirgacheffe-washed', 'light', 200, 'v60']]],
+            ['raka@brule.test',     'queued',          0, [['colombia-huila-honey', 'medium', 500, 'espresso']]],
+            ['sinta@brule.test',    'queued',          0, [['kenya-aa-nyeri-washed', 'light', 200, 'v60'], ['flores-bajawa-washed', 'medium_light', 200, 'whole_bean']]],
+            ['customer@brule.test', 'queued',          1, [['sumatra-mandheling-natural', 'dark', 1000, 'french_press']]],
+            ['raka@brule.test',     'roasting',        1, [['java-preanger-anaerobic-natural', 'medium_light', 200, 'aeropress']]],
+            ['sinta@brule.test',    'grinding',        1, [['gayo-aceh-wet-hulled', 'medium_dark', 500, 'tubruk']]],
+            ['customer@brule.test', 'packing',         2, [['toraja-sapan-wet-hulled', 'medium', 200, 'v60']]],
+            ['raka@brule.test',     'shipped',         3, [['ethiopia-yirgacheffe-washed', 'medium_light', 500, 'v60']]],
+            ['customer@brule.test', 'completed',       6, [['colombia-huila-honey', 'medium_light', 200, 'v60'], ['kenya-aa-nyeri-washed', 'medium', 200, 'v60']]],
+            ['sinta@brule.test',    'completed',       8, [['flores-bajawa-washed', 'medium', 500, 'espresso']]],
+            ['raka@brule.test',     'completed',      11, [['sumatra-mandheling-natural', 'medium_dark', 1000, 'whole_bean']]],
+            ['sinta@brule.test',    'cancelled',       5, [['java-preanger-anaerobic-natural', 'light', 200, 'v60']]],
         ];
 
         $createdItems = [];

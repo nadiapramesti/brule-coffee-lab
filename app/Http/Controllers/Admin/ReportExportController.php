@@ -19,7 +19,7 @@ class ReportExportController extends Controller
         $rp = fn ($v) => 'Rp' . number_format($v, 0, ',', '.');
         $period = $r->from->translatedFormat('j M Y') . ' - ' . $r->to->translatedFormat('j M Y');
         $monthly = $r->granularity() === 'month';
-        $base = 'laporan-kromatik-' . $r->from->format('Ymd') . '-' . $r->to->format('Ymd');
+        $base = 'laporan-brule-' . $r->from->format('Ymd') . '-' . $r->to->format('Ymd');
 
         $summary = [
             [__('Jumlah pesanan dibayar'), $s['orders']], [__('Omzet (total dibayar)'), $s['revenue']], [__('Penjualan kopi'), $s['goods']],

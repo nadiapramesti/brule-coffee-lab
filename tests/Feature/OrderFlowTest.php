@@ -13,7 +13,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->profile = RoastProfile::first();
 });
 
@@ -75,21 +75,21 @@ it('pays, then cancelling after payment restocks only while still queued', funct
 it('does not let strangers pay or cancel someone else\'s order', function () {
     placeOrder($this);
     $order = Order::first();
-    $other = User::where('email', 'raka@kromatik.test')->first();
+    $other = User::where('email', 'raka@brule.test')->first();
 
     Livewire::actingAs($other)->test(Track::class, ['code' => $order->order_code])->call('pay')->assertForbidden();
 });
 
 it('keeps the roastery dashboard for roasters only', function () {
     $this->actingAs($this->customer)->get(route('roastery'))->assertForbidden();
-    $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())->get(route('roastery'))->assertOk();
+    $this->actingAs(User::where('email', 'roaster@brule.test')->first())->get(route('roastery'))->assertOk();
 });
 
 it('moves an order through the queue and requires a tracking number to ship', function () {
     placeOrder($this);
     $order = Order::first();
     $order->markPaid();
-    $roaster = User::where('email', 'roaster@kromatik.test')->first();
+    $roaster = User::where('email', 'roaster@brule.test')->first();
 
     $c = Livewire::actingAs($roaster)->test(Roastery::class);
     $c->call('advance', $order->id)->call('advance', $order->id)->call('advance', $order->id);
@@ -109,5 +109,5 @@ it('shows the tracking page to anyone with the code', function () {
 
 it('sends each role to its own home from /dashboard', function () {
     $this->actingAs($this->customer)->get('/dashboard')->assertRedirect(route('account'));
-    $this->actingAs(User::where('email', 'roaster@kromatik.test')->first())->get('/dashboard')->assertRedirect(route('roastery'));
+    $this->actingAs(User::where('email', 'roaster@brule.test')->first())->get('/dashboard')->assertRedirect(route('roastery'));
 });

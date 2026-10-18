@@ -12,7 +12,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-#[Layout('layouts.kromatik')]
+#[Layout('layouts.brule')]
 #[Title('Checkout - BRÛLÉ')]
 class Checkout extends Component
 {

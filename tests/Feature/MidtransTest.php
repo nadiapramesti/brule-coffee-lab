@@ -11,7 +11,7 @@ use Livewire\Livewire;
 
 beforeEach(function () {
     $this->seed([UserSeeder::class, CoffeeSeeder::class]);
-    $this->customer = User::where('email', 'customer@kromatik.test')->first();
+    $this->customer = User::where('email', 'customer@brule.test')->first();
     $this->order = Order::place($this->customer, RoastProfile::first(), 200, 'v60', ['name' => 'Nadia', 'phone' => '081234567890', 'address' => 'Jl. Merdeka No. 10, Bandung 40111']);
     config(['services.midtrans.server_key' => 'SB-Mid-server-test', 'services.midtrans.client_key' => 'SB-Mid-client-test']);
 });
@@ -99,7 +99,7 @@ it('syncs payment status from the Midtrans status API', function () {
 });
 
 it('only lets the owner start or sync a payment, and 404s the webhook when not configured', function () {
-    $other = User::where('email', 'raka@kromatik.test')->first();
+    $other = User::where('email', 'raka@brule.test')->first();
     Livewire::actingAs($other)->test(Track::class, ['code' => $this->order->order_code])->call('startPayment')->assertForbidden();
 
     config(['services.midtrans.server_key' => null, 'services.midtrans.client_key' => null]);
