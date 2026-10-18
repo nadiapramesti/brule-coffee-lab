@@ -125,9 +125,9 @@
                     <tbody class="divide-y divide-kraft/10">
                         @foreach ($gear as $row)
                             <tr>
-                                <td class="max-w-[200px] truncate px-3 py-2.5 sm:px-5">{{ $row['name'] }}</td>
+                                <td class="w-full max-w-0 truncate px-3 py-2.5 sm:px-5" title="{{ $row['name'] }}">{{ $row['name'] }}</td>
                                 <td class="krm-readout hidden px-2 py-2.5 text-right text-kraft/70 sm:table-cell">{{ $row['orders'] }}</td>
-                                <td class="krm-readout px-2 py-2.5 text-right text-kraft/70">{{ $n($row['units']) }}</td>
+                                <td class="krm-readout whitespace-nowrap px-2 py-2.5 text-right text-kraft/70">{{ $n($row['units']) }}</td>
                                 <td class="krm-readout whitespace-nowrap px-3 py-2.5 text-right sm:px-5">{{ $rp($row['revenue']) }}</td>
                             </tr>
                         @endforeach

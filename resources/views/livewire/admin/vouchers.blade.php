@@ -101,20 +101,20 @@
 
                 <div class="space-y-4 overflow-y-auto px-5 py-4">
                     <div>
-                        <label for="vcode" class="text-[12.5px] text-kraft/75">{{ __('Kode voucher') }}</label>
+                        <label for="vcode" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Kode voucher') }}</label>
                         <input id="vcode" wire:model="code" autocomplete="off" placeholder="KOPIBARU10" class="{{ $inp }} krm-readout mt-1.5 uppercase placeholder:normal-case">
                         @error('code')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label for="vtype" class="text-[12.5px] text-kraft/75">{{ __('Jenis potongan') }}</label>
+                            <label for="vtype" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Jenis potongan') }}</label>
                             <select id="vtype" wire:model.live="type" class="{{ $inp }} mt-1.5">
                                 @foreach (\App\Models\Voucher::TYPES as $k => $l)<option class="bg-surface" value="{{ $k }}">{{ __($l) }}</option>@endforeach
                             </select>
                         </div>
                         <div>
-                            <label for="vvalue" class="text-[12.5px] text-kraft/75">{{ $type === 'percent' ? __('Persen') : __('Nominal (Rp)') }}</label>
+                            <label for="vvalue" class="block text-[12.5px] leading-snug text-kraft/75">{{ $type === 'percent' ? __('Persen') : __('Nominal (Rp)') }}</label>
                             <input id="vvalue" type="number" inputmode="numeric" wire:model="value" placeholder="{{ $type === 'percent' ? '10' : '25000' }}" class="{{ $inp }} krm-readout mt-1.5">
                             @error('value')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                         </div>
@@ -122,13 +122,13 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label for="vmin" class="text-[12.5px] text-kraft/75">{{ __('Min. belanja (Rp)') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                            <label for="vmin" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Min. belanja (Rp)') }} <span class="block text-kraft/45 sm:inline"><span class="max-sm:hidden">· </span>{{ __('opsional') }}</span></label>
                             <input id="vmin" type="number" inputmode="numeric" wire:model="minSubtotal" placeholder="100000" class="{{ $inp }} krm-readout mt-1.5">
                             @error('minSubtotal')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                         </div>
                         @if ($type === 'percent')
                             <div>
-                                <label for="vmax" class="text-[12.5px] text-kraft/75">{{ __('Maks. potongan (Rp)') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                                <label for="vmax" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Maks. potongan (Rp)') }} <span class="block text-kraft/45 sm:inline"><span class="max-sm:hidden">· </span>{{ __('opsional') }}</span></label>
                                 <input id="vmax" type="number" inputmode="numeric" wire:model="maxDiscount" placeholder="50000" class="{{ $inp }} krm-readout mt-1.5">
                                 @error('maxDiscount')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                             </div>
@@ -136,25 +136,25 @@
                     </div>
 
                     <div>
-                        <label for="vquota" class="text-[12.5px] text-kraft/75">{{ __('Kuota pemakaian') }} <span class="text-kraft/45">· {{ __('kosongkan = tanpa batas') }}</span></label>
+                        <label for="vquota" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Kuota pemakaian') }} <span class="text-kraft/45">· {{ __('kosongkan = tanpa batas') }}</span></label>
                         <input id="vquota" type="number" inputmode="numeric" wire:model="quota" placeholder="100" class="{{ $inp }} krm-readout mt-1.5">
                         @error('quota')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label for="vstart" class="text-[12.5px] text-kraft/75">{{ __('Mulai berlaku') }}</label>
-                            <input id="vstart" type="date" wire:model="startsAt" placeholder="2026-11-01" class="{{ $inp }} mt-1.5 [color-scheme:dark]">
+                            <label for="vstart" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Mulai berlaku') }}</label>
+                            <input id="vstart" type="date" wire:model="startsAt" placeholder="2026-11-01" class="{{ $inp }} mt-1.5 min-w-0 [color-scheme:dark]">
                         </div>
                         <div>
-                            <label for="vend" class="text-[12.5px] text-kraft/75">{{ __('Berakhir') }}</label>
-                            <input id="vend" type="date" wire:model="expiresAt" placeholder="2026-12-31" class="{{ $inp }} mt-1.5 [color-scheme:dark]">
+                            <label for="vend" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Berakhir') }}</label>
+                            <input id="vend" type="date" wire:model="expiresAt" placeholder="2026-12-31" class="{{ $inp }} mt-1.5 min-w-0 [color-scheme:dark]">
                             @error('expiresAt')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                         </div>
                     </div>
 
                     <div>
-                        <label for="vnote" class="text-[12.5px] text-kraft/75">{{ __('Catatan internal') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                        <label for="vnote" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Catatan internal') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
                         <input id="vnote" wire:model="note" placeholder="{{ __('Contoh: Promo pelanggan baru bulan November') }}" class="{{ $inp }} mt-1.5">
                     </div>
 

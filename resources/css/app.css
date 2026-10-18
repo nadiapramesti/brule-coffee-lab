@@ -339,3 +339,6 @@ html[data-theme="light"] .krm-auth input:not([type=checkbox])::placeholder { col
 
 /* Halaman auth di HP: ruang gulir saat keyboard terbuka; tingginya diatur JS (lihat layouts/guest). */
 .krm-kbspacer { height: 0; }
+
+/* Dropdown: ruang kanan untuk panah supaya teks tidak menimpanya, dan teks panjang dipotong rapi. */
+select { padding-right: 2.25rem !important; text-overflow: ellipsis; }
