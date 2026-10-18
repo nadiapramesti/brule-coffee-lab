@@ -41,7 +41,7 @@
                     @if (auth()->user()?->isStaff())
                         <a href="{{ route(auth()->user()->homeRoute()) }}"
                            class="rounded bg-bluelab px-7 py-3.5 font-display text-[15px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
-                            {{ __('Buka panel') }}
+                            {{ __('Kembali ke panel') }}
                         </a>
                     @else
                         <a href="{{ route('builder') }}"

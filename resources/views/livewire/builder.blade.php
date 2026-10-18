@@ -295,7 +295,7 @@
                     @if (auth()->user()?->isStaff())
                         <div class="mt-6 rounded border border-kraft/30 px-4 py-4 text-center text-[13px] leading-relaxed text-kraft/75">
                             {{ __('Kamu masuk sebagai :role, jadi ini mode lihat saja. Belanja memakai akun pembeli.', ['role' => auth()->user()->isAdmin() ? 'admin' : 'roaster']) }}
-                            <a href="{{ route(auth()->user()->homeRoute()) }}" class="mt-3 block font-display text-[14px] font-semibold text-bluetext hover:underline">{{ __('Buka panel') }} &rarr;</a>
+                            <a href="{{ route(auth()->user()->homeRoute()) }}" class="mt-3 block font-display text-[14px] font-semibold text-bluetext hover:underline">{{ __('Kembali ke panel') }} &rarr;</a>
                         </div>
                     @elseif ($this->stockOk)
                         <button type="button" wire:click="addToCart"

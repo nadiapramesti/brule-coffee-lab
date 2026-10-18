@@ -14,13 +14,13 @@ beforeEach(fn () => $this->seed(DatabaseSeeder::class));
 it('shows customers the shopping header: cart and the brew CTA', function () {
     $html = $this->actingAs(User::where('email', 'customer@kromatik.test')->first())->get('/')->assertOk()->getContent();
 
-    expect($html)->toContain('Racik kopimu')->toContain(route('cart'))->not->toContain('Buka panel');
+    expect($html)->toContain('Racik kopimu')->toContain(route('cart'))->not->toContain('Kembali ke panel');
 });
 
 it('gives admin and roaster a panel button instead of cart and shopping CTA', function (string $email, string $home) {
     $html = $this->actingAs(User::where('email', $email)->first())->get('/')->assertOk()->getContent();
 
-    expect($html)->toContain('Buka panel')->toContain(route($home))
+    expect($html)->toContain('Kembali ke panel')->toContain(route($home))
         ->not->toContain('aria-label="Keranjang"')->not->toContain('Racik kopimu');
 })->with([['admin@kromatik.test', 'admin.dashboard'], ['roaster@kromatik.test', 'roastery']]);
 

@@ -103,7 +103,7 @@
                 @if ($staff)
                     <a href="{{ route(auth()->user()->homeRoute()) }}" x-show="!land" x-cloak
                        class="rounded bg-bluelab px-5 py-2.5 font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
-                        {{ __('Buka panel') }}
+                        {{ __('Kembali ke panel') }}
                     </a>
                 @else
                     <a href="{{ route('builder') }}" x-show="land ? !top : !build" x-cloak x-transition.opacity.duration.200ms
@@ -148,7 +148,7 @@
                 <a href="{{ route('login') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Masuk') }}</a>
             @endauth
             @if ($staff)
-                <a href="{{ route(auth()->user()->homeRoute()) }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Buka panel') }}</a>
+                <a href="{{ route(auth()->user()->homeRoute()) }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Kembali ke panel') }}</a>
             @else
                 <a href="{{ route('builder') }}" class="mt-2 block rounded bg-bluelab py-3 text-center font-display text-[15px] font-semibold">{{ __('Racik kopimu') }}</a>
             @endif
