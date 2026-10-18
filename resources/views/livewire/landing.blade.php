@@ -322,8 +322,7 @@
                         {{ __('Lima tahap, dan kamu bisa melihat pesananmu ada di tahap mana lewat halaman lacak.') }}
                     </p>
                 </div>
-                <img src="{{ asset('images/logo-kromatik-dark.png') }}" alt="" width="112" height="112"
-                     class="hidden w-[104px] shrink-0 opacity-70 lg:block">
+                <x-brand-logo variant="stacked" force="light" class="hidden h-[130px] shrink-0 opacity-90 lg:block" />
             </div>
 
             {{-- Lima kartu: foto 3:4 di atas, teks di bawah. Fotonya gelap

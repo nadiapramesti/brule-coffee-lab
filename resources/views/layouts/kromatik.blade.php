@@ -26,6 +26,7 @@
     <meta name="twitter:image" content="{{ asset('images/hero-roastery.jpg') }}">
     @if (request()->routeIs('track', 'cart', 'checkout', 'profile'))<meta name="robots" content="noindex">@endif
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ asset('images/apple-touch-icon.png') }}">
 
@@ -56,13 +57,8 @@
             class="sticky top-0 z-40 border-b transition-colors duration-300 [background-origin:border-box]">
         <div class="mx-auto flex max-w-[1180px] items-center justify-between gap-6 px-6 py-4">
 
-            <a href="{{ route('landing') }}" class="flex items-center gap-3">
-                {{-- Tanda ringkas (K + kromatogram). Stempel penuhnya terlalu
-                     rapat untuk dibaca di ukuran header; dipakai di footer. --}}
-                <img src="{{ asset('images/mark-kromatik-white.png') }}"
-                     alt="" width="40" height="40" class="krm-mark h-10 w-10 shrink-0">
-                <span class="font-display text-[1.05rem] font-bold tracking-[0.2em]">KROMATIK</span>
-                <span class="sr-only">Specialty Coffee Lab</span>
+            <a href="{{ route('landing') }}" class="flex items-center" aria-label="BRÛLÉ coffee lab">
+                <x-brand-logo class="h-11" />
             </a>
 
             <nav class="hidden items-center gap-8 text-[14px] md:flex">
@@ -157,9 +153,8 @@
             <div class="grid gap-10 md:grid-cols-3 md:items-start md:gap-8">
 
                 <div>
-                    <a href="{{ route('landing') }}" class="inline-flex items-center gap-3 text-labwhite">
-                        <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="krm-mark h-9 w-9">
-                        <span class="font-display text-[17px] font-semibold tracking-[0.22em]">KROMATIK</span>
+                    <a href="{{ route('landing') }}" class="inline-flex items-center" aria-label="BRÛLÉ coffee lab">
+                        <x-brand-logo class="h-14" />
                     </a>
                     <address class="mt-5 text-[14px] not-italic leading-relaxed text-kraft/75">
                         {{ \App\Models\Setting::get('store_address') }}

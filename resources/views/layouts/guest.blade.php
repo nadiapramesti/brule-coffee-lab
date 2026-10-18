@@ -16,6 +16,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $copy[0] }} — KROMATIK</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     @include('layouts.partials.theme-boot')
     <script>document.documentElement.classList.add('js')</script>
@@ -34,9 +35,8 @@
 
     <main class="flex flex-1 items-center justify-center py-3 sm:py-6">
         <div class="w-full {{ $route === 'register' ? 'max-w-[560px]' : 'max-w-[420px]' }}" data-reveal>
-            <a href="{{ route('landing') }}" wire:navigate class="flex items-center justify-center gap-3">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="36" height="36" class="krm-mark h-9 w-9">
-                <span class="font-display text-[15px] font-semibold tracking-[0.24em]">KROMATIK</span>
+            <a href="{{ route('landing') }}" wire:navigate class="flex items-center justify-center" aria-label="BRÛLÉ coffee lab">
+                <x-brand-logo class="h-14" />
             </a>
 
             <div class="mt-4 rounded-[14px] border border-kraft/20 bg-surface/90 p-5 shadow-[0_30px_60px_-30px_rgb(var(--shadow)/.9)] sm:mt-5 sm:p-7">

@@ -323,9 +323,11 @@ html:has(body.krm-panel) { overscroll-behavior-x: none; }
 input[type=number] { -moz-appearance: textfield; appearance: textfield; }
 input[type=number]::-webkit-inner-spin-button, input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
 
-/* Logo putih: di mode terang dibalik jadi gelap (biru tetap biru); area .krm-dark tidak ikut. */
-html[data-theme="light"] .krm-mark { filter: invert(1) hue-rotate(180deg); }
-html[data-theme="light"] .krm-dark .krm-mark { filter: none; }
+/* Logo BRÛLÉ: dua SVG monokrom, hitam (latar terang) dan putih (latar gelap), kontras penuh,
+   tanpa abu-abu. Putih dipakai di mode gelap DAN di area .krm-dark (hero, footer) walau tema terang. */
+.krm-logo-dark { display: none; }
+html[data-theme="dark"] .krm-logo-light, .krm-dark .krm-logo-light { display: none; }
+html[data-theme="dark"] .krm-logo-dark, .krm-dark .krm-logo-dark { display: block; }
 
 /* Mode terang: teks redup dinaikkan kontrasnya (alpha rendah yang nyaman di latar gelap
    jadi terlalu pucat di kertas). Hanya teks; garis dan latar tidak disentuh. */

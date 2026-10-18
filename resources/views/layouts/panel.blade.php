@@ -50,6 +50,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $title ?? 'KROMATIK' }}</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <script>document.documentElement.classList.add('js');try{if(localStorage.getItem('krm-mini')==='1')document.documentElement.classList.add('mini')}catch(e){}</script>
     @include('layouts.partials.theme-boot')
@@ -66,9 +67,9 @@
     <aside :class="nav ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'"
            class="fixed inset-y-0 left-0 z-50 flex w-[248px] lg:[.mini_&]:w-[72px] flex-col border-r border-kraft/15 bg-surface transition-[transform,width] duration-300 ease-out">
         <div class="flex h-14 shrink-0 items-center justify-between border-b border-kraft/15 px-5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0">
-            <a href="{{ route('landing') }}" class="flex items-center gap-2.5" title="KROMATIK">
-                <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="30" height="30" class="krm-mark h-[30px] w-[30px]">
-                <span class="font-display text-[0.95rem] font-bold tracking-[0.2em] lg:[.mini_&]:hidden">KROMATIK</span>
+            <a href="{{ route('landing') }}" class="flex items-center" title="BRÛLÉ coffee lab">
+                <x-brand-logo class="h-9 lg:[.mini_&]:hidden" />
+                <x-brand-logo variant="mark" class="hidden h-9 lg:[.mini_&]:block" />
             </a>
             <button type="button" @click="nav = false" class="-mr-2 grid h-9 w-9 place-items-center text-kraft/70 lg:hidden" aria-label="{{ __('Tutup menu') }}">
                 <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>

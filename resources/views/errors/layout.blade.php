@@ -13,15 +13,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="robots" content="noindex">
     <title>{{ $code }} · KROMATIK</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     @include('layouts.partials.theme-boot')
     @vite(['resources/css/app.css'])
 </head>
 <body class="krm-grid flex min-h-screen flex-col bg-charcoal text-labwhite">
     <header class="mx-auto flex w-full max-w-[1180px] items-center px-6 py-5">
-        <a href="{{ url('/') }}" class="flex items-center gap-3">
-            <img src="{{ asset('images/mark-kromatik-white.png') }}" alt="" width="40" height="40" class="krm-mark h-10 w-10">
-            <span class="font-display text-[1.05rem] font-bold tracking-[0.2em]">KROMATIK</span>
+        <a href="{{ url('/') }}" class="flex items-center" aria-label="BRÛLÉ coffee lab">
+            <x-brand-logo class="h-11" />
         </a>
     </header>
 
