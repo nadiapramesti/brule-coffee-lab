@@ -19,10 +19,10 @@
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 px-3 py-2.5">
-            <div class="flex gap-1" role="tablist">
+            <div class="-mx-1 flex w-full gap-1 overflow-x-auto px-1 [scrollbar-width:none] sm:mx-0 sm:w-auto sm:px-0 [&::-webkit-scrollbar]:hidden" role="tablist">
                 @foreach (['' => __('Semua'), 'active' => __('Tampil'), 'hidden' => __('Tersembunyi'), 'low' => __('Stok tipis')] as $k => $label)
                     <button type="button" role="tab" aria-selected="{{ $show === $k ? 'true' : 'false' }}" wire:click="$set('show', '{{ $k }}')"
-                            class="flex items-center gap-1.5 rounded px-3 py-1.5 text-[12.5px] transition-colors {{ $show === $k ? 'bg-bluelab/20 text-labwhite' : 'text-kraft/60 hover:text-labwhite' }}">
+                            class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-3 py-1.5 text-[12.5px] transition-colors {{ $show === $k ? 'bg-bluelab/20 text-labwhite' : 'text-kraft/60 hover:text-labwhite' }}">
                         {{ $label }}<span class="krm-readout text-[11px] text-kraft/50">{{ $this->counts[$k] }}</span>
                     </button>
                 @endforeach
@@ -43,7 +43,7 @@
             @forelse ($this->products as $c)
                 @php $low = $c->stock <= \App\Models\Product::LOW_STOCK; $pct = min(100, $c->stock * 4); @endphp
                 <li wire:key="p-{{ $c->id }}" class="grid items-center gap-x-3 gap-y-2 px-4 py-3 transition-colors hover:bg-labwhite/[.02] {{ $cols }} {{ $c->is_active ? '' : 'opacity-60' }}">
-                    <div class="flex min-w-0 items-start justify-between gap-3 max-md:col-span-2 md:block">
+                    <div class="flex min-w-0 items-start justify-between gap-3 max-md:order-1 max-md:col-span-2 md:block">
                         <div class="flex min-w-0 items-center gap-3">
                             <x-product-thumb :product="$c" class="h-[42px] w-[42px]" />
                             <div class="min-w-0">
@@ -57,9 +57,9 @@
                         </button>
                     </div>
 
-                    <p class="truncate text-[12.5px] text-kraft/70 max-md:col-span-2">{{ $c->categoryLabel() }}</p>
+                    <p class="truncate text-[12.5px] text-kraft/70 max-md:order-2">{{ $c->categoryLabel() }}</p>
 
-                    <div class="relative max-md:col-span-2" x-data="{ add: false }" @click.outside="add = false" @keydown.escape="add = false">
+                    <div class="relative max-md:order-4" x-data="{ add: false }" @click.outside="add = false" @keydown.escape="add = false">
                         <div class="flex items-center gap-2">
                             <span class="krm-readout w-[2.6rem] shrink-0 text-[12.5px] {{ $low ? 'text-ambertext' : '' }}">{{ $c->stock }}</span>
                             <div class="h-[3px] flex-1 rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $low ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>
@@ -77,7 +77,7 @@
                         </form>
                     </div>
 
-                    <p class="krm-readout text-[12.5px] text-kraft/70">Rp{{ $rp($c->price) }}</p>
+                    <p class="krm-readout text-[12.5px] text-kraft/70 max-md:order-3 max-md:text-right">Rp{{ $rp($c->price) }}</p>
 
                     <div class="hidden justify-center md:flex">
                         <button type="button" role="switch" aria-checked="{{ $c->is_active ? 'true' : 'false' }}" aria-label="{{ __('Tampilkan di toko') }}" wire:click="toggle({{ $c->id }})"
@@ -86,7 +86,7 @@
                         </button>
                     </div>
 
-                    <div class="flex justify-end gap-1.5">
+                    <div class="flex justify-end gap-1.5 max-md:order-5">
                         <button type="button" wire:click="openForm('{{ $c->slug }}')" title="{{ __('Ubah') }}" aria-label="{{ __('Ubah') }} {{ $c->name }}"
                                 class="flex h-8 w-8 items-center justify-center rounded border border-kraft/25 transition-colors hover:border-kraft/60">
                             <svg viewBox="0 0 24 24" class="h-[15px] w-[15px]" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16v4zM13.5 6.5l4 4"/></svg>
