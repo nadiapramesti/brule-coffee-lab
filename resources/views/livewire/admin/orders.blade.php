@@ -20,31 +20,31 @@
 
     <section class="mt-4 rounded border border-kraft/20 bg-charcoal">
         {{-- Filter --}}
-        <div class="flex flex-wrap items-end gap-3 px-4 pt-4">
+        <div class="grid gap-3 px-4 pt-4 sm:flex sm:flex-wrap sm:items-end">
             <div class="relative min-w-[220px] flex-1 sm:max-w-sm">
                 <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
                 <label class="sr-only" for="q">{{ __('Cari pesanan') }}</label>
                 <input id="q" type="search" wire:model.live.debounce.350ms="search" placeholder="{{ __('Kode, nama, telepon, atau resi') }}" class="{{ $inp }} w-full pl-9">
             </div>
-            <div class="flex flex-wrap items-center gap-2">
+            <div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:flex sm:flex-wrap">
                 <label class="sr-only" for="from">{{ __('Dari tanggal') }}</label>
-                <input id="from" type="date" wire:model.live="from" class="{{ $inp }} krm-readout" style="color-scheme: dark">
+                <input id="from" type="date" wire:model.live="from" class="{{ $inp }} krm-readout w-full min-w-0 max-sm:px-2 max-sm:text-[12.5px] sm:w-auto" style="color-scheme: dark">
                 <span class="text-kraft/40" aria-hidden="true">–</span>
                 <label class="sr-only" for="to">{{ __('Sampai tanggal') }}</label>
-                <input id="to" type="date" wire:model.live="to" class="{{ $inp }} krm-readout" style="color-scheme: dark">
+                <input id="to" type="date" wire:model.live="to" class="{{ $inp }} krm-readout w-full min-w-0 max-sm:px-2 max-sm:text-[12.5px] sm:w-auto" style="color-scheme: dark">
             </div>
-            <div class="flex gap-1">
+            <div class="grid grid-cols-3 gap-1.5 sm:flex sm:gap-1">
                 @foreach (['today' => __('Hari ini'), '7' => '7 ' . __('hari'), '30' => '30 ' . __('hari')] as $k => $l)
-                    <button type="button" wire:click="preset('{{ $k }}')" class="rounded border border-kraft/25 px-2.5 py-2 text-[12px] text-kraft/75 transition-colors hover:border-kraft/60 hover:text-labwhite">{{ $l }}</button>
+                    <button type="button" wire:click="preset('{{ $k }}')" class="whitespace-nowrap rounded border border-kraft/25 px-2.5 py-2 text-center text-[12px] text-kraft/75 transition-colors hover:border-kraft/60 hover:text-labwhite">{{ $l }}</button>
                 @endforeach
-                @if ($from || $to)<button type="button" wire:click="preset('all')" class="px-2 py-2 text-[12px] text-kraft/55 underline-offset-4 hover:underline">{{ __('Reset') }}</button>@endif
+                @if ($from || $to)<button type="button" wire:click="preset('all')" class="px-2 py-2 text-[12px] text-kraft/55 underline-offset-4 hover:underline max-sm:col-span-3">{{ __('Reset') }}</button>@endif
             </div>
         </div>
 
-        <div class="mt-3 flex flex-wrap gap-x-1 border-b border-kraft/15 px-3" role="tablist">
+        <div class="mt-3 flex gap-x-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] max-sm:pb-px sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" role="tablist">
             @foreach (\App\Models\Order::TABS as $key => [$label])
                 <button type="button" role="tab" aria-selected="{{ $tab === $key ? 'true' : 'false' }}" wire:click="setTab('{{ $key }}')"
-                        class="-mb-px flex shrink-0 items-center gap-2 border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
+                        class="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
                     {{ __($label) }}<span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
                 </button>
             @endforeach
