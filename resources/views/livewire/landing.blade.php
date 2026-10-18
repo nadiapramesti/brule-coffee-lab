@@ -225,7 +225,7 @@
                 <button type="button" @click="reset()" class="mt-5 rounded border border-kraft/35 px-5 py-2.5 font-display text-[14px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite">{{ __('Reset pencarian') }}</button>
             </div>
 
-            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 has-[[aria-expanded=true]]:items-start">
+            <div class="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 @foreach ($this->coffees as $bean)
                     @php
                         $t = $bean->traceability; $sig = $bean->signatureProfile();
@@ -291,40 +291,69 @@
                                             {{ __('Racik kopi ini') }}
                                         </a>
                                     @endif
-                                    <button type="button" @click="open = !open" :aria-expanded="open ? 'true' : 'false'" aria-controls="lot-{{ $bean->id }}"
+                                    <button type="button" @click="open = !open" aria-haspopup="dialog" :aria-expanded="open ? 'true' : 'false'" aria-controls="lot-{{ $bean->id }}"
                                             class="shrink-0 px-1 py-2 text-[13px] text-kraft/70 underline-offset-4 transition-colors hover:text-labwhite hover:underline">
-                                        <span x-text="open ? @js(__('Tutup')) : @js(__('Detail lot'))">{{ __('Detail lot') }}</span>
+                                        <span>{{ __('Detail lot') }}</span>
                                     </button>
                                 </div>
                             </div>
 
-                            <div id="lot-{{ $bean->id }}" x-show="open" x-cloak x-collapse>
-                                <div class="mt-5 border-t border-kraft/15 pt-5">
-                                    <p class="text-[13.5px] leading-relaxed text-kraft/75">{{ $bean->localizedStory() }}</p>
-                                    <dl class="mt-4 grid grid-cols-2 gap-x-4 gap-y-3 text-[12.5px]">
-                                        <div><dt class="text-kraft/55">{{ __('Varietas') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->varietal ?? '—' }}</dd></div>
-                                        <div><dt class="text-kraft/55">{{ __('Panen') }}</dt><dd class="krm-readout mt-0.5 text-labwhite">{{ $t?->harvest_date?->format('m.Y') ?? '—' }}</dd></div>
-                                        <div><dt class="text-kraft/55">{{ __('Petani') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->farmer ?? '—' }}</dd></div>
-                                        <div><dt class="text-kraft/55">{{ __('Dinilai oleh') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd></div>
-                                    </dl>
+                            {{-- Detail lot sebagai dialog: grid tidak berubah tinggi, di HP muncul dari bawah. --}}
+                            <template x-teleport="body">
+                                <div x-show="open" x-cloak x-trap.noscroll="open"
+                                     @keydown.escape.window="open = false"
+                                     class="fixed inset-0 z-[70] flex items-end justify-center sm:items-center sm:p-6"
+                                     role="dialog" aria-modal="true" aria-labelledby="lot-title-{{ $bean->id }}" id="lot-{{ $bean->id }}">
+                                    <div x-show="open" x-transition.opacity.duration.200ms @click="open = false" class="absolute inset-0 bg-black/60"></div>
+                                    <div x-show="open"
+                                         x-transition:enter="transition duration-200 ease-out" x-transition:enter-start="translate-y-6 opacity-0 sm:translate-y-2" x-transition:enter-end="translate-y-0 opacity-100"
+                                         x-transition:leave="transition duration-150 ease-in" x-transition:leave-start="opacity-100" x-transition:leave-end="translate-y-4 opacity-0"
+                                         class="relative flex max-h-[88dvh] w-full flex-col overflow-hidden rounded-t-xl border border-kraft/25 bg-surface text-labwhite shadow-2xl sm:max-w-[560px] sm:rounded-lg">
+                                        <div class="flex items-start justify-between gap-4 border-b border-kraft/15 px-5 py-4">
+                                            <div class="min-w-0">
+                                                <h3 id="lot-title-{{ $bean->id }}" class="krm-h3 font-semibold leading-tight">{{ $bean->name }}</h3>
+                                                <p class="mt-1 text-[13px] text-kraft/60">{{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}</p>
+                                            </div>
+                                            <button type="button" @click="open = false" aria-label="{{ __('Tutup') }}"
+                                                    class="-mr-1 grid h-9 w-9 shrink-0 place-items-center rounded text-kraft/70 transition-colors hover:bg-labwhite/10 hover:text-labwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/50">
+                                                <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 5l10 10M15 5L5 15"/></svg>
+                                            </button>
+                                        </div>
 
-                                    <div class="mt-5 border-t border-kraft/15 pt-4">
-                                        <p class="krm-readout text-[11px] tracking-[0.14em] text-kraft/55">{{ __('ULASAN PEMBELI') }}</p>
-                                        @forelse ($bean->visibleReviews->take(3) as $rv)
-                                            <figure class="mt-3">
-                                                <figcaption class="flex flex-wrap items-center gap-x-2 text-[12.5px] text-kraft/65">
-                                                    <x-stars :value="$rv->rating" size="h-3 w-3" />
-                                                    <span class="text-labwhite">{{ $rv->displayName() }}</span>
-                                                    <span class="rounded-[6px] border border-kraft/30 px-1.5 text-[10.5px]">{{ __('Pembeli terverifikasi') }}</span>
-                                                </figcaption>
-                                                @if ($rv->body)<blockquote class="mt-1 text-[13px] leading-relaxed text-kraft/75">{{ $rv->body }}</blockquote>@endif
-                                            </figure>
-                                        @empty
-                                            <p class="mt-2 text-[13px] text-kraft/55">{{ __('Belum ada yang mengulas. Ulasan hanya bisa ditulis pembeli yang pesanannya sudah selesai.') }}</p>
-                                        @endforelse
+                                        <div class="overflow-y-auto overscroll-contain px-5 py-5">
+                                            <p class="text-[14px] leading-relaxed text-kraft/80">{{ $bean->localizedStory() }}</p>
+                                            <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-[13px]">
+                                                <div><dt class="text-kraft/55">{{ __('Varietas') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->varietal ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/55">{{ __('Panen') }}</dt><dd class="krm-readout mt-0.5 text-labwhite">{{ $t?->harvest_date?->format('m.Y') ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/55">{{ __('Petani') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->farmer ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/55">{{ __('Dinilai oleh') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd></div>
+                                            </dl>
+
+                                            <div class="mt-5 border-t border-kraft/15 pt-4">
+                                                <p class="krm-readout text-[11px] tracking-[0.14em] text-kraft/55">{{ __('ULASAN PEMBELI') }}</p>
+                                                @forelse ($bean->visibleReviews->take(3) as $rv)
+                                                    <figure class="mt-3">
+                                                        <figcaption class="flex flex-wrap items-center gap-x-2 text-[12.5px] text-kraft/65">
+                                                            <x-stars :value="$rv->rating" size="h-3 w-3" />
+                                                            <span class="text-labwhite">{{ $rv->displayName() }}</span>
+                                                            <span class="rounded-[6px] border border-kraft/30 px-1.5 text-[10.5px]">{{ __('Pembeli terverifikasi') }}</span>
+                                                        </figcaption>
+                                                        @if ($rv->body)<blockquote class="mt-1 text-[13px] leading-relaxed text-kraft/75">{{ $rv->body }}</blockquote>@endif
+                                                    </figure>
+                                                @empty
+                                                    <p class="mt-2 text-[13px] text-kraft/55">{{ __('Belum ada yang mengulas. Ulasan hanya bisa ditulis pembeli yang pesanannya sudah selesai.') }}</p>
+                                                @endforelse
+                                            </div>
+                                        </div>
+
+                                        @if ($state !== 'soldout')
+                                            <div class="border-t border-kraft/15 px-5 py-4 pb-[max(1rem,env(safe-area-inset-bottom))]">
+                                                <a href="{{ route('builder', ['kopi' => $bean->slug]) }}" class="block rounded bg-bluelab px-4 py-3 text-center font-display text-[14.5px] font-semibold text-paper transition-colors hover:bg-[#234E94]">{{ __('Racik kopi ini') }}</a>
+                                            </div>
+                                        @endif
                                     </div>
                                 </div>
-                            </div>
+                            </template>
                         </div>
                     </article>
                 @endforeach
