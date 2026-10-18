@@ -27,12 +27,64 @@ class Roastery extends Component
 
     public bool $stockAll = false;
 
+    /** Berapa kartu tampil per kolom sebelum "Tampilkan lagi". */
+    public const PER_COLUMN = 8;
+
+    /** Lebih dari ini sejak dibayar = ditandai terlambat (janji toko: berangkat 24 jam). */
+    public const LATE_HOURS = 24;
+
+    public string $search = '';
+
+    /** @var array<string,int> tambahan kartu yang dibuka per kolom */
+    public array $extra = [];
+
     #[Computed]
     public function columns(): array
     {
-        $orders = Order::with('items')->whereIn('status', self::COLUMNS)->orderByRaw('COALESCE(paid_at, created_at)')->get()->groupBy('status');
+        $q = trim($this->search);
+        $orders = Order::with('items')->whereIn('status', self::COLUMNS)
+            ->when($q !== '', function ($query) use ($q) {
+                $like = '%' . str_replace(['%', '_'], ['\\%', '\\_'], $q) . '%';
+                $query->where(fn ($w) => $w->where('order_code', 'like', $like)->orWhere('recipient_name', 'like', $like)
+                    ->orWhereHas('items', fn ($i) => $i->where('coffee_name_snapshot', 'like', $like)));
+            })
+            ->orderByRaw('COALESCE(paid_at, created_at)')->get()->groupBy('status');
 
-        return collect(self::COLUMNS)->mapWithKeys(fn ($s) => [$s => $orders->get($s, collect())])->all();
+        return collect(self::COLUMNS)->mapWithKeys(function ($s) use ($orders) {
+            $all = $orders->get($s, collect());
+            $limit = self::PER_COLUMN + (int) ($this->extra[$s] ?? 0);
+
+            return [$s => [
+                'orders' => $all->take($limit),
+                'total' => $all->count(),
+                'hidden' => max(0, $all->count() - $limit),
+                'grams' => (int) $all->sum(fn ($o) => $o->items->sum('grams')),
+                'late' => $all->filter(fn ($o) => $this->isLate($o))->count(),
+            ]];
+        })->all();
+    }
+
+    public function isLate(Order $o): bool
+    {
+        return ($o->paid_at ?? $o->created_at)->lt(now()->subHours(self::LATE_HOURS));
+    }
+
+    public function showMore(string $status): void
+    {
+        if (in_array($status, self::COLUMNS, true)) {
+            $this->extra[$status] = (int) ($this->extra[$status] ?? 0) + self::PER_COLUMN * 2;
+        }
+    }
+
+    /** Rencana sangrai: pesanan masuk antrian dikelompokkan per biji + level, supaya disangrai sekali jalan. */
+    #[Computed]
+    public function batches(): \Illuminate\Support\Collection
+    {
+        return Order::with('items')->where('status', 'queued')->get()
+            ->flatMap(fn ($o) => $o->items->map(fn ($i) => ['o' => $o->id, 'name' => $i->coffee_name_snapshot, 'level' => $i->level_label, 'grams' => (int) $i->grams]))
+            ->groupBy(fn ($r) => $r['name'] . '|' . $r['level'])
+            ->map(fn ($g) => ['name' => $g[0]['name'], 'level' => $g[0]['level'], 'grams' => $g->sum('grams'), 'orders' => $g->pluck('o')->unique()->count()])
+            ->sortByDesc('grams')->values();
     }
 
     #[Computed]
@@ -86,7 +138,7 @@ class Roastery extends Component
     public function advance(int $id): void
     {
         Order::findOrFail($id)->advance();
-        unset($this->columns, $this->stats);
+        unset($this->columns, $this->stats, $this->batches);
     }
 
     public function ship(int $id): void
@@ -97,7 +149,7 @@ class Roastery extends Component
         ]);
 
         if (Order::findOrFail($id)->ship($this->tracking[$id])) {
-            unset($this->tracking[$id], $this->columns, $this->stats);
+            unset($this->tracking[$id], $this->columns, $this->stats, $this->batches);
         }
     }
 

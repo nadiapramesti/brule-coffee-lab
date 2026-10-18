@@ -176,3 +176,34 @@ it('keeps the roastery stock list compact: preview, search, and low-stock filter
     expect($c->get('stockRows')['rows'])->toHaveCount(1);
     $c->set('stockSearch', 'zzz')->assertSee('Tidak ada biji yang cocok');
 });
+
+it('scales the roastery queue: per-column limit, search, late flag and roast-plan batches', function () {
+    $roaster = User::where('email', 'roaster@brule.test')->first();
+    foreach (range(1, 12) as $i) {
+        $o = place($this);
+        $o->markPaid();
+        $o->forceFill(['paid_at' => now()->subHours($i * 5)])->save();
+    }
+
+    $c = Livewire::actingAs($roaster)->test(\App\Livewire\Roastery::class);
+    $col = $c->get('columns')['queued'];
+    expect($col['total'])->toBe(12)
+        ->and($col['orders'])->toHaveCount(\App\Livewire\Roastery::PER_COLUMN)
+        ->and($col['hidden'])->toBe(4)
+        ->and($col['late'])->toBe(8); // 25, 30, ... 60 jam (> 24 jam sejak dibayar)
+
+    // paling lama menunggu ada di atas
+    expect($col['orders']->first()->paid_at->lt($col['orders']->last()->paid_at))->toBeTrue();
+
+    $c->call('showMore', 'queued');
+    expect($c->get('columns')['queued']['hidden'])->toBe(0);
+
+    // rencana sangrai: satu biji + level, total gram semua pesanan
+    $plan = $c->get('batches');
+    expect($plan)->toHaveCount(1)->and($plan->first()['grams'])->toBe(12 * 200)->and($plan->first()['orders'])->toBe(12);
+
+    $c->set('search', 'tidak-ada-yang-cocok');
+    expect($c->get('columns')['queued']['total'])->toBe(0);
+    $c->set('search', $this->profile->coffee->name);
+    expect($c->get('columns')['queued']['total'])->toBe(12);
+});

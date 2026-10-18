@@ -19,16 +19,49 @@
         </dl>
     </div>
 
-    <div class="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        @foreach ($this->columns as $status => $orders)
-            <section class="rounded border border-kraft/20 bg-charcoal">
-                <header class="flex items-center justify-between border-b border-kraft/15 px-3 py-2">
-                    <h2 class="text-[12.5px] font-semibold">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</h2>
-                    <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $orders->count() }}</span>
+    {{-- Rencana sangrai: apa yang perlu disangrai dari antrian masuk, dikelompokkan biji + level --}}
+    @if ($this->batches->isNotEmpty())
+        <section class="mt-4 rounded border border-kraft/20 bg-charcoal px-4 py-3">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <h2 class="text-[12.5px] font-semibold">{{ __('Rencana sangrai') }}</h2>
+                <p class="text-[11.5px] text-kraft/50">{{ __('Dari antrian masuk, dikelompokkan supaya satu biji dan level disangrai sekali jalan.') }}</p>
+            </div>
+            <ul class="mt-2.5 flex max-h-[7.5rem] flex-wrap gap-2 overflow-y-auto">
+                @foreach ($this->batches as $bt)
+                    <li wire:key="bt-{{ $loop->index }}" class="flex items-baseline gap-2 rounded border border-kraft/20 bg-surface px-2.5 py-1.5 text-[12px]">
+                        <span class="font-semibold">{{ $bt['name'] }}</span>
+                        <span class="text-kraft/60">{{ $bt['level'] }}</span>
+                        <span class="krm-readout">{{ number_format($bt['grams']) }} g</span>
+                        <span class="text-[11px] text-kraft/45">{{ $bt['orders'] }} {{ __('pesanan') }}</span>
+                    </li>
+                @endforeach
+            </ul>
+        </section>
+    @endif
+
+    <div class="mt-4">
+        <label class="sr-only" for="q-orders">{{ __('Cari pesanan') }}</label>
+        <input id="q-orders" type="search" wire:model.live.debounce.300ms="search" placeholder="{{ __('Contoh: BRL-20261018-0003, Sinta, atau Gayo') }}"
+               class="w-full rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50 sm:max-w-[400px]">
+    </div>
+
+    <div class="mt-3 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+        @foreach ($this->columns as $status => $col)
+            <section class="flex min-w-0 flex-col rounded border border-kraft/20 bg-charcoal">
+                <header class="border-b border-kraft/15 px-3 py-2">
+                    <div class="flex items-center justify-between">
+                        <h2 class="text-[12.5px] font-semibold">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</h2>
+                        <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $col['total'] }}</span>
+                    </div>
+                    <p class="krm-readout mt-0.5 flex items-center gap-2 text-[11px] text-kraft/50">
+                        {{ number_format($col['grams']) }} g
+                        @if ($col['late'])<span class="rounded-[6px] border border-[#C0392B]/50 px-1.5 text-[10.5px] text-[#C0392B]">{{ $col['late'] }} {{ __('terlambat') }}</span>@endif
+                    </p>
                 </header>
-                <div class="space-y-2 p-2">
-                    @forelse ($orders as $o)
-                        <article wire:key="o-{{ $o->id }}" class="rounded border border-kraft/15 bg-surface px-2.5 py-2">
+                <div class="max-h-[34rem] space-y-2 overflow-y-auto overscroll-contain p-2">
+                    @forelse ($col['orders'] as $o)
+                        @php $late = $this->isLate($o); $since = ($o->paid_at ?? $o->created_at); @endphp
+                        <article wire:key="o-{{ $o->id }}" class="rounded border bg-surface px-2.5 py-2 {{ $late ? 'border-[#C0392B]/45' : 'border-kraft/15' }}">
                             <div class="flex items-center justify-between gap-2">
                                 <p class="krm-readout truncate text-[10.5px] text-kraft/50">{{ $o->order_code }}</p>
                                 <p class="krm-readout shrink-0 text-[12.5px]">{{ number_format($o->items->sum('grams')) }} g</p>
@@ -37,7 +70,10 @@
                                 <p class="mt-1 truncate text-[12.5px] font-semibold leading-snug">{{ $it->coffee_name_snapshot }}</p>
                                 <p class="truncate text-[11.5px] text-kraft/60">{{ $it->level_label }} · {{ __($it->grind_label) }} · {{ number_format($it->grams) }} g{{ $it->qty > 1 ? ' × '.$it->qty : '' }}</p>
                             @endforeach
-                            <p class="mt-0.5 truncate text-[11px] text-kraft/40">{{ $o->recipient_name }}</p>
+                            <p class="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-kraft/40">
+                                <span class="truncate">{{ $o->recipient_name }}</span>
+                                <span class="krm-readout shrink-0 {{ $late ? 'text-[#C0392B]' : '' }}" title="{{ $since->translatedFormat('j M Y, H:i') }}">{{ $since->diffForHumans(null, true, true) }}</span>
+                            </p>
                             @if ($o->hasAddons())
                                 <div class="mt-1.5 rounded border border-bluelab/40 bg-bluelab/10 px-2 py-1.5 text-[11.5px] leading-snug">
                                     @if ($o->gift_wrap)<p class="font-semibold">{{ __('Kemasan hadiah') }}</p>@endif
@@ -60,8 +96,13 @@
                             @endif
                         </article>
                     @empty
-                        <p class="py-4 text-center text-[12px] text-kraft/35">{{ __('Kosong') }}</p>
+                        <p class="py-4 text-center text-[12px] text-kraft/35">{{ trim($search) !== '' ? __('Tidak ada yang cocok') : __('Kosong') }}</p>
                     @endforelse
+                    @if ($col['hidden'] > 0)
+                        <button type="button" wire:click="showMore('{{ $status }}')" class="w-full rounded border border-dashed border-kraft/30 py-2 text-[12px] text-kraft/70 transition-colors hover:border-kraft/60 hover:text-labwhite">
+                            {{ __('Tampilkan :n lagi', ['n' => $col['hidden']]) }}
+                        </button>
+                    @endif
                 </div>
             </section>
         @endforeach
