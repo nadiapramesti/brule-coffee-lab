@@ -11,6 +11,10 @@ Route::get('/coffees/{slug}/reviews', [ReviewController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/coffees/{slug}/reviews', [ReviewController::class, 'store']);
 
+    // Unduhan PDF
+    Route::get('/orders/{code}/receipt', [\App\Http\Controllers\Api\DocController::class, 'receipt']);
+    Route::get('/staff/labels', [\App\Http\Controllers\Api\DocController::class, 'labels']);
+
     // Notifikasi (semua peran)
     Route::get('/notices', [\App\Http\Controllers\Api\NoticeController::class, 'index']);
     Route::get('/notices/unread', [\App\Http\Controllers\Api\NoticeController::class, 'unread']);
