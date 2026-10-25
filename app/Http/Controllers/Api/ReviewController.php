@@ -57,6 +57,10 @@ class ReviewController extends Controller
             ['order_id' => $order->id, 'rating' => $data['rating'], 'body' => trim((string) ($data['body'] ?? '')) ?: null],
         );
 
+        \App\Models\Notice::send(\App\Models\Notice::admins(), 'review', 'Ulasan baru', ':n · :c · :r bintang', [
+            'n' => $user->name, 'c' => $coffee->name, 'r' => $r->rating,
+        ], null, skip: $user->id);
+
         return response()->json(['rating' => $r->rating, 'body' => $r->body], 201);
     }
 }

@@ -179,6 +179,7 @@ class OrderController extends Controller
     {
         $flow = $o->flow();
         $step = array_search($o->status, $flow, true);
+        $times = ['queued' => $o->paid_at, 'roasting' => $o->roasted_at, 'shipped' => $o->shipped_at];
 
         return [
             'code'            => $o->order_code,
@@ -186,7 +187,7 @@ class OrderController extends Controller
             'status_label'    => Order::STATUS_LABELS[$o->status] ?? $o->status,
             'progress'        => $o->progressPercent(),
             'step'            => $step === false ? null : $step,
-            'steps'           => array_map(fn ($s) => ['key' => $s, 'label' => Order::STATUS_LABELS[$s] ?? $s], $flow),
+            'steps'           => array_map(fn ($s) => ['key' => $s, 'label' => Order::STATUS_LABELS[$s] ?? $s, 'at' => ($times[$s] ?? null)?->toIso8601String()], $flow),
             'payment_method'  => $o->payment_method,
             'is_paid'         => $o->isPaid(),
             'can_pay'         => $o->payment_method === 'online' && $o->status === 'pending_payment',

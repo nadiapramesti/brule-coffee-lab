@@ -44,6 +44,23 @@ class AuthController extends Controller
         return response()->json(['message' => 'ok']);
     }
 
+    /** Tukar kode sekali pakai dari login sosial menjadi token. */
+    public function exchange(Request $request)
+    {
+        $data = $request->validate(['code' => ['required', 'string', 'max:80']]);
+        $id = \Illuminate\Support\Facades\Cache::pull('oauth_code:'.$data['code']);
+        $user = $id ? User::find($id) : null;
+
+        if (! $user || $user->blocked_at) {
+            return response()->json(['message' => 'Kode login tidak valid atau kedaluwarsa. Coba lagi.'], 422);
+        }
+
+        return response()->json([
+            'token' => $user->createToken('mobile')->plainTextToken,
+            'user'  => $this->payload($user),
+        ]);
+    }
+
     private function payload(User $user): array
     {
         return [

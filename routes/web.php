@@ -55,6 +55,9 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/{provider}/callback', [\App\Http\Controllers\Auth\SocialAuthController::class, 'callback'])->name('social.callback');
 });
 
+// Login Google/Facebook dari aplikasi mobile (Chrome Custom Tab, tanpa sesi).
+Route::get('/auth/{provider}/mobile', [\App\Http\Controllers\Auth\SocialAuthController::class, 'mobileStart'])->name('social.mobile');
+
 Route::get('/bahasa/{locale}', function (string $locale) {
     if (in_array($locale, \App\Http\Middleware\SetLocale::SUPPORTED, true)) {
         session(['locale' => $locale]);

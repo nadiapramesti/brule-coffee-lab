@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
+Route::post('/auth/exchange', [AuthController::class, 'exchange'])->middleware('throttle:10,1');
 
 // Katalog boleh dibuka tanpa login
 Route::get('/coffees', [CoffeeController::class, 'index']);
