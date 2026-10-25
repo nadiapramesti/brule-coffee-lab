@@ -96,6 +96,28 @@ class StaffController extends Controller
         return response()->json($this->detail($order->fresh(['items', 'user']), $request));
     }
 
+    /** Majukan banyak pesanan satu tahap. Tahap Dikemas dilewati karena butuh resi per paket. */
+    public function advanceBulk(Request $request)
+    {
+        $this->roaster($request);
+        $data = $request->validate([
+            'codes'   => ['required', 'array', 'min:1', 'max:100'],
+            'codes.*' => ['string', 'max:40'],
+        ]);
+
+        $moved = 0;
+        $orders = Order::whereIn('order_code', array_map('strtoupper', $data['codes']))
+            ->whereIn('status', self::COLUMNS)
+            ->orderByRaw('COALESCE(paid_at, created_at)')->get();
+        foreach ($orders as $o) {
+            if ($o->advance()) {
+                $moved++;
+            }
+        }
+
+        return response()->json(['moved' => $moved, 'skipped' => count($data['codes']) - $moved]);
+    }
+
     public function ship(Request $request, string $code)
     {
         $this->roaster($request);

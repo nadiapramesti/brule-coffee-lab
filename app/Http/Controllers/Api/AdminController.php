@@ -129,7 +129,8 @@ class AdminController extends Controller
 
     public function stock(Request $request)
     {
-        $this->admin($request);
+        // Roaster juga boleh melihat stok biji (sama seperti panel roastery di web).
+        abort_unless($request->user()->isRoaster(), 403, 'Khusus roaster dan admin.');
 
         $coffees = Coffee::active()->with('traceability')->orderBy('stock_green_bean_gram')->orderBy('name')->get();
         $max = max(1, (int) $coffees->max('stock_green_bean_gram'));

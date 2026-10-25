@@ -13,6 +13,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Roaster dan admin
     Route::get('/staff/queue', [StaffController::class, 'queue']);
+    Route::post('/staff/orders/advance', [StaffController::class, 'advanceBulk']);
+    Route::get('/staff/stock', [AdminController::class, 'stock']);
     Route::get('/staff/orders/{code}', [StaffController::class, 'show']);
     Route::post('/staff/orders/{code}/advance', [StaffController::class, 'advance']);
     Route::post('/staff/orders/{code}/ship', [StaffController::class, 'ship']);
