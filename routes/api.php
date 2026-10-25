@@ -25,3 +25,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders/{code}/sync', [OrderController::class, 'sync']);
     Route::post('/orders/{code}/cancel', [OrderController::class, 'cancel']);
 });
+require __DIR__.'/api_account.php';
