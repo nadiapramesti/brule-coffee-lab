@@ -48,6 +48,9 @@ class OrderController extends Controller
             'items.*.grind'      => ['required_if:items.*.type,coffee', Rule::in(array_keys(OrderItem::GRINDS))],
             'items.*.product_id' => ['required_if:items.*.type,gear', 'integer'],
             'items.*.option'     => ['nullable', 'string', 'max:60'],
+            // Blend dua biji: profil biji kedua + porsi biji pertama (%)
+            'items.*.blend_profile_id' => ['nullable', 'integer'],
+            'items.*.ratio'            => ['nullable', 'integer', Rule::in(\App\Support\Blend::RATIOS)],
         ], [
             'phone.regex' => 'Nomor WhatsApp tidak valid. Contoh: 0812xxxxxxxx',
             'address.min' => 'Alamat terlalu pendek. Tulis jalan, nomor, kota, dan kode pos.',
@@ -55,6 +58,7 @@ class OrderController extends Controller
 
         $items = collect($data['items']);
         $profiles = RoastProfile::whereIn('id', $items->where('type', 'coffee')->pluck('profile_id'))->get()->keyBy('id');
+        $blends = RoastProfile::whereIn('id', $items->where('type', 'coffee')->pluck('blend_profile_id')->filter())->get()->keyBy('id');
         $products = Product::whereIn('id', $items->where('type', 'gear')->pluck('product_id'))->get()->keyBy('id');
 
         // Satu bungkus = satu baris, sama seperti keranjang di web.
@@ -65,8 +69,16 @@ class OrderController extends Controller
                 if (! $profile) {
                     return response()->json(['message' => 'Kopi tidak ditemukan.'], 422);
                 }
+                $blend = null;
+                if (! empty($i['blend_profile_id'])) {
+                    $blend = $blends[$i['blend_profile_id']] ?? null;
+                    if (! $blend || empty($i['ratio'])) {
+                        return response()->json(['message' => 'Data blend tidak lengkap.'], 422);
+                    }
+                }
                 for ($n = 0; $n < $i['qty']; $n++) {
-                    $lines[] = ['profile' => $profile, 'grams' => (int) $i['grams'], 'grind' => $i['grind']];
+                    $lines[] = ['profile' => $profile, 'grams' => (int) $i['grams'], 'grind' => $i['grind']]
+                        + ($blend ? ['blend' => $blend, 'ratio' => (int) $i['ratio']] : []);
                 }
             } else {
                 $product = $products[$i['product_id']] ?? null;
@@ -163,7 +175,7 @@ class OrderController extends Controller
             ->firstOrFail();
     }
 
-    private function payload(Order $o): array
+    public function payload(Order $o): array
     {
         $flow = $o->flow();
         $step = array_search($o->status, $flow, true);
@@ -171,10 +183,10 @@ class OrderController extends Controller
         return [
             'code'            => $o->order_code,
             'status'          => $o->status,
-            'status_label'    => $o->status_label,
+            'status_label'    => Order::STATUS_LABELS[$o->status] ?? $o->status,
             'progress'        => $o->progressPercent(),
             'step'            => $step === false ? null : $step,
-            'steps'           => array_map(fn ($s) => ['key' => $s, 'label' => __(Order::STATUS_LABELS[$s])], $flow),
+            'steps'           => array_map(fn ($s) => ['key' => $s, 'label' => Order::STATUS_LABELS[$s] ?? $s], $flow),
             'payment_method'  => $o->payment_method,
             'is_paid'         => $o->isPaid(),
             'can_pay'         => $o->payment_method === 'online' && $o->status === 'pending_payment',

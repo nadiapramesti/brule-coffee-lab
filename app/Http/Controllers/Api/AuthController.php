@@ -26,10 +26,6 @@ class AuthController extends Controller
             return response()->json(['message' => 'Akun diblokir, hubungi admin'], 403);
         }
 
-        if ($user->role !== 'customer') {
-            return response()->json(['message' => 'Aplikasi ini khusus pelanggan. Staf silakan masuk lewat web.'], 403);
-        }
-
         return response()->json([
             'token' => $user->createToken('mobile')->plainTextToken,
             'user'  => $this->payload($user),

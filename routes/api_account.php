@@ -17,3 +17,4 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/addresses/{id}/default', [AddressController::class, 'makeDefault']);
     Route::delete('/addresses/{id}', [AddressController::class, 'destroy']);
 });
+require __DIR__.'/api_staff.php';
