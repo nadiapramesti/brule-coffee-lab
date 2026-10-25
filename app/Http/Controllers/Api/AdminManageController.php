@@ -53,6 +53,100 @@ class AdminManageController extends Controller
         ];
     }
 
+    public function reportExport(Request $request)
+    {
+        $this->admin($request);
+        abort_unless(in_array($request->query('format'), ['pdf', 'xlsx'], true), 422, 'Format harus pdf atau xlsx.');
+
+        return (new \App\Http\Controllers\Admin\ReportExportController)($request);
+    }
+
+    // ---------------------------------------------------------------- Stok keluar masuk
+
+    public function stockHistory(Request $request)
+    {
+        $this->admin($request);
+        $kopi = (int) $request->query('kopi', 0);
+        $jenis = (string) $request->query('jenis', '');
+
+        $page = \App\Models\StockMovement::with(['coffee:id,name', 'user:id,name', 'order:id,order_code'])
+            ->when($kopi > 0, fn ($q) => $q->where('coffee_id', $kopi))
+            ->when(array_key_exists($jenis, \App\Models\StockMovement::TYPES), fn ($q) => $q->where('type', $jenis))
+            ->latest('id')->paginate(20);
+
+        return [
+            'types' => collect(\App\Models\StockMovement::TYPES)->map(fn ($l, $k) => ['key' => $k, 'label' => $l])->values(),
+            'coffees' => Coffee::orderBy('name')->get(['id', 'name']),
+            'data' => $page->getCollection()->map(fn ($m) => [
+                'id' => $m->id,
+                'coffee' => $m->coffee?->name,
+                'type' => $m->type,
+                'type_label' => \App\Models\StockMovement::TYPES[$m->type] ?? $m->type,
+                'grams' => (int) $m->grams,
+                'balance_after' => (int) $m->balance_after,
+                'reason' => $m->reason,
+                'by' => $m->user?->name,
+                'order_code' => $m->order?->order_code,
+                'created_at' => $m->created_at?->toIso8601String(),
+            ])->values(),
+            'page' => $page->currentPage(),
+            'last_page' => $page->lastPage(),
+        ];
+    }
+
+    /** mode: restock (masuk), waste (susut/rusak, keluar), count (koreksi hitung ke angka sebenarnya). */
+    public function stockAdjustCoffee(Request $request, int $id)
+    {
+        $this->admin($request);
+        $coffee = Coffee::findOrFail($id);
+        $mode = (string) $request->input('mode', 'restock');
+        abort_unless(in_array($mode, ['restock', 'waste', 'count'], true), 422, 'Mode tidak dikenal.');
+
+        $min = $mode === 'count' ? 0 : 1;
+        $d = $request->validate([
+            'amount' => ['required', 'integer', "min:$min", 'max:1000000'],
+            'reason' => [$mode === 'waste' ? 'required' : 'nullable', 'string', 'max:120'],
+        ], [
+            'amount.required' => 'Isi jumlah gram dulu.',
+            'amount.integer' => 'Jumlah harus angka bulat.',
+            'amount.min' => 'Jumlah terlalu kecil.',
+            'amount.max' => 'Terlalu besar, maksimal 1.000.000 gram.',
+            'reason.required' => 'Alasan wajib diisi untuk pengurangan stok.',
+        ]);
+
+        $grams = (int) $d['amount'];
+        $reason = trim((string) ($d['reason'] ?? '')) ?: null;
+
+        if ($mode === 'waste' && $grams > $coffee->stock_green_bean_gram) {
+            return response()->json(['message' => 'Melebihi stok yang ada (' . number_format($coffee->stock_green_bean_gram) . ' g).'], 422);
+        }
+
+        match ($mode) {
+            'restock' => $coffee->moveStock('restock', $grams, $reason),
+            'waste' => $coffee->moveStock('waste', -$grams, $reason),
+            default => $grams === $coffee->stock_green_bean_gram ? null : $coffee->moveStock('adjustment', $grams - $coffee->stock_green_bean_gram, $reason),
+        };
+
+        ActivityLog::record('stock.adjusted', $coffee, match ($mode) { 'restock' => 'Restock :n: +:g g', 'waste' => 'Stok :n dikurangi (susut): -:g g', default => 'Stok :n dikoreksi menjadi :g g' }, ['n' => $coffee->name, 'g' => number_format($grams, 0, ',', '.')]);
+
+        return ['id' => $coffee->id, 'grams' => (int) $coffee->fresh()->stock_green_bean_gram];
+    }
+
+    public function stockAddProduct(Request $request, int $id)
+    {
+        $this->admin($request);
+        $d = $request->validate(['amount' => ['required', 'integer', 'min:1', 'max:100000']], [
+            'amount.required' => 'Isi jumlah unit dulu.',
+            'amount.min' => 'Minimal 1 unit.',
+            'amount.max' => 'Terlalu besar, maksimal 100.000 unit.',
+        ]);
+        $p = Product::findOrFail($id);
+        $p->increment('stock', (int) $d['amount']);
+        ActivityLog::record('product.restocked', $p, 'Stok :n ditambah :q unit', ['n' => $p->name, 'q' => (int) $d['amount']]);
+
+        return ['id' => $p->id, 'stock' => (int) $p->fresh()->stock];
+    }
+
     // ---------------------------------------------------------------- Pelanggan
 
     public function customers(Request $request)

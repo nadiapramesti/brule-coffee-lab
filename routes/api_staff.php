@@ -31,6 +31,10 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     $c = \App\Http\Controllers\Api\AdminManageController::class;
     Route::get('/reports', [$c, 'report']);
+    Route::get('/reports/export', [$c, 'reportExport']);
+    Route::get('/stock/history', [$c, 'stockHistory']);
+    Route::post('/stock/coffees/{id}', [$c, 'stockAdjustCoffee']);
+    Route::post('/stock/products/{id}', [$c, 'stockAddProduct']);
     Route::get('/customers', [$c, 'customers']);
     Route::get('/users', [$c, 'users']);
     Route::post('/users/{id}/block', [$c, 'block']);

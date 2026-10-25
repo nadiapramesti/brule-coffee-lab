@@ -135,6 +135,10 @@ class AdminController extends Controller
         $coffees = Coffee::active()->with('traceability')->orderBy('stock_green_bean_gram')->orderBy('name')->get();
         $max = max(1, (int) $coffees->max('stock_green_bean_gram'));
 
+        // Pemakaian bersih 30 hari (terjual dikurangi batal) untuk perkiraan sisa hari.
+        $net = \App\Models\StockMovement::whereIn('type', ['sale', 'cancel'])->where('created_at', '>=', now()->subDays(30))
+            ->selectRaw('coffee_id, sum(grams) as g')->groupBy('coffee_id')->pluck('g', 'coffee_id');
+
         return response()->json([
             'summary' => [
                 'total'   => $coffees->count(),
@@ -144,13 +148,18 @@ class AdminController extends Controller
                 'max'     => $max,
             ],
             'coffees' => $coffees->map(fn ($c) => [
+                'id'      => $c->id,
                 'name'    => $c->name,
                 'grams'   => (int) $c->stock_green_bean_gram,
+                'used_30d' => max(0, -(int) ($net[$c->id] ?? 0)),
+                'days_left' => max(0, -(int) ($net[$c->id] ?? 0)) > 0
+                    ? (int) floor($c->stock_green_bean_gram / (max(0, -(int) ($net[$c->id] ?? 0)) / 30)) : null,
                 'state'   => $c->stockState(),
                 'process' => $c->traceability?->process,
                 'region'  => $c->traceability?->region,
             ])->values(),
             'products' => Product::where('is_active', true)->orderBy('stock')->orderBy('name')->get()->map(fn ($p) => [
+                'id'       => $p->id,
                 'name'     => $p->name,
                 'category' => $p->category,
                 'stock'    => (int) $p->stock,

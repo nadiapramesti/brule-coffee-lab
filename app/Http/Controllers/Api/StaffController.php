@@ -12,8 +12,6 @@ class StaffController extends Controller
 {
     public const COLUMNS = ['queued', 'roasting', 'grinding', 'packing'];
 
-    private const PER_COLUMN = 30;
-
     /** Lebih dari ini sejak dibayar = terlambat (janji toko: berangkat 24 jam). */
     private const LATE_HOURS = 24;
 
@@ -23,6 +21,8 @@ class StaffController extends Controller
 
         $q = trim((string) $request->query('q'));
         $late = $request->boolean('late');
+        $stage = in_array($request->query('stage'), self::COLUMNS, true) ? $request->query('stage') : self::COLUMNS[0];
+        $newest = $request->query('sort') === 'newest';
         $cut = now()->subHours(self::LATE_HOURS);
         $since = 'COALESCE(orders.paid_at, orders.created_at)';
 
@@ -36,20 +36,22 @@ class StaffController extends Controller
             })
             ->when($late, fn ($x) => $x->whereRaw($since . ' < ?', [$cut]));
 
-        $columns = [];
+        // Ringkasan tiap tahap (untuk chip di atas), sesuai pencarian dan filter yang sedang aktif.
+        $stages = [];
         foreach (self::COLUMNS as $status) {
-            $total = $base()->where('orders.status', $status)->count();
-            $orders = $total === 0 ? collect() : $base()->where('orders.status', $status)
-                ->with('items')->orderByRaw($since)->orderBy('orders.id')->limit(self::PER_COLUMN)->get();
-
-            $columns[] = [
+            $ids = $base()->where('orders.status', $status)->select('orders.id');
+            $stages[] = [
                 'status' => $status,
                 'label'  => Order::STATUS_LABELS[$status],
-                'total'  => $total,
-                'grams'  => (int) OrderItem::whereHas('order', fn ($o) => $o->where('status', $status))->sum('grams'),
-                'orders' => $orders->map(fn (Order $o) => $this->card($o))->values(),
+                'total'  => $base()->where('orders.status', $status)->count(),
+                'late'   => $base()->where('orders.status', $status)->whereRaw($since . ' < ?', [$cut])->count(),
+                'grams'  => (int) \Illuminate\Support\Facades\DB::table('order_items')->whereIn('order_id', $ids)->sum('grams'),
             ];
         }
+
+        $page = $base()->where('orders.status', $stage)->with('items')
+            ->orderByRaw($since . ($newest ? ' desc' : ''))->orderBy('orders.id', $newest ? 'desc' : 'asc')
+            ->paginate(20);
 
         $batches = OrderItem::query()
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
@@ -72,8 +74,13 @@ class StaffController extends Controller
                 'shipped_today' => Order::whereDate('shipped_at', today())->count(),
                 'grams'         => (int) OrderItem::whereHas('order', fn ($o) => $o->inProduction())->sum('grams'),
             ],
-            'columns' => $columns,
-            'batches' => $batches,
+            'stage'     => $stage,
+            'stages'    => $stages,
+            'batches'   => $batches,
+            'data'      => $page->getCollection()->map(fn (Order $o) => $this->card($o))->values(),
+            'page'      => $page->currentPage(),
+            'last_page' => $page->lastPage(),
+            'total'     => $page->total(),
         ]);
     }
 
