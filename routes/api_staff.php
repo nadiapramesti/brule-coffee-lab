@@ -24,3 +24,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/admin/orders/{code}/complete', [AdminController::class, 'complete']);
     Route::post('/admin/orders/{code}/cancel', [AdminController::class, 'cancel']);
 });
+
+// Menu admin lainnya (laporan, pelanggan, pengguna, voucher, ulasan, kopi, produk, log, pengaturan)
+Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
+    $c = \App\Http\Controllers\Api\AdminManageController::class;
+    Route::get('/reports', [$c, 'report']);
+    Route::get('/customers', [$c, 'customers']);
+    Route::get('/users', [$c, 'users']);
+    Route::post('/users/{id}/block', [$c, 'block']);
+    Route::post('/users/{id}/unblock', [$c, 'unblock']);
+    Route::get('/vouchers', [$c, 'vouchers']);
+    Route::post('/vouchers', [$c, 'voucherStore']);
+    Route::put('/vouchers/{id}', [$c, 'voucherUpdate']);
+    Route::post('/vouchers/{id}/toggle', [$c, 'voucherToggle']);
+    Route::delete('/vouchers/{id}', [$c, 'voucherDelete']);
+    Route::get('/reviews', [$c, 'reviews']);
+    Route::post('/reviews/{id}/toggle', [$c, 'reviewToggle']);
+    Route::delete('/reviews/{id}', [$c, 'reviewDelete']);
+    Route::get('/coffees', [$c, 'coffees']);
+    Route::post('/coffees/{id}/toggle', [$c, 'coffeeToggle']);
+    Route::get('/products', [$c, 'products']);
+    Route::post('/products/{id}/toggle', [$c, 'productToggle']);
+    Route::get('/logs', [$c, 'logs']);
+    Route::get('/settings', [$c, 'settings']);
+    Route::put('/settings', [$c, 'settingsSave']);
+});
