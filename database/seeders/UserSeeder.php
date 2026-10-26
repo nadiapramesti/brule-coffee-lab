@@ -33,7 +33,7 @@ class UserSeeder extends Seeder
         User::updateOrCreate(
             ['email' => 'customer@brule.test'],
             [
-                'name'     => 'Nadia Pramesti',
+                'name'     => 'Pelanggan Demo',
                 'password' => Hash::make('password'),
                 'role'     => 'customer',
                 'phone'    => '081200000003',
@@ -59,7 +59,7 @@ class UserSeeder extends Seeder
         $nadia = User::where('email', 'customer@brule.test')->first();
         \App\Models\Address::updateOrCreate(
             ['user_id' => $nadia->id, 'label' => 'Rumah'],
-            ['recipient' => 'Nadia Pramesti', 'phone' => '081200000003', 'address' => 'Jl. Dago No. 25, Coblong, Kota Bandung 40135', 'is_default' => true]
+            ['recipient' => 'Pelanggan Demo', 'phone' => '081200000003', 'address' => 'Jl. Dago No. 25, Coblong, Kota Bandung 40135', 'is_default' => true]
         );
     }
 }

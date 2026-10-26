@@ -81,7 +81,11 @@ Setelah `git pull` berikutnya: `php artisan migrate`, `php artisan db:seed --cla
 |---|---|---|
 | Admin | `admin@brule.test` | `password` |
 | Roaster | `roaster@brule.test` | `password` |
-| Pembeli | `customer@brule.test` | `password` |
+| Pembeli | `customer@brule.test` (Pelanggan Demo) | `password` |
+| Pembeli | `raka@brule.test` (Raka Pratama) | `password` |
+| Pembeli | `sinta@brule.test` (Sinta Dewi) | `password` |
+
+Akun admin dan roaster yang sama dipakai di aplikasi mobile (repo `brule-mobile`). Akun staf baru bisa dibuat admin dari panel web atau dari aplikasi (Menu → Pengguna → Tambah akun staf), jadi tidak perlu minta akun ke pengembang. Kalau nama akun demo berubah di seeder, jalankan `php artisan db:seed --class=UserSeeder` untuk memperbaruinya.
 
 Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pengaturan) sebelum dipakai di luar demo.
 
