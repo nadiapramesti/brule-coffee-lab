@@ -148,6 +148,12 @@
                     @error('lowStock')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
                 <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Kopi dengan stok biji mentah di bawah angka ini ditandai "Menipis" di Dashboard, Kelola kopi, dan halaman Stok.') }}</p>
+                <div class="sm:max-w-[260px]">
+                    <label for="bb" class="text-[12.5px] text-kraft/75">{{ __('Masa segar kopi (hari)') }}</label>
+                    <input id="bb" type="number" inputmode="numeric" wire:model="bestBefore" placeholder="30" class="{{ $inp }} krm-readout mt-1.5">
+                    @error('bestBefore')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
+                </div>
+                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Tanggal "terbaik dinikmati sebelum" = tanggal sangrai + angka ini. Tampil di label cetak, halaman lacak, dan email pengiriman.') }}</p>
             </div>
         </section>
 

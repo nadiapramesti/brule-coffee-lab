@@ -96,7 +96,7 @@ Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pe
 php artisan test
 ```
 
-Suite Pest (259 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, dan hak akses admin.
+Suite Pest (265 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, dan hak akses admin.
 
 ## Struktur singkat
 

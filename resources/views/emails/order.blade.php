@@ -33,6 +33,10 @@
             </table>
         @endif
 
+        @if ($kind === 'shipped' && $o->bestBefore())
+            <p style="margin:16px 0 0;font-size:14px;line-height:1.6;color:{{ $ink }};">{{ __('Kopimu disangrai :roast. Paling enak dinikmati sebelum :bb.', ['roast' => $o->roasted_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('j M Y'), 'bb' => $o->bestBefore()->locale(app()->getLocale())->translatedFormat('j M Y')]) }}</p>
+        @endif
+
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:22px;"><tr><td align="left">
             <a href="{{ $url }}" style="display:inline-block;background:{{ $blue }};color:#FFFFFF;text-decoration:none;font-weight:700;font-size:15px;padding:13px 24px;border-radius:6px;">
                 {{ $kind === 'placed' && ! $o->isCod() ? __('Bayar pesanan') : __('Lacak pesanan') }}

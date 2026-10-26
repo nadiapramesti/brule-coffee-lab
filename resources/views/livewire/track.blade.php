@@ -69,6 +69,7 @@
                             <div>
                                 <p class="text-[14.5px] {{ $done ? 'text-labwhite' : 'text-kraft/45' }} {{ $now ? 'font-semibold' : '' }}">{{ __(\App\Models\Order::STATUS_LABELS[$step]) }}</p>
                                 @if (($times[$step] ?? null) && $done)<p class="krm-readout mt-0.5 text-[11.5px] text-kraft/55">{{ $times[$step]->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y, H.i') }}</p>@endif
+                                @if ($step === 'roasting' && $done && $o->bestBefore())<p class="mt-0.5 text-[12px] text-kraft/60">{{ __('Terbaik dinikmati sebelum') }} <span class="krm-readout text-labwhite">{{ $o->bestBefore()->locale(app()->getLocale())->translatedFormat('d M Y') }}</span></p>@endif
                                 @if ($step === 'shipped' && $o->tracking_number && $done)<p class="krm-readout mt-0.5 text-[12px] text-bluelab">{{ __('Resi') }}: {{ $o->tracking_number }}</p>@endif
                             </div>
                         </li>

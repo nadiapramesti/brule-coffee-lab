@@ -115,6 +115,22 @@ class Order extends Model
         return $this->items->contains(fn ($i) => ! $i->isProduct());
     }
 
+    /** Lama kopi tetap segar setelah disangrai (hari), diatur di Pengaturan. */
+    public static function bestBeforeDays(): int
+    {
+        return max(1, Setting::int('best_before_days'));
+    }
+
+    /** Tanggal "terbaik dinikmati sebelum": tanggal sangrai + masa segar. Kosong bila belum disangrai atau tanpa kopi. */
+    public function bestBefore(): ?\Illuminate\Support\Carbon
+    {
+        if (! $this->roasted_at || ! $this->hasCoffee()) {
+            return null;
+        }
+
+        return $this->roasted_at->copy()->timezone('Asia/Jakarta')->startOfDay()->addDays(self::bestBeforeDays());
+    }
+
     /** Tahap yang dilalui pesanan ini (tanpa sangrai/giling bila isinya hanya produk). */
     public function flow(): array
     {

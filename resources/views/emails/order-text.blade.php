@@ -6,6 +6,10 @@
 
 {{ __('Nomor resi') }}: {{ $o->tracking_number }}
 @endif
+@if ($kind === 'shipped' && $o->bestBefore())
+
+{{ __('Kopimu disangrai :roast. Paling enak dinikmati sebelum :bb.', ['roast' => $o->roasted_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('j M Y'), 'bb' => $o->bestBefore()->locale(app()->getLocale())->translatedFormat('j M Y')]) }}
+@endif
 
 @foreach ($items as $i)
 - {{ $i->coffee_name_snapshot }}{{ $i->descr ? ' · '.$i->descr : '' }}{{ $i->qty > 1 ? ' x '.$i->qty : '' }}: Rp{{ number_format($i->line_total, 0, ',', '.') }}
