@@ -74,6 +74,10 @@
         <b>{{ $order->recipient_name }}</b> · {{ $order->recipient_phone }}<br>
         {{ $order->shipping_address }}
         <div class="muted" style="margin-top:8px">{{ __('Isi paket') }}: <b style="color:#111">{{ $order->items->count() }} {{ __('bungkus') }} · {{ number_format($order->items->sum('grams'), 0, ',', '.') }} g</b></div>
+        @if ($order->hasCoffee())
+            <div class="muted" style="margin-top:4px">{{ __('Tgl sangrai') }}: <b style="color:#111">{{ $order->roasted_at ? $order->roasted_at->timezone('Asia/Jakarta')->translatedFormat('j M Y') : '…………………' }}</b>
+                · {{ __('Terbaik sebelum') }}: <b style="color:#111">{{ $order->bestBefore() ? $order->bestBefore()->translatedFormat('j M Y') : '+' . \App\Models\Order::bestBeforeDays() . ' ' . __('hari') }}</b></div>
+        @endif
         @if ($order->gift_wrap)<div class="muted" style="margin-top:4px">{{ __('Kemasan hadiah') }}: <b style="color:#111">{{ __('Ya') }}</b></div>@endif
         @if (filled($order->card_message))<div class="muted" style="margin-top:4px">{{ __('Kartu ucapan') }}: <b style="color:#111">&ldquo;{{ $order->card_message }}&rdquo;</b></div>@endif
         @if ($order->tracking_number)<div class="muted" style="margin-top:4px">{{ __('Resi') }}: <b style="color:#111">{{ $order->tracking_number }}</b></div>@endif

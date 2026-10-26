@@ -22,6 +22,7 @@ class StoreSettings extends Component
     public string $shippingFlat = '';
     public string $freeFrom = '';
     public string $lowStock = '';
+    public string $bestBefore = '30';
     public bool $addonsEnabled = true;
     public string $giftWrapPrice = '';
     public string $cardPrice = '';
@@ -38,7 +39,7 @@ class StoreSettings extends Component
             'whatsapp' => '0' . ltrim(preg_replace('/^62/', '', Setting::get('contact_whatsapp')), '0'),
             'instagram' => Setting::get('instagram'),
             'shippingFlat' => Setting::get('shipping_flat'), 'freeFrom' => Setting::get('free_shipping_from'),
-            'lowStock' => Setting::get('low_stock_gram'),
+            'lowStock' => Setting::get('low_stock_gram'), 'bestBefore' => Setting::get('best_before_days'),
             'addonsEnabled' => (bool) Setting::int('addons_enabled'),
             'giftWrapPrice' => Setting::get('addon_gift_wrap'), 'cardPrice' => Setting::get('addon_card'),
             'codEnabled' => (bool) Setting::int('cod_enabled'), 'codMax' => Setting::get('cod_max'),
@@ -64,6 +65,7 @@ class StoreSettings extends Component
             'shippingFlat' => ['required', 'integer', 'min:0', 'max:1000000'],
             'freeFrom' => ['required', 'integer', 'min:0', 'max:100000000'],
             'lowStock' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'bestBefore' => ['required', 'integer', 'min:1', 'max:365'],
             'addonsEnabled' => ['boolean'],
             'giftWrapPrice' => ['required', 'integer', 'min:0', 'max:1000000'],
             'cardPrice' => ['required', 'integer', 'min:0', 'max:1000000'],
@@ -75,6 +77,7 @@ class StoreSettings extends Component
             'whatsapp.regex' => __('Nomor WhatsApp tidak valid. Contoh: 0812xxxxxxxx'),
             'instagram.regex' => __('Username Instagram hanya huruf, angka, titik, dan garis bawah.'),
             'integer' => __('Harus angka bulat.'),
+            'bestBefore.min' => __('Minimal 1 hari.'),
             'min' => __('Tidak boleh negatif.'),
             'max' => __('Angkanya terlalu besar.'),
         ]);
@@ -83,7 +86,7 @@ class StoreSettings extends Component
             'store_name' => trim($d['storeName']), 'store_tagline' => trim($d['tagline']), 'store_city' => trim($d['city']),
             'store_address' => trim($d['address']), 'contact_email' => trim($d['email']),
             'contact_whatsapp' => '62' . substr($d['whatsapp'], 1), 'instagram' => $d['instagram'],
-            'shipping_flat' => (int) $d['shippingFlat'], 'free_shipping_from' => (int) $d['freeFrom'], 'low_stock_gram' => (int) $d['lowStock'],
+            'shipping_flat' => (int) $d['shippingFlat'], 'free_shipping_from' => (int) $d['freeFrom'], 'low_stock_gram' => (int) $d['lowStock'], 'best_before_days' => (int) $d['bestBefore'],
             'addons_enabled' => $d['addonsEnabled'] ? 1 : 0, 'addon_gift_wrap' => (int) $d['giftWrapPrice'], 'addon_card' => (int) $d['cardPrice'],
             'cod_enabled' => $d['codEnabled'] ? 1 : 0, 'cod_max' => (int) $d['codMax'],
         ]);

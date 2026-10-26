@@ -983,5 +983,12 @@
     "Porsi": "Share",
     "Blend ini tidak tersedia lagi.": "This blend is no longer available.",
     "Lihat detail :n": "View details for :n",
-    "Dikemas tanpa antre sangrai, jadi berangkat lebih cepat dari kopi.": "Packed without waiting in the roasting queue, so it ships sooner than coffee."
+    "Dikemas tanpa antre sangrai, jadi berangkat lebih cepat dari kopi.": "Packed without waiting in the roasting queue, so it ships sooner than coffee.",
+    "Masa segar kopi (hari)": "Coffee freshness window (days)",
+    "Tanggal \"terbaik dinikmati sebelum\" = tanggal sangrai + angka ini. Tampil di label cetak, halaman lacak, dan email pengiriman.": "The \"best enjoyed before\" date = roast date + this number. Shown on printed labels, the tracking page, and the shipping email.",
+    "Minimal 1 hari.": "At least 1 day.",
+    "Tgl sangrai": "Roast date",
+    "Terbaik sebelum": "Best before",
+    "Terbaik dinikmati sebelum": "Best enjoyed before",
+    "Kopimu disangrai :roast. Paling enak dinikmati sebelum :bb.": "Your coffee was roasted on :roast. Best enjoyed before :bb."
 }
