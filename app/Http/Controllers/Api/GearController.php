@@ -34,7 +34,7 @@ class GearController extends Controller
 
     private function payload(Product $p, Request $request): array
     {
-        $en = $request->query('lang') === 'en';
+        $en = app()->getLocale() === 'en' || $request->query('lang') === 'en';
 
         return [
             'id'            => $p->id,

@@ -167,6 +167,74 @@ class OrderController extends Controller
         return response()->json($this->payload($order->fresh('items')));
     }
 
+    /** Lacak lewat kode tanpa login (sama seperti halaman Lacak di web): tahapan dan isi, tanpa data penerima. */
+    public function track(string $code)
+    {
+        $order = Order::with('items')->where('order_code', strtoupper(trim($code)))->first();
+        if (! $order) {
+            return response()->json(['message' => 'Pesanan tidak ditemukan.'], 404);
+        }
+
+        return array_merge($this->payload($order), [
+            'can_pay' => false, 'can_cancel' => false, 'recipient' => [], 'card_message' => null, 'voucher_code' => null,
+        ]);
+    }
+
+    /** "Beli lagi": isi pesanan lama diubah jadi baris keranjang dengan harga terbaru; yang sudah tidak tersedia dilewati. */
+    public function reorder(Request $request, string $code)
+    {
+        $order = $this->mine($request, $code);
+        $lines = [];
+        $skipped = 0;
+
+        foreach ($order->items as $it) {
+            if ($it->isProduct()) {
+                $p = $it->product_id ? Product::find($it->product_id) : null;
+                if (! $p || ! $p->is_active || $p->stock < 1) {
+                    $skipped++;
+                    continue;
+                }
+                $opt = trim((string) $it->roast_level_snapshot) !== '' ? $it->roast_level_snapshot : null;
+                $lines[] = [
+                    'kind' => 'gear', 'refId' => $p->id, 'name' => $p->name, 'detail' => $opt ?? $p->category,
+                    'unit' => $p->price, 'image' => \App\Support\ApiImage::url($p->image), 'grams' => null,
+                    'grind' => null, 'option' => $opt, 'blendId' => null, 'ratio' => null, 'qty' => 1,
+                ];
+
+                continue;
+            }
+
+            $a = $it->roast_profile_id ? RoastProfile::with('coffee')->find($it->roast_profile_id) : null;
+            if (! $a || ! $a->coffee?->is_active || $a->coffee->stock_green_bean_gram < 1) {
+                $skipped++;
+                continue;
+            }
+            $b = $it->blend_profile_id ? RoastProfile::with('coffee')->find($it->blend_profile_id) : null;
+            if ($it->blend_profile_id && (! $b || ! $b->coffee?->is_active || ! $it->blend_ratio)) {
+                $skipped++;
+                continue;
+            }
+            $grams = (int) $it->grams;
+            $grind = (string) $it->grind;
+            $detail = $a->level_label.' · '.$grams.' g · '.(OrderItem::GRINDS[$grind] ?? $grind);
+            if ($b) {
+                $ga = (int) round($grams * $it->blend_ratio / 100);
+                $detail .= ' · '.$ga.'g + '.($grams - $ga).'g';
+            }
+            $lines[] = [
+                'kind' => 'coffee', 'refId' => $a->id,
+                'name' => $b ? $a->coffee->name.' '.$it->blend_ratio.' / '.$b->coffee->name.' '.(100 - $it->blend_ratio) : $a->coffee->name,
+                'detail' => $detail,
+                'unit' => $b ? $a->priceFor($ga) + $b->priceFor($grams - $ga) : $a->priceFor($grams),
+                'image' => \App\Support\ApiImage::url($a->coffee->image),
+                'grams' => $grams, 'grind' => $grind, 'option' => null,
+                'blendId' => $b?->id, 'ratio' => $b ? (int) $it->blend_ratio : null, 'qty' => 1,
+            ];
+        }
+
+        return ['lines' => $lines, 'skipped' => $skipped];
+    }
+
     private function mine(Request $request, string $code): Order
     {
         return Order::with('items')

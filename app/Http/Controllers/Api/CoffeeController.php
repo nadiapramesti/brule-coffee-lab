@@ -37,7 +37,7 @@ class CoffeeController extends Controller
 
     private function payload(Coffee $coffee, Request $request): array
     {
-        $en = $request->query('lang') === 'en';
+        $en = app()->getLocale() === 'en' || $request->query('lang') === 'en';
 
         return [
             'id'            => $coffee->id,
