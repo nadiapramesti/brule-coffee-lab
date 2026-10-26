@@ -26,7 +26,7 @@ class StaticPage extends Component
     }
 
     /** Isi halaman dengan angka dan kontak terbaru dari Pengaturan toko. */
-    private function content(): array
+    public static function data(string $page): array
     {
         $free = Setting::int('free_shipping_from');
         $max = Setting::int('cod_max');
@@ -46,7 +46,7 @@ class StaticPage extends Component
             ':address' => (string) Setting::get('store_address'),
         ];
 
-        $data = trans('pages.'.$this->page);
+        $data = trans('pages.'.$page);
         array_walk_recursive($data, function (&$v) use ($replace) {
             if (is_string($v)) {
                 $v = trim(strtr($v, $replace));
@@ -58,7 +58,7 @@ class StaticPage extends Component
 
     public function render()
     {
-        $c = $this->content();
+        $c = self::data($this->page);
 
         return view('livewire.static-page', ['c' => $c])->title($c['title'].' - BRÛLÉ');
     }

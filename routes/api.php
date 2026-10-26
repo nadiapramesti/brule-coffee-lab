@@ -14,6 +14,7 @@ Route::get('/coffees', [CoffeeController::class, 'index']);
 Route::get('/coffees/{slug}', [CoffeeController::class, 'show']);
 Route::get('/gear', [GearController::class, 'index']);
 Route::get('/gear/{slug}', [GearController::class, 'show']);
+Route::get('/help/{page}', [\App\Http\Controllers\Api\HelpController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
