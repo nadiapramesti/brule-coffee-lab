@@ -61,6 +61,15 @@ class AdminManageController extends Controller
         return (new \App\Http\Controllers\Admin\ReportExportController)($request);
     }
 
+    /** Ekspor daftar pesanan (Excel atau PDF) dengan filter yang sama seperti daftar di aplikasi. */
+    public function orderExport(Request $request)
+    {
+        $this->admin($request);
+        abort_unless(in_array($request->query('format'), ['pdf', 'xlsx'], true), 422, 'Format harus pdf atau xlsx.');
+
+        return (new \App\Http\Controllers\Admin\OrderExportController)($request);
+    }
+
     // ---------------------------------------------------------------- Stok keluar masuk
 
     public function stockHistory(Request $request)
@@ -562,6 +571,219 @@ class AdminManageController extends Controller
         ActivityLog::record('coffee.toggled', $c, $c->is_active ? 'Kopi :n ditampilkan di toko' : 'Kopi :n disembunyikan dari toko', ['n' => $c->name]);
 
         return ['id' => $c->id, 'is_active' => (bool) $c->is_active];
+    }
+
+    private const COFFEE_FLAVORS = ['floral', 'citrus', 'berry', 'chocolate', 'nutty', 'spice'];
+    private const COFFEE_PROCESSES = ['Washed', 'Honey', 'Natural', 'Anaerobic', 'Wet-Hulled', 'Carbonic Maceration'];
+
+    private function coffeePayload(Coffee $c): array
+    {
+        $c->loadMissing('traceability', 'roastProfiles');
+        $t = $c->traceability;
+        $profiles = [];
+        foreach ($c->roastProfiles as $p) {
+            $profiles[$p->level] = [
+                'price' => (int) $p->price_per_100g,
+                'agtron' => $p->agtron,
+                'flavors' => array_merge(array_fill_keys(self::COFFEE_FLAVORS, 0), $p->flavor_values ?? []),
+                'notes' => implode(', ', $p->tasting_notes ?? []),
+            ];
+        }
+
+        return [
+            'id' => $c->id,
+            'name' => $c->name,
+            'slug' => $c->slug,
+            'story' => (string) $c->story,
+            'story_en' => (string) $c->story_en,
+            'stock' => (int) $c->stock_green_bean_gram,
+            'cupping' => $c->cupping_score,
+            'is_active' => (bool) $c->is_active,
+            'image' => $c->image
+                ? (\Illuminate\Support\Str::startsWith($c->image, ['http://', 'https://', '/']) ? $c->image : asset('storage/'.ltrim($c->image, '/')))
+                : null,
+            'farmer' => $t?->farmer, 'region' => $t?->region, 'altitude' => $t?->altitude,
+            'varietal' => $t?->varietal, 'process' => $t?->process ?? 'Washed',
+            'harvest_date' => $t?->harvest_date?->format('Y-m-d'), 'q_grader' => $t?->q_grader,
+            'profiles' => $profiles,
+            'levels' => \App\Models\RoastProfile::LEVELS,
+            'flavor_keys' => self::COFFEE_FLAVORS,
+            'processes' => self::COFFEE_PROCESSES,
+        ];
+    }
+
+    public function coffeeShow(Request $request, int $id)
+    {
+        $this->admin($request);
+
+        return $this->coffeePayload(Coffee::findOrFail($id));
+    }
+
+    public function coffeeMeta(Request $request)
+    {
+        $this->admin($request);
+
+        return [
+            'levels' => \App\Models\RoastProfile::LEVELS,
+            'flavor_keys' => self::COFFEE_FLAVORS,
+            'processes' => self::COFFEE_PROCESSES,
+        ];
+    }
+
+    private function saveCoffee(Request $request, ?Coffee $existing)
+    {
+        $this->admin($request);
+        $levels = array_keys(\App\Models\RoastProfile::LEVELS);
+
+        $rules = [
+            'name' => ['required', 'string', 'max:80'],
+            'slug' => ['nullable', 'string', 'max:90', 'regex:/^[a-z0-9]+(?:-[a-z0-9]+)*$/', Rule::unique('coffees', 'slug')->ignore($existing?->id)],
+            'story' => ['required', 'string', 'max:1500'],
+            'story_en' => ['nullable', 'string', 'max:1500'],
+            'stock' => ['required', 'integer', 'min:0', 'max:1000000'],
+            'cupping' => ['nullable', 'numeric', 'between:60,100'],
+            'is_active' => ['nullable', 'boolean'],
+            'farmer' => ['required', 'string', 'max:120'],
+            'region' => ['required', 'string', 'max:120'],
+            'altitude' => ['required', 'integer', 'between:0,4000'],
+            'varietal' => ['required', 'string', 'max:120'],
+            'process' => ['required', Rule::in(self::COFFEE_PROCESSES)],
+            'harvest_date' => ['nullable', 'date'],
+            'q_grader' => ['nullable', 'string', 'max:120'],
+            'profiles' => ['required', 'array', 'min:1'],
+        ];
+        foreach ($levels as $l) {
+            $rules["profiles.$l"] = ['nullable', 'array'];
+            $rules["profiles.$l.price"] = ["required_with:profiles.$l.notes", 'nullable', 'integer', 'between:1000,5000000'];
+            $rules["profiles.$l.agtron"] = ['nullable', 'integer', 'between:20,120'];
+            $rules["profiles.$l.notes"] = ['nullable', 'string', 'max:200'];
+            $rules["profiles.$l.flavors.*"] = ['integer', 'between:0,100'];
+        }
+        $data = $request->validate($rules, [
+            'required' => 'Wajib diisi.',
+            'integer' => 'Harus angka bulat.',
+            'numeric' => 'Harus berupa angka.',
+            'between' => 'Nilai di luar rentang yang diizinkan.',
+            'max' => 'Terlalu panjang.',
+            'slug.regex' => 'Slug hanya huruf kecil, angka, dan tanda hubung.',
+            'slug.unique' => 'Slug ini sudah dipakai kopi lain.',
+            'profiles.required' => 'Aktifkan minimal satu level sangrai.',
+        ]);
+
+        $chosen = collect($data['profiles'])->only($levels)->filter(fn ($p) => is_array($p) && isset($p['price']) && $p['price'] !== '');
+        if ($chosen->isEmpty()) {
+            abort(422, 'Aktifkan minimal satu level sangrai.');
+        }
+        foreach ($chosen as $l => $p) {
+            if (trim((string) ($p['notes'] ?? '')) === '') {
+                abort(422, 'Catatan rasa level '.\App\Models\RoastProfile::LEVELS[$l].' wajib diisi.');
+            }
+        }
+
+        // Level yang sudah pernah dipesan tidak boleh dimatikan.
+        if ($existing) {
+            $locked = \App\Models\RoastProfile::where('coffee_id', $existing->id)->whereHas('orderItems')->pluck('level')
+                ->filter(fn ($l) => ! $chosen->has($l));
+            if ($locked->isNotEmpty()) {
+                abort(422, 'Level '.$locked->map(fn ($l) => \App\Models\RoastProfile::LEVELS[$l])->join(', ').' sudah pernah dipesan, tidak bisa dimatikan.');
+            }
+        }
+
+        $wasNew = $existing === null;
+        $slug = $data['slug'] ?? null;
+        if (! $slug) {
+            $slug = \Illuminate\Support\Str::slug($data['name']);
+            $base = $slug;
+            $i = 2;
+            while (Coffee::where('slug', $slug)->when($existing, fn ($q) => $q->where('id', '!=', $existing->id))->exists()) {
+                $slug = $base.'-'.$i++;
+            }
+        }
+
+        $coffee = \Illuminate\Support\Facades\DB::transaction(function () use ($data, $existing, $chosen, $wasNew, $slug) {
+            $coffee = Coffee::updateOrCreate(['id' => $existing?->id], [
+                'slug' => $slug,
+                'name' => trim($data['name']),
+                'story' => trim($data['story']),
+                'story_en' => trim($data['story_en'] ?? '') ?: null,
+                'cupping_score' => ($data['cupping'] ?? '') === '' ? null : (float) $data['cupping'],
+                'is_active' => (bool) ($data['is_active'] ?? true),
+            ]);
+
+            $delta = (int) $data['stock'] - (int) $coffee->stock_green_bean_gram;
+            if ($delta !== 0) {
+                $coffee->moveStock($wasNew ? 'initial' : 'adjustment', $delta, $wasNew ? null : 'Diubah lewat form kopi');
+            }
+
+            \App\Models\Traceability::updateOrCreate(['coffee_id' => $coffee->id], [
+                'farmer' => trim($data['farmer']),
+                'region' => trim($data['region']),
+                'altitude' => (int) $data['altitude'],
+                'varietal' => trim($data['varietal']),
+                'process' => $data['process'],
+                'harvest_date' => $data['harvest_date'] ?? null ?: null,
+                'q_grader' => trim($data['q_grader'] ?? '') ?: null,
+            ]);
+
+            foreach ($chosen as $level => $p) {
+                $old = $coffee->roastProfiles()->where('level', $level)->first();
+                $coffee->roastProfiles()->updateOrCreate(['level' => $level], [
+                    'agtron' => ($p['agtron'] ?? '') === '' ? null : (int) $p['agtron'],
+                    'price_per_100g' => (int) $p['price'],
+                    'flavor_values' => collect(self::COFFEE_FLAVORS)->mapWithKeys(fn ($f) => [$f => (int) ($p['flavors'][$f] ?? 50)])->all(),
+                    'tasting_notes' => collect(explode(',', (string) $p['notes']))->map(fn ($n) => trim($n))->filter()->values()->all(),
+                    'roast_curve' => $old?->roast_curve ?? \App\Models\RoastProfile::defaultCurve($level),
+                ]);
+            }
+            $coffee->roastProfiles()->whereNotIn('level', $chosen->keys())->delete();
+
+            return $coffee;
+        });
+
+        ActivityLog::record($wasNew ? 'coffee.created' : 'coffee.updated', $coffee, $wasNew ? 'Kopi :n ditambahkan' : 'Kopi :n diperbarui', ['n' => $coffee->name]);
+
+        return response()->json(['message' => $wasNew ? 'Kopi ditambahkan.' : 'Kopi disimpan.', 'data' => $this->coffeePayload($coffee->fresh())], $wasNew ? 201 : 200);
+    }
+
+    public function coffeeStore(Request $request)
+    {
+        return $this->saveCoffee($request, null);
+    }
+
+    public function coffeeUpdate(Request $request, int $id)
+    {
+        return $this->saveCoffee($request, Coffee::findOrFail($id));
+    }
+
+    public function coffeePhoto(Request $request, int $id)
+    {
+        $this->admin($request);
+        $c = Coffee::findOrFail($id);
+        $request->validate(
+            ['photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072']],
+            ['photo.required' => 'Pilih foto dulu.', 'photo.image' => 'File harus berupa gambar.', 'photo.mimes' => 'Format harus JPG, PNG, atau WebP.', 'photo.max' => 'Ukuran foto maksimal 3 MB.']
+        );
+        $old = $c->image;
+        $c->update(['image' => $request->file('photo')->store('coffees', 'public')]);
+        if ($old && ! \Illuminate\Support\Str::startsWith($old, ['http://', 'https://', '/'])) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
+        }
+        ActivityLog::record('coffee.updated', $c, 'Foto kopi :n diperbarui', ['n' => $c->name]);
+
+        return ['message' => 'Foto disimpan.', 'data' => $this->coffeePayload($c->fresh())];
+    }
+
+    public function coffeePhotoDelete(Request $request, int $id)
+    {
+        $this->admin($request);
+        $c = Coffee::findOrFail($id);
+        $old = $c->image;
+        $c->update(['image' => null]);
+        if ($old && ! \Illuminate\Support\Str::startsWith($old, ['http://', 'https://', '/'])) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
+        }
+
+        return ['message' => 'Foto dihapus.', 'data' => $this->coffeePayload($c->fresh())];
     }
 
     public function products(Request $request)

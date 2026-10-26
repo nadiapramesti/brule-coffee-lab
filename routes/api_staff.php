@@ -42,6 +42,7 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     $c = \App\Http\Controllers\Api\AdminManageController::class;
     Route::get('/reports', [$c, 'report']);
     Route::get('/reports/export', [$c, 'reportExport']);
+    Route::get('/orders/export', [$c, 'orderExport']);
     Route::get('/stock/history', [$c, 'stockHistory']);
     Route::post('/stock/coffees/{id}', [$c, 'stockAdjustCoffee']);
     Route::post('/stock/products/{id}', [$c, 'stockAddProduct']);
@@ -62,6 +63,12 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::delete('/reviews/{id}', [$c, 'reviewDelete']);
     Route::get('/coffees', [$c, 'coffees']);
     Route::post('/coffees/{id}/toggle', [$c, 'coffeeToggle']);
+    Route::get('/coffees/meta', [$c, 'coffeeMeta']);
+    Route::post('/coffees', [$c, 'coffeeStore']);
+    Route::get('/coffees/{id}', [$c, 'coffeeShow'])->whereNumber('id');
+    Route::put('/coffees/{id}', [$c, 'coffeeUpdate'])->whereNumber('id');
+    Route::post('/coffees/{id}/photo', [$c, 'coffeePhoto'])->whereNumber('id');
+    Route::delete('/coffees/{id}/photo', [$c, 'coffeePhotoDelete'])->whereNumber('id');
     Route::get('/products', [$c, 'products']);
     Route::post('/products', [$c, 'productStore']);
     Route::get('/products/{id}', [$c, 'productShow'])->whereNumber('id');
