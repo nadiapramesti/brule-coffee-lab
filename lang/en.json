@@ -1008,5 +1008,19 @@
     "Pesanan ini tidak bisa dilanjutkan dari tahap sekarang.": "This order can't be advanced from its current stage.",
     "Pesanan hanya bisa dikirim dari tahap Dikemas.": "An order can only be shipped from the Packed stage.",
     ":n pesanan lebih dari 24 jam belum berangkat": ":n orders over 24 hours haven't shipped",
-    "Pesanan tidak ditemukan.": "Order not found."
+    "Pesanan tidak ditemukan.": "Order not found.",
+    "Khusus admin.": "Admins only.",
+    "Khusus roaster dan admin.": "Roasters and admins only.",
+    "Format harus pdf atau xlsx.": "Format must be pdf or xlsx.",
+    "Mode tidak dikenal.": "Unknown mode.",
+    "Role tidak dikenal.": "Unknown role.",
+    "Pilih foto dulu.": "Choose a photo first.",
+    "Email ini sudah dipakai akun lain.": "This email is already used by another account.",
+    "Konfirmasi password tidak sama.": "Password confirmation doesn't match.",
+    "Email ini sudah terdaftar. Silakan masuk.": "This email is already registered. Please sign in.",
+    "Struk bisa diunduh setelah pembayaran lunas.": "The receipt can be downloaded once payment is complete.",
+    "Tidak ada paket yang bisa dicetak (belum lunas atau dibatalkan).": "No packages can be printed (unpaid or cancelled).",
+    "Tidak bisa membuat file Excel.": "Couldn't create the Excel file.",
+    "Kopi ditambahkan.": "Coffee added.",
+    "Catatan rasa level :l wajib diisi.": "Tasting notes for the :l level are required."
 }

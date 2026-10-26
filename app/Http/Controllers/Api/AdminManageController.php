@@ -672,11 +672,11 @@ class AdminManageController extends Controller
 
         $chosen = collect($data['profiles'])->only($levels)->filter(fn ($p) => is_array($p) && isset($p['price']) && $p['price'] !== '');
         if ($chosen->isEmpty()) {
-            abort(422, 'Aktifkan minimal satu level sangrai.');
+            abort(422, __('Aktifkan minimal satu level sangrai.'));
         }
         foreach ($chosen as $l => $p) {
             if (trim((string) ($p['notes'] ?? '')) === '') {
-                abort(422, 'Catatan rasa level '.\App\Models\RoastProfile::LEVELS[$l].' wajib diisi.');
+                abort(422, __('Catatan rasa level :l wajib diisi.', ['l' => \App\Models\RoastProfile::LEVELS[$l]]));
             }
         }
 
@@ -685,7 +685,7 @@ class AdminManageController extends Controller
             $locked = \App\Models\RoastProfile::where('coffee_id', $existing->id)->whereHas('orderItems')->pluck('level')
                 ->filter(fn ($l) => ! $chosen->has($l));
             if ($locked->isNotEmpty()) {
-                abort(422, 'Level '.$locked->map(fn ($l) => \App\Models\RoastProfile::LEVELS[$l])->join(', ').' sudah pernah dipesan, tidak bisa dimatikan.');
+                abort(422, __('Level :l sudah pernah dipesan, tidak bisa dimatikan.', ['l' => $locked->map(fn ($l) => \App\Models\RoastProfile::LEVELS[$l])->join(', ')]));
             }
         }
 
