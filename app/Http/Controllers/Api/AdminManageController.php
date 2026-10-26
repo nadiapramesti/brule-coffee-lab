@@ -507,6 +507,7 @@ class AdminManageController extends Controller
             'option_label' => $p->option_label,
             'options' => $p->optionList(),
             'is_active' => (bool) $p->is_active,
+            'image' => \App\Support\ApiImage::url($p->image),
         ];
     }
 
@@ -572,6 +573,38 @@ class AdminManageController extends Controller
             $existing ? 'Produk :n diperbarui' : 'Produk :n ditambahkan', ['n' => $p->name]);
 
         return response()->json(['message' => $existing ? 'Perlengkapan diperbarui.' : 'Perlengkapan ditambahkan.', 'data' => $this->productPayload($p)], $existing ? 200 : 201);
+    }
+
+    public function productPhoto(Request $request, int $id)
+    {
+        $this->admin($request);
+        $p = Product::findOrFail($id);
+        $request->validate(
+            ['photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:3072']],
+            ['photo.required' => 'Pilih foto dulu.', 'photo.image' => 'File harus berupa gambar.', 'photo.mimes' => 'Format harus JPG, PNG, atau WebP.', 'photo.max' => 'Ukuran foto maksimal 3 MB.']
+        );
+
+        $old = $p->image;
+        $p->update(['image' => $request->file('photo')->store('products', 'public')]);
+        if ($old && ! \Illuminate\Support\Str::startsWith($old, ['http://', 'https://', '/'])) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
+        }
+        ActivityLog::record('product.updated', $p, 'Foto produk :n diperbarui', ['n' => $p->name]);
+
+        return ['message' => 'Foto disimpan.', 'data' => $this->productPayload($p->fresh())];
+    }
+
+    public function productPhotoDelete(Request $request, int $id)
+    {
+        $this->admin($request);
+        $p = Product::findOrFail($id);
+        $old = $p->image;
+        $p->update(['image' => null]);
+        if ($old && ! \Illuminate\Support\Str::startsWith($old, ['http://', 'https://', '/'])) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete($old);
+        }
+
+        return ['message' => 'Foto dihapus.', 'data' => $this->productPayload($p->fresh())];
     }
 
     public function productStore(Request $request)

@@ -63,6 +63,8 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/products', [$c, 'productStore']);
     Route::get('/products/{id}', [$c, 'productShow'])->whereNumber('id');
     Route::put('/products/{id}', [$c, 'productUpdate'])->whereNumber('id');
+    Route::post('/products/{id}/photo', [$c, 'productPhoto'])->whereNumber('id');
+    Route::delete('/products/{id}/photo', [$c, 'productPhotoDelete'])->whereNumber('id');
     Route::post('/products/{id}/toggle', [$c, 'productToggle']);
     Route::get('/logs', [$c, 'logs']);
     Route::get('/settings', [$c, 'settings']);
