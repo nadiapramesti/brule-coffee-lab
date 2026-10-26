@@ -85,6 +85,10 @@ Setelah `git pull` berikutnya: `php artisan migrate`, `php artisan db:seed --cla
 | Pembeli | `raka@brule.test` (Raka Pratama) | `password` |
 | Pembeli | `sinta@brule.test` (Sinta Dewi) | `password` |
 
+### API untuk aplikasi mobile
+
+Endpoint ada di `routes/api*.php` (Sanctum). Bahasa respons mengikuti header `Accept-Language: id|en` lewat middleware `ApiLocale`, memakai `lang/en.json` yang sama dengan web. `GET /api/help/{page}` (faq, shipping, terms, privacy) menyajikan konten `lang/{id,en}/pages.php`, jadi FAQ cukup diubah di satu tempat. Daftar lengkap endpoint ada di repo `brule-mobile` (`docs/ENDPOINT_API.md`).
+
 Akun admin dan roaster yang sama dipakai di aplikasi mobile (repo `brule-mobile`). Akun staf baru bisa dibuat admin dari panel web atau dari aplikasi (Menu → Pengguna → Tambah akun staf), jadi tidak perlu minta akun ke pengembang. Kalau nama akun demo berubah di seeder, jalankan `php artisan db:seed --class=UserSeeder` untuk memperbaruinya.
 
 Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pengaturan) sebelum dipakai di luar demo.
