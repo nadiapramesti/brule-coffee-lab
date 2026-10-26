@@ -60,6 +60,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::get('/coffees', [$c, 'coffees']);
     Route::post('/coffees/{id}/toggle', [$c, 'coffeeToggle']);
     Route::get('/products', [$c, 'products']);
+    Route::post('/products', [$c, 'productStore']);
+    Route::get('/products/{id}', [$c, 'productShow'])->whereNumber('id');
+    Route::put('/products/{id}', [$c, 'productUpdate'])->whereNumber('id');
     Route::post('/products/{id}/toggle', [$c, 'productToggle']);
     Route::get('/logs', [$c, 'logs']);
     Route::get('/settings', [$c, 'settings']);

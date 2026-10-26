@@ -478,14 +478,110 @@ class AdminManageController extends Controller
         $list = Product::when($q !== '', fn ($x) => $x->where('name', 'like', "%{$q}%"))
             ->orderByDesc('is_active')->orderBy('name')->get();
 
-        return ['data' => $list->map(fn ($p) => [
+        return [
+            'categories' => Product::CATEGORIES,
+            'data' => $list->map(fn ($p) => [
+                'id' => $p->id,
+                'name' => $p->name,
+                'category' => $p->category,
+                'category_label' => Product::CATEGORIES[$p->category] ?? $p->category,
+                'price' => (int) $p->price,
+                'stock' => (int) $p->stock,
+                'is_active' => (bool) $p->is_active,
+            ])->values(),
+        ];
+    }
+
+    private function productPayload(Product $p): array
+    {
+        return [
             'id' => $p->id,
+            'slug' => $p->slug,
             'name' => $p->name,
+            'name_en' => $p->name_en,
             'category' => $p->category,
+            'description' => $p->description,
+            'description_en' => $p->description_en,
             'price' => (int) $p->price,
             'stock' => (int) $p->stock,
+            'option_label' => $p->option_label,
+            'options' => $p->optionList(),
             'is_active' => (bool) $p->is_active,
-        ])->values()];
+        ];
+    }
+
+    public function productShow(Request $request, int $id)
+    {
+        $this->admin($request);
+
+        return ['categories' => Product::CATEGORIES, 'data' => $this->productPayload(Product::findOrFail($id))];
+    }
+
+    private function saveProduct(Request $request, ?Product $existing)
+    {
+        $this->admin($request);
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'name_en' => ['nullable', 'string', 'max:100'],
+            'category' => ['required', Rule::in(array_keys(Product::CATEGORIES))],
+            'description' => ['required', 'string', 'max:400'],
+            'description_en' => ['nullable', 'string', 'max:400'],
+            'price' => ['required', 'integer', 'between:1000,50000000'],
+            'stock' => ['required', 'integer', 'min:0', 'max:100000'],
+            'option_label' => ['nullable', 'string', 'max:30'],
+            'options' => ['nullable', 'string', 'max:200'],
+            'is_active' => ['nullable', 'boolean'],
+        ], [
+            'required' => 'Wajib diisi.',
+            'integer' => 'Harus angka bulat.',
+            'between' => 'Nilai di luar rentang yang diizinkan.',
+            'max' => 'Terlalu panjang.',
+        ]);
+
+        $options = collect(explode(',', (string) ($data['options'] ?? '')))->map(fn ($o) => trim($o))->filter()->unique()->values();
+        if ($options->count() > 12 || $options->contains(fn ($o) => mb_strlen($o) > 30)) {
+            return response()->json(['message' => 'Maksimal 12 varian, masing-masing paling panjang 30 karakter.'], 422);
+        }
+
+        $name = trim($data['name']);
+        $slug = $existing?->slug;
+        if (! $slug) {
+            $base = \Illuminate\Support\Str::slug($name) ?: 'produk';
+            $slug = $base;
+            for ($i = 2; Product::where('slug', $slug)->exists(); $i++) {
+                $slug = $base.'-'.$i;
+            }
+        }
+
+        $p = Product::updateOrCreate(['id' => $existing?->id], [
+            'slug' => $slug,
+            'name' => $name,
+            'name_en' => trim((string) ($data['name_en'] ?? '')) ?: null,
+            'category' => $data['category'],
+            'description' => trim($data['description']),
+            'description_en' => trim((string) ($data['description_en'] ?? '')) ?: null,
+            'price' => (int) $data['price'],
+            'stock' => (int) $data['stock'],
+            'option_label' => $options->isNotEmpty() ? (trim((string) ($data['option_label'] ?? '')) ?: null) : null,
+            'options' => $options->isNotEmpty() ? $options->all() : null,
+            'is_active' => (bool) ($data['is_active'] ?? true),
+        ]);
+
+        ActivityLog::record($existing ? 'product.updated' : 'product.created', $p,
+            $existing ? 'Produk :n diperbarui' : 'Produk :n ditambahkan', ['n' => $p->name]);
+
+        return response()->json(['message' => $existing ? 'Perlengkapan diperbarui.' : 'Perlengkapan ditambahkan.', 'data' => $this->productPayload($p)], $existing ? 200 : 201);
+    }
+
+    public function productStore(Request $request)
+    {
+        return $this->saveProduct($request, null);
+    }
+
+    public function productUpdate(Request $request, int $id)
+    {
+        return $this->saveProduct($request, Product::findOrFail($id));
     }
 
     public function productToggle(Request $request, int $id)
