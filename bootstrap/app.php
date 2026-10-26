@@ -17,6 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // X-Forwarded-*; tanpa ini URL aset dan Livewire terbentuk http:// dan diblokir browser (mixed content).
         $middleware->trustProxies(at: '*');
         $middleware->web(append: [\App\Http\Middleware\SetLocale::class, \App\Http\Middleware\EnsureNotBlocked::class]);
+        $middleware->api(append: [\App\Http\Middleware\ApiLocale::class]);
         $middleware->validateCsrfTokens(except: ['midtrans/notification']);
         $middleware->alias([
             'roaster' => \App\Http\Middleware\EnsureRoaster::class,

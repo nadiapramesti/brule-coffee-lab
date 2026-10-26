@@ -990,5 +990,22 @@
     "Tgl sangrai": "Roast date",
     "Terbaik sebelum": "Best before",
     "Terbaik dinikmati sebelum": "Best enjoyed before",
-    "Kopimu disangrai :roast. Paling enak dinikmati sebelum :bb.": "Your coffee was roasted on :roast. Best enjoyed before :bb."
+    "Kopimu disangrai :roast. Paling enak dinikmati sebelum :bb.": "Your coffee was roasted on :roast. Best enjoyed before :bb.",
+    "Ulasan hanya untuk pembeli yang pesanannya sudah selesai.": "Reviews are only for buyers whose order is complete.",
+    "Voucher dihapus.": "Voucher deleted.",
+    "Foto disimpan.": "Photo saved.",
+    "Foto dihapus.": "Photo deleted.",
+    "Email atau password salah": "Wrong email or password",
+    "Akun diblokir, hubungi admin": "Account blocked, contact the admin",
+    "Kode login tidak valid atau kedaluwarsa. Coba lagi.": "The login code is invalid or expired. Try again.",
+    "Hanya pesanan berstatus Dikirim yang bisa diselesaikan.": "Only orders with the Shipped status can be completed.",
+    "Pesanan ini sudah tidak bisa dibatalkan.": "This order can no longer be cancelled.",
+    "Kopi tidak ditemukan.": "Coffee not found.",
+    "Data blend tidak lengkap.": "Blend data is incomplete.",
+    "Produk tidak ditemukan.": "Product not found.",
+    "Pesanan ini tidak perlu dibayar online.": "This order doesn't need online payment.",
+    "Gateway pembayaran belum dikonfigurasi.": "The payment gateway isn't configured yet.",
+    "Pesanan ini tidak bisa dilanjutkan dari tahap sekarang.": "This order can't be advanced from its current stage.",
+    "Pesanan hanya bisa dikirim dari tahap Dikemas.": "An order can only be shipped from the Packed stage.",
+    ":n pesanan lebih dari 24 jam belum berangkat": ":n orders over 24 hours haven't shipped"
 }
