@@ -239,6 +239,99 @@ class AdminManageController extends Controller
         ];
     }
 
+    private const ROLE_NAMES = ['admin' => 'Admin', 'roaster' => 'Roaster', 'customer' => 'Customer'];
+
+    public function userStore(Request $request)
+    {
+        $this->admin($request);
+        $d = $request->validate([
+            'name' => ['required', 'string', 'max:80'],
+            'email' => ['required', 'email', 'max:120', Rule::unique('users', 'email')],
+            'role' => ['required', Rule::in(['admin', 'roaster'])],
+            'password' => ['required', 'string', 'min:8', 'max:72'],
+        ], [
+            'name.required' => 'Nama wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email belum benar. Contoh: roaster@brule.id',
+            'email.unique' => 'Email ini sudah terdaftar.',
+            'password.required' => 'Kata sandi sementara wajib diisi.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
+        ]);
+
+        $u = new User(['name' => trim($d['name']), 'email' => strtolower(trim($d['email'])), 'password' => $d['password']]);
+        $u->forceFill(['role' => $d['role'], 'email_verified_at' => now()])->save();
+        ActivityLog::record('user.created', $u, 'Akun staf :n dibuat sebagai :r', ['n' => $u->name, 'r' => self::ROLE_NAMES[$d['role']]]);
+
+        return response()->json(['message' => "Akun {$u->name} dibuat. Berikan kata sandi sementara ke orangnya dan minta diganti."], 201);
+    }
+
+    public function userUpdate(Request $request, int $id)
+    {
+        $this->admin($request);
+        $u = User::findOrFail($id);
+        $role = (string) $request->input('role', $u->role);
+        abort_unless(array_key_exists($role, self::ROLE_NAMES), 422, 'Role tidak dikenal.');
+
+        $roleChanged = $u->role !== $role;
+        abort_if($roleChanged && $u->id === $request->user()->id, 422, 'Kamu tidak bisa mengubah role akunmu sendiri.');
+        abort_if($roleChanged && $u->role === 'admin' && User::where('role', 'admin')->count() <= 1, 422, 'Harus ada minimal satu admin.');
+
+        // Data diri hanya bisa diubah untuk akun staf; akun pembeli dikelola pembelinya sendiri.
+        $fields = [];
+        if ($u->isStaff()) {
+            $d = $request->validate([
+                'name' => ['required', 'string', 'max:80'],
+                'email' => ['required', 'email', 'max:120', Rule::unique('users', 'email')->ignore($u->id)],
+                'phone' => ['nullable', 'regex:/^(\+62|62|0)8[0-9]{7,12}$/'],
+                'password' => ['nullable', 'string', 'min:8', 'max:72'],
+            ], [
+                'name.required' => 'Nama wajib diisi.',
+                'email.required' => 'Email wajib diisi.',
+                'email.email' => 'Format email belum benar. Contoh: roaster@brule.id',
+                'email.unique' => 'Email ini sudah terdaftar.',
+                'phone.regex' => 'Nomor telepon tidak valid. Contoh: 0812xxxxxxxx',
+                'password.min' => 'Kata sandi minimal 8 karakter.',
+            ]);
+            $fields = [
+                'name' => trim($d['name']),
+                'email' => strtolower(trim($d['email'])),
+                'phone' => filled($d['phone'] ?? null) ? $d['phone'] : null,
+            ];
+            if (filled($d['password'] ?? null)) {
+                $fields['password'] = $d['password'];
+            }
+        }
+
+        $old = $u->role;
+        $u->fill($fields)->forceFill(['role' => $role])->save();
+        if (isset($fields['password'])) {
+            $u->revokeSessions();
+        }
+
+        if ($roleChanged) {
+            ActivityLog::record('user.role_changed', $u, 'Role :n diubah dari :a ke :b', ['n' => $u->name, 'a' => self::ROLE_NAMES[$old], 'b' => self::ROLE_NAMES[$role]]);
+        } else {
+            ActivityLog::record('user.updated', $u, 'Data akun :n diperbarui', ['n' => $u->name]);
+        }
+
+        return ['message' => "Data {$u->name} diperbarui."];
+    }
+
+    public function userDelete(Request $request, int $id)
+    {
+        $this->admin($request);
+        $u = User::findOrFail($id);
+        abort_unless($u->isStaff(), 422, 'Hanya akun staf yang bisa dihapus dari sini.');
+        abort_if($u->id === $request->user()->id, 422, 'Kamu tidak bisa menghapus akunmu sendiri.');
+        abort_if($u->role === 'admin' && User::where('role', 'admin')->count() <= 1, 422, 'Harus ada minimal satu admin.');
+
+        $name = $u->name;
+        $u->deleteStaff();
+        ActivityLog::record('user.deleted', null, 'Akun staf :n dihapus', ['n' => $name]);
+
+        return ['message' => "Akun {$name} dihapus."];
+    }
+
     public function block(Request $request, int $id)
     {
         $this->admin($request);

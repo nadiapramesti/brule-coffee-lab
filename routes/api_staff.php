@@ -47,6 +47,9 @@ Route::middleware('auth:sanctum')->prefix('admin')->group(function () {
     Route::post('/stock/products/{id}', [$c, 'stockAddProduct']);
     Route::get('/customers', [$c, 'customers']);
     Route::get('/users', [$c, 'users']);
+    Route::post('/users', [$c, 'userStore']);
+    Route::put('/users/{id}', [$c, 'userUpdate'])->whereNumber('id');
+    Route::delete('/users/{id}', [$c, 'userDelete'])->whereNumber('id');
     Route::post('/users/{id}/block', [$c, 'block']);
     Route::post('/users/{id}/unblock', [$c, 'unblock']);
     Route::get('/vouchers', [$c, 'vouchers']);
