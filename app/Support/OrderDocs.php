@@ -66,6 +66,10 @@ class OrderDocs
                 ['Berat kopi', $grams > 0 ? number_format($grams, 0, ',', '.') . ' g' : '-'],
                 ['Pembayaran', $o->isCod() ? 'COD - tagih ' . self::rp((int) $o->total) : 'Lunas'],
             ];
+            if ($o->hasCoffee()) {
+                $rows[] = ['Tgl sangrai', $o->roasted_at ? $o->roasted_at->timezone('Asia/Jakarta')->translatedFormat('j M Y') : '-'];
+                $rows[] = ['Terbaik sebelum', $o->bestBefore() ? $o->bestBefore()->translatedFormat('j M Y') : '+' . Order::bestBeforeDays() . ' hari'];
+            }
             if ($o->gift_wrap && $o->card_message) {
                 $rows[] = ['Kartu ucapan', $o->card_message];
             }
