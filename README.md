@@ -133,4 +133,4 @@ Copyright © 2026 Asteria Studio. All Rights Reserved. Repositori ini dipublikas
 
 ## Kredit
 
-Dikerjakan sendiri oleh Nadia Pramesti sebagai tugas kuliah. Kode dibangun dengan bantuan [Claude](https://claude.ai) (Anthropic) sebagai pair-programmer. Foto produk perlengkapan dan merchandise dibuat dengan AI generatif, dan data demo (nama petani, koperasi, Q-grader) adalah contoh fiktif.
+Dikerjakan sendiri oleh Nadia Pramesti sebagai tugas kuliah. Foto produk perlengkapan dan merchandise dibuat dengan AI generatif, dan data demo (nama petani, koperasi, Q-grader) adalah contoh fiktif.
