@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BRÛLÉ — Presentasi Kelompok 3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;background:#0B0907;overflow:hidden;font-family:'IBM Plex Sans',Arial,sans-serif}
+#stage{position:absolute;left:0;top:0;width:1920px;height:1080px;transform-origin:0 0;overflow:hidden;background:#14110E}
+section.slide{position:absolute;left:0;top:0;width:1920px;height:1080px;overflow:hidden;opacity:0;visibility:hidden;
+  transition:opacity .7s ease,translate .7s cubic-bezier(.2,.7,.2,1)}
+section.slide.on{opacity:1;visibility:visible;z-index:2}
+section.slide.out{opacity:0;visibility:visible;z-index:1}
+section.slide.from-r{translate:140px 0}
+section.slide.to-l{translate:-140px 0}
+section.slide.from-r.on,section.slide.to-l.on{translate:0 0}
+[data-build-in]{transition:opacity .6s ease,translate .6s cubic-bezier(.2,.7,.2,1),scale .6s cubic-bezier(.2,.9,.3,1.2)}
+.pre{opacity:0}
+.pre.rise{translate:0 46px}
+.pre.pop{scale:.55}
+section.slide>*:not([style*="position:absolute"]){position:relative}
+ul{list-style:disc;padding-left:1.1em}
+table{width:100%;border-collapse:collapse}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid #4A3F33}
+th{background:#2A5DB0}
+b{font-weight:600}
+#ui{position:fixed;right:16px;bottom:12px;z-index:10;color:#B8AD9A;font:500 13px 'IBM Plex Sans',sans-serif;opacity:.0;transition:opacity .3s;display:flex;gap:10px;align-items:center}
+body:hover #ui{opacity:.8}
+#ui button{all:unset;cursor:pointer;padding:6px 12px;border:1px solid #4A3F33;border-radius:8px;background:#1D1914;color:#F3EDE2}
+#ui button:hover{background:#2A241D}
+</style>
+</head>
+<body>
+<div id="stage">
+<section id="cover" data-transition="fade" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:flex-end;gap:28px">
+<img src="img/hero.jpg" alt="Mesin sangrai di roastery BRÛLÉ" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:0;width:1920px;height:1080px;background:linear-gradient(to top, rgba(20,17,14,0.97) 0%, rgba(20,17,14,0.82) 50%, rgba(20,17,14,0.3) 100%)"></div>
+<div style="position:absolute;left:0;top:0;width:1920px;height:1080px;background:radial-gradient(circle at 18% 88%, rgba(224,169,59,0.32), rgba(20,17,14,0) 55%)"></div>
+<p data-build-in="fade 1" style="position:absolute;left:1092px;top:128px;width:700px;font-size:26px;font-weight:600;letter-spacing:6px;text-align:right;text-transform:uppercase;color:#E9E0D0">Roast-on-demand · 2026</p>
+<p style="font-size:28px;font-weight:600;letter-spacing:3px;color:#14110E;background:#E0A93B;padding:12px 28px;border-radius:999px;align-self:flex-start">● SEDANG DISANGRAI · 205,9 °C</p>
+<h1 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:290px;font-weight:700;line-height:1;letter-spacing:8px;background:linear-gradient(90deg, #F3EDE2 0%, #F3EDE2 50%, #E0A93B 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">BRÛLÉ</h1>
+<p style="font-size:48px;font-weight:400;line-height:1.3;color:#E9E0D0">Specialty Coffee Lab — disangrai setelah pesananmu masuk.</p>
+<div style="display:flex;flex-direction:column;gap:16px;padding:20px 0 0">
+<p style="font-size:26px;font-weight:600;letter-spacing:4px;text-transform:uppercase;color:#E0A93B">Kelompok 3 · Tugas Web E-Commerce · Disusun oleh</p>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 48px">
+<p style="font-size:32px;color:#F3EDE2;padding:0 0 10px;border-bottom:1px solid #7A6C58"><b>Devita</b> <span style="color:#B8AD9A">· NPM [            ]</span></p>
+<p style="font-size:32px;color:#F3EDE2;padding:0 0 10px;border-bottom:1px solid #7A6C58"><b>Nur Hidayatilah</b> <span style="color:#B8AD9A">· NPM [            ]</span></p>
+<p style="font-size:32px;color:#F3EDE2;padding:0 0 10px;border-bottom:1px solid #7A6C58"><b>Khoerul Rohman</b> <span style="color:#B8AD9A">· NPM [            ]</span></p>
+<p style="font-size:32px;color:#F3EDE2;padding:0 0 10px;border-bottom:1px solid #7A6C58"><b>Nadia Pramesti</b> <span style="color:#B8AD9A">· NPM [            ]</span></p>
+<p style="font-size:32px;color:#F3EDE2;padding:0 0 10px;border-bottom:1px solid #7A6C58"><b>Bima Prayoga</b> <span style="color:#B8AD9A">· NPM [            ]</span></p>
+</div>
+<p style="font-size:26px;color:#B8AD9A">Dosen pengampu: Bapak Eka</p>
+</div>
+</section>
+
+<section id="masalah" data-transition="push" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:space-between;gap:40px">
+<div style="position:absolute;left:900px;top:0px;width:1020px;height:700px;background:radial-gradient(circle at 70% 30%, rgba(42,93,176,0.45), rgba(20,17,14,0) 65%)"></div>
+<div style="display:flex;flex-direction:column;gap:24px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Masalah</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:120px;font-weight:700;line-height:1.02;color:#F3EDE2">Kopi di rak sudah <span style="color:#E0A93B">lama disangrai</span>, dan kamu tak bisa memilih.</h2>
+</div>
+<div style="display:flex;gap:40px">
+<div style="flex:1;display:flex;flex-direction:column;gap:6px;border-top:4px solid #E0A93B;padding:22px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:140px;font-weight:700;line-height:1;color:#3A3128">01</p>
+<h3 style="font-size:44px;font-weight:600;line-height:1.15;color:#F3EDE2">Tidak segar</h3>
+<p style="font-size:30px;line-height:1.4;color:#C9BEAA">Aromanya turun sambil menunggu pembeli.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:6px;border-top:4px solid #E0A93B;padding:22px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:140px;font-weight:700;line-height:1;color:#3A3128">02</p>
+<h3 style="font-size:44px;font-weight:600;line-height:1.15;color:#F3EDE2">Tidak bisa kustom</h3>
+<p style="font-size:30px;line-height:1.4;color:#C9BEAA">Level sangrai dan gilingan sudah ditentukan penjual.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:6px;border-top:4px solid #E0A93B;padding:22px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:140px;font-weight:700;line-height:1;color:#3A3128">03</p>
+<h3 style="font-size:44px;font-weight:600;line-height:1.15;color:#F3EDE2">Tanggal tak jelas</h3>
+<p style="font-size:30px;line-height:1.4;color:#C9BEAA">Kapan disangrai dan sampai kapan enak, tak ada yang tahu.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">02 / 16</p>
+</section>
+
+<section id="solusi" data-transition="push" style="background:#1D1914;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:760px;top:0px;width:1160px;height:1080px;background:radial-gradient(circle at 60% 50%, rgba(224,169,59,0.30), rgba(29,25,20,0) 62%)"></div>
+<div style="width:820px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Solusi</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:112px;font-weight:700;line-height:1;color:#F3EDE2">Roast-on-demand</h2>
+<p style="font-size:36px;line-height:1.4;color:#D9CFBD">Biji hijau menunggu di gudang. Baru setelah kamu memilih level sangrai dan gilingan, mesin dinyalakan.</p>
+</div>
+<div style="width:820px;display:flex;flex-direction:column;gap:18px;padding:12px 0 0">
+<div style="display:flex;gap:24px;align-items:center;background:#27211B;padding:16px 28px;border-radius:14px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;color:#E0A93B;width:70px">1</p><p style="font-size:32px;color:#F3EDE2">Pilih biji, level sangrai, gilingan</p></div>
+<div style="display:flex;gap:24px;align-items:center;background:#27211B;padding:16px 28px;border-radius:14px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;color:#E0A93B;width:70px">2</p><p style="font-size:32px;color:#F3EDE2">Bayar, masuk antrian roastery</p></div>
+<div style="display:flex;gap:24px;align-items:center;background:#27211B;padding:16px 28px;border-radius:14px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;color:#E0A93B;width:70px">3</p><p style="font-size:32px;color:#F3EDE2">Disangrai, digiling, dikemas, dikirim</p></div>
+</div>
+<img src="img/step1.jpg" alt="Antrian pesanan di roastery" data-build-in="rise 1" style="position:absolute;left:1000px;top:150px;width:370px;height:493px;object-fit:cover;border-radius:20px;border:6px solid #F3EDE2;transform:rotate(-5deg);box-shadow:0 30px 70px rgba(0,0,0,0.6)">
+<img src="img/step2.jpg" alt="Proses sangrai biji kopi" data-build-in="rise 2" style="position:absolute;left:1380px;top:310px;width:370px;height:493px;object-fit:cover;border-radius:20px;border:6px solid #F3EDE2;transform:rotate(4deg);box-shadow:0 30px 70px rgba(0,0,0,0.6)">
+<p data-build-in="pop 3" style="position:absolute;left:1000px;top:690px;width:330px;font-size:28px;font-weight:600;letter-spacing:2px;text-align:center;color:#14110E;background:#E0A93B;padding:14px 0;border-radius:999px">Segar, disangrai on-demand</p>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">03 / 16</p>
+</section>
+
+<section id="alur" data-transition="push" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:20px">
+<div style="position:absolute;left:300px;top:200px;width:1620px;height:880px;background:radial-gradient(circle at 60% 55%, rgba(42,93,176,0.40), rgba(20,17,14,0) 62%)"></div>
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Alur pembeli</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Dari biji sampai ke pintu rumah</h2>
+<img src="img/katalog.jpg" alt="Halaman katalog biji kopi" data-build-in="rise 1" style="position:absolute;left:128px;top:340px;width:392px;height:245px;object-fit:cover;border-radius:14px;border:3px solid #3A3128;box-shadow:0 24px 50px rgba(0,0,0,0.6)">
+<p data-build-in="rise 1" style="position:absolute;left:104px;top:316px;width:64px;height:64px;font-size:32px;font-weight:700;line-height:64px;text-align:center;color:#14110E;background:#E0A93B;border-radius:50%">1</p>
+<p data-build-in="rise 1" style="position:absolute;left:128px;top:612px;width:392px;font-size:36px;font-weight:600;color:#F3EDE2">Katalog</p>
+<p data-build-in="rise 1" style="position:absolute;left:128px;top:662px;width:392px;font-size:28px;line-height:1.4;color:#C9BEAA">14 biji dari 6 proses, bisa dicari dan disortir.</p>
+<img src="img/builder.jpg" alt="Roast builder dengan flavor wheel" data-build-in="rise 2" style="position:absolute;left:552px;top:380px;width:392px;height:245px;object-fit:cover;border-radius:14px;border:3px solid #3A3128;box-shadow:0 24px 50px rgba(0,0,0,0.6)">
+<p data-build-in="rise 2" style="position:absolute;left:528px;top:356px;width:64px;height:64px;font-size:32px;font-weight:700;line-height:64px;text-align:center;color:#14110E;background:#E0A93B;border-radius:50%">2</p>
+<p data-build-in="rise 2" style="position:absolute;left:552px;top:652px;width:392px;font-size:36px;font-weight:600;color:#F3EDE2">Racik</p>
+<p data-build-in="rise 2" style="position:absolute;left:552px;top:702px;width:392px;font-size:28px;line-height:1.4;color:#C9BEAA">Level sangrai, gilingan, dan berat sesuai selera.</p>
+<img src="img/checkout.jpg" alt="Halaman checkout" data-build-in="rise 3" style="position:absolute;left:976px;top:420px;width:392px;height:245px;object-fit:cover;border-radius:14px;border:3px solid #3A3128;box-shadow:0 24px 50px rgba(0,0,0,0.6)">
+<p data-build-in="rise 3" style="position:absolute;left:952px;top:396px;width:64px;height:64px;font-size:32px;font-weight:700;line-height:64px;text-align:center;color:#14110E;background:#E0A93B;border-radius:50%">3</p>
+<p data-build-in="rise 3" style="position:absolute;left:976px;top:692px;width:392px;font-size:36px;font-weight:600;color:#F3EDE2">Checkout</p>
+<p data-build-in="rise 3" style="position:absolute;left:976px;top:742px;width:392px;font-size:28px;line-height:1.4;color:#C9BEAA">Voucher, kemasan hadiah, bayar online atau COD.</p>
+<img src="img/lacak.jpg" alt="Halaman lacak pesanan" data-build-in="rise 4" style="position:absolute;left:1400px;top:460px;width:392px;height:245px;object-fit:cover;border-radius:14px;border:3px solid #3A3128;box-shadow:0 24px 50px rgba(0,0,0,0.6)">
+<p data-build-in="rise 4" style="position:absolute;left:1376px;top:436px;width:64px;height:64px;font-size:32px;font-weight:700;line-height:64px;text-align:center;color:#14110E;background:#E0A93B;border-radius:50%">4</p>
+<p data-build-in="rise 4" style="position:absolute;left:1400px;top:732px;width:392px;font-size:36px;font-weight:600;color:#F3EDE2">Lacak</p>
+<p data-build-in="rise 4" style="position:absolute;left:1400px;top:782px;width:392px;font-size:28px;line-height:1.4;color:#C9BEAA">Pantau tiap tahap produksi sampai resi.</p>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">04 / 16</p>
+</section>
+
+<section id="builder" data-transition="fade" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="position:absolute;left:640px;top:40px;width:1280px;height:1000px;background:radial-gradient(circle at 62% 50%, rgba(42,93,176,0.5), rgba(20,17,14,0) 62%)"></div>
+<div id="bg" style="position:absolute;left:860px;top:190px;width:932px;height:600px;background:#2A241D;border-radius:18px;box-shadow:0 40px 90px rgba(0,0,0,0.7)"></div>
+<div id="bar" style="position:absolute;left:860px;top:190px;width:932px;height:46px;background:#3A3128;border-radius:18px 18px 0 0"></div>
+<div style="position:absolute;left:884px;top:206px;width:14px;height:14px;background:#E0674F;border-radius:50%"></div>
+<div style="position:absolute;left:906px;top:206px;width:14px;height:14px;background:#E0A93B;border-radius:50%"></div>
+<div style="position:absolute;left:928px;top:206px;width:14px;height:14px;background:#5FB36B;border-radius:50%"></div>
+<img id="shot" src="img/builder.jpg" alt="Roast builder dengan radar rasa" style="position:absolute;left:860px;top:236px;width:932px;height:554px;object-fit:cover;border-radius:0 0 18px 18px">
+<p data-build-in="pop 1" style="position:absolute;left:730px;top:300px;width:300px;font-size:28px;font-weight:600;text-align:center;color:#14110E;background:#E0A93B;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(0,0,0,0.45)">Pilih level sangrai</p>
+<p data-build-in="pop 2" style="position:absolute;left:1470px;top:730px;width:300px;font-size:28px;font-weight:600;text-align:center;color:#14110E;background:#E0A93B;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(0,0,0,0.45)">Radar rasa</p>
+<div style="width:640px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Roast builder</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Kopi diracik sesuai selera</h2>
+<ul style="font-size:32px;line-height:1.7;color:#D9CFBD">
+<li>4 level sangrai, 6 gilingan</li>
+<li>Berat 100 g sampai 1 kg</li>
+<li>Flavor wheel dan kromatogram aroma</li>
+<li>Blend dua biji (70/30, 60/40, 50/50)</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">05 / 16</p>
+</section>
+
+<section id="checkout" data-transition="magic" style="background:#F3EDE2;color:#1B1712;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="position:absolute;left:0px;top:40px;width:1280px;height:1000px;background:radial-gradient(circle at 40% 50%, rgba(224,169,59,0.38), rgba(243,237,226,0) 62%)"></div>
+<div id="bg" style="position:absolute;left:128px;top:190px;width:932px;height:600px;background:#2A241D;border-radius:18px;box-shadow:0 40px 90px rgba(60,45,20,0.4)"></div>
+<div id="bar" style="position:absolute;left:128px;top:190px;width:932px;height:46px;background:#3A3128;border-radius:18px 18px 0 0"></div>
+<div style="position:absolute;left:152px;top:206px;width:14px;height:14px;background:#E0674F;border-radius:50%"></div>
+<div style="position:absolute;left:174px;top:206px;width:14px;height:14px;background:#E0A93B;border-radius:50%"></div>
+<div style="position:absolute;left:196px;top:206px;width:14px;height:14px;background:#5FB36B;border-radius:50%"></div>
+<img id="shot" src="img/checkout.jpg" alt="Halaman checkout dengan voucher" style="position:absolute;left:128px;top:236px;width:932px;height:554px;object-fit:cover;border-radius:0 0 18px 18px">
+<p data-build-in="pop 1" style="position:absolute;left:780px;top:420px;width:340px;font-size:28px;font-weight:600;text-align:center;color:#F3EDE2;background:#2A5DB0;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(20,17,14,0.4)">Voucher KOPIBARU10</p>
+<p data-build-in="pop 2" style="position:absolute;left:96px;top:730px;width:340px;font-size:28px;font-weight:600;text-align:center;color:#F3EDE2;background:#2A5DB0;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(20,17,14,0.4)">Total dihitung server</p>
+<div style="align-self:flex-end;width:640px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#2A5DB0">Checkout</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#1B1712">Bayar tanpa ribet</h2>
+<ul style="font-size:32px;line-height:1.7;color:#3B3226">
+<li>Alamat tersimpan</li>
+<li>Kemasan hadiah dan kartu ucapan</li>
+<li>Ongkir gratis di atas batas tertentu</li>
+<li>Bayar online (Midtrans) atau COD</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#6B5F4D">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#6B5F4D">06 / 16</p>
+</section>
+
+<section id="fitur" data-transition="push" style="background:#1D1914;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="position:absolute;left:0px;top:300px;width:1920px;height:780px;background:radial-gradient(circle at 50% 60%, rgba(224,169,59,0.22), rgba(29,25,20,0) 62%)"></div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Fitur unggulan</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Lebih dari sekadar <span style="color:#E0A93B">keranjang</span></h2>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
+<div style="display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 36px;border:1px solid #4A3F33;border-radius:18px">
+<div style="width:72px;height:72px;background:#E0A93B;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="color:#14110E;width:38px;height:38px"><path d="M12 2l3.1 6.3 6.9 1-5 4.9 1.2 6.9L12 17.8 5.8 21l1.2-6.9-5-4.9 6.9-1z" fill="currentColor"/></svg></div>
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#F3EDE2">Blend dua biji</h3>
+<p style="font-size:26px;line-height:1.4;color:#C9BEAA">Harga dan stok dihitung per biji.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 36px;border:1px solid #4A3F33;border-radius:18px">
+<div style="width:72px;height:72px;background:#E0A93B;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="color:#14110E;width:38px;height:38px"><path d="M3 12h4l3-8 4 16 3-8h4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#F3EDE2">Flavor wheel</h3>
+<p style="font-size:26px;line-height:1.4;color:#C9BEAA">Radar rasa dan kromatogram aroma.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 36px;border:1px solid #4A3F33;border-radius:18px">
+<div style="width:72px;height:72px;background:#E0A93B;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="color:#14110E;width:38px;height:38px"><path d="M12 2l2.4 2 3.1-.3 1 3 2.6 1.7-1 3 1 3-2.6 1.7-1 3-3.1-.3L12 22l-2.4-2-3.1.3-1-3-2.6-1.7 1-3-1-3 2.6-1.7 1-3 3.1.3z" fill="currentColor"/><path d="M8 12.2l2.8 2.8L16.2 9.6" fill="none" stroke="#14110E" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#F3EDE2">Voucher dan kado</h3>
+<p style="font-size:26px;line-height:1.4;color:#C9BEAA">Kemasan hadiah dan kartu ucapan.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 36px;border:1px solid #4A3F33;border-radius:18px">
+<div style="width:72px;height:72px;background:#E0A93B;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="color:#14110E;width:38px;height:38px"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M12 7v5l3.5 2" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></div>
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#F3EDE2">Terbaik sebelum</h3>
+<p style="font-size:26px;line-height:1.4;color:#C9BEAA">Tanggal sangrai dan batas nikmat tercetak.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 36px;border:1px solid #4A3F33;border-radius:18px">
+<div style="width:72px;height:72px;background:#E0A93B;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="color:#14110E;width:38px;height:38px"><path d="M2 21h4V9H2v12zM23 10c0-1.1-.9-2-2-2h-6.3l.95-4.6.03-.3c0-.4-.2-.8-.4-1.1L14.2 1 7.6 7.6C7.2 8 7 8.5 7 9v10c0 1.1.9 2 2 2h9c.8 0 1.5-.5 1.8-1.2l3-7c.1-.2.2-.5.2-.8v-2z" fill="currentColor"/></svg></div>
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#F3EDE2">Beli lagi, ulasan</h3>
+<p style="font-size:26px;line-height:1.4;color:#C9BEAA">Ulasan hanya dari pembeli terverifikasi.</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 36px;border:1px solid #4A3F33;border-radius:18px">
+<div style="width:72px;height:72px;background:#E0A93B;border-radius:50%;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 24 24" style="color:#14110E;width:38px;height:38px"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18" fill="none" stroke="currentColor" stroke-width="2"/></svg></div>
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#F3EDE2">Dua bahasa</h3>
+<p style="font-size:26px;line-height:1.4;color:#C9BEAA">Indonesia dan Inggris, tema terang atau gelap.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">07 / 16</p>
+</section>
+
+<section id="roastery" data-transition="fade" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="position:absolute;left:640px;top:40px;width:1280px;height:1000px;background:radial-gradient(circle at 62% 50%, rgba(224,169,59,0.34), rgba(20,17,14,0) 62%)"></div>
+<div id="bg" style="position:absolute;left:860px;top:190px;width:932px;height:600px;background:#2A241D;border-radius:18px;box-shadow:0 40px 90px rgba(0,0,0,0.7)"></div>
+<div id="bar" style="position:absolute;left:860px;top:190px;width:932px;height:46px;background:#3A3128;border-radius:18px 18px 0 0"></div>
+<div style="position:absolute;left:884px;top:206px;width:14px;height:14px;background:#E0674F;border-radius:50%"></div>
+<div style="position:absolute;left:906px;top:206px;width:14px;height:14px;background:#E0A93B;border-radius:50%"></div>
+<div style="position:absolute;left:928px;top:206px;width:14px;height:14px;background:#5FB36B;border-radius:50%"></div>
+<img id="shot" src="img/roastery.jpg" alt="Dasbor antrian roastery" style="position:absolute;left:860px;top:236px;width:932px;height:554px;object-fit:cover;border-radius:0 0 18px 18px">
+<p data-build-in="pop 1" style="position:absolute;left:730px;top:330px;width:320px;font-size:28px;font-weight:600;text-align:center;color:#14110E;background:#E0A93B;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(0,0,0,0.45)">Rencana sangrai</p>
+<p data-build-in="pop 2" style="position:absolute;left:1450px;top:730px;width:320px;font-size:28px;font-weight:600;text-align:center;color:#14110E;background:#E0A93B;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(0,0,0,0.45)">Aksi massal</p>
+<div style="width:640px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Sisi roastery</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Antrian yang selalu jelas</h2>
+<ul style="font-size:32px;line-height:1.7;color:#D9CFBD">
+<li>Kartu pesanan per tahap</li>
+<li>Filter pesanan terlambat (&gt; 24 jam)</li>
+<li>Lanjutkan banyak pesanan sekaligus</li>
+<li>Cetak label massal</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">08 / 16</p>
+</section>
+
+<section id="admin" data-transition="magic" style="background:#F3EDE2;color:#1B1712;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:28px">
+<div style="position:absolute;left:0px;top:40px;width:1280px;height:1000px;background:radial-gradient(circle at 40% 50%, rgba(42,93,176,0.30), rgba(243,237,226,0) 62%)"></div>
+<div id="bg" style="position:absolute;left:128px;top:190px;width:932px;height:600px;background:#2A241D;border-radius:18px;box-shadow:0 40px 90px rgba(60,45,20,0.4)"></div>
+<div id="bar" style="position:absolute;left:128px;top:190px;width:932px;height:46px;background:#3A3128;border-radius:18px 18px 0 0"></div>
+<div style="position:absolute;left:152px;top:206px;width:14px;height:14px;background:#E0674F;border-radius:50%"></div>
+<div style="position:absolute;left:174px;top:206px;width:14px;height:14px;background:#E0A93B;border-radius:50%"></div>
+<div style="position:absolute;left:196px;top:206px;width:14px;height:14px;background:#5FB36B;border-radius:50%"></div>
+<img id="shot" src="img/dashboard.jpg" alt="Dashboard admin" style="position:absolute;left:128px;top:236px;width:932px;height:554px;object-fit:cover;border-radius:0 0 18px 18px">
+<p data-build-in="pop 1" style="position:absolute;left:780px;top:420px;width:330px;font-size:28px;font-weight:600;text-align:center;color:#F3EDE2;background:#2A5DB0;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(20,17,14,0.4)">Omzet harian</p>
+<p data-build-in="pop 2" style="position:absolute;left:96px;top:730px;width:330px;font-size:28px;font-weight:600;text-align:center;color:#F3EDE2;background:#2A5DB0;padding:14px 0;border-radius:999px;box-shadow:0 14px 30px rgba(20,17,14,0.4)">Laporan Excel / PDF</p>
+<div style="align-self:flex-end;width:640px;display:flex;flex-direction:column;gap:28px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#2A5DB0">Panel admin</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#1B1712">Toko terkendali dari satu tempat</h2>
+<ul style="font-size:32px;line-height:1.7;color:#3B3226">
+<li>Stok biji dengan riwayat</li>
+<li>Voucher, pelanggan, ulasan</li>
+<li>Pengguna dan peran</li>
+<li>Laporan ekspor Excel dan PDF</li>
+</ul>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#6B5F4D">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#6B5F4D">09 / 16</p>
+</section>
+
+<section id="status" data-transition="push" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="position:absolute;left:0px;top:240px;width:1920px;height:600px;background:radial-gradient(circle at 50% 40%, rgba(42,93,176,0.40), rgba(20,17,14,0) 65%)"></div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Alur pesanan</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Enam tahap, semuanya <span style="color:#E0A93B">tercatat</span></h2>
+</div>
+<div style="display:flex;align-items:center;gap:12px">
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 22px;border:1px solid #4A3F33;border-radius:16px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E0A93B">01</p><p style="font-size:32px;font-weight:600;line-height:1.2;color:#F3EDE2">Antrian</p></div>
+<div style="background:#E0A93B;width:34px;height:26px;clip-path:polygon(0 28%,58% 28%,58% 0,100% 50%,58% 100%,58% 72%,0 72%)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 22px;border:1px solid #4A3F33;border-radius:16px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E0A93B">02</p><p style="font-size:32px;font-weight:600;line-height:1.2;color:#F3EDE2">Sangrai</p></div>
+<div style="background:#E0A93B;width:34px;height:26px;clip-path:polygon(0 28%,58% 28%,58% 0,100% 50%,58% 100%,58% 72%,0 72%)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 22px;border:1px solid #4A3F33;border-radius:16px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E0A93B">03</p><p style="font-size:32px;font-weight:600;line-height:1.2;color:#F3EDE2">Giling</p></div>
+<div style="background:#E0A93B;width:34px;height:26px;clip-path:polygon(0 28%,58% 28%,58% 0,100% 50%,58% 100%,58% 72%,0 72%)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 22px;border:1px solid #4A3F33;border-radius:16px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E0A93B">04</p><p style="font-size:32px;font-weight:600;line-height:1.2;color:#F3EDE2">Kemas</p></div>
+<div style="background:#E0A93B;width:34px;height:26px;clip-path:polygon(0 28%,58% 28%,58% 0,100% 50%,58% 100%,58% 72%,0 72%)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 22px;border:1px solid #4A3F33;border-radius:16px"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#E0A93B">05</p><p style="font-size:32px;font-weight:600;line-height:1.2;color:#F3EDE2">Kirim</p></div>
+<div style="background:#E0A93B;width:34px;height:26px;clip-path:polygon(0 28%,58% 28%,58% 0,100% 50%,58% 100%,58% 72%,0 72%)"></div>
+<div style="flex:1;display:flex;flex-direction:column;gap:8px;background:#2A5DB0;padding:30px 22px;border-radius:16px;box-shadow:0 20px 50px rgba(42,93,176,0.5)"><p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:64px;font-weight:700;line-height:1;color:#F3EDE2">06</p><p style="font-size:32px;font-weight:600;line-height:1.2;color:#F3EDE2">Selesai</p></div>
+</div>
+<div style="display:flex;gap:28px">
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:28px 32px;border:2px dashed #7A6C58;border-radius:16px">
+<h3 style="font-size:34px;font-weight:600;line-height:1.2;color:#E0A93B">Hanya perlengkapan?</h3>
+<p style="font-size:28px;line-height:1.4;color:#D9CFBD">Lewati sangrai dan giling: Antri, Dikemas, Dikirim.</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:10px;padding:28px 32px;border:2px dashed #7A6C58;border-radius:16px">
+<h3 style="font-size:34px;font-weight:600;line-height:1.2;color:#E0A93B">Dibatalkan?</h3>
+<p style="font-size:28px;line-height:1.4;color:#D9CFBD">Stok biji dikembalikan otomatis ke gudang.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">10 / 16</p>
+</section>
+
+<section id="mobile" data-transition="push" style="background:#1D1914;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<div style="position:absolute;left:0px;top:200px;width:1200px;height:880px;background:radial-gradient(circle at 45% 55%, rgba(224,169,59,0.30), rgba(29,25,20,0) 62%)"></div>
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Responsif dan perlengkapan</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Nyaman dipakai di HP</h2>
+<img src="img/m-landing.jpg" alt="Landing di tampilan HP" data-build-in="rise 1" style="position:absolute;left:128px;top:330px;width:277px;height:600px;object-fit:cover;border-radius:34px;border:7px solid #F3EDE2;transform:rotate(-6deg);box-shadow:0 30px 60px rgba(0,0,0,0.6)">
+<img src="img/m-builder.jpg" alt="Roast builder di HP" data-build-in="rise 2" style="position:absolute;left:450px;top:290px;width:277px;height:600px;object-fit:cover;border-radius:34px;border:7px solid #F3EDE2;box-shadow:0 30px 60px rgba(0,0,0,0.6)">
+<img src="img/m-gear.jpg" alt="Perlengkapan di HP" data-build-in="rise 3" style="position:absolute;left:772px;top:330px;width:277px;height:600px;object-fit:cover;border-radius:34px;border:7px solid #F3EDE2;transform:rotate(6deg);box-shadow:0 30px 60px rgba(0,0,0,0.6)">
+<div style="position:absolute;left:1180px;top:340px;width:612px;display:flex;flex-direction:column;gap:20px">
+<h3 style="font-size:44px;font-weight:600;line-height:1.2;color:#E0A93B">Perlengkapan seduh</h3>
+<p style="font-size:30px;line-height:1.45;color:#E9E0D0">10 produk non-kopi: alat seduh, penggiling, filter, merchandise, dan aksesori, lengkap dengan foto dan pilihan varian.</p>
+<h3 style="font-size:44px;font-weight:600;line-height:1.2;color:#E0A93B">Terang dan gelap</h3>
+<p style="font-size:30px;line-height:1.45;color:#E9E0D0">Tampilan menyesuaikan pilihan pengguna, di layar besar maupun HP.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">11 / 16</p>
+</section>
+
+<section id="teknologi" data-transition="push" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:36px">
+<div style="position:absolute;left:900px;top:200px;width:1020px;height:880px;background:radial-gradient(circle at 60% 50%, rgba(224,169,59,0.30), rgba(20,17,14,0) 62%)"></div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Teknologi</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Satu stack, <span style="color:#E0A93B">mudah dirawat</span></h2>
+</div>
+<div style="display:flex;gap:48px">
+<div style="flex:1;display:flex;flex-direction:column;gap:0">
+<div style="display:flex;gap:24px;align-items:center;padding:18px 0;border-bottom:1px solid #3A3128"><p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#14110E;background:#7FA6F0;padding:6px 0;border-radius:8px;text-align:center;width:210px">BACK-END</p><p style="font-size:36px;font-weight:500;color:#F3EDE2">Laravel 13</p></div>
+<div style="display:flex;gap:24px;align-items:center;padding:18px 0;border-bottom:1px solid #3A3128"><p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#14110E;background:#7FA6F0;padding:6px 0;border-radius:8px;text-align:center;width:210px">FRONT-END</p><p style="font-size:36px;font-weight:500;color:#F3EDE2">Livewire 3, Alpine.js, Tailwind</p></div>
+<div style="display:flex;gap:24px;align-items:center;padding:18px 0;border-bottom:1px solid #3A3128"><p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#14110E;background:#7FA6F0;padding:6px 0;border-radius:8px;text-align:center;width:210px">GRAFIK</p><p style="font-size:36px;font-weight:500;color:#F3EDE2">D3 (flavor wheel, kromatogram)</p></div>
+<div style="display:flex;gap:24px;align-items:center;padding:18px 0;border-bottom:1px solid #3A3128"><p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#14110E;background:#7FA6F0;padding:6px 0;border-radius:8px;text-align:center;width:210px">DATABASE</p><p style="font-size:36px;font-weight:500;color:#F3EDE2">MySQL (sqlite untuk tes)</p></div>
+<div style="display:flex;gap:24px;align-items:center;padding:18px 0;border-bottom:1px solid #3A3128"><p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#14110E;background:#7FA6F0;padding:6px 0;border-radius:8px;text-align:center;width:210px">BAYAR</p><p style="font-size:36px;font-weight:500;color:#F3EDE2">Midtrans Snap (sandbox)</p></div>
+<div style="display:flex;gap:24px;align-items:center;padding:18px 0"><p style="font-size:24px;font-weight:600;letter-spacing:2px;color:#14110E;background:#7FA6F0;padding:6px 0;border-radius:8px;text-align:center;width:210px">TES</p><p style="font-size:36px;font-weight:500;color:#F3EDE2">Pest</p></div>
+</div>
+<div style="width:560px;display:flex;flex-direction:column;gap:20px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:40px;border:2px solid #E0A93B;border-radius:18px;box-shadow:0 30px 70px rgba(0,0,0,0.5)">
+<h3 style="font-size:44px;font-weight:600;line-height:1.2;color:#E0A93B">Prinsip desain</h3>
+<p style="font-size:30px;line-height:1.4;color:#F3EDE2">Harga dan stok dihitung ulang di server.</p>
+<p style="font-size:30px;line-height:1.4;color:#F3EDE2">Stok dikunci saat checkout, tak ada rebutan sisa yang sama.</p>
+<p style="font-size:30px;line-height:1.4;color:#F3EDE2">Satu komponen Livewire untuk satu halaman.</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">12 / 16</p>
+</section>
+
+<section id="kualitas" data-transition="fade" style="background:#2A5DB0;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;justify-content:space-between;gap:40px">
+<div style="position:absolute;left:1180px;top:-100px;width:700px;height:700px;background:#F3EDE2;opacity:0.10;border-radius:50%"></div>
+<div style="position:absolute;left:1380px;top:180px;width:420px;height:420px;background:#E0A93B;opacity:0.25;border-radius:50%"></div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#FFE3A6">Kualitas</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:112px;font-weight:700;line-height:1.02;color:#FFFFFF">Diuji, bukan<br>sekadar jalan</h2>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:32px">
+<div style="display:flex;flex-direction:column;gap:12px;border-top:4px solid #FFE3A6;padding:24px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:160px;font-weight:700;line-height:1;color:#FFFFFF">265</p>
+<p style="font-size:30px;line-height:1.35;color:#EAF1FD">tes otomatis (Pest)</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;border-top:4px solid #FFE3A6;padding:24px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:160px;font-weight:700;line-height:1;color:#FFFFFF">14</p>
+<p style="font-size:30px;line-height:1.35;color:#EAF1FD">biji demo dari 6 proses</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;border-top:4px solid #FFE3A6;padding:24px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:160px;font-weight:700;line-height:1;color:#FFFFFF">&lt;100</p>
+<p style="font-size:30px;line-height:1.35;color:#EAF1FD">milidetik, antrian 5.000 pesanan</p>
+</div>
+<div style="display:flex;flex-direction:column;gap:12px;border-top:4px solid #FFE3A6;padding:24px 0 0">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:160px;font-weight:700;line-height:1;color:#FFFFFF">3</p>
+<p style="font-size:30px;line-height:1.35;color:#EAF1FD">peran: pembeli, roastery, admin</p>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#EAF1FD">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#EAF1FD">13 / 16</p>
+</section>
+
+<section id="demo" data-transition="push" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<div style="position:absolute;left:0px;top:200px;width:1300px;height:880px;background:radial-gradient(circle at 40% 50%, rgba(42,93,176,0.50), rgba(20,17,14,0) 62%)"></div>
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Demo</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:112px;font-weight:700;line-height:1.02;color:#F3EDE2">Kita lihat <span style="color:#E0A93B">langsung</span></h2>
+<div style="position:absolute;left:128px;top:340px;width:880px;height:495px;background:linear-gradient(135deg, #2A241D, #0E0C0A);border:1px solid #4A3F33;border-radius:20px;box-shadow:0 30px 80px rgba(0,0,0,0.6)"></div>
+<div style="position:absolute;left:448px;top:468px;width:240px;height:240px;border:4px solid #E0A93B;background:#2A241D;border-radius:50%"></div>
+<svg viewBox="0 0 24 24" style="position:absolute;left:508px;top:528px;width:120px;height:120px;color:#E0A93B"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
+<p style="position:absolute;left:128px;top:770px;width:880px;font-size:28px;font-weight:600;text-align:center;color:#E9E0D0">Video demo · 3 menit 49 detik</p>
+<div style="position:absolute;left:1056px;top:340px;width:736px;display:flex;flex-direction:column;gap:20px;background:linear-gradient(160deg, #332B22, #1F1A15);padding:32px 36px;border:2px solid #E0A93B;border-radius:18px">
+<h3 style="font-size:40px;font-weight:600;line-height:1.2;color:#E0A93B">Akun demo</h3>
+<table style="font-size:28px;color:#F3EDE2">
+<tr><th style="width:26%">Peran</th><th style="width:44%">Email</th><th style="width:30%">Sandi</th></tr>
+<tr><td>Admin</td><td>admin@brule.test</td><td>password</td></tr>
+<tr><td>Roaster</td><td>roaster@brule.test</td><td>password</td></tr>
+<tr><td>Pembeli</td><td>customer@brule.test</td><td>password</td></tr>
+</table>
+<p style="font-size:30px;line-height:1.4;color:#E9E0D0">Voucher contoh: <b>KOPIBARU10</b></p>
+<p style="font-size:26px;line-height:1.4;color:#B8AD9A">Data fiktif. Pembayaran mode simulasi.</p>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">14 / 16</p>
+</section>
+
+<section id="tim" data-transition="push" style="background:#1D1914;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:40px">
+<div style="position:absolute;left:0px;top:240px;width:1920px;height:840px;background:radial-gradient(circle at 50% 55%, rgba(224,169,59,0.24), rgba(29,25,20,0) 62%)"></div>
+<div style="display:flex;flex-direction:column;gap:20px">
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Tim</p>
+<h2 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:96px;font-weight:700;line-height:1.02;color:#F3EDE2">Siapa di balik <span style="color:#E0A93B">BRÛLÉ</span></h2>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px">
+<div style="display:flex;gap:24px;align-items:center;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 40px;border:2px dashed #7A6C58;border-radius:18px">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:110px;font-weight:700;line-height:1;color:#E0A93B;width:80px">1</p>
+<div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-size:36px;font-weight:600;line-height:1.2;color:#F3EDE2">Devita</h3><p style="font-size:26px;color:#C9BEAA">NPM [            ]</p></div>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 40px;border:2px dashed #7A6C58;border-radius:18px">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:110px;font-weight:700;line-height:1;color:#E0A93B;width:80px">2</p>
+<div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-size:36px;font-weight:600;line-height:1.2;color:#F3EDE2">Nur Hidayatilah</h3><p style="font-size:26px;color:#C9BEAA">NPM [            ]</p></div>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 40px;border:2px dashed #7A6C58;border-radius:18px">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:110px;font-weight:700;line-height:1;color:#E0A93B;width:80px">3</p>
+<div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-size:36px;font-weight:600;line-height:1.2;color:#F3EDE2">Khoerul Rohman</h3><p style="font-size:26px;color:#C9BEAA">NPM [            ]</p></div>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 40px;border:2px dashed #7A6C58;border-radius:18px">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:110px;font-weight:700;line-height:1;color:#E0A93B;width:80px">4</p>
+<div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-size:36px;font-weight:600;line-height:1.2;color:#F3EDE2">Nadia Pramesti</h3><p style="font-size:26px;color:#C9BEAA">NPM [            ]</p></div>
+</div>
+<div style="display:flex;gap:24px;align-items:center;background:linear-gradient(160deg, #332B22, #1F1A15);padding:30px 40px;border:2px dashed #7A6C58;border-radius:18px">
+<p style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:110px;font-weight:700;line-height:1;color:#E0A93B;width:80px">5</p>
+<div style="display:flex;flex-direction:column;gap:8px"><h3 style="font-size:36px;font-weight:600;line-height:1.2;color:#F3EDE2">Bima Prayoga</h3><p style="font-size:26px;color:#C9BEAA">NPM [            ]</p></div>
+</div>
+</div>
+<p style="position:absolute;left:128px;bottom:64px;width:800px;font-size:24px;color:#B8AD9A">BRÛLÉ · Specialty Coffee Lab</p>
+<p style="position:absolute;right:128px;bottom:64px;width:200px;font-size:24px;text-align:right;color:#B8AD9A">15 / 16</p>
+</section>
+
+<section id="penutup" data-transition="fade" style="background:#14110E;color:#F3EDE2;font-family:'IBM Plex Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;justify-content:center;gap:28px">
+<img src="img/hero.jpg" alt="Mesin sangrai di roastery BRÛLÉ" style="position:absolute;left:0;top:0;width:1920px;height:1080px;object-fit:cover">
+<div style="position:absolute;left:0;top:0;width:1920px;height:1080px;background:linear-gradient(to right, rgba(20,17,14,0.97) 0%, rgba(20,17,14,0.86) 55%, rgba(20,17,14,0.45) 100%)"></div>
+<div style="position:absolute;left:0;top:0;width:1920px;height:1080px;background:radial-gradient(circle at 15% 85%, rgba(224,169,59,0.34), rgba(20,17,14,0) 55%)"></div>
+<p style="font-size:26px;font-weight:600;letter-spacing:5px;text-transform:uppercase;color:#E0A93B">Penutup</p>
+<h1 style="font-family:'IBM Plex Sans Condensed', Arial, sans-serif;font-size:200px;font-weight:700;line-height:1;letter-spacing:4px;background:linear-gradient(90deg, #F3EDE2 0%, #F3EDE2 55%, #E0A93B 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent">Terima kasih</h1>
+<p style="font-size:56px;line-height:1.3;color:#E9E0D0">Ada pertanyaan?</p>
+<div style="display:flex;flex-direction:column;gap:10px;padding:24px 0 0">
+<p style="font-size:28px;color:#C9BEAA">Kode sumber: github.com/nadiapramesti/brule-coffee-lab</p>
+<p style="font-size:28px;color:#C9BEAA">BRÛLÉ · Specialty Coffee Lab</p>
+</div>
+</section>
+
+</div>
+<div id="ui"><span id="count"></span><button id="prev" aria-label="Sebelumnya">←</button><button id="next" aria-label="Berikutnya">→</button><button id="fs" aria-label="Layar penuh">⛶</button></div>
+<script>
+(function () {
+  const stage = document.getElementById('stage');
+  const slides = [...stage.querySelectorAll('section')];
+  slides.forEach(s => s.classList.add('slide'));
+  let cur = -1, timers = [];
+
+  function fit() {
+    const k = Math.min(innerWidth / 1920, innerHeight / 1080);
+    stage.style.transform = 'scale(' + k + ')';
+    stage.style.left = (innerWidth - 1920 * k) / 2 + 'px';
+    stage.style.top = (innerHeight - 1080 * k) / 2 + 'px';
+  }
+  addEventListener('resize', fit); fit();
+
+  function prep(slide) {
+    timers.forEach(clearTimeout); timers = [];
+    const items = [...slide.querySelectorAll('[data-build-in]')];
+    items.forEach(el => {
+      const eff = (el.dataset.buildIn.split(/\s+/)[0]) || 'fade';
+      el.classList.add('pre', eff === 'pop' ? 'pop' : (eff === 'fade' ? 'fade' : 'rise'));
+    });
+    return items;
+  }
+  function play(items) {
+    items.forEach(el => {
+      const order = parseInt((el.dataset.buildIn.match(/\d+/) || [1])[0], 10);
+      timers.push(setTimeout(() => el.classList.remove('pre'), 700 + (order - 1) * 450));
+    });
+  }
+
+  function go(n, dir) {
+    n = Math.max(0, Math.min(slides.length - 1, n));
+    if (n === cur) return;
+    const prev = slides[cur], next = slides[n];
+    const forward = n > cur;
+    const push = next.dataset.transition === 'push' || (!forward && prev && prev.dataset.transition === 'push');
+    if (prev) { prev.classList.remove('on'); prev.classList.add('out'); if (push) prev.classList.add(forward ? 'to-l' : 'from-r'); setTimeout(() => { prev.classList.remove('out', 'to-l', 'from-r'); }, 750); }
+    next.classList.remove('out', 'to-l', 'from-r');
+    const items = prep(next);
+    if (push) next.classList.add(forward ? 'from-r' : 'to-l');
+    void next.offsetWidth;
+    next.classList.add('on');
+    play(items);
+    cur = n;
+    history.replaceState(null, '', '#' + (n + 1));
+    document.getElementById('count').textContent = (n + 1) + ' / ' + slides.length;
+  }
+
+  addEventListener('keydown', e => {
+    if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); go(cur + 1); }
+    else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); go(cur - 1); }
+    else if (e.key === 'Home') go(0);
+    else if (e.key === 'End') go(slides.length - 1);
+    else if (e.key === 'f' || e.key === 'F') toggleFs();
+  });
+  stage.addEventListener('click', e => { const r = innerWidth / 2; go(e.clientX > r ? cur + 1 : cur - 1); });
+  let x0 = null;
+  addEventListener('touchstart', e => { x0 = e.touches[0].clientX; }, { passive: true });
+  addEventListener('touchend', e => { if (x0 === null) return; const d = e.changedTouches[0].clientX - x0; if (Math.abs(d) > 50) go(cur + (d < 0 ? 1 : -1)); x0 = null; });
+  function toggleFs() { document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen(); }
+  document.getElementById('prev').onclick = e => { e.stopPropagation(); go(cur - 1); };
+  document.getElementById('next').onclick = e => { e.stopPropagation(); go(cur + 1); };
+  document.getElementById('fs').onclick = e => { e.stopPropagation(); toggleFs(); };
+
+  const start = parseInt(location.hash.slice(1), 10);
+  go(Number.isFinite(start) ? start - 1 : 0);
+})();
+</script>
+</body>
+</html>
