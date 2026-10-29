@@ -109,7 +109,6 @@ public/products/         foto produk perlengkapan
 app/Mail/ + Support/     email transaksi, keranjang
 resources/views/         blade (layouts/brule = toko, layouts/panel = admin)
 lang/                    terjemahan ID/EN (en.json, pages.php untuk halaman statis)
-docs/DEMO.md             skenario dan checklist demo
 docs/screenshots/        gambar untuk README
 ```
 
