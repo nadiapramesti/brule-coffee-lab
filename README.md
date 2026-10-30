@@ -126,6 +126,62 @@ Halaman `/perlengkapan` menjual alat seduh, penggiling, filter, merchandise, dan
 
 Di Roast builder, bagian "Campur dengan biji lain" menggabungkan dua biji dengan level sangrai yang sama, porsi 70/30, 60/40, atau 50/50. Harga dihitung per biji sesuai gramnya, stok biji mentah dipotong per biji, dan dikembalikan ke keduanya bila pesanan dibatalkan. Radar rasa dan catatan rasa ikut dirata-ratakan. Ulasan boleh ditulis untuk kedua biji.
 
+## Proses pengembangan
+
+### Metode yang dipakai
+
+Pengerjaan memakai pendekatan **iteratif-inkremental** (gaya Agile, dikerjakan satu orang): fitur dibangun per irisan kecil yang langsung bisa dicoba, lalu diperbaiki dari hasil uji dan masukan. Bukan Scrum penuh, karena tidak ada tim, sprint, atau product owner terpisah.
+
+| Praktik | Penerapan di proyek ini |
+|---|---|
+| Kebutuhan | PRD ringkas dan user story per peran (pembeli, roaster, admin), lihat [docs/PRD.md](docs/PRD.md) |
+| Pemodelan | Alur pesanan berupa state machine 6 tahap, tabel dan relasi dirancang sebelum migrasi |
+| Pengujian | TDD ringan: Pest (Feature test) untuk aturan bisnis; harga, stok, voucher, dan status pesanan diuji |
+| Versi kode | Git, commit kecil per perubahan, riwayat di GitHub |
+| Dokumentasi | README, PRD, catatan keputusan, tangkapan layar |
+| Pengiriman | Rilis bertahap; tiap tahap dicoba lewat akun demo (admin, roaster, pembeli) |
+
+### Tahapan membuat aplikasi (web maupun apk)
+
+Urutan yang lazim di industri, dan yang dijadikan acuan di sini:
+
+1. **Ide dan masalah.** Siapa penggunanya, masalah apa yang dipecahkan, dan kenapa aplikasi ini perlu ada. Di sini: kopi di rak sudah lama disangrai dan pembeli tidak bisa memilih.
+2. **Riset dan pembanding.** Lihat aplikasi sejenis, cari yang kurang, tentukan pembeda (roast-on-demand).
+3. **Kebutuhan (PRD).** Tujuan, pengguna, user story, fitur wajib dan opsional, batasan, dan ukuran berhasil.
+4. **Ruang lingkup (MVP).** Pilih fitur minimum yang sudah berguna; sisanya masuk daftar nanti.
+5. **Perancangan.** Alur pengguna, data (ERD), arsitektur, pilihan teknologi, dan aturan bisnis (mis. stok dikunci saat checkout).
+6. **Desain UI/UX.** Wireframe, gaya visual, lalu prototipe yang diuji ke calon pengguna.
+7. **Implementasi.** Menulis kode per fitur kecil, dengan version control.
+8. **Pengujian.** Unit/feature test, uji manual per peran, uji tampilan HP, uji beban untuk bagian berat.
+9. **Rilis (deploy).** Server atau hosting, domain, HTTPS, konfigurasi `.env`, backup, dan data awal.
+10. **Pemeliharaan.** Pantau galat, dengarkan masukan pengguna, perbaiki, dan rilis berkala.
+
+Langkah 1 sampai 6 sengaja dikerjakan sebelum kode ditulis, karena memperbaiki salah paham di kertas jauh lebih murah daripada di kode.
+
+### Kelemahan yang diketahui
+
+- **Pembayaran** baru diuji di sandbox Midtrans; belum ada uji transaksi sungguhan dan belum ada rekonsiliasi otomatis dengan laporan Midtrans.
+- **Ongkir** memakai tarif flat dengan batas gratis ongkir, belum terhubung ke API kurir (tarif per kota/berat, cek resi otomatis).
+- **Satu lokasi roastery** dan satu gudang; belum ada banyak cabang.
+- **Email dan notifikasi** berjalan di proses yang sama dengan aplikasi; belum ada antrian khusus (queue worker) untuk beban besar.
+- **Belum ada CI/CD** (tes otomatis di GitHub Actions) dan belum ada pemantauan galat di produksi.
+- **Pengujian** berfokus di sisi server; belum ada tes browser end-to-end (mis. Dusk atau Playwright) dan belum ada uji aksesibilitas menyeluruh.
+- **Belum ada audit keamanan independen**; yang ada baru praktik dasar (validasi, hitung ulang harga di server, peran dan izin).
+- **Foto perlengkapan** dibuat dengan AI dan data demo fiktif, jadi belum mewakili katalog nyata.
+- **Belum ada aplikasi mobile**; yang tersedia web responsif.
+
+### Pengembangan lebih lanjut
+
+- Integrasi API kurir untuk tarif dan pelacakan resi otomatis.
+- Pembayaran produksi (Midtrans live) dan beberapa metode tambahan.
+- Langganan kopi (kirim berkala) dan program loyalitas.
+- Queue worker dan cache untuk email, laporan, dan beban tinggi.
+- GitHub Actions untuk Pest dan analisis statis di setiap push.
+- Tes end-to-end dan pemantauan galat (mis. Sentry) di produksi.
+- Prediksi kebutuhan stok biji dari riwayat pesanan.
+- PWA atau aplikasi mobile agar notifikasi status pesanan bisa langsung ke HP.
+- Dukungan banyak roastery/cabang dengan stok terpisah.
+
 ## Lisensi
 
 Copyright © 2026 Nadia Pramesti. All Rights Reserved. Repositori ini dipublikasikan sebagai portofolio; kode, desain, logo, nama, dan foto BRÛLÉ tidak boleh digunakan, disalin, dimodifikasi, didistribusikan, atau dijual tanpa izin tertulis. Detail di [LICENSE](LICENSE).
