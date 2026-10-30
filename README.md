@@ -136,6 +136,7 @@ docs/screenshots/        gambar untuk README
 - Harga dan stok selalu dihitung ulang di server saat pesanan dibuat; keranjang hanya menyimpan pilihan, bukan harga.
 - Stok biji mentah dikunci per kopi saat checkout supaya dua pembeli tidak bisa memesan sisa yang sama.
 - Pembayaran online memakai Midtrans Snap (sandbox) bila `MIDTRANS_SERVER_KEY` dan `MIDTRANS_CLIENT_KEY` diisi di `.env`. Tanpa kunci, tombol kembali ke mode simulasi. Webhook: `POST /midtrans/notification` (butuh URL publik, mis. ngrok; di localhost pakai tombol "Cek status pembayaran").
+- **Tripline** (dashboard pemantau login, repo terpisah `tripline-intrusion-alert`) bisa dipasang opsional lewat `TRIPLINE_URL` + `TRIPLINE_INGEST_TOKEN` di `.env` -- login email/password (web maupun aplikasi mobile lewat `/api/login`) melapor tiap percobaan ke sana dan ditolak otomatis kalau IP-nya lagi dianggap berisiko. Kosongkan salah satu variabel = nonaktif, login tetap jalan normal. Lihat `app/Support/Tripline.php`.
 
 ## Perlengkapan (produk non-kopi)
 

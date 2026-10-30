@@ -18,6 +18,14 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
+    // Tripline (dashboard pemantau login terpisah). Kosongkan salah satu = integrasi nonaktif,
+    // login BRÛLÉ tetap jalan normal tanpa dilapor ke sana. Lihat app/Support/Tripline.php.
+    // INGEST_TOKEN cuma hidup di server ini -- jangan pernah dikirim ke aplikasi mobile.
+    'tripline' => [
+        'base_url' => env('TRIPLINE_URL'),
+        'ingest_token' => env('TRIPLINE_INGEST_TOKEN'),
+    ],
+
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],
