@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\OAuthProvider;
+use App\Support\Tripline;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,10 @@ class SocialAuthController extends Controller
 
         Auth::login($user, remember: true);
         $request->session()->regenerate();
+
+        // Sekadar tercatat di Tripline juga (bukan jalur yang rawan brute-force, jadi tidak perlu
+        // Tripline::check() di sini -- OAuth sudah punya pengaman sendiri di sisi provider).
+        Tripline::report($request->ip(), $user->email, success: true, reason: "oauth_{$provider}");
 
         return redirect()->intended(route('dashboard'));
     }

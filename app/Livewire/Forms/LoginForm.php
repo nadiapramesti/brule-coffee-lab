@@ -2,6 +2,8 @@
 
 namespace App\Livewire\Forms;
 
+use App\Http\Middleware\EnsureNotBlocked;
+use App\Support\Tripline;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -30,8 +32,21 @@ class LoginForm extends Form
     {
         $this->ensureIsNotRateLimited();
 
+        $ip = request()->ip();
+
+        // Tripline bilang IP ini lagi dianggap berisiko (brute-force/spraying terdeteksi dari
+        // percobaan-percobaan sebelumnya) -- tolak di sini SEBELUM password sempat dicek, supaya
+        // tidak buang waktu hash dan tidak membocorkan apakah emailnya valid.
+        $risk = Tripline::check($ip);
+        if ($risk['blocked']) {
+            throw ValidationException::withMessages([
+                'form.email' => __('Terlalu banyak percobaan mencurigakan dari jaringanmu. Coba lagi beberapa menit lagi.'),
+            ]);
+        }
+
         if (! Auth::attempt($this->only(['email', 'password']), $this->remember)) {
             RateLimiter::hit($this->throttleKey());
+            Tripline::report($ip, $this->email, success: false, reason: 'bad_password');
 
             throw ValidationException::withMessages([
                 'form.email' => trans('auth.failed'),
@@ -42,10 +57,11 @@ class LoginForm extends Form
             Auth::logout();
 
             throw ValidationException::withMessages([
-                'form.email' => \App\Http\Middleware\EnsureNotBlocked::message(),
+                'form.email' => EnsureNotBlocked::message(),
             ]);
         }
 
+        Tripline::report($ip, $this->email, success: true);
         RateLimiter::clear($this->throttleKey());
     }
 
