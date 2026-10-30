@@ -85,6 +85,16 @@ Setelah `git pull` berikutnya: `php artisan migrate`, `php artisan db:seed --cla
 | Pembeli | `raka@brule.test` (Raka Pratama) | `password` |
 | Pembeli | `sinta@brule.test` (Sinta Dewi) | `password` |
 
+### Demo online (Render)
+
+API dan web sudah di-deploy di Render (paket gratis, Docker): <https://brule-coffee-lab.onrender.com>. File yang dipakai: `Dockerfile`, `docker/entrypoint.sh`, `render.yaml`; langkah lengkap ada di `docs/DEPLOY_RENDER.md`.
+
+- Branch yang di-deploy: `feature/mobile-api`. Auto-deploy menyala, jadi setiap push ke branch itu membangun ulang server.
+- Cek server hidup: `/up`. Contoh data: `/api/coffees`.
+- Server tidur setelah 15 menit tanpa akses (permintaan pertama 30-60 detik).
+- Database SQLite dan unggahan foto bersifat sementara: kembali ke data seeder (`SEED_DEMO=1`) saat restart atau deploy ulang. Cocok untuk demo, bukan produksi.
+- Variabel lingkungan yang wajib: `APP_KEY`, `APP_ENV=production`, `APP_DEBUG=false`, `DB_CONNECTION=sqlite`, `SESSION_DRIVER=database`, `CACHE_STORE=database`, `QUEUE_CONNECTION=sync`, `MAIL_MAILER=log`, `SEED_DEMO=1`.
+
 ### API untuk aplikasi mobile
 
 Endpoint ada di `routes/api*.php` (Sanctum). Bahasa respons mengikuti header `Accept-Language: id|en` lewat middleware `ApiLocale`, memakai `lang/en.json` yang sama dengan web. `GET /api/help/{page}` (faq, shipping, terms, privacy) menyajikan konten `lang/{id,en}/pages.php`, jadi FAQ cukup diubah di satu tempat. Daftar lengkap endpoint ada di repo `brule-mobile` (`docs/ENDPOINT_API.md`).
