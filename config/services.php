@@ -57,6 +57,12 @@ return [
         'is_production' => (bool) env('MIDTRANS_IS_PRODUCTION', false),
     ],
 
+    // Pemantauan galat: kirim ringkasan error 500 ke webhook (Slack/Discord/dll). Kosongkan = nonaktif.
+    'error_webhook' => [
+        'url' => env('ERROR_WEBHOOK_URL'),
+        'dedupe_minutes' => (int) env('ERROR_WEBHOOK_DEDUPE_MINUTES', 10),
+    ],
+
     'facebook' => [
         'client_id' => env('FACEBOOK_CLIENT_ID'),
         'client_secret' => env('FACEBOOK_CLIENT_SECRET'),

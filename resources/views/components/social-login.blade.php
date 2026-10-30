@@ -17,7 +17,7 @@
         </a>
     </div>
 
-    <div class="my-3.5 flex items-center gap-3 text-[12px] text-kraft/45">
+    <div class="my-3.5 flex items-center gap-3 text-[12px] text-kraft/70">
         <span class="h-px flex-1 bg-kraft/20"></span>{{ __('atau pakai email') }}<span class="h-px flex-1 bg-kraft/20"></span>
     </div>
 </div>

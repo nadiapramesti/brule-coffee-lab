@@ -1,5 +1,5 @@
 <div class="mx-auto max-w-[1080px] px-6 pb-20 pt-12 md:pt-16">
-    <a href="{{ $direct ? route('builder') : route('cart') }}" wire:navigate class="krm-readout text-[12px] text-kraft/60 transition-colors hover:text-labwhite">&larr; {{ $direct ? __('Kembali ke builder') : __('Kembali ke keranjang') }}</a>
+    <a href="{{ $direct ? route('builder') : route('cart') }}" wire:navigate class="krm-readout text-[12px] text-kraft/70 transition-colors hover:text-labwhite">&larr; {{ $direct ? __('Kembali ke builder') : __('Kembali ke keranjang') }}</a>
     <h1 class="krm-h2 mt-4 font-bold" data-reveal>Checkout</h1>
     <p class="mt-3 max-w-[52ch] text-[14.5px] text-kraft/75">{{ __('Satu langkah lagi. Kamu mengisi alamat, kami menimbang biji mentahnya.') }}</p>
 
@@ -45,7 +45,7 @@
 
             @if (! $savedId)
                 <label class="flex items-center gap-3 text-[13.5px] text-kraft/80">
-                    <input type="checkbox" wire:model="saveAddress" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                    <input type="checkbox" wire:model="saveAddress" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                     {{ __('Simpan alamat ini untuk pesanan berikutnya') }}
                 </label>
             @endif
@@ -58,7 +58,7 @@
                     <legend class="text-[13px] text-kraft/75">{{ __('Tambahan (opsional)') }}</legend>
                     <div class="mt-2 space-y-3">
                         <label class="flex cursor-pointer gap-3 rounded border p-4 transition-colors {{ $giftWrap ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 hover:border-kraft/50' }}">
-                            <input type="checkbox" wire:model.live="giftWrap" class="mt-1 h-4 w-4 shrink-0 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                            <input type="checkbox" wire:model.live="giftWrap" class="mt-1 h-4 w-4 shrink-0 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                             <span class="min-w-0 flex-1">
                                 <span class="flex items-baseline justify-between gap-3">
                                     <span class="text-[14.5px] font-semibold">{{ __('Kemasan hadiah') }}</span>
@@ -77,7 +77,7 @@
                             <textarea id="card" rows="2" maxlength="{{ \App\Models\Order::CARD_MAX }}" wire:model.live.debounce.400ms="cardMessage"
                                       placeholder="{{ __('Contoh: Selamat ulang tahun, Rani! Semoga harimu semanis kopi ini.') }}"
                                       class="mt-3 w-full rounded border border-kraft/25 bg-transparent px-4 py-3 text-[14.5px] text-labwhite placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40"></textarea>
-                            <p class="krm-readout mt-1 text-right text-[11.5px] text-kraft/50">{{ mb_strlen($cardMessage) }}/{{ \App\Models\Order::CARD_MAX }}</p>
+                            <p class="krm-readout mt-1 text-right text-[11.5px] text-kraft/70">{{ mb_strlen($cardMessage) }}/{{ \App\Models\Order::CARD_MAX }}</p>
                             @error('cardMessage')<p class="mt-1 text-[12.5px] text-redtext">{{ $message }}</p>@enderror
                         </div>
                     </div>
@@ -94,7 +94,7 @@
                         @continue($key === 'cod' && ! \App\Models\Setting::int('cod_enabled'))
                         @php($off = $key === 'cod' && $this->codProblem)
                         <label class="flex gap-3 rounded border p-4 transition-colors {{ $off ? 'cursor-not-allowed opacity-50' : 'cursor-pointer has-[:checked]:border-bluelab has-[:checked]:bg-bluelab/10' }} {{ $payment === $key ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 '.($off ? '' : 'hover:border-kraft/50') }}">
-                            <input type="radio" name="payment" value="{{ $key }}" wire:model.live="payment" @disabled($off) class="mt-1 h-4 w-4 shrink-0 border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                            <input type="radio" name="payment" value="{{ $key }}" wire:model.live="payment" @disabled($off) class="mt-1 h-4 w-4 shrink-0 border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                             <span class="min-w-0">
                                 <span class="block text-[14.5px] font-semibold">{{ $title }}</span>
                                 <span class="mt-0.5 block text-[12.5px] leading-relaxed text-kraft/65">{{ $hint }}</span>
@@ -114,7 +114,7 @@
         <aside class="lg:sticky lg:top-24 lg:self-start">
             <div class="overflow-hidden rounded border border-kraft/25 bg-surface">
                 <div class="p-6">
-                    <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN PESANAN') }}</p>
+                    <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/70">{{ __('RINGKASAN PESANAN') }}</p>
                     <ul class="mt-4 space-y-4">
                         @foreach ($this->lines as $l)
                             <li class="flex items-center gap-4">
@@ -136,7 +136,7 @@
                         @endforeach
                     </ul>
                     @if (! $direct)
-                        <a href="{{ route('cart') }}" wire:navigate class="mt-4 inline-block text-[12.5px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Ubah isi keranjang') }}</a>
+                        <a href="{{ route('cart') }}" wire:navigate class="mt-4 inline-block text-[12.5px] text-kraft/70 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Ubah isi keranjang') }}</a>
                     @endif
                 </div>
                 <div class="border-t border-dashed border-kraft/30 bg-surface px-6 pt-5">
@@ -175,8 +175,8 @@
                             class="mt-4 hidden w-full rounded bg-bluelab py-4 font-display text-[15px] font-semibold transition-all hover:bg-[#234E94] disabled:opacity-60 lg:block">
                         {{ __('Buat pesanan') }}
                     </button>
-                    <p class="text-center text-[12px] leading-relaxed text-kraft/50">{{ __('Dengan membuat pesanan, kamu menyetujui') }} <a href="{{ route('policy.terms') }}" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-labwhite">{{ __('Syarat & Ketentuan') }}</a>.</p>
-                    <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">
+                    <p class="text-center text-[12px] leading-relaxed text-kraft/70">{{ __('Dengan membuat pesanan, kamu menyetujui') }} <a href="{{ route('policy.terms') }}" target="_blank" rel="noopener" class="underline underline-offset-4 hover:text-labwhite">{{ __('Syarat & Ketentuan') }}</a>.</p>
+                    <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/70">
                         @if (\App\Models\Setting::int('free_shipping_from') > 0){{ __('Gratis ongkir mulai Rp:n.', ['n' => number_format(\App\Models\Setting::int('free_shipping_from'), 0, ',', '.')]) }} @endif{{ $payment === 'cod' ? __('COD: siapkan uang tunai sebesar total saat paket tiba.') : (\App\Support\Midtrans::enabled() ? __('Pembayaran lewat Midtrans di halaman berikutnya.') : __('Pembayaran disimulasikan di halaman berikutnya.')) }}
                     </p>
                 </div>

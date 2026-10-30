@@ -49,7 +49,7 @@ new #[Layout('layouts.guest')] class extends Component
         </div>
 
         <div>
-            <div class="flex items-baseline justify-between"><label for="phone">{{ __('Nomor WhatsApp') }}</label><span class="text-[11.5px] text-kraft/45">{{ __('opsional') }}</span></div>
+            <div class="flex items-baseline justify-between"><label for="phone">{{ __('Nomor WhatsApp') }}</label><span class="text-[11.5px] text-kraft/70">{{ __('opsional') }}</span></div>
             <input wire:model="phone" id="phone" class="mt-1" type="tel" name="phone" autocomplete="tel" placeholder="0812xxxxxxxx">
             <x-input-error :messages="$errors->get('phone')" class="mt-1" />
         </div>

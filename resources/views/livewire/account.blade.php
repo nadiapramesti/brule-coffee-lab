@@ -2,9 +2,9 @@
     @php $u = auth()->user(); @endphp
     <div class="flex flex-wrap items-end justify-between gap-4" data-reveal>
         <div>
-            <p class="krm-readout text-[12px] tracking-[0.16em] text-kraft/55">{{ __('AKUN SAYA') }}</p>
+            <p class="krm-readout text-[12px] tracking-[0.16em] text-kraft/70">{{ __('AKUN SAYA') }}</p>
             <h1 class="krm-h2 mt-1 font-bold">{{ __('Halo, :name', ['name' => \Illuminate\Support\Str::before($u->name, ' ')]) }}</h1>
-            <p class="mt-1 text-[13.5px] text-kraft/60">{{ $u->email }}</p>
+            <p class="mt-1 text-[13.5px] text-kraft/70">{{ $u->email }}</p>
         </div>
         <a href="{{ route('profile') }}" wire:navigate class="text-[13.5px] text-kraft/70 underline-offset-4 transition-colors hover:text-labwhite hover:underline">{{ __('Ubah profil') }} &rarr;</a>
     </div>
@@ -13,7 +13,7 @@
     <div class="mt-8 flex gap-6 border-b border-kraft/20" role="tablist">
         @foreach (['pesanan' => __('Pesanan'), 'alamat' => __('Alamat')] as $key => $name)
             <button type="button" role="tab" wire:click="$set('tab', '{{ $key }}')" aria-selected="{{ $tab === $key ? 'true' : 'false' }}"
-                    class="-mb-px border-b-2 pb-3 text-[14.5px] font-semibold transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
+                    class="-mb-px border-b-2 pb-3 text-[14.5px] font-semibold transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/70 hover:text-labwhite' }}">
                 {{ $name }}
             </button>
         @endforeach
@@ -33,12 +33,12 @@
 
         @forelse ($this->orders as $o)
             @php
-                $tone = match ($o->status) { 'completed' => 'text-[#2f7a4a]', 'cancelled' => 'text-kraft/55', 'pending_payment' => 'text-[#a8741a]', default => 'text-bluelab' };
+                $tone = match ($o->status) { 'completed' => 'text-[#2f7a4a]', 'cancelled' => 'text-kraft/70', 'pending_payment' => 'text-[#a8741a]', default => 'text-bluetext' };
             @endphp
             <article class="mt-4 overflow-hidden rounded border border-kraft/20 bg-surface" wire:key="o-{{ $o->id }}">
                 <div class="flex flex-wrap items-start justify-between gap-3 p-5">
                     <div class="min-w-0">
-                        <p class="krm-readout text-[12.5px] text-kraft/60">{{ $o->order_code }} · {{ $o->created_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y') }}</p>
+                        <p class="krm-readout text-[12.5px] text-kraft/70">{{ $o->order_code }} · {{ $o->created_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y') }}</p>
                         <p class="mt-1.5 text-[14.5px] font-semibold">{{ $o->itemSummary() }}</p>
                         <p class="mt-1 text-[13px] font-semibold {{ $tone }}">
                             {{ $o->status_label }}@if ($o->isCod()) <span class="krm-readout ml-1.5 rounded-[6px] border border-kraft/35 px-1.5 py-0.5 text-[10.5px] font-normal text-kraft/70">COD</span>@endif
@@ -119,7 +119,7 @@
                     <div class="flex flex-col rounded border bg-surface p-5 {{ $a->is_default ? 'border-bluelab/60' : 'border-kraft/20' }}" wire:key="a-{{ $a->id }}">
                         <div class="flex items-center gap-2">
                             <p class="font-display text-[1rem] font-semibold">{{ $a->label }}</p>
-                            @if ($a->is_default)<span class="krm-readout rounded-[6px] bg-bluelab/15 px-1.5 py-0.5 text-[10.5px] text-bluelab">{{ __('UTAMA') }}</span>@endif
+                            @if ($a->is_default)<span class="krm-readout rounded-[6px] bg-bluelab/15 px-1.5 py-0.5 text-[10.5px] text-bluetext">{{ __('UTAMA') }}</span>@endif
                         </div>
                         <p class="mt-2 text-[13.5px]">{{ $a->recipient }} · <span class="krm-readout text-[12.5px]">{{ $a->phone }}</span></p>
                         <p class="mt-1 flex-1 text-[13.5px] leading-relaxed text-kraft/70">{{ $a->address }}</p>
@@ -128,7 +128,7 @@
                             @unless ($a->is_default)
                                 <button type="button" wire:click="setDefault({{ $a->id }})" class="text-kraft/75 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Jadikan utama') }}</button>
                             @endunless
-                            <button type="button" wire:click="deleteAddress({{ $a->id }})" wire:confirm="{{ __('Hapus alamat ini?') }}" class="text-kraft/55 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Hapus') }}</button>
+                            <button type="button" wire:click="deleteAddress({{ $a->id }})" wire:confirm="{{ __('Hapus alamat ini?') }}" class="text-kraft/70 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Hapus') }}</button>
                         </div>
                     </div>
                 @endforeach

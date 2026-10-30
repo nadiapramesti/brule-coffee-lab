@@ -96,7 +96,21 @@ Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pe
 php artisan test
 ```
 
-Suite Pest (265 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, dan hak akses admin.
+Suite Pest (271 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, hak akses admin, header keamanan, dan pemantauan galat.
+
+**Tes browser end-to-end dan aksesibilitas** (Playwright + axe-core, folder `e2e/`) berjalan terhadap server yang hidup:
+
+```bash
+npm install
+npx playwright install chromium     # sekali saja
+php artisan serve                   # terminal lain, dengan data seeder
+npm run e2e                         # smoke flow + aksesibilitas
+npm run e2e:a11y                    # aksesibilitas saja
+```
+
+`e2e/smoke.spec.js` menguji alur racik, checkout, buat pesanan, akses admin vs pembeli, dan halaman 404. `e2e/a11y.spec.js` memeriksa WCAG 2.1 A/AA (kontras, label, atribut ARIA) di beranda, roast builder, perlengkapan, lacak pesanan, dan login, masing-masing di tema terang dan gelap; tes gagal bila ada pelanggaran berdampak *serious* atau *critical*.
+
+**CI** (`.github/workflows/ci.yml`) menjalankan di tiap push dan pull request: Pest, audit dependensi (`composer audit`, `npm audit`), dan tes Playwright. Dependabot memeriksa pembaruan dependensi tiap minggu.
 
 ## Struktur singkat
 
@@ -137,7 +151,7 @@ Pengerjaan memakai pendekatan **iteratif-inkremental** (gaya Agile, dikerjakan s
 |---|---|
 | Kebutuhan | PRD ringkas dan user story per peran (pembeli, roaster, admin), lihat [docs/PRD.md](docs/PRD.md) |
 | Pemodelan | Alur pesanan berupa state machine 6 tahap, tabel dan relasi dirancang sebelum migrasi |
-| Pengujian | TDD ringan: Pest (Feature test) untuk aturan bisnis; harga, stok, voucher, dan status pesanan diuji |
+| Pengujian | Pest (Feature test) untuk aturan bisnis, Playwright untuk E2E, axe-core untuk aksesibilitas, semuanya dijalankan di CI |
 | Versi kode | Git, commit kecil per perubahan, riwayat di GitHub |
 | Dokumentasi | README, PRD, catatan keputusan, tangkapan layar |
 | Pengiriman | Rilis bertahap; tiap tahap dicoba lewat akun demo (admin, roaster, pembeli) |
@@ -165,9 +179,11 @@ Langkah 1 sampai 6 sengaja dikerjakan sebelum kode ditulis, karena memperbaiki s
 - **Ongkir** memakai tarif flat dengan batas gratis ongkir, belum terhubung ke API kurir (tarif per kota/berat, cek resi otomatis).
 - **Satu lokasi roastery** dan satu gudang; belum ada banyak cabang.
 - **Email dan notifikasi** berjalan di proses yang sama dengan aplikasi; belum ada antrian khusus (queue worker) untuk beban besar.
-- **Belum ada CI/CD** (tes otomatis di GitHub Actions) dan belum ada pemantauan galat di produksi.
-- **Pengujian** berfokus di sisi server; belum ada tes browser end-to-end (mis. Dusk atau Playwright) dan belum ada uji aksesibilitas menyeluruh.
-- **Belum ada audit keamanan independen**; yang ada baru praktik dasar (validasi, hitung ulang harga di server, peran dan izin).
+- **CI baru berupa tes dan audit**; belum ada deploy otomatis (CD) ke server.
+- **Pemantauan galat** baru berupa notifikasi webhook (Slack/Discord) dengan dedupe; belum ada dasbor, agregasi, atau pelacakan performa (APM).
+- **Tes E2E** baru satu browser (Chromium) dan alur utama; belum ada Firefox/Safari, tes visual, atau tes tiap peran sampai tuntas.
+- **Aksesibilitas** diperiksa otomatis dengan axe di lima halaman publik; belum diuji manual dengan pembaca layar dan halaman panel admin belum tercakup.
+- **Keamanan** punya praktik dasar (validasi, harga dihitung ulang di server, peran dan izin, header keamanan, audit dependensi otomatis); belum ada audit atau pentest oleh pihak independen, dan belum ada Content-Security-Policy.
 - **Foto perlengkapan** dibuat dengan AI dan data demo fiktif, jadi belum mewakili katalog nyata.
 - **Belum ada aplikasi mobile**; yang tersedia web responsif.
 
@@ -177,8 +193,10 @@ Langkah 1 sampai 6 sengaja dikerjakan sebelum kode ditulis, karena memperbaiki s
 - Pembayaran produksi (Midtrans live) dan beberapa metode tambahan.
 - Langganan kopi (kirim berkala) dan program loyalitas.
 - Queue worker dan cache untuk email, laporan, dan beban tinggi.
-- GitHub Actions untuk Pest dan analisis statis di setiap push.
-- Tes end-to-end dan pemantauan galat (mis. Sentry) di produksi.
+- Deploy otomatis (CD) dan analisis statis (Larastan) di CI.
+- Sentry atau APM untuk agregasi galat dan performa di produksi.
+- Content-Security-Policy dan pentest oleh pihak independen.
+- Perluas E2E ke Firefox/WebKit, halaman admin, dan uji manual dengan pembaca layar.
 - Prediksi kebutuhan stok biji dari riwayat pesanan.
 - PWA atau aplikasi mobile agar notifikasi status pesanan bisa langsung ke HP.
 - Dukungan banyak roastery/cabang dengan stok terpisah.

@@ -9,7 +9,7 @@
     <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
             <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Pesanan') }}</h1>
-            <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Semua pesanan toko. Klik baris untuk melihat detail dan mengubah status.') }}</p>
+            <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ __('Semua pesanan toko. Klik baris untuk melihat detail dan mengubah status.') }}</p>
         </div>
         <x-download-menu :xlsx="route('admin.orders.export', $exportQuery + ['format' => 'xlsx'])" :pdf="route('admin.orders.export', $exportQuery + ['format' => 'pdf'])" />
     </div>
@@ -22,14 +22,14 @@
         {{-- Filter --}}
         <div class="grid gap-3 px-4 pt-4 sm:flex sm:flex-wrap sm:items-end">
             <div class="relative min-w-[220px] flex-1 sm:max-w-sm">
-                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
+                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/70" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
                 <label class="sr-only" for="q">{{ __('Cari pesanan') }}</label>
                 <input id="q" type="search" wire:model.live.debounce.350ms="search" placeholder="{{ __('Kode, nama, telepon, atau resi') }}" class="{{ $inp }} w-full pl-9">
             </div>
             <div class="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2 sm:flex sm:flex-wrap">
                 <label class="sr-only" for="from">{{ __('Dari tanggal') }}</label>
                 <input id="from" type="date" wire:model.live="from" class="{{ $inp }} krm-readout w-full min-w-0 max-sm:px-2 max-sm:text-[12.5px] sm:w-auto" style="color-scheme: dark">
-                <span class="text-kraft/40" aria-hidden="true">–</span>
+                <span class="text-kraft/70" aria-hidden="true">–</span>
                 <label class="sr-only" for="to">{{ __('Sampai tanggal') }}</label>
                 <input id="to" type="date" wire:model.live="to" class="{{ $inp }} krm-readout w-full min-w-0 max-sm:px-2 max-sm:text-[12.5px] sm:w-auto" style="color-scheme: dark">
             </div>
@@ -37,14 +37,14 @@
                 @foreach (['today' => __('Hari ini'), '7' => '7 ' . __('hari'), '30' => '30 ' . __('hari')] as $k => $l)
                     <button type="button" wire:click="preset('{{ $k }}')" class="whitespace-nowrap rounded border border-kraft/25 px-2.5 py-2 text-center text-[12px] text-kraft/75 transition-colors hover:border-kraft/60 hover:text-labwhite">{{ $l }}</button>
                 @endforeach
-                @if ($from || $to)<button type="button" wire:click="preset('all')" class="px-2 py-2 text-[12px] text-kraft/55 underline-offset-4 hover:underline max-sm:col-span-3">{{ __('Reset') }}</button>@endif
+                @if ($from || $to)<button type="button" wire:click="preset('all')" class="px-2 py-2 text-[12px] text-kraft/70 underline-offset-4 hover:underline max-sm:col-span-3">{{ __('Reset') }}</button>@endif
             </div>
         </div>
 
         <div class="mt-3 flex gap-x-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] max-sm:pb-px sm:flex-wrap sm:overflow-visible [&::-webkit-scrollbar]:hidden" role="tablist">
             @foreach (\App\Models\Order::TABS as $key => [$label])
                 <button type="button" role="tab" aria-selected="{{ $tab === $key ? 'true' : 'false' }}" wire:click="setTab('{{ $key }}')"
-                        class="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
+                        class="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/70 hover:text-labwhite' }}">
                     {{ __($label) }}<span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
                 </button>
             @endforeach
@@ -52,16 +52,16 @@
 
         <div wire:loading.class="opacity-60" class="transition-opacity">
             <table class="hidden w-full text-left text-[13.5px] md:table">
-                <thead class="krm-readout text-[11px] uppercase tracking-[0.12em] text-kraft/45">
+                <thead class="krm-readout text-[11px] uppercase tracking-[0.12em] text-kraft/70">
                     <tr class="border-b border-kraft/10"><th class="px-4 py-2.5 font-normal">{{ __('Kode') }}</th><th class="px-3 py-2.5 font-normal">{{ __('Pelanggan') }}</th><th class="px-3 py-2.5 font-normal">{{ __('Item') }}</th><th class="px-3 py-2.5 font-normal">{{ __('Waktu') }}</th><th class="px-3 py-2.5 text-right font-normal">{{ __('Total') }}</th><th class="px-4 py-2.5 font-normal">{{ __('Status') }}</th></tr>
                 </thead>
                 <tbody class="divide-y divide-kraft/10">
                     @foreach ($orders as $row)
                         <tr wire:key="r-{{ $row->id }}" wire:click="show('{{ $row->order_code }}')" class="cursor-pointer transition-colors hover:bg-labwhite/[.03] {{ $open === $row->order_code ? 'bg-bluelab/10' : '' }}">
-                            <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}@if ($row->hasAddons()) <span class="ml-1.5 rounded-[6px] border border-bluelab/50 px-1.5 py-px font-sans text-[10.5px] text-bluelab" title="{{ $row->addonLabel() }}">{{ __('Hadiah') }}</span>@endif</td>
+                            <td class="krm-readout whitespace-nowrap px-4 py-3 text-[12.5px]">{{ $row->order_code }}@if ($row->hasAddons()) <span class="ml-1.5 rounded-[6px] border border-bluelab/50 px-1.5 py-px font-sans text-[10.5px] text-bluetext" title="{{ $row->addonLabel() }}">{{ __('Hadiah') }}</span>@endif</td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $row->user?->name ?? $row->recipient_name }}</td>
                             <td class="max-w-[260px] truncate px-3 py-3 text-kraft/65">{{ $row->groupedItems()->map(fn ($i) => $i->short)->implode(', ') }}</td>
-                            <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $row->created_at->translatedFormat('j M, H:i') }}</td>
+                            <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/70">{{ $row->created_at->translatedFormat('j M, H:i') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-right">{{ $rp($row->total) }}</td>
                             <td class="px-4 py-3"><span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $row->statusTone() }}">{{ $row->status_label }}</span></td>
                         </tr>
@@ -78,18 +78,18 @@
                                 <span class="rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $row->statusTone() }}">{{ $row->status_label }}</span>
                             </div>
                             <p class="mt-1 truncate text-[13.5px]">{{ $row->user?->name ?? $row->recipient_name }}</p>
-                            <div class="mt-0.5 flex justify-between text-[12px] text-kraft/55"><span>{{ $row->created_at->translatedFormat('j M, H:i') }}</span><span class="krm-readout text-labwhite">{{ $rp($row->total) }}</span></div>
+                            <div class="mt-0.5 flex justify-between text-[12px] text-kraft/70"><span>{{ $row->created_at->translatedFormat('j M, H:i') }}</span><span class="krm-readout text-labwhite">{{ $rp($row->total) }}</span></div>
                         </button>
                     </li>
                 @endforeach
             </ul>
 
             @if ($orders->isEmpty())
-                <p class="px-5 py-12 text-center text-[13px] text-kraft/45">{{ __('Tidak ada pesanan yang cocok dengan filter ini.') }}</p>
+                <p class="px-5 py-12 text-center text-[13px] text-kraft/70">{{ __('Tidak ada pesanan yang cocok dengan filter ini.') }}</p>
             @endif
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-kraft/15 px-4 py-3 text-[12.5px] text-kraft/60">
+        <div class="flex flex-wrap items-center justify-between gap-3 border-t border-kraft/15 px-4 py-3 text-[12.5px] text-kraft/70">
             <span>{{ $orders->total() ? __('Menampilkan :a–:b dari :t', ['a' => $orders->firstItem(), 'b' => $orders->lastItem(), 't' => $orders->total()]) . ' · ' . __('Nilai') . ' ' . $rp($this->sum) : '' }}</span>
             <div class="flex items-center gap-2">
                 <button wire:click="previousPage" @disabled($orders->onFirstPage()) class="rounded border border-kraft/25 px-3 py-1.5 transition-colors enabled:hover:border-kraft/60 disabled:opacity-35" aria-label="{{ __('Sebelumnya') }}">&larr;</button>
@@ -108,9 +108,9 @@
             <aside role="dialog" aria-modal="true" aria-labelledby="od-title" class="krm-slide relative flex h-full w-full max-w-[540px] flex-col border-l border-kraft/25 bg-surface shadow-[-30px_0_80px_-20px_rgb(var(--shadow)/.9)]">
                 <header class="flex shrink-0 items-start justify-between gap-3 border-b border-kraft/15 px-5 py-4">
                     <div class="min-w-0">
-                        <p class="krm-readout text-[11px] uppercase tracking-[0.16em] text-kraft/50">{{ __('Pesanan') }}</p>
+                        <p class="krm-readout text-[11px] uppercase tracking-[0.16em] text-kraft/70">{{ __('Pesanan') }}</p>
                         <h2 id="od-title" class="krm-readout whitespace-nowrap text-[1.15rem] font-semibold max-[400px]:text-[1.02rem]">{{ $o->order_code }}</h2>
-                        <p class="mt-0.5 text-[12px] text-kraft/55">{{ $o->created_at->translatedFormat('j F Y, H:i') }}</p>
+                        <p class="mt-0.5 text-[12px] text-kraft/70">{{ $o->created_at->translatedFormat('j F Y, H:i') }}</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $o->statusTone() }}">{{ $o->status_label }}</span>
@@ -139,8 +139,8 @@
                                     @unless ($loop->first)<span class="absolute right-1/2 top-[7px] hidden h-px w-full sm:block {{ $done ? 'bg-bluelab' : 'bg-kraft/20' }}"></span>@endunless
                                     <span class="relative z-[1] mt-[2px] block h-[15px] w-[15px] shrink-0 rounded-full border-2 sm:mx-auto sm:mt-0 {{ $done ? 'border-bluelab bg-bluelab' : 'border-kraft/30 bg-surface' }} {{ $s === $o->status ? 'ring-4 ring-bluelab/25' : '' }}"></span>
                                     <span class="flex min-w-0 flex-1 items-baseline justify-between gap-3 sm:mt-1.5 sm:block">
-                                        <span class="block text-[13px] leading-tight sm:text-[10px] {{ $done ? 'text-labwhite' : 'text-kraft/45' }} {{ $s === $o->status ? 'font-semibold' : '' }}">{{ __(\App\Models\Order::STATUS_LABELS[$s]) }}</span>
-                                        @if ($at)<span class="krm-readout block whitespace-nowrap text-[11.5px] text-kraft/55 sm:text-[9.5px] sm:text-kraft/45">{{ $at->translatedFormat('j M H:i') }}</span>@endif
+                                        <span class="block text-[13px] leading-tight sm:text-[10px] {{ $done ? 'text-labwhite' : 'text-kraft/70' }} {{ $s === $o->status ? 'font-semibold' : '' }}">{{ __(\App\Models\Order::STATUS_LABELS[$s]) }}</span>
+                                        @if ($at)<span class="krm-readout block whitespace-nowrap text-[11.5px] text-kraft/70 sm:text-[9.5px] sm:text-kraft/70">{{ $at->translatedFormat('j M H:i') }}</span>@endif
                                     </span>
                                 </li>
                             @endforeach
@@ -168,7 +168,7 @@
                             @elseif ($o->status === 'shipped')
                                 <button wire:click="complete" class="w-full rounded bg-bluelab py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">{{ $o->isCod() && ! $o->isPaid() ? __('Tandai selesai (paket diterima, uang COD masuk)') : __('Tandai selesai (sudah diterima)') }}</button>
                             @else
-                                <p class="text-[13px] text-kraft/55">{{ __('Tidak ada tindakan untuk status ini.') }}</p>
+                                <p class="text-[13px] text-kraft/70">{{ __('Tidak ada tindakan untuk status ini.') }}</p>
                             @endif
 
                             @if (in_array($o->status, ['pending_payment', 'queued']))
@@ -176,7 +176,7 @@
                                     <button wire:click="$set('confirmCancel', true)" class="w-full rounded border border-redtext/30 py-2 text-[13px] text-redtext transition-colors hover:bg-redtext/10">{{ __('Batalkan pesanan') }}</button>
                                 @else
                                     <div class="rounded border border-redtext/30 bg-redtext/[.05] p-3">
-                                        <label for="why" class="text-[12.5px] text-kraft/75">{{ __('Alasan pembatalan') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                                        <label for="why" class="text-[12.5px] text-kraft/75">{{ __('Alasan pembatalan') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                                         <input id="why" wire:model="cancelReason" placeholder="{{ __('Contoh: stok biji habis / permintaan pembeli') }}" class="{{ $inp }} mt-1.5 w-full">
                                         <div class="mt-2.5 flex gap-2">
                                             <button wire:click="cancel" class="flex-1 rounded bg-redtext/80 py-2 text-[13px] font-semibold hover:bg-red-500">{{ __('Ya, batalkan & kembalikan stok') }}</button>
@@ -195,8 +195,8 @@
                         <p class="krm-readout text-[12.5px] text-kraft/70">{{ $o->recipient_phone }}
                             <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">WhatsApp ↗</a></p>
                         <p class="mt-2 whitespace-pre-line text-kraft/80">{{ $o->shipping_address }}</p>
-                        @if ($o->user)<p class="mt-3 border-t border-kraft/10 pt-2.5 text-[12px] text-kraft/55">{{ __('Akun') }}: {{ $o->user->name }} · {{ $o->user->email }}</p>@endif
-                        @if ($o->tracking_number)<p class="mt-1 text-[12px] text-kraft/55">{{ __('Resi') }}: <span class="krm-readout text-labwhite">{{ $o->tracking_number }}</span></p>@endif
+                        @if ($o->user)<p class="mt-3 border-t border-kraft/10 pt-2.5 text-[12px] text-kraft/70">{{ __('Akun') }}: {{ $o->user->name }} · {{ $o->user->email }}</p>@endif
+                        @if ($o->tracking_number)<p class="mt-1 text-[12px] text-kraft/70">{{ __('Resi') }}: <span class="krm-readout text-labwhite">{{ $o->tracking_number }}</span></p>@endif
                     </section>
 
                     {{-- Item --}}
@@ -207,7 +207,7 @@
                                 <li class="flex items-start justify-between gap-4 py-3">
                                     <div class="min-w-0">
                                         <p class="text-[13.5px] font-semibold">{{ $it->coffee_name_snapshot }}</p>
-                                        <p class="text-[12px] text-kraft/60">{{ $it->descr }}@if ($it->qty > 1)<span class="krm-readout">{{ $it->descr ? ' · ' : '' }}× {{ $it->qty }}</span>@endif</p>
+                                        <p class="text-[12px] text-kraft/70">{{ $it->descr }}@if ($it->qty > 1)<span class="krm-readout">{{ $it->descr ? ' · ' : '' }}× {{ $it->qty }}</span>@endif</p>
                                     </div>
                                     <span class="krm-readout shrink-0 text-[13px]">{{ $rp($it->line_total) }}</span>
                                 </li>
@@ -248,10 +248,10 @@
                                 <li class="relative text-[12.5px]">
                                     <span class="absolute -left-[21px] top-1.5 h-2 w-2 rounded-full bg-bluelab"></span>
                                     <p class="text-kraft/90">{{ $log->text() }}</p>
-                                    <p class="text-[11.5px] text-kraft/45">{{ $log->created_at->translatedFormat('j M Y, H:i') }}@if ($log->user) · {{ $log->user->name }}@endif</p>
+                                    <p class="text-[11.5px] text-kraft/70">{{ $log->created_at->translatedFormat('j M Y, H:i') }}@if ($log->user) · {{ $log->user->name }}@endif</p>
                                 </li>
                             @empty
-                                <li class="text-[12.5px] text-kraft/40">{{ __('Belum ada catatan aktivitas.') }}</li>
+                                <li class="text-[12.5px] text-kraft/70">{{ __('Belum ada catatan aktivitas.') }}</li>
                             @endforelse
                         </ul>
                     </section>
@@ -263,9 +263,9 @@
                             <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V4h10v5M7 17H5v-6h14v6h-2M7 14h10v6H7z"/></svg>{{ __('Cetak invoice & label') }}
                         </a>
                     @else
-                        <span class="text-[12.5px] text-kraft/50">{{ $o->status === 'cancelled' ? __('Pesanan dibatalkan, tidak ada invoice.') : __('Invoice bisa dicetak setelah pembayaran lunas.') }}</span>
+                        <span class="text-[12.5px] text-kraft/70">{{ $o->status === 'cancelled' ? __('Pesanan dibatalkan, tidak ada invoice.') : __('Invoice bisa dicetak setelah pembayaran lunas.') }}</span>
                     @endif
-                    <a href="{{ route('track', $o->order_code) }}" target="_blank" rel="noopener" class="text-[13px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Lihat halaman pelacakan') }} ↗</a>
+                    <a href="{{ route('track', $o->order_code) }}" target="_blank" rel="noopener" class="text-[13px] text-kraft/70 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Lihat halaman pelacakan') }} ↗</a>
                 </footer>
             </aside>
         </div>

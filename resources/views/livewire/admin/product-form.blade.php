@@ -8,7 +8,7 @@
     <header class="flex shrink-0 items-center justify-between gap-3 border-b border-kraft/15 px-5 py-3.5">
         <div>
             <h2 id="form-title" class="font-display text-[1.1rem] font-semibold leading-tight">{{ $productId ? __('Ubah produk') : __('Produk baru') }}</h2>
-            @if ($productId)<p class="krm-readout text-[11px] text-kraft/50">{{ $slug }}</p>@endif
+            @if ($productId)<p class="krm-readout text-[11px] text-kraft/70">{{ $slug }}</p>@endif
         </div>
         <button type="button" wire:click="$dispatch('close-product-form')" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 transition-colors hover:bg-labwhite/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
             <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>
@@ -25,7 +25,7 @@
                     @error('name')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="name_en" class="{{ $lb }}">{{ __('Nama produk (English)') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                    <label for="name_en" class="{{ $lb }}">{{ __('Nama produk (English)') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                     <input id="name_en" wire:model="name_en" placeholder="Hario V60 Dripper 02" class="{{ $in }}">
                     @error('name_en')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
@@ -48,7 +48,7 @@
                 @error('description')<p class="{{ $er }}">{{ $message }}</p>@enderror
             </div>
             <div class="mt-3">
-                <label for="description_en" class="{{ $lb }}">{{ __('Deskripsi (English)') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                <label for="description_en" class="{{ $lb }}">{{ __('Deskripsi (English)') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                 <textarea id="description_en" rows="2" wire:model="description_en" placeholder="Example: Ceramic dripper for 1–4 cups. Steady flow, easy to clean." class="{{ $in }}"></textarea>
                 @error('description_en')<p class="{{ $er }}">{{ $message }}</p>@enderror
             </div>
@@ -64,20 +64,20 @@
                     @error('stock')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="option_label" class="{{ $lb }}">{{ __('Nama pilihan') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                    <label for="option_label" class="{{ $lb }}">{{ __('Nama pilihan') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                     <input id="option_label" wire:model="option_label" placeholder="{{ __('Contoh: Ukuran') }}" class="{{ $in }}">
                     @error('option_label')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="options" class="{{ $lb }}">{{ __('Daftar pilihan') }} <span class="text-kraft/45">· {{ __('pisahkan dengan koma') }}</span></label>
+                    <label for="options" class="{{ $lb }}">{{ __('Daftar pilihan') }} <span class="text-kraft/70">· {{ __('pisahkan dengan koma') }}</span></label>
                     <input id="options" wire:model="options" placeholder="S, M, L, XL" class="{{ $in }}">
                     @error('options')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
             </div>
-            <p class="mt-2 text-[12px] text-kraft/50">{{ __('Stok dihitung total per produk, bukan per pilihan.') }}</p>
+            <p class="mt-2 text-[12px] text-kraft/70">{{ __('Stok dihitung total per produk, bukan per pilihan.') }}</p>
 
             <div class="mt-4">
-                <span class="{{ $lb }}">{{ __('Foto produk') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></span>
+                <span class="{{ $lb }}">{{ __('Foto produk') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></span>
                 @php($shown = $photo ? $photo->temporaryUrl() : $this->currentImageUrl())
                 <div class="mt-1.5 flex items-start gap-4">
                     <div class="h-24 w-28 shrink-0 overflow-hidden rounded border border-kraft/15 bg-surface">
@@ -92,15 +92,15 @@
                             @if ($shown)
                                 <button type="button" wire:click="clearPhoto" class="rounded px-3 py-2 text-[13px] text-redtext transition hover:bg-red-500/10">{{ $photo ? __('Batal pilih') : __('Hapus foto') }}</button>
                             @endif
-                            <span wire:loading wire:target="photo" class="text-[12px] text-kraft/60">{{ __('Mengunggah…') }}</span>
+                            <span wire:loading wire:target="photo" class="text-[12px] text-kraft/70">{{ __('Mengunggah…') }}</span>
                         </div>
-                        <p class="mt-2 text-[12px] leading-relaxed text-kraft/55">{{ __('JPG, PNG, atau WebP. Maks 3 MB. Rasio 4:3 paling pas. Tanpa foto, toko menampilkan ikon kategori.') }}</p>
+                        <p class="mt-2 text-[12px] leading-relaxed text-kraft/70">{{ __('JPG, PNG, atau WebP. Maks 3 MB. Rasio 4:3 paling pas. Tanpa foto, toko menampilkan ikon kategori.') }}</p>
                         @error('photo')<p class="{{ $er }}">{{ $message }}</p>@enderror
                     </div>
                 </div>
             </div>
             <label class="mt-4 flex cursor-pointer items-center gap-3 text-[14px]">
-                <input type="checkbox" wire:model="is_active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                <input type="checkbox" wire:model="is_active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                 {{ __('Tampilkan di toko') }}
             </label>
         </section>

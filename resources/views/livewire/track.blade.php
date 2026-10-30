@@ -20,7 +20,7 @@
         <div class="mt-8 overflow-hidden rounded border border-kraft/25 bg-surface">
             <div class="flex flex-wrap items-start justify-between gap-4 p-6">
                 <div>
-                    <p class="krm-readout text-[13px] text-kraft/60">{{ $o->order_code }}</p>
+                    <p class="krm-readout text-[13px] text-kraft/70">{{ $o->order_code }}</p>
                     <p class="mt-2 font-display text-[1.6rem] font-semibold leading-none">{{ $o->status_label }}</p>
                 </div>
                 <p class="krm-readout text-[1.4rem]">Rp{{ number_format($o->total, 0, ',', '.') }}</p>
@@ -54,7 +54,7 @@
                             <button wire:click="cancel" wire:confirm="{{ __('Batalkan pesanan ini?') }}" class="rounded border border-kraft/30 px-6 py-3 text-[14.5px] text-kraft/80 transition-colors hover:border-kraft/60">{{ __('Batalkan') }}</button>
                         </div>
                     @else
-                        <p class="mt-4 text-[13px] text-kraft/55">{{ __('Masuk dengan akun pemesan untuk membayar.') }}</p>
+                        <p class="mt-4 text-[13px] text-kraft/70">{{ __('Masuk dengan akun pemesan untuk membayar.') }}</p>
                     @endif
                 </div>
             @else
@@ -67,10 +67,10 @@
                                 @if ($now && $step !== 'completed')<span class="absolute -inset-1 animate-ping rounded-full bg-bluelab/40"></span>@endif
                             </span>
                             <div>
-                                <p class="text-[14.5px] {{ $done ? 'text-labwhite' : 'text-kraft/45' }} {{ $now ? 'font-semibold' : '' }}">{{ __(\App\Models\Order::STATUS_LABELS[$step]) }}</p>
-                                @if (($times[$step] ?? null) && $done)<p class="krm-readout mt-0.5 text-[11.5px] text-kraft/55">{{ $times[$step]->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y, H.i') }}</p>@endif
-                                @if ($step === 'roasting' && $done && $o->bestBefore())<p class="mt-0.5 text-[12px] text-kraft/60">{{ __('Terbaik dinikmati sebelum') }} <span class="krm-readout text-labwhite">{{ $o->bestBefore()->locale(app()->getLocale())->translatedFormat('d M Y') }}</span></p>@endif
-                                @if ($step === 'shipped' && $o->tracking_number && $done)<p class="krm-readout mt-0.5 text-[12px] text-bluelab">{{ __('Resi') }}: {{ $o->tracking_number }}</p>@endif
+                                <p class="text-[14.5px] {{ $done ? 'text-labwhite' : 'text-kraft/70' }} {{ $now ? 'font-semibold' : '' }}">{{ __(\App\Models\Order::STATUS_LABELS[$step]) }}</p>
+                                @if (($times[$step] ?? null) && $done)<p class="krm-readout mt-0.5 text-[11.5px] text-kraft/70">{{ $times[$step]->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y, H.i') }}</p>@endif
+                                @if ($step === 'roasting' && $done && $o->bestBefore())<p class="mt-0.5 text-[12px] text-kraft/70">{{ __('Terbaik dinikmati sebelum') }} <span class="krm-readout text-labwhite">{{ $o->bestBefore()->locale(app()->getLocale())->translatedFormat('d M Y') }}</span></p>@endif
+                                @if ($step === 'shipped' && $o->tracking_number && $done)<p class="krm-readout mt-0.5 text-[12px] text-bluetext">{{ __('Resi') }}: {{ $o->tracking_number }}</p>@endif
                             </div>
                         </li>
                     @endforeach
@@ -91,7 +91,7 @@
         @auth
             @php $mine = auth()->user()->orders()->latest()->limit(5)->get(); @endphp
             @if ($mine->isNotEmpty())
-                <h2 class="mt-10 text-[13px] text-kraft/55">{{ __('Pesanan terakhirmu') }}</h2>
+                <h2 class="mt-10 text-[13px] text-kraft/70">{{ __('Pesanan terakhirmu') }}</h2>
                 <ul class="mt-3 divide-y divide-kraft/15 rounded border border-kraft/20">
                     @foreach ($mine as $m)
                         <li><a href="{{ route('track', $m->order_code) }}" wire:navigate class="flex items-center justify-between gap-4 px-5 py-4 transition-colors hover:bg-labwhite/[.03]">

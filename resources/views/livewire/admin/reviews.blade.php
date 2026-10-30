@@ -1,7 +1,7 @@
 <div>
     <div>
         <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Ulasan') }}</h1>
-        <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Ulasan dari pembeli dengan pesanan selesai. Sembunyikan yang melanggar aturan; yang disembunyikan tidak tampil di toko dan tidak dihitung ke rating.') }}</p>
+        <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ __('Ulasan dari pembeli dengan pesanan selesai. Sembunyikan yang melanggar aturan; yang disembunyikan tidak tampil di toko dan tidak dihitung ke rating.') }}</p>
     </div>
 
     @if ($notice)
@@ -12,7 +12,7 @@
         <div class="flex gap-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px sm:flex-wrap sm:overflow-visible" role="tablist">
             @foreach (['all' => __('Semua'), 'visible' => __('Tampil'), 'hidden' => __('Disembunyikan')] as $k => $l)
                 <button role="tab" aria-selected="{{ $show === $k ? 'true' : 'false' }}" wire:click="$set('show', '{{ $k }}')"
-                        class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $show === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
+                        class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $show === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/70 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
             @endforeach
         </div>
 
@@ -25,7 +25,7 @@
                             <span class="text-[13.5px] font-semibold">{{ $r->coffee->name }}</span>
                             @if ($r->is_hidden)<span class="krm-readout rounded-[6px] border border-[#E8782A]/50 px-1.5 text-[10.5px] text-ambertext">{{ __('DISEMBUNYIKAN') }}</span>@endif
                         </div>
-                        <p class="mt-1 text-[12px] text-kraft/55">{{ $r->user->name }} · {{ $r->user->email }} · {{ $r->created_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y') }}</p>
+                        <p class="mt-1 text-[12px] text-kraft/70">{{ $r->user->name }} · {{ $r->user->email }} · {{ $r->created_at->timezone('Asia/Jakarta')->locale(app()->getLocale())->translatedFormat('d M Y') }}</p>
                         @if ($r->body)<p class="mt-2 max-w-[70ch] text-[13.5px] leading-relaxed text-kraft/80">{{ $r->body }}</p>@endif
                     </div>
                     <div class="flex gap-2 text-[13px]">
@@ -34,7 +34,7 @@
                     </div>
                 </li>
             @empty
-                <li class="px-4 py-12 text-center text-[13.5px] text-kraft/55">{{ __('Belum ada ulasan.') }}</li>
+                <li class="px-4 py-12 text-center text-[13.5px] text-kraft/70">{{ __('Belum ada ulasan.') }}</li>
             @endforelse
         </ul>
     </section>

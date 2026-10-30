@@ -3,7 +3,7 @@
     $inp = 'w-full rounded border border-kraft/25 bg-transparent px-3 py-2.5 text-[14px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40';
     $chip = [
         'active' => ['Aktif', 'border-bluelab/60 text-bluetext'],
-        'inactive' => ['Nonaktif', 'border-kraft/30 text-kraft/60'],
+        'inactive' => ['Nonaktif', 'border-kraft/30 text-kraft/70'],
         'scheduled' => ['Terjadwal', 'border-kraft/40 text-kraft/80'],
         'expired' => ['Berakhir', 'border-[#E8782A]/50 text-ambertext'],
         'exhausted' => ['Kuota habis', 'border-[#E8782A]/50 text-ambertext'],
@@ -13,7 +13,7 @@
     <div class="flex flex-wrap items-start justify-between gap-3">
         <div>
             <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Voucher') }}</h1>
-            <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Kode diskon untuk checkout. Divalidasi ulang di server saat pesanan dibuat.') }}</p>
+            <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ __('Kode diskon untuk checkout. Divalidasi ulang di server saat pesanan dibuat.') }}</p>
         </div>
         <button wire:click="openForm" class="inline-flex items-center gap-2 rounded bg-bluelab px-4 py-2.5 text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">
             <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>{{ __('Voucher baru') }}
@@ -29,7 +29,7 @@
             <div class="flex max-w-full gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px" role="tablist">
                 @foreach (['all' => __('Semua'), 'live' => __('Berjalan'), 'ended' => __('Tidak aktif')] as $k => $l)
                     <button role="tab" aria-selected="{{ $show === $k ? 'true' : 'false' }}" wire:click="$set('show', '{{ $k }}')"
-                            class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $show === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
+                            class="-mb-px shrink-0 whitespace-nowrap border-b-2 px-3 py-3 text-[13px] transition-colors {{ $show === $k ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/70 hover:text-labwhite' }}">{{ $l }} <span class="krm-readout ml-1 rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->counts[$k] }}</span></button>
                 @endforeach
             </div>
             <div class="w-full py-2 sm:w-auto">
@@ -40,7 +40,7 @@
 
         <div wire:loading.class="opacity-60" class="transition-opacity">
             @if ($this->vouchers->isEmpty())
-                <p class="px-5 py-14 text-center text-[13px] text-kraft/45">{{ __('Belum ada voucher yang cocok.') }}</p>
+                <p class="px-5 py-14 text-center text-[13px] text-kraft/70">{{ __('Belum ada voucher yang cocok.') }}</p>
             @else
                 <ul class="grid gap-4 p-4 sm:grid-cols-2 xl:grid-cols-3">
                     @foreach ($this->vouchers as $v)
@@ -60,13 +60,13 @@
                                 <span class="shrink-0 whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11px] {{ $chip[$st][1] }}">{{ __($chip[$st][0]) }}</span>
                             </div>
                             <p class="mt-1 font-display text-[1.15rem] font-bold leading-tight">{{ $v->benefitLabel() }}</p>
-                            <p class="mt-1 min-h-[2.4em] text-[12.5px] leading-snug text-kraft/55">{{ $v->note ?: '—' }}</p>
+                            <p class="mt-1 min-h-[2.4em] text-[12.5px] leading-snug text-kraft/70">{{ $v->note ?: '—' }}</p>
 
                             <dl class="mt-3 space-y-1.5 border-t border-kraft/10 pt-3 text-[12.5px]">
-                                <div class="flex justify-between gap-3"><dt class="text-kraft/50">{{ __('Min. belanja') }}</dt><dd class="krm-readout">{{ $v->min_subtotal ? 'Rp' . $n($v->min_subtotal) : '—' }}</dd></div>
-                                <div class="flex justify-between gap-3"><dt class="text-kraft/50">{{ __('Masa berlaku') }}</dt><dd class="krm-readout text-right">{{ $valid }}</dd></div>
+                                <div class="flex justify-between gap-3"><dt class="text-kraft/70">{{ __('Min. belanja') }}</dt><dd class="krm-readout">{{ $v->min_subtotal ? 'Rp' . $n($v->min_subtotal) : '—' }}</dd></div>
+                                <div class="flex justify-between gap-3"><dt class="text-kraft/70">{{ __('Masa berlaku') }}</dt><dd class="krm-readout text-right">{{ $valid }}</dd></div>
                                 <div>
-                                    <div class="flex justify-between gap-3"><dt class="text-kraft/50">{{ __('Terpakai') }}</dt><dd class="krm-readout">{{ $v->used_count }}{{ $v->quota ? ' / ' . $v->quota : ' · ' . __('tanpa batas') }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt class="text-kraft/70">{{ __('Terpakai') }}</dt><dd class="krm-readout">{{ $v->used_count }}{{ $v->quota ? ' / ' . $v->quota : ' · ' . __('tanpa batas') }}</dd></div>
                                     @if ($v->quota)<div class="mt-1.5 h-[3px] rounded-full bg-labwhite/10"><div class="h-[3px] rounded-full {{ $pct >= 100 ? 'bg-[#E8782A]' : 'bg-bluelab' }}" style="width: {{ $pct }}%"></div></div>@endif
                                 </div>
                             </dl>
@@ -122,13 +122,13 @@
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label for="vmin" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Min. belanja (Rp)') }} <span class="block text-kraft/45 sm:inline"><span class="max-sm:hidden">· </span>{{ __('opsional') }}</span></label>
+                            <label for="vmin" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Min. belanja (Rp)') }} <span class="block text-kraft/70 sm:inline"><span class="max-sm:hidden">· </span>{{ __('opsional') }}</span></label>
                             <input id="vmin" type="number" inputmode="numeric" wire:model="minSubtotal" placeholder="100000" class="{{ $inp }} krm-readout mt-1.5">
                             @error('minSubtotal')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                         </div>
                         @if ($type === 'percent')
                             <div>
-                                <label for="vmax" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Maks. potongan (Rp)') }} <span class="block text-kraft/45 sm:inline"><span class="max-sm:hidden">· </span>{{ __('opsional') }}</span></label>
+                                <label for="vmax" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Maks. potongan (Rp)') }} <span class="block text-kraft/70 sm:inline"><span class="max-sm:hidden">· </span>{{ __('opsional') }}</span></label>
                                 <input id="vmax" type="number" inputmode="numeric" wire:model="maxDiscount" placeholder="50000" class="{{ $inp }} krm-readout mt-1.5">
                                 @error('maxDiscount')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                             </div>
@@ -136,7 +136,7 @@
                     </div>
 
                     <div>
-                        <label for="vquota" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Kuota pemakaian') }} <span class="text-kraft/45">· {{ __('kosongkan = tanpa batas') }}</span></label>
+                        <label for="vquota" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Kuota pemakaian') }} <span class="text-kraft/70">· {{ __('kosongkan = tanpa batas') }}</span></label>
                         <input id="vquota" type="number" inputmode="numeric" wire:model="quota" placeholder="100" class="{{ $inp }} krm-readout mt-1.5">
                         @error('quota')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
@@ -154,11 +154,11 @@
                     </div>
 
                     <div>
-                        <label for="vnote" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Catatan internal') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                        <label for="vnote" class="block text-[12.5px] leading-snug text-kraft/75">{{ __('Catatan internal') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                         <input id="vnote" wire:model="note" placeholder="{{ __('Contoh: Promo pelanggan baru bulan November') }}" class="{{ $inp }} mt-1.5">
                     </div>
 
-                    <label class="flex cursor-pointer items-center gap-2.5 text-[13.5px]"><input type="checkbox" wire:model="active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">{{ __('Voucher aktif') }}</label>
+                    <label class="flex cursor-pointer items-center gap-2.5 text-[13.5px]"><input type="checkbox" wire:model="active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">{{ __('Voucher aktif') }}</label>
                 </div>
 
                 <footer class="flex items-center justify-end gap-2 border-t border-kraft/15 px-5 py-3.5">
