@@ -1,0 +1,33 @@
+# Blueprint Render: New + > Blueprint, pilih repo ini. Detail langkah ada di docs/DEPLOY_RENDER.md
+services:
+  - type: web
+    name: brule-api
+    runtime: docker
+    plan: free
+    branch: feature/mobile-api
+    healthCheckPath: /up
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: "false"
+      - key: APP_KEY
+        sync: false          # isi dengan hasil: php artisan key:generate --show
+      - key: DB_CONNECTION
+        value: sqlite
+      - key: SESSION_DRIVER
+        value: database
+      - key: CACHE_STORE
+        value: database
+      - key: QUEUE_CONNECTION
+        value: sync
+      - key: MAIL_MAILER
+        value: log
+      - key: SEED_DEMO
+        value: "1"
+      - key: MIDTRANS_SERVER_KEY
+        sync: false
+      - key: MIDTRANS_CLIENT_KEY
+        sync: false
+      - key: MIDTRANS_IS_PRODUCTION
+        value: "false"
