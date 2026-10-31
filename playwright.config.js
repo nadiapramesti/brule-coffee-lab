@@ -12,6 +12,8 @@ export default defineConfig({
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         launchOptions: process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM, args: ['--no-sandbox'] } : {},
+        // Di CI memakai Google Chrome bawaan runner GitHub, jadi tidak perlu `playwright install`.
+        ...(process.env.CI && !process.env.PW_CHROMIUM ? { channel: 'chrome' } : {}),
     },
     projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
 });

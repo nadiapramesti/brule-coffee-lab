@@ -102,7 +102,7 @@ Suite Pest (277 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pemb
 
 ```bash
 npm install
-npx playwright install chromium     # sekali saja
+npx playwright install chromium     # sekali saja (CI memakai Chrome bawaan runner)
 php artisan serve                   # terminal lain, dengan data seeder
 npm run e2e                         # smoke flow + aksesibilitas
 npm run e2e:a11y                    # aksesibilitas saja
