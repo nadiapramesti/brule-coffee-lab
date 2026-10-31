@@ -18,7 +18,7 @@ jobs:
     name: Tes (Pest)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -48,7 +48,7 @@ jobs:
     name: Audit dependensi
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
@@ -79,7 +79,7 @@ jobs:
       MAIL_MAILER: log
       APP_URL: http://127.0.0.1:8000
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - uses: shivammathur/setup-php@v2
         with:
