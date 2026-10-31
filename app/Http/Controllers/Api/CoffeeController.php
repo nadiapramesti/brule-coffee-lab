@@ -14,7 +14,7 @@ class CoffeeController extends Controller
         $query = Coffee::query()
             ->where('is_active', true)
             ->whereHas('roastProfiles')
-            ->with('roastProfiles');
+            ->with(['roastProfiles', 'traceability']);
 
         if ($search = trim((string) $request->query('q'))) {
             $query->where('name', 'like', "%{$search}%");
@@ -29,7 +29,7 @@ class CoffeeController extends Controller
     {
         $coffee = Coffee::where('slug', $slug)
             ->where('is_active', true)
-            ->with('roastProfiles')
+            ->with(['roastProfiles', 'traceability'])
             ->firstOrFail();
 
         return response()->json($this->payload($coffee, $request));
@@ -37,17 +37,33 @@ class CoffeeController extends Controller
 
     private function payload(Coffee $coffee, Request $request): array
     {
-        $en = app()->getLocale() === 'en' || $request->query('lang') === 'en';
+<<<<<<< Updated upstream
+                $en = app()->getLocale() === 'en' || $request->query('lang') === 'en';
+        	$t = $coffee->traceability;
+>>>>>>> Stashed changes
 
         return [
-            'id'            => $coffee->id,
-            'slug'          => $coffee->slug,
-            'name'          => $coffee->name,
-            'story'         => $en && $coffee->story_en ? $coffee->story_en : $coffee->story,
-            'image'         => ApiImage::url($coffee->image),
-            'cupping_score' => $coffee->cupping_score,
-            'in_stock'      => $coffee->stock_green_bean_gram > 0,
-            'profiles'      => $coffee->roastProfiles->map(fn ($p) => [
+            'id'              => $coffee->id,
+            'slug'            => $coffee->slug,
+            'name'            => $coffee->name,
+            'short_name'      => $coffee->shortName(),
+            'story'           => $en && $coffee->story_en ? $coffee->story_en : $coffee->story,
+            'image'           => ApiImage::url($coffee->image),
+            'cupping_score'   => $coffee->cupping_score,
+            'in_stock'        => $coffee->stock_green_bean_gram > 0,
+            'process'         => $t?->process,
+            'altitude'        => $t?->altitude,
+            'signature_level' => $coffee->signatureProfile()?->level,
+            'trace'           => $t ? [
+                'farmer'   => $t->farmer,
+                'region'   => $t->region,
+                'altitude' => $t->altitude,
+                'varietal' => $t->varietal,
+                'process'  => $t->process,
+                'harvest'  => $t->harvest_date?->format('m.Y'),
+                'q_grader' => $t->q_grader,
+            ] : null,
+            'profiles'        => $coffee->roastProfiles->map(fn ($p) => [
                 'id'             => $p->id,
                 'level'          => $p->level,
                 'level_label'    => $p->level_label,
