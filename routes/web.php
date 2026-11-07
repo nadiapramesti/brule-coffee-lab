@@ -27,6 +27,7 @@ Route::get('/perlengkapan', \App\Livewire\Gear::class)->name('gear');
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');
 Route::get('/akun', \App\Livewire\Account::class)->middleware('auth')->name('account');
+Route::get('/invoice/{order:order_code}', \App\Http\Controllers\InvoiceController::class)->middleware('signed')->name('invoice.show');
 Route::post('/midtrans/notification', \App\Http\Controllers\MidtransNotificationController::class)->name('midtrans.notification');
 Route::get('/lacak/{code?}', Track::class)->name('track');
 Route::get('/roastery/dashboard', Roastery::class)->middleware(['auth', 'roaster'])->name('roastery');

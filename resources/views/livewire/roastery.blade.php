@@ -2,7 +2,7 @@
     <div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
         <div>
             <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Antrian roastery') }}</h1>
-            <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Diperbarui otomatis tiap 15 detik') }}</p>
+            <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ __('Diperbarui otomatis tiap 15 detik') }}</p>
         </div>
         <dl class="flex flex-wrap gap-2 text-[12px]">
             @foreach ([
@@ -12,8 +12,8 @@
                 [__('Dikirim hari ini'), $this->stats['shippedToday'], ''],
             ] as [$l, $v, $u])
                 <div class="flex items-baseline gap-2 rounded border border-kraft/20 bg-charcoal px-3 py-1.5">
-                    <dt class="text-kraft/55">{{ $l }}</dt>
-                    <dd class="krm-readout text-[14px]">{{ $v }}<span class="text-[11px] text-kraft/50">{{ $u }}</span></dd>
+                    <dt class="text-kraft/70">{{ $l }}</dt>
+                    <dd class="krm-readout text-[14px]">{{ $v }}<span class="text-[11px] text-kraft/70">{{ $u }}</span></dd>
                 </div>
             @endforeach
         </dl>
@@ -24,7 +24,7 @@
         <section class="mt-4 rounded border border-kraft/20 bg-charcoal px-4 py-3">
             <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <h2 class="text-[12.5px] font-semibold">{{ __('Rencana sangrai') }}</h2>
-                <p class="text-[11.5px] text-kraft/50">{{ __('Dari antrian masuk, dikelompokkan supaya satu biji dan level disangrai sekali jalan.') }}</p>
+                <p class="text-[11.5px] text-kraft/70">{{ __('Dari antrian masuk, dikelompokkan supaya satu biji dan level disangrai sekali jalan.') }}</p>
             </div>
             <ul class="mt-2.5 flex max-h-[7.5rem] flex-wrap gap-2 overflow-y-auto">
                 @foreach ($this->batches as $bt)
@@ -32,9 +32,9 @@
                         <button type="button" wire:click="filterBy(@js($bt['name']))" title="{{ __('Tampilkan pesanan biji ini') }}"
                                 class="flex items-baseline gap-2 rounded border bg-surface px-2.5 py-1.5 text-left text-[12px] transition-colors hover:border-bluelab {{ trim($search) === $bt['name'] ? 'border-bluelab' : 'border-kraft/20' }}">
                             <span class="font-semibold">{{ $bt['name'] }}</span>
-                            <span class="text-kraft/60">{{ $bt['level'] }}</span>
+                            <span class="text-kraft/70">{{ $bt['level'] }}</span>
                             <span class="krm-readout">{{ number_format($bt['grams']) }} g</span>
-                            <span class="text-[11px] text-kraft/45">{{ $bt['orders'] }} {{ __('pesanan') }}</span>
+                            <span class="text-[11px] text-kraft/70">{{ $bt['orders'] }} {{ __('pesanan') }}</span>
                         </button>
                     </li>
                 @endforeach
@@ -47,7 +47,7 @@
         <input id="q-orders" type="search" wire:model.live.debounce.300ms="search" placeholder="{{ __('Contoh: BRL-20261018-0003, Sinta, atau Gayo') }}"
                class="min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50 sm:max-w-[400px]">
         <label class="flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-[12.5px] transition-colors {{ $onlyLate ? 'border-[#C0392B] bg-[#C0392B]/10' : 'border-kraft/25 hover:border-kraft/50' }}">
-            <input type="checkbox" wire:model.live="onlyLate" class="h-3.5 w-3.5 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+            <input type="checkbox" wire:model.live="onlyLate" class="h-3.5 w-3.5 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
             {{ __('Hanya yang terlambat') }}
         </label>
         @if (trim($search) !== '' || $onlyLate)
@@ -66,16 +66,16 @@
                 <header class="flex items-start justify-between gap-2 px-3 py-2.5 md:border-b md:border-kraft/15 md:py-2" :class="open ? 'max-md:border-b max-md:border-kraft/15' : ''">
                     <button type="button" @click="open = !open" :aria-expanded="open.toString()" aria-controls="col-body-{{ $status }}" class="flex min-w-0 flex-1 flex-col text-left md:cursor-default">
                         <span class="flex items-center gap-2">
-                            <svg viewBox="0 0 12 12" class="h-3 w-3 shrink-0 text-kraft/60 transition-transform md:hidden" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg>
+                            <svg viewBox="0 0 12 12" class="h-3 w-3 shrink-0 text-kraft/70 transition-transform md:hidden" :class="open ? 'rotate-90' : ''" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 2.5L8 6l-3.5 3.5"/></svg>
                             <span class="text-[13px] font-semibold md:text-[12.5px]">{{ __(\App\Models\Order::STATUS_LABELS[$status]) }}</span>
                             <span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $col['total'] }}</span>
                         </span>
-                        <span class="krm-readout mt-0.5 flex items-center gap-2 pl-5 text-[11px] text-kraft/50 md:pl-0">
+                        <span class="krm-readout mt-0.5 flex items-center gap-2 pl-5 text-[11px] text-kraft/70 md:pl-0">
                             {{ number_format($col['grams']) }} g
                             @if ($col['late'])<span class="rounded-[6px] border border-[#C0392B]/50 px-1.5 text-[10.5px] text-[#C0392B]">{{ $col['late'] }} {{ __('terlambat') }}</span>@endif
                         </span>
                     </button>
-                    @if ($col['total'] > 0)<button type="button" wire:click="selectColumn('{{ $status }}')" class="shrink-0 py-1 text-[11.5px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline md:text-[11px]">{{ __('Pilih semua') }}</button>@endif
+                    @if ($col['total'] > 0)<button type="button" wire:click="selectColumn('{{ $status }}')" class="shrink-0 py-1 text-[11.5px] text-kraft/70 underline-offset-4 hover:text-labwhite hover:underline md:text-[11px]">{{ __('Pilih semua') }}</button>@endif
                 </header>
                 <div id="col-body-{{ $status }}" :class="open ? '' : 'max-md:hidden'" class="space-y-2 p-2 md:max-h-[34rem] md:overflow-y-auto md:overscroll-contain">
                     @forelse ($col['orders'] as $o)
@@ -83,24 +83,24 @@
                         <article wire:key="o-{{ $o->id }}" class="rounded border bg-surface px-2.5 py-2 {{ $late ? 'border-[#C0392B]/45' : 'border-kraft/15' }}">
                             <div class="flex items-center justify-between gap-2">
                                 <label class="flex min-w-0 cursor-pointer items-center gap-2">
-                                    <input type="checkbox" wire:model.live="selected" value="{{ $o->id }}" aria-label="{{ __('Pilih :code', ['code' => $o->order_code]) }}" class="h-3.5 w-3.5 shrink-0 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
-                                    <span class="krm-readout truncate text-[10.5px] text-kraft/50">{{ $o->order_code }}</span>
+                                    <input type="checkbox" wire:model.live="selected" value="{{ $o->id }}" aria-label="{{ __('Pilih :code', ['code' => $o->order_code]) }}" class="h-3.5 w-3.5 shrink-0 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
+                                    <span class="krm-readout truncate text-[10.5px] text-kraft/70">{{ $o->order_code }}</span>
                                 </label>
                                 @php $roastG = (int) $o->items->sum('grams'); @endphp
                                 <p class="krm-readout shrink-0 text-[12.5px]">{{ $roastG > 0 ? number_format($roastG).' g' : __('Barang') }}</p>
                             </div>
                             @foreach ($o->groupedItems() as $it)
                                 <p class="mt-1 truncate text-[12.5px] font-semibold leading-snug">{{ $it->coffee_name_snapshot }}</p>
-                                <p class="truncate text-[11.5px] text-kraft/60">{{ $it->descr }}{{ $it->qty > 1 ? ($it->descr ? ' × ' : '× ').$it->qty : '' }}</p>
+                                <p class="truncate text-[11.5px] text-kraft/70">{{ $it->descr }}{{ $it->qty > 1 ? ($it->descr ? ' × ' : '× ').$it->qty : '' }}</p>
                             @endforeach
-                            <p class="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-kraft/40">
+                            <p class="mt-0.5 flex items-center justify-between gap-2 text-[11px] text-kraft/70">
                                 <span class="truncate">{{ $o->recipient_name }}</span>
                                 <span class="krm-readout shrink-0 {{ $late ? 'text-[#C0392B]' : '' }}" title="{{ $since->translatedFormat('j M Y, H:i') }}">{{ $since->diffForHumans(null, true, true) }}</span>
                             </p>
                             @if ($o->hasAddons())
                                 <div class="mt-1.5 rounded border border-bluelab/40 bg-bluelab/10 px-2 py-1.5 text-[11.5px] leading-snug">
                                     @if ($o->gift_wrap)<p class="font-semibold">{{ __('Kemasan hadiah') }}</p>@endif
-                                    @if (filled($o->card_message))<p class="{{ $o->gift_wrap ? 'mt-0.5' : '' }}"><span class="text-kraft/60">{{ __('Kartu') }}:</span> <span class="italic">&ldquo;{{ $o->card_message }}&rdquo;</span></p>@endif
+                                    @if (filled($o->card_message))<p class="{{ $o->gift_wrap ? 'mt-0.5' : '' }}"><span class="text-kraft/70">{{ __('Kartu') }}:</span> <span class="italic">&ldquo;{{ $o->card_message }}&rdquo;</span></p>@endif
                                 </div>
                             @endif
 
@@ -154,12 +154,12 @@
         <header class="flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-kraft/15 px-4 py-3">
             <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
                 <h2 class="text-[12.5px] font-semibold">{{ __('Stok biji mentah') }}</h2>
-                <p class="krm-readout text-[11.5px] text-kraft/55">{{ $sum['total'] }} {{ __('biji') }} · {{ number_format($sum['kg'], 1, ',', '.') }} kg</p>
+                <p class="krm-readout text-[11.5px] text-kraft/70">{{ $sum['total'] }} {{ __('biji') }} · {{ number_format($sum['kg'], 1, ',', '.') }} kg</p>
             </div>
             <div class="flex flex-wrap gap-1.5 text-[11.5px]">
                 @if ($sum['soldout'])<span class="rounded-[6px] border border-[#C0392B]/50 px-2 py-0.5 text-[#C0392B]">{{ $sum['soldout'] }} {{ __('habis') }}</span>@endif
                 @if ($sum['low'])<span class="rounded-[6px] border border-[#E8782A]/60 px-2 py-0.5 text-[#E8782A]">{{ $sum['low'] }} {{ __('menipis') }}</span>@endif
-                @if (! $sum['soldout'] && ! $sum['low'])<span class="rounded-[6px] border border-kraft/25 px-2 py-0.5 text-kraft/60">{{ __('Semua aman') }}</span>@endif
+                @if (! $sum['soldout'] && ! $sum['low'])<span class="rounded-[6px] border border-kraft/25 px-2 py-0.5 text-kraft/70">{{ __('Semua aman') }}</span>@endif
             </div>
         </header>
 
@@ -168,7 +168,7 @@
             <input id="stock-q" type="search" wire:model.live.debounce.300ms="stockSearch" placeholder="{{ __('Contoh: Gayo, Natural, atau Flores') }}"
                    class="min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-3 py-2 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50 sm:max-w-[320px]">
             <label class="flex cursor-pointer items-center gap-2 rounded border px-3 py-2 text-[12.5px] transition-colors {{ $stockLowOnly ? 'border-bluelab bg-bluelab/10' : 'border-kraft/25 hover:border-kraft/50' }}">
-                <input type="checkbox" wire:model.live="stockLowOnly" class="h-3.5 w-3.5 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                <input type="checkbox" wire:model.live="stockLowOnly" class="h-3.5 w-3.5 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                 {{ __('Hanya yang menipis') }}
             </label>
         </div>
@@ -183,7 +183,7 @@
                 <li wire:key="st-{{ $c->id }}" class="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-1 py-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,220px)_112px]">
                     <div class="min-w-0">
                         <p class="truncate text-[12.5px]">{{ $c->name }}</p>
-                        <p class="truncate text-[11px] text-kraft/45">{{ $c->traceability?->process }}</p>
+                        <p class="truncate text-[11px] text-kraft/70">{{ $c->traceability?->process }}</p>
                     </div>
                     <div class="order-3 col-span-2 h-[3px] rounded-full bg-labwhite/10 sm:order-none sm:col-span-1"><div class="h-[3px] rounded-full {{ $bar }}" style="width: {{ $pct }}%"></div></div>
                     <p class="krm-readout shrink-0 text-right text-[12px] {{ $st === 'ok' ? 'text-kraft/65' : ($st === 'low' ? 'text-[#E8782A]' : 'text-[#C0392B]') }}">
@@ -192,12 +192,12 @@
                     </p>
                 </li>
             @empty
-                <li class="py-6 text-center text-[12.5px] text-kraft/45">{{ __('Tidak ada biji yang cocok') }}</li>
+                <li class="py-6 text-center text-[12.5px] text-kraft/70">{{ __('Tidak ada biji yang cocok') }}</li>
             @endforelse
         </ul>
 
         <div class="flex items-center justify-between gap-3 border-t border-kraft/15 px-4 py-2.5 text-[12px]">
-            <p class="krm-readout text-kraft/50">{{ __('Menampilkan :a dari :b', ['a' => count($res['rows']), 'b' => $res['matched']]) }}</p>
+            <p class="krm-readout text-kraft/70">{{ __('Menampilkan :a dari :b', ['a' => count($res['rows']), 'b' => $res['matched']]) }}</p>
             @if (! $res['filtered'] && $sum['total'] > \App\Livewire\Roastery::STOCK_PREVIEW)
                 <button type="button" wire:click="$toggle('stockAll')" class="text-kraft/75 underline-offset-4 hover:text-labwhite hover:underline">
                     {{ $stockAll ? __('Ringkas') : __('Tampilkan semua :n biji', ['n' => $sum['total']]) }}

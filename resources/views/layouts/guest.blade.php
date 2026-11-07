@@ -47,7 +47,7 @@
                 </div>
             </div>
 
-            <p class="mt-5 text-center text-[12px] text-kraft/45 max-sm:hidden {{ $route === 'register' ? 'hidden' : '' }}">{{ __('Disangrai setelah pesanan masuk.') }}</p>
+            <p class="mt-5 text-center text-[12px] text-kraft/70 max-sm:hidden {{ $route === 'register' ? 'hidden' : '' }}">{{ __('Disangrai setelah pesanan masuk.') }}</p>
         </div>
     </main>
 </div>

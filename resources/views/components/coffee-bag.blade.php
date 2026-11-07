@@ -65,7 +65,7 @@
     <rect x="38" y="64" width="124" height="158" rx="3" fill="#D8C5A6"/>
     <rect x="42" y="68" width="116" height="150" rx="2" fill="none" stroke="#5C4B33" stroke-opacity=".45"/>
 
-    <image href="{{ asset('logo-brule-light.svg') }}" x="64" y="76" width="72" height="29.4" preserveAspectRatio="xMidYMid meet" aria-label="BRÛLÉ"/>
+    <image href="{{ asset('logo-brule-light.svg') }}" x="64" y="76" width="72" height="29.4" preserveAspectRatio="xMidYMid meet" />
     <g transform="translate(0 11)">
     <polyline points="{{ implode(' ', $pts) }}" fill="none" stroke="{{ $accent }}" stroke-width="1" stroke-linejoin="round" transform="translate(0 -2)"/>
     <line x1="50" x2="150" y1="111" y2="111" stroke="#1a1208" stroke-opacity=".35"/>

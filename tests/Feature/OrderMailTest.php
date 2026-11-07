@@ -64,3 +64,19 @@ it('renders a plain-text alternative', function () {
 
     expect(view('emails.order-text', $m->content()->with)->render())->toContain($o->order_code)->toContain('Total');
 });
+
+it('puts a signed invoice link in the paid email and serves the invoice to the customer', function () {
+    $o = mailOrder($this);
+    expect((new OrderMail($o, 'placed'))->render())->not->toContain('Unduh invoice');
+
+    $o->markPaid();
+    expect((new OrderMail($o->fresh(), 'paid'))->render())->toContain('Unduh invoice')->toContain('signature=');
+
+    $this->get($o->invoiceUrl())->assertOk()->assertSee($o->order_code)->assertSee('Lunas');
+    $this->get(route('invoice.show', $o->order_code))->assertForbidden();
+});
+
+it('refuses the invoice for unpaid or cancelled orders', function () {
+    $o = mailOrder($this);
+    $this->get($o->invoiceUrl())->assertForbidden();
+});

@@ -79,7 +79,7 @@
                                 class="flex items-center gap-2.5 rounded border border-kraft/30 py-1.5 pl-1.5 pr-3 transition-colors hover:border-kraft/60">
                             <span class="grid h-7 w-7 place-items-center rounded-full bg-bluelab font-display text-[13px] font-semibold">{{ mb_strtoupper(mb_substr(auth()->user()->name, 0, 1)) }}</span>
                             <span class="max-w-[8rem] truncate text-[13.5px] text-kraft">{{ \Illuminate\Support\Str::before(auth()->user()->name, ' ') }}</span>
-                            <svg viewBox="0 0 12 12" class="h-3 w-3 text-kraft/60 transition-transform" :class="menu && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg>
+                            <svg viewBox="0 0 12 12" class="h-3 w-3 text-kraft/70 transition-transform" :class="menu && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M2.5 4.5L6 8l3.5-3.5"/></svg>
                         </button>
                         <div x-show="menu" x-cloak x-transition.opacity.duration.150ms
                              class="absolute right-0 top-full z-50 mt-2 w-48 overflow-hidden rounded border border-kraft/25 bg-surface py-1.5 shadow-[0_18px_40px_-12px_rgb(var(--shadow)/.8)]">
@@ -145,7 +145,7 @@
                     <a href="{{ route('admin.coffees') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Kelola kopi') }}</a>
                 @endif
                 <a href="{{ route('profile') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Profil') }}</a>
-                <form method="POST" action="{{ route('logout') }}">@csrf<button class="block w-full py-2.5 text-left text-[15px] text-kraft/60">{{ __('Keluar') }}</button></form>
+                <form method="POST" action="{{ route('logout') }}">@csrf<button class="block w-full py-2.5 text-left text-[15px] text-kraft/70">{{ __('Keluar') }}</button></form>
             @else
                 <a href="{{ route('login') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Masuk') }}</a>
             @endauth
@@ -173,7 +173,7 @@
                     <address class="mt-5 text-[14px] not-italic leading-relaxed text-kraft/75">
                         {{ \App\Models\Setting::get('store_address') }}
                     </address>
-                    <p class="mt-3 text-[13px] text-kraft/55">{{ __('Disangrai setelah pesanan masuk') }}</p>
+                    <p class="mt-3 text-[13px] text-kraft/70">{{ __('Disangrai setelah pesanan masuk') }}</p>
                 </div>
 
                 <nav aria-label="{{ __('Jelajahi') }}" class="md:justify-self-center">
@@ -202,7 +202,7 @@
                 </div>
             </div>
 
-            <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-labwhite/10 pt-6 text-[12.5px] text-kraft/50">
+            <div class="mt-12 flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-t border-labwhite/10 pt-6 text-[12.5px] text-kraft/70">
                 <p>&copy; {{ date('Y') }} {{ \App\Models\Setting::get('store_name') }} &bull; {{ \App\Models\Setting::get('store_tagline') }} &bull; {{ \App\Models\Setting::get('store_city') }}</p>
                 <nav aria-label="{{ __('Kebijakan') }}" class="flex flex-wrap gap-x-5 gap-y-2">
                     <a href="{{ route('policy.shipping') }}" class="transition-colors hover:text-labwhite">{{ __('Pengiriman & Pengembalian') }}</a>

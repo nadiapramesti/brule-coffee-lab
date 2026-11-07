@@ -99,6 +99,12 @@ class Order extends Model
         return $this->status !== 'cancelled' && ($this->isCod() || $this->isPaid());
     }
 
+    /** Link invoice untuk pelanggan (bertanda tangan, jadi bisa dibuka dari email/WA tanpa login). */
+    public function invoiceUrl(): string
+    {
+        return \Illuminate\Support\Facades\URL::signedRoute('invoice.show', ['order' => $this->order_code]);
+    }
+
     public function getPaymentLabelAttribute(): string
     {
         return __(self::PAYMENTS[$this->payment_method] ?? $this->payment_method);

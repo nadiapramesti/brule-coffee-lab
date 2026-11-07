@@ -24,7 +24,7 @@
                     <span class="relative flex h-2 w-2"><span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#E8782A] opacity-70"></span><span class="relative inline-flex h-2 w-2 rounded-full bg-[#E8782A]"></span></span>
                     <span class="krm-readout tracking-[0.12em] text-kraft/80">{{ __('SEDANG DISANGRAI') }}</span>
                     <span class="krm-readout text-labwhite"><span x-text="temp.toFixed(1)">210.0</span>&deg;C</span>
-                    <span class="krm-readout text-kraft/60" x-text="clock">09:42</span>
+                    <span class="krm-readout text-kraft/70" x-text="clock">09:42</span>
                 </p>
 
                 <h1 class="krm-h1 font-bold">
@@ -63,15 +63,15 @@
             @if ($contoh)
                 <dl data-reveal style="--d:360ms" class="hidden max-w-[16rem] space-y-3 border-l border-kraft/20 pl-5 text-[12.5px] lg:block">
                     <div>
-                        <dt class="text-kraft/50">{{ __('Contoh yang diukur') }}</dt>
+                        <dt class="text-kraft/70">{{ __('Contoh yang diukur') }}</dt>
                         <dd class="mt-0.5 text-labwhite">{{ $contoh->name }}</dd>
                     </div>
                     <div>
-                        <dt class="text-kraft/50">{{ __('Sangrai') }}</dt>
+                        <dt class="text-kraft/70">{{ __('Sangrai') }}</dt>
                         <dd class="mt-0.5 text-labwhite">{{ $contoh->signatureProfile()?->level_label }}</dd>
                     </div>
                     <div>
-                        <dt class="text-kraft/50">{{ __('Puncak bernama') }}</dt>
+                        <dt class="text-kraft/70">{{ __('Puncak bernama') }}</dt>
                         <dd class="krm-readout mt-0.5 text-labwhite">{{ __(':count senyawa', ['count' => count($this->peaks)]) }}</dd>
                     </div>
                 </dl>
@@ -179,10 +179,10 @@
             <div class="flex flex-col gap-3 sm:flex-row">
                 <div class="relative flex-1">
                     <label for="cari-biji" class="sr-only">{{ __('Cari biji') }}</label>
-                    <svg viewBox="0 0 20 20" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/50" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2L17 17"/></svg>
+                    <svg viewBox="0 0 20 20" class="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/70" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="9" cy="9" r="5.5"/><path d="M13.2 13.2L17 17"/></svg>
                     <input id="cari-biji" type="search" x-model="q" autocomplete="off"
                            placeholder="{{ __('Contoh: Gayo, chocolate, citrus') }}"
-                           class="w-full rounded border border-kraft/25 bg-transparent py-3 pl-10 pr-4 text-[14.5px] text-labwhite placeholder:text-kraft/40 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
+                           class="w-full rounded border border-kraft/25 bg-transparent py-3 pl-10 pr-4 text-[14.5px] text-labwhite placeholder:text-kraft/70 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
                 </div>
                 <div>
                     <label for="urut-biji" class="sr-only">{{ __('Urutkan') }}</label>
@@ -199,12 +199,12 @@
             </div>
 
             <div class="mt-4 flex flex-wrap items-center gap-2" role="group" aria-label="{{ __('Saring berdasarkan proses') }}">
-                <span class="mr-2 text-[12px] text-kraft/50">{{ __('Proses') }}</span>
+                <span class="mr-2 text-[12px] text-kraft/70">{{ __('Proses') }}</span>
                 <button type="button" @click="f = 'semua'"
                         :aria-pressed="f === 'semua'"
                         :class="f === 'semua' ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
                         class="rounded border px-3.5 py-1.5 text-[13px] transition-colors">
-                    {{ __('Semua') }} <span class="krm-readout ml-1 text-[11px] opacity-70">{{ $this->coffees->count() }}</span>
+                    {{ __('Semua') }} <span class="krm-readout ml-1 text-[11px] opacity-90">{{ $this->coffees->count() }}</span>
                 </button>
                 @foreach ($processes as $proc)
                     <button type="button" @click="f = @js($proc)"
@@ -212,12 +212,12 @@
                             :class="f === @js($proc) ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
                             class="rounded border px-3.5 py-1.5 text-[13px] transition-colors">
                         {{ $proc }}
-                        <span class="krm-readout ml-1 text-[11px] opacity-70">{{ $this->coffees->filter(fn ($c) => $c->traceability?->process === $proc)->count() }}</span>
+                        <span class="krm-readout ml-1 text-[11px] opacity-90">{{ $this->coffees->filter(fn ($c) => $c->traceability?->process === $proc)->count() }}</span>
                     </button>
                 @endforeach
             </div>
 
-            <p class="krm-readout mt-5 text-[12px] text-kraft/55" aria-live="polite" x-text="count">{{ $this->coffees->count() }}</p>
+            <p class="krm-readout mt-5 text-[12px] text-kraft/70" aria-live="polite" x-text="count">{{ $this->coffees->count() }}</p>
 
             <div x-show="res.length === 0" x-cloak class="mt-4 rounded border border-dashed border-kraft/30 px-6 py-12 text-center">
                 <p class="font-display text-[1.1rem] font-semibold">{{ __('Tidak ada biji yang cocok') }}</p>
@@ -254,18 +254,18 @@
                         <div class="flex flex-1 flex-col p-5">
                             <div class="flex items-start justify-between gap-3">
                                 <h3 class="krm-h3 min-w-0 font-semibold leading-tight">{{ $bean->name }}</h3>
-                                <span class="krm-readout shrink-0 text-[13px] text-bluelab" title="{{ __('Skor cupping') }}">{{ number_format($bean->cupping_score, 1) }}</span>
+                                <span class="krm-readout shrink-0 text-[13px] text-bluetext" title="{{ __('Skor cupping') }}">{{ number_format($bean->cupping_score, 1) }}</span>
                             </div>
-                            <p class="mt-1 text-[13px] text-kraft/60">
+                            <p class="mt-1 text-[13px] text-kraft/70">
                                 {{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}
                             </p>
 
-                            <p class="mt-2 flex items-center gap-2 text-[12.5px] text-kraft/60">
+                            <p class="mt-2 flex items-center gap-2 text-[12.5px] text-kraft/70">
                                 @if ($bean->reviews_count)
                                     <x-stars :value="$bean->reviews_avg" size="h-3.5 w-3.5" />
                                     <span><span class="krm-readout text-labwhite">{{ number_format($bean->reviews_avg, 1) }}</span> · {{ trans_choice(':n ulasan|:n ulasan', $bean->reviews_count, ['n' => $bean->reviews_count]) }}</span>
                                 @else
-                                    <span class="text-kraft/45">{{ __('Belum ada ulasan') }}</span>
+                                    <span class="text-kraft/70">{{ __('Belum ada ulasan') }}</span>
                                 @endif
                             </p>
 
@@ -275,16 +275,16 @@
 
                             <div class="mt-auto pt-5">
                                 @if ($from)
-                                    <p class="text-[13px] text-kraft/60">
+                                    <p class="text-[13px] text-kraft/70">
                                         {{ __('Mulai dari') }}
                                         <span class="krm-readout text-[17px] font-semibold text-labwhite">Rp{{ number_format($from, 0, ',', '.') }}</span>
-                                        <span class="text-kraft/50">/ 200 g</span>
+                                        <span class="text-kraft/70">/ 200 g</span>
                                     </p>
                                 @endif
 
                                 <div class="mt-3 flex items-center gap-3">
                                     @if ($state === 'soldout')
-                                        <span class="flex-1 cursor-not-allowed rounded border border-kraft/20 px-4 py-2.5 text-center font-display text-[14px] font-semibold text-kraft/45">{{ __('Habis') }}</span>
+                                        <span class="flex-1 cursor-not-allowed rounded border border-kraft/20 px-4 py-2.5 text-center font-display text-[14px] font-semibold text-kraft/70">{{ __('Habis') }}</span>
                                     @else
                                         <a href="{{ route('builder', ['kopi' => $bean->slug]) }}"
                                            class="flex-1 rounded bg-bluelab px-4 py-2.5 text-center font-display text-[14px] font-semibold text-paper transition-colors hover:bg-[#234E94]">
@@ -312,7 +312,7 @@
                                         <div class="flex items-start justify-between gap-4 border-b border-kraft/15 px-5 py-4">
                                             <div class="min-w-0">
                                                 <h3 id="lot-title-{{ $bean->id }}" class="krm-h3 font-semibold leading-tight">{{ $bean->name }}</h3>
-                                                <p class="mt-1 text-[13px] text-kraft/60">{{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}</p>
+                                                <p class="mt-1 text-[13px] text-kraft/70">{{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}</p>
                                             </div>
                                             <button type="button" @click="open = false" aria-label="{{ __('Tutup') }}"
                                                     class="-mr-1 grid h-9 w-9 shrink-0 place-items-center rounded text-kraft/70 transition-colors hover:bg-labwhite/10 hover:text-labwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/50">
@@ -323,14 +323,14 @@
                                         <div class="overflow-y-auto overscroll-contain px-5 py-5">
                                             <p class="text-[14px] leading-relaxed text-kraft/80">{{ $bean->localizedStory() }}</p>
                                             <dl class="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-[13px]">
-                                                <div><dt class="text-kraft/55">{{ __('Varietas') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->varietal ?? '—' }}</dd></div>
-                                                <div><dt class="text-kraft/55">{{ __('Panen') }}</dt><dd class="krm-readout mt-0.5 text-labwhite">{{ $t?->harvest_date?->format('m.Y') ?? '—' }}</dd></div>
-                                                <div><dt class="text-kraft/55">{{ __('Petani') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->farmer ?? '—' }}</dd></div>
-                                                <div><dt class="text-kraft/55">{{ __('Dinilai oleh') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/70">{{ __('Varietas') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->varietal ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/70">{{ __('Panen') }}</dt><dd class="krm-readout mt-0.5 text-labwhite">{{ $t?->harvest_date?->format('m.Y') ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/70">{{ __('Petani') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->farmer ?? '—' }}</dd></div>
+                                                <div><dt class="text-kraft/70">{{ __('Dinilai oleh') }}</dt><dd class="mt-0.5 text-labwhite">{{ $t?->q_grader ?? '—' }}</dd></div>
                                             </dl>
 
                                             <div class="mt-5 border-t border-kraft/15 pt-4">
-                                                <p class="krm-readout text-[11px] tracking-[0.14em] text-kraft/55">{{ __('ULASAN PEMBELI') }}</p>
+                                                <p class="krm-readout text-[11px] tracking-[0.14em] text-kraft/70">{{ __('ULASAN PEMBELI') }}</p>
                                                 @forelse ($bean->visibleReviews->take(3) as $rv)
                                                     <figure class="mt-3">
                                                         <figcaption class="flex flex-wrap items-center gap-x-2 text-[12.5px] text-kraft/65">
@@ -341,7 +341,7 @@
                                                         @if ($rv->body)<blockquote class="mt-1 text-[13px] leading-relaxed text-kraft/75">{{ $rv->body }}</blockquote>@endif
                                                     </figure>
                                                 @empty
-                                                    <p class="mt-2 text-[13px] text-kraft/55">{{ __('Belum ada yang mengulas. Ulasan hanya bisa ditulis pembeli yang pesanannya sudah selesai.') }}</p>
+                                                    <p class="mt-2 text-[13px] text-kraft/70">{{ __('Belum ada yang mengulas. Ulasan hanya bisa ditulis pembeli yang pesanannya sudah selesai.') }}</p>
                                                 @endforelse
                                             </div>
                                         </div>
@@ -365,7 +365,7 @@
                         class="rounded border border-kraft/35 px-7 py-3 font-display text-[14.5px] font-semibold text-kraft transition-colors hover:border-kraft/70 hover:text-labwhite focus:outline-none focus-visible:ring-2 focus-visible:ring-bluelab/50">
                     <span x-text="@js(__('Tampilkan :n lot lagi')).replace(':n', Math.min(step, remaining))"></span>
                 </button>
-                <p class="krm-readout text-[11.5px] text-kraft/50" x-text="@js(__('Sisa :n lot')).replace(':n', remaining)"></p>
+                <p class="krm-readout text-[11.5px] text-kraft/70" x-text="@js(__('Sisa :n lot')).replace(':n', remaining)"></p>
             </div>
         </div>
     </section>

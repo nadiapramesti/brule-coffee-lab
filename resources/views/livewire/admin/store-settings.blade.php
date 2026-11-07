@@ -5,7 +5,7 @@
 <div>
     <div>
         <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Pengaturan toko') }}</h1>
-        <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Identitas, kontak, ongkir, dan batas stok. Dipakai di footer, checkout, dan invoice.') }}</p>
+        <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ __('Identitas, kontak, ongkir, dan batas stok. Dipakai di footer, checkout, dan invoice.') }}</p>
     </div>
 
     @if ($notice)
@@ -60,13 +60,13 @@
                     <div>
                         <label for="ci" class="text-[12.5px] text-kraft/75">Instagram</label>
                         <div class="relative mt-1.5">
-                            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-kraft/45">@</span>
+                            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[14px] text-kraft/70">@</span>
                             <input id="ci" wire:model="instagram" placeholder="brule.coffeelab" class="{{ $inp }} pl-7">
                         </div>
                         @error('instagram')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                 </div>
-                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Nomor WhatsApp boleh ditulis 08…, 62…, atau +62…; Instagram boleh berupa @username atau link profil.') }}</p>
+                <p class="text-[12px] leading-relaxed text-kraft/70">{{ __('Nomor WhatsApp boleh ditulis 08…, 62…, atau +62…; Instagram boleh berupa @username atau link profil.') }}</p>
             </div>
         </section>
 
@@ -93,7 +93,7 @@
                         {{ __('Pratinjau: semua pesanan kena ongkir :s (tanpa gratis ongkir).', ['s' => $rp($shippingFlat)]) }}
                     @endif
                 </p>
-                <p class="text-[12px] text-kraft/50">{{ __('Isi 0 pada "Gratis ongkir mulai" untuk mematikan gratis ongkir. Pesanan yang sudah dibuat tidak berubah.') }}</p>
+                <p class="text-[12px] text-kraft/70">{{ __('Isi 0 pada "Gratis ongkir mulai" untuk mematikan gratis ongkir. Pesanan yang sudah dibuat tidak berubah.') }}</p>
             </div>
         </section>
 
@@ -102,7 +102,7 @@
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Add-on pesanan') }}</h2></header>
             <div class="space-y-4 p-5">
                 <label class="flex cursor-pointer items-center gap-3 text-[14px]">
-                    <input type="checkbox" wire:model.live="addonsEnabled" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                    <input type="checkbox" wire:model.live="addonsEnabled" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                     {{ __('Tawarkan kemasan hadiah dan kartu ucapan di checkout') }}
                 </label>
                 <div class="grid gap-4 sm:grid-cols-2 {{ $addonsEnabled ? '' : 'opacity-50' }}">
@@ -117,7 +117,7 @@
                         @error('cardPrice')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                     </div>
                 </div>
-                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Isi 0 untuk add-on gratis. Biaya add-on tidak ikut menghitung gratis ongkir dan voucher. Pesanan yang sudah dibuat tidak berubah.') }}</p>
+                <p class="text-[12px] leading-relaxed text-kraft/70">{{ __('Isi 0 untuk add-on gratis. Biaya add-on tidak ikut menghitung gratis ongkir dan voucher. Pesanan yang sudah dibuat tidak berubah.') }}</p>
             </div>
         </section>
 
@@ -126,7 +126,7 @@
             <header class="border-b border-kraft/15 px-5 py-3.5"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pembayaran') }}</h2></header>
             <div class="space-y-4 p-5">
                 <label class="flex cursor-pointer items-center gap-3 text-[14px]">
-                    <input type="checkbox" wire:model.live="codEnabled" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                    <input type="checkbox" wire:model.live="codEnabled" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                     {{ __('Terima pembayaran COD (bayar di tempat)') }}
                 </label>
                 <div class="sm:max-w-[260px] {{ $codEnabled ? '' : 'opacity-50' }}">
@@ -134,7 +134,7 @@
                     <input id="cm" type="number" inputmode="numeric" wire:model="codMax" @disabled(! $codEnabled) placeholder="500000" class="{{ $inp }} krm-readout mt-1.5">
                     @error('codMax')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
-                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Isi 0 untuk tanpa batas. Pesanan di atas batas hanya bisa bayar online. Pesanan yang sudah dibuat tidak berubah.') }}</p>
+                <p class="text-[12px] leading-relaxed text-kraft/70">{{ __('Isi 0 untuk tanpa batas. Pesanan di atas batas hanya bisa bayar online. Pesanan yang sudah dibuat tidak berubah.') }}</p>
             </div>
         </section>
 
@@ -147,18 +147,18 @@
                     <input id="ls" type="number" inputmode="numeric" wire:model="lowStock" placeholder="5000" class="{{ $inp }} krm-readout mt-1.5">
                     @error('lowStock')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
-                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Kopi dengan stok biji mentah di bawah angka ini ditandai "Menipis" di Dashboard, Kelola kopi, dan halaman Stok.') }}</p>
+                <p class="text-[12px] leading-relaxed text-kraft/70">{{ __('Kopi dengan stok biji mentah di bawah angka ini ditandai "Menipis" di Dashboard, Kelola kopi, dan halaman Stok.') }}</p>
                 <div class="sm:max-w-[260px]">
                     <label for="bb" class="text-[12.5px] text-kraft/75">{{ __('Masa segar kopi (hari)') }}</label>
                     <input id="bb" type="number" inputmode="numeric" wire:model="bestBefore" placeholder="30" class="{{ $inp }} krm-readout mt-1.5">
                     @error('bestBefore')<p class="mt-1 text-[12px] text-redtext">{{ $message }}</p>@enderror
                 </div>
-                <p class="text-[12px] leading-relaxed text-kraft/50">{{ __('Tanggal "terbaik dinikmati sebelum" = tanggal sangrai + angka ini. Tampil di label cetak, halaman lacak, dan email pengiriman.') }}</p>
+                <p class="text-[12px] leading-relaxed text-kraft/70">{{ __('Tanggal "terbaik dinikmati sebelum" = tanggal sangrai + angka ini. Tampil di label cetak, halaman lacak, dan email pengiriman.') }}</p>
             </div>
         </section>
 
         <div class="flex items-center justify-end gap-3 xl:col-span-2">
-            <span wire:loading wire:target="save" class="text-[12.5px] text-kraft/55">{{ __('Menyimpan…') }}</span>
+            <span wire:loading wire:target="save" class="text-[12.5px] text-kraft/70">{{ __('Menyimpan…') }}</span>
             <button type="submit" wire:loading.attr="disabled" class="rounded bg-bluelab px-7 py-3 font-display text-[14.5px] font-semibold transition-colors hover:bg-[#234E94] disabled:opacity-60">{{ __('Simpan pengaturan') }}</button>
         </div>
     </form>

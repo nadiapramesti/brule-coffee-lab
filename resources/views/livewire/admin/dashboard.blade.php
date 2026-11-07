@@ -13,7 +13,7 @@
     $statusTone = fn ($s) => match ($s) {
         'pending_payment' => 'border-[#E8782A]/50 text-ambertext',
         'completed', 'shipped' => 'border-bluelab/60 text-bluetext',
-        'cancelled' => 'border-kraft/20 text-kraft/45',
+        'cancelled' => 'border-kraft/20 text-kraft/70',
         default => 'border-kraft/35 text-kraft',
     };
     $att = $this->attention;
@@ -22,7 +22,7 @@
     <div class="flex flex-wrap items-end justify-between gap-4">
         <div>
             <h1 class="font-display text-[1.6rem] font-bold leading-tight">Dashboard</h1>
-            <p class="mt-1 text-[13.5px] text-kraft/60">{{ __('Ringkasan toko :n hari terakhir', ['n' => $days]) }}</p>
+            <p class="mt-1 text-[13.5px] text-kraft/70">{{ __('Ringkasan toko :n hari terakhir', ['n' => $days]) }}</p>
         </div>
         <div role="group" aria-label="{{ __('Rentang waktu') }}" class="flex rounded border border-kraft/25 p-0.5">
             @foreach ([7, 14, 30] as $d)
@@ -39,15 +39,15 @@
         [$att['low'], __('kopi stok menipis'), route('admin.stock')],
     ], fn ($t) => $t[0] > 0); @endphp
     <div class="mt-5 flex flex-wrap items-center gap-2 rounded border border-kraft/20 bg-charcoal px-4 py-3 text-[13px]">
-        <span class="krm-readout mr-1 text-[11px] uppercase tracking-[0.16em] text-kraft/50">{{ __('Perlu tindakan') }}</span>
+        <span class="krm-readout mr-1 text-[11px] uppercase tracking-[0.16em] text-kraft/70">{{ __('Perlu tindakan') }}</span>
         @forelse ($todo as [$n, $label, $url])
             <a href="{{ $url }}" class="inline-flex items-center gap-2 rounded border border-[#E8782A]/45 bg-[#E8782A]/[.07] px-3 py-1.5 transition-colors hover:bg-[#E8782A]/15">
                 <span class="krm-readout font-semibold text-ambertext">{{ $n }}</span> {{ $label }} <span aria-hidden="true">&rarr;</span>
             </a>
         @empty
-            <span class="text-kraft/60">{{ __('Semua beres, tidak ada yang perlu ditindak.') }}</span>
+            <span class="text-kraft/70">{{ __('Semua beres, tidak ada yang perlu ditindak.') }}</span>
         @endforelse
-        <span class="ml-auto hidden text-kraft/50 sm:inline">{{ $att['queue'] }} {{ __('pesanan sedang diproduksi') }}</span>
+        <span class="ml-auto hidden text-kraft/70 sm:inline">{{ $att['queue'] }} {{ __('pesanan sedang diproduksi') }}</span>
     </div>
 
     {{-- KPI --}}
@@ -59,7 +59,7 @@
             ['customers', __('Pelanggan baru'), number_format($k['customers']['value']), null, null],
         ] as [$key, $label, $val, $delta, $series])
             <div class="rounded border border-kraft/20 bg-charcoal p-4">
-                <dt class="flex items-center justify-between text-[12.5px] text-kraft/60">
+                <dt class="flex items-center justify-between text-[12.5px] text-kraft/70">
                     {{ $label }}
                     @if ($delta !== null)
                         <span class="krm-readout rounded-[6px] px-1.5 py-0.5 text-[11px] {{ $delta >= 0 ? 'bg-bluelab/20 text-bluetext' : 'bg-[#E8782A]/15 text-ambertext' }}">{{ $delta >= 0 ? '▲' : '▼' }} {{ abs($delta) }}%</span>
@@ -71,7 +71,7 @@
                         <polyline points="{{ $spark($series) }}" fill="none" stroke="#2A5DB0" stroke-width="1.6" vector-effect="non-scaling-stroke" stroke-linejoin="round" stroke-linecap="round"/>
                     </svg>
                 @else
-                    <p class="mt-3 text-[11.5px] text-kraft/40">{{ $delta === null && $series !== null ? __('Belum ada pembanding') : ($key === 'customers' ? __('akun customer baru') : __('per pesanan dibayar')) }}</p>
+                    <p class="mt-3 text-[11.5px] text-kraft/70">{{ $delta === null && $series !== null ? __('Belum ada pembanding') : ($key === 'customers' ? __('akun customer baru') : __('per pesanan dibayar')) }}</p>
                 @endif
             </div>
         @endforeach
@@ -82,13 +82,13 @@
         <section class="flex flex-col rounded border border-kraft/20 bg-charcoal p-5">
             <div class="flex items-baseline justify-between gap-3">
                 <h2 class="font-display text-[1rem] font-semibold">{{ __('Omzet harian') }}</h2>
-                <span class="krm-readout text-[11.5px] text-kraft/50">{{ number_format($k['grams']) }} g {{ __('terjual') }}</span>
+                <span class="krm-readout text-[11.5px] text-kraft/70">{{ number_format($k['grams']) }} g {{ __('terjual') }}</span>
             </div>
             @if (collect($daily)->sum('total') === 0)
-                <p class="grid min-h-[210px] flex-1 place-items-center text-[13px] text-kraft/45">{{ __('Belum ada pesanan dibayar di rentang ini.') }}</p>
+                <p class="grid min-h-[210px] flex-1 place-items-center text-[13px] text-kraft/70">{{ __('Belum ada pesanan dibayar di rentang ini.') }}</p>
             @else
                 <div class="mt-5 flex min-h-[210px] flex-1 gap-3">
-                    <div class="krm-readout flex flex-col justify-between pb-0 text-right text-[10.5px] text-kraft/45" aria-hidden="true">
+                    <div class="krm-readout flex flex-col justify-between pb-0 text-right text-[10.5px] text-kraft/70" aria-hidden="true">
                         <span>{{ $short($niceMax) }}</span><span>{{ $short($niceMax / 2) }}</span><span>0</span>
                     </div>
                     <div class="relative flex-1">
@@ -101,14 +101,14 @@
                                 <div class="group relative flex h-full min-w-0 flex-1 items-end">
                                     <div class="w-full rounded-t-[3px] bg-bluelab transition-all duration-500 group-hover:bg-[#4A7BD0]" style="height: {{ $h }}%"></div>
                                     <div class="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden -translate-x-1/2 whitespace-nowrap rounded border border-kraft/30 bg-surface px-2.5 py-1.5 text-[11.5px] shadow-lg group-hover:block {{ $i < 3 ? 'translate-x-0 left-0' : '' }}">
-                                        <span class="text-kraft/60">{{ $d['date']->translatedFormat('D, j M') }}</span><br><span class="krm-readout">{{ $rp($d['total']) }}</span> · {{ $d['count'] }} {{ __('pesanan') }}
+                                        <span class="text-kraft/70">{{ $d['date']->translatedFormat('D, j M') }}</span><br><span class="krm-readout">{{ $rp($d['total']) }}</span> · {{ $d['count'] }} {{ __('pesanan') }}
                                     </div>
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
-                <div class="krm-readout mt-2 flex justify-between pl-[calc(2.4rem+0.75rem)] text-[11px] text-kraft/45">
+                <div class="krm-readout mt-2 flex justify-between pl-[calc(2.4rem+0.75rem)] text-[11px] text-kraft/70">
                     <span>{{ $daily[0]['date']->translatedFormat('j M') }}</span>
                     <span>{{ $daily[intdiv(count($daily), 2)]['date']->translatedFormat('j M') }}</span>
                     <span>{{ end($daily)['date']->translatedFormat('j M') }}</span>
@@ -133,9 +133,9 @@
     {{-- Tabel pesanan --}}
     <section id="pesanan" class="mt-4 scroll-mt-20 rounded border border-kraft/20 bg-charcoal">
         <div class="flex flex-wrap items-center justify-between gap-3 px-5 pt-4">
-            <div class="flex items-baseline gap-3"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pesanan') }}</h2><a href="{{ route('admin.orders') }}" wire:navigate class="text-[12.5px] text-kraft/60 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Lihat semua') }} &rarr;</a></div>
+            <div class="flex items-baseline gap-3"><h2 class="font-display text-[1rem] font-semibold">{{ __('Pesanan') }}</h2><a href="{{ route('admin.orders') }}" wire:navigate class="text-[12.5px] text-kraft/70 underline-offset-4 hover:text-labwhite hover:underline">{{ __('Lihat semua') }} &rarr;</a></div>
             <div class="relative w-full sm:w-80">
-                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
+                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/70" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
                 <label class="sr-only" for="q">{{ __('Cari pesanan') }}</label>
                 <input id="q" type="search" wire:model.live.debounce.350ms="search" placeholder="{{ __('Cari kode / nama, cth: Sinta') }}"
                        class="w-full rounded border border-kraft/25 bg-transparent py-2 pl-9 pr-3 text-[13.5px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
@@ -145,7 +145,7 @@
         <div class="mt-3 flex gap-x-1 overflow-x-auto border-b border-kraft/15 px-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden max-sm:pb-px sm:flex-wrap sm:overflow-visible" role="tablist">
             @foreach (\App\Livewire\Admin\Dashboard::TABS as $key => [$label])
                 <button type="button" role="tab" aria-selected="{{ $tab === $key ? 'true' : 'false' }}" wire:click="setTab('{{ $key }}')"
-                        class="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/60 hover:text-labwhite' }}">
+                        class="-mb-px flex shrink-0 items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-[13px] transition-colors {{ $tab === $key ? 'border-bluelab text-labwhite' : 'border-transparent text-kraft/70 hover:text-labwhite' }}">
                     {{ __($label) }}<span class="krm-readout rounded-[6px] bg-labwhite/[.07] px-1.5 text-[11px]">{{ $this->tabCounts[$key] }}</span>
                 </button>
             @endforeach
@@ -154,7 +154,7 @@
         @php $orders = $this->orders; @endphp
         <div wire:loading.class="opacity-60" class="transition-opacity">
             <table class="hidden w-full text-left text-[13.5px] md:table">
-                <thead class="krm-readout text-[11px] uppercase tracking-[0.12em] text-kraft/45">
+                <thead class="krm-readout text-[11px] uppercase tracking-[0.12em] text-kraft/70">
                     <tr class="border-b border-kraft/10"><th class="px-5 py-2.5 font-normal">{{ __('Kode') }}</th><th class="px-3 py-2.5 font-normal">{{ __('Pelanggan') }}</th><th class="px-3 py-2.5 font-normal">{{ __('Item') }}</th><th class="px-3 py-2.5 font-normal">{{ __('Waktu') }}</th><th class="px-3 py-2.5 text-right font-normal">{{ __('Total') }}</th><th class="px-5 py-2.5 font-normal">{{ __('Status') }}</th></tr>
                 </thead>
                 <tbody class="divide-y divide-kraft/10">
@@ -163,7 +163,7 @@
                             <td class="px-5 py-3"><a href="{{ route('admin.orders', ['order' => $o->order_code]) }}" wire:navigate class="krm-readout text-[12.5px] underline-offset-4 hover:underline">{{ $o->order_code }}</a></td>
                             <td class="max-w-[170px] truncate px-3 py-3">{{ $o->user?->name ?? $o->recipient_name }}</td>
                             <td class="max-w-[240px] truncate px-3 py-3 text-kraft/65">{{ $o->groupedItems()->map(fn ($i) => $i->short)->implode(', ') }}</td>
-                            <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/55">{{ $o->created_at->translatedFormat('j M, H:i') }}</td>
+                            <td class="krm-readout whitespace-nowrap px-3 py-3 text-[12px] text-kraft/70">{{ $o->created_at->translatedFormat('j M, H:i') }}</td>
                             <td class="krm-readout whitespace-nowrap px-3 py-3 text-right">{{ $rp($o->total) }}</td>
                             <td class="px-5 py-3"><span class="whitespace-nowrap rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $statusTone($o->status) }}">{{ $o->status_label }}</span></td>
                         </tr>
@@ -179,17 +179,17 @@
                             <span class="rounded-[6px] border px-2 py-0.5 text-[11.5px] {{ $statusTone($o->status) }}">{{ $o->status_label }}</span>
                         </div>
                         <p class="mt-1 truncate text-[13.5px]">{{ $o->user?->name ?? $o->recipient_name }}</p>
-                        <div class="mt-0.5 flex justify-between text-[12px] text-kraft/55"><span>{{ $o->created_at->translatedFormat('j M, H:i') }}</span><span class="krm-readout text-labwhite">{{ $rp($o->total) }}</span></div>
+                        <div class="mt-0.5 flex justify-between text-[12px] text-kraft/70"><span>{{ $o->created_at->translatedFormat('j M, H:i') }}</span><span class="krm-readout text-labwhite">{{ $rp($o->total) }}</span></div>
                     </li>
                 @endforeach
             </ul>
 
             @if ($orders->isEmpty())
-                <p class="px-5 py-10 text-center text-[13px] text-kraft/45">{{ $search !== '' ? __('Tidak ada pesanan yang cocok dengan pencarian.') : __('Belum ada pesanan.') }}</p>
+                <p class="px-5 py-10 text-center text-[13px] text-kraft/70">{{ $search !== '' ? __('Tidak ada pesanan yang cocok dengan pencarian.') : __('Belum ada pesanan.') }}</p>
             @endif
         </div>
 
-        <div class="flex items-center justify-between gap-3 border-t border-kraft/15 px-5 py-3 text-[12.5px] text-kraft/60">
+        <div class="flex items-center justify-between gap-3 border-t border-kraft/15 px-5 py-3 text-[12.5px] text-kraft/70">
             <span>{{ $orders->total() ? __('Menampilkan :a–:b dari :t', ['a' => $orders->firstItem(), 'b' => $orders->lastItem(), 't' => $orders->total()]) : '' }}</span>
             <div class="flex items-center gap-2">
                 <button wire:click="previousPage" @disabled($orders->onFirstPage()) class="whitespace-nowrap rounded border border-kraft/25 px-3 py-1.5 transition-colors enabled:hover:border-kraft/60 disabled:opacity-35" aria-label="{{ __('Sebelumnya') }}">&larr;<span class="hidden sm:inline"> {{ __('Sebelumnya') }}</span></button>
@@ -206,13 +206,13 @@
             @forelse ($this->topCoffees as $i => $c)
                 <div class="mt-4">
                     <div class="flex items-baseline justify-between gap-3 text-[13.5px]">
-                        <span class="min-w-0 truncate"><span class="krm-readout mr-2 text-kraft/40">{{ $i + 1 }}</span>{{ $c->name }}</span>
+                        <span class="min-w-0 truncate"><span class="krm-readout mr-2 text-kraft/70">{{ $i + 1 }}</span>{{ $c->name }}</span>
                         <span class="krm-readout shrink-0 text-[12.5px] text-kraft/70">{{ number_format($c->grams) }} g · {{ $rp($c->revenue) }}</span>
                     </div>
                     <div class="mt-1.5 h-1 rounded-full bg-labwhite/10"><div class="h-1 rounded-full bg-bluelab transition-all duration-500" style="width: {{ round($c->grams / $tmax * 100) }}%"></div></div>
                 </div>
             @empty
-                <p class="mt-6 text-[13px] text-kraft/45">{{ __('Belum ada penjualan di rentang ini.') }}</p>
+                <p class="mt-6 text-[13px] text-kraft/70">{{ __('Belum ada penjualan di rentang ini.') }}</p>
             @endforelse
 
             @if ($this->levels->isNotEmpty())
@@ -221,7 +221,7 @@
                     // Satu warna per level, dari emas (light) ke cokelat tua (dark), dipakai di bar dan legenda.
                     $lvColor = ['light' => '#E8B96A', 'medium_light' => '#D08F3F', 'medium' => '#A9652B', 'medium_dark' => '#7C4421', 'dark' => '#55301B'];
                 @endphp
-                <h3 class="mt-7 text-[12.5px] text-kraft/60">{{ __('Level sangrai favorit') }}</h3>
+                <h3 class="mt-7 text-[12.5px] text-kraft/70">{{ __('Level sangrai favorit') }}</h3>
                 <div class="mt-2 flex h-3 gap-px overflow-hidden rounded-full bg-labwhite/10" role="img" aria-label="{{ __('Level sangrai favorit') }}">
                     @foreach ($this->levels as $lv)
                         <div style="width: {{ round($lv->grams / $lsum * 100, 1) }}%; background: {{ $lvColor[$lv->level] ?? '#2A5DB0' }}" title="{{ \App\Models\RoastProfile::LEVELS[$lv->level] ?? $lv->level }} {{ round($lv->grams / $lsum * 100) }}%"></div>
@@ -232,7 +232,7 @@
                         <li class="flex min-w-0 items-center gap-2">
                             <span class="h-2.5 w-2.5 shrink-0 rounded-[3px] border border-kraft/30" style="background: {{ $lvColor[$lv->level] ?? '#2A5DB0' }}"></span>
                             <span class="min-w-0 flex-1 truncate text-kraft/80 sm:flex-none">{{ \App\Models\RoastProfile::LEVELS[$lv->level] ?? $lv->level }}</span>
-                            <span class="krm-readout shrink-0 text-kraft/60">{{ round($lv->grams / $lsum * 100) }}%</span>
+                            <span class="krm-readout shrink-0 text-kraft/70">{{ round($lv->grams / $lsum * 100) }}%</span>
                         </li>
                     @endforeach
                 </ul>
@@ -242,7 +242,7 @@
         <section class="rounded border border-kraft/20 bg-charcoal p-5">
             <div class="flex items-baseline justify-between gap-3">
                 <h2 class="font-display text-[1rem] font-semibold">{{ __('Stok menipis') }}</h2>
-                <span class="krm-readout text-[11.5px] text-kraft/50">&lt; {{ number_format(\App\Models\Setting::int('low_stock_gram')) }} g</span>
+                <span class="krm-readout text-[11.5px] text-kraft/70">&lt; {{ number_format(\App\Models\Setting::int('low_stock_gram')) }} g</span>
             </div>
             @forelse ($this->lowStock as $c)
                 <div class="mt-4 flex items-center justify-between gap-3">
@@ -253,7 +253,7 @@
                     <a href="{{ route('admin.stock') }}" wire:navigate class="shrink-0 rounded border border-kraft/30 px-3 py-1.5 text-[12.5px] transition-colors hover:border-kraft/70">{{ __('Isi stok') }}</a>
                 </div>
             @empty
-                <p class="mt-6 text-[13px] text-kraft/55">{{ __('Semua stok aman.') }}</p>
+                <p class="mt-6 text-[13px] text-kraft/70">{{ __('Semua stok aman.') }}</p>
             @endforelse
         </section>
     </div>

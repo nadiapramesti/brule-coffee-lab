@@ -8,7 +8,7 @@
     <header class="flex shrink-0 items-center justify-between gap-3 border-b border-kraft/15 px-5 py-3.5">
         <div>
             <h2 id="form-title" class="font-display text-[1.1rem] font-semibold leading-tight">{{ $coffeeId ? __('Ubah kopi') : __('Kopi baru') }}</h2>
-            @if ($coffeeId)<p class="krm-readout text-[11px] text-kraft/50">{{ $slug }}</p>@endif
+            @if ($coffeeId)<p class="krm-readout text-[11px] text-kraft/70">{{ $slug }}</p>@endif
         </div>
         <button type="button" wire:click="$dispatch('close-coffee-form')" class="-mr-2 grid h-9 w-9 place-items-center rounded text-kraft/70 transition-colors hover:bg-labwhite/[.06] hover:text-labwhite" aria-label="{{ __('Tutup') }}">
             <svg viewBox="0 0 20 20" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l12 12M16 4L4 16"/></svg>
@@ -37,7 +37,7 @@
                 @error('story')<p class="{{ $er }}">{{ $message }}</p>@enderror
             </div>
             <div class="mt-3">
-                <label for="story_en" class="{{ $lb }}">{{ __('Cerita kopi (English)') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                <label for="story_en" class="{{ $lb }}">{{ __('Cerita kopi (English)') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                 <textarea id="story_en" rows="3" wire:model="story_en" placeholder="Example: Picked on small farms in the Gayo highlands, Aceh. Sweet and clean in the cup." class="{{ $in }}"></textarea>
                 @error('story_en')<p class="{{ $er }}">{{ $message }}</p>@enderror
             </div>
@@ -48,13 +48,13 @@
                     @error('stock')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label for="cupping" class="{{ $lb }}">{{ __('Skor cupping') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                    <label for="cupping" class="{{ $lb }}">{{ __('Skor cupping') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                     <input id="cupping" type="number" step="0.1" inputmode="decimal" wire:model="cupping" placeholder="88.5" class="{{ $in }} krm-readout">
                     @error('cupping')<p class="{{ $er }}">{{ $message }}</p>@enderror
                 </div>
             </div>
             <div class="mt-3">
-                <span class="{{ $lb }}">{{ __('Foto produk') }} <span class="text-kraft/45">· {{ __('opsional') }}</span></span>
+                <span class="{{ $lb }}">{{ __('Foto produk') }} <span class="text-kraft/70">· {{ __('opsional') }}</span></span>
                 @php($shown = $photo ? $photo->temporaryUrl() : $this->currentImageUrl())
                 <div class="mt-1.5 flex items-start gap-4">
                     <div class="w-28 shrink-0 overflow-hidden rounded border border-kraft/15 bg-surface">
@@ -75,15 +75,15 @@
                                     {{ $photo ? __('Batal pilih') : __('Hapus foto') }}
                                 </button>
                             @endif
-                            <span wire:loading wire:target="photo" class="text-[12px] text-kraft/60">{{ __('Mengunggah…') }}</span>
+                            <span wire:loading wire:target="photo" class="text-[12px] text-kraft/70">{{ __('Mengunggah…') }}</span>
                         </div>
-                        <p class="mt-2 text-[12px] leading-relaxed text-kraft/55">{{ __('JPG, PNG, atau WebP. Maks 3 MB. Rasio 4:5 (portrait) paling pas. Tanpa foto, toko menampilkan kantong SVG.') }}</p>
+                        <p class="mt-2 text-[12px] leading-relaxed text-kraft/70">{{ __('JPG, PNG, atau WebP. Maks 3 MB. Rasio 4:5 (portrait) paling pas. Tanpa foto, toko menampilkan kantong SVG.') }}</p>
                         @error('photo')<p class="{{ $er }}">{{ $message }}</p>@enderror
                     </div>
                 </div>
             </div>
             <label class="mt-3 flex cursor-pointer items-center gap-3 text-[14px]">
-                <input type="checkbox" wire:model="is_active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                <input type="checkbox" wire:model="is_active" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                 {{ __('Tampilkan di toko') }}
             </label>
         </section>
@@ -101,7 +101,7 @@
                     ['q_grader', __('Q Grader'), 'text', 'Budi Santoso'],
                 ] as [$f, $l, $t, $ph])
                     <div>
-                        <label for="{{ $f }}" class="{{ $lb }}">{{ $l }}@if (in_array($f, ['harvest_date', 'q_grader'])) <span class="text-kraft/45">· {{ __('opsional') }}</span>@endif</label>
+                        <label for="{{ $f }}" class="{{ $lb }}">{{ $l }}@if (in_array($f, ['harvest_date', 'q_grader'])) <span class="text-kraft/70">· {{ __('opsional') }}</span>@endif</label>
                         <input id="{{ $f }}" type="{{ $t }}" wire:model="{{ $f }}" @if ($ph) placeholder="{{ $ph }}" @endif class="{{ $in }}">
                         @error($f)<p class="{{ $er }}">{{ $message }}</p>@enderror
                     </div>
@@ -119,14 +119,14 @@
         {{-- Level sangrai --}}
         <section class="{{ $card }}">
             <h2 class="font-display text-[0.95rem] font-semibold">{{ __('Level sangrai & harga') }}</h2>
-            <p class="mt-1 text-[12px] text-kraft/60">{{ __('Aktifkan level yang dijual. Harga per 100 gram.') }}</p>
+            <p class="mt-1 text-[12px] text-kraft/70">{{ __('Aktifkan level yang dijual. Harga per 100 gram.') }}</p>
             @error('profiles')<p class="{{ $er }}">{{ $message }}</p>@enderror
 
             <div class="mt-3 space-y-2.5">
                 @foreach (\App\Models\RoastProfile::LEVELS as $lv => $label)
                     <div wire:key="lv-{{ $lv }}" x-data="{ on: @entangle("profiles.$lv.on") }" class="rounded border transition-colors" :class="on ? 'border-bluelab/50 bg-labwhite/[.02]' : 'border-kraft/15'">
                         <label class="flex cursor-pointer items-center gap-3 px-3.5 py-2.5">
-                            <input type="checkbox" x-model="on" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluelab focus:ring-bluelab/40">
+                            <input type="checkbox" x-model="on" class="h-4 w-4 rounded border-kraft/40 bg-transparent text-bluetext focus:ring-bluelab/40">
                             <span class="font-display text-[15px] font-semibold">{{ $label }}</span>
                         </label>
                         <div x-show="on" x-collapse x-cloak class="border-t border-kraft/15 px-3.5 pb-4 pt-3">
@@ -137,7 +137,7 @@
                                     @error("profiles.$lv.price")<p class="{{ $er }}">{{ $message }}</p>@enderror
                                 </div>
                                 <div>
-                                    <label for="ag-{{ $lv }}" class="{{ $lb }}">Agtron <span class="text-kraft/45">· {{ __('opsional') }}</span></label>
+                                    <label for="ag-{{ $lv }}" class="{{ $lb }}">Agtron <span class="text-kraft/70">· {{ __('opsional') }}</span></label>
                                     <input id="ag-{{ $lv }}" type="number" inputmode="numeric" wire:model="profiles.{{ $lv }}.agtron" placeholder="75" class="{{ $in }} krm-readout">
                                     @error("profiles.$lv.agtron")<p class="{{ $er }}">{{ $message }}</p>@enderror
                                 </div>
@@ -164,7 +164,7 @@
     </div>
 
     <footer class="flex shrink-0 flex-wrap items-center justify-between gap-3 border-t border-kraft/15 bg-surface px-5 py-3.5">
-        <p class="hidden text-[12px] text-kraft/45 sm:block">{{ __('Level yang sudah pernah dipesan tidak bisa dimatikan.') }}</p>
+        <p class="hidden text-[12px] text-kraft/70 sm:block">{{ __('Level yang sudah pernah dipesan tidak bisa dimatikan.') }}</p>
         <div class="ml-auto flex items-center gap-2">
             <button type="button" wire:click="$dispatch('close-coffee-form')" class="rounded px-4 py-2.5 text-[13.5px] text-kraft/70 transition-colors hover:text-labwhite">{{ __('Batal') }}</button>
             <button type="submit" wire:loading.attr="disabled" class="rounded bg-bluelab px-6 py-2.5 font-display text-[14px] font-semibold transition-colors hover:bg-[#234E94] disabled:opacity-60">

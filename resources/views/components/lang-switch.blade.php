@@ -8,7 +8,7 @@
            class="krm-readout rounded px-2 py-1 tracking-wider transition-colors
                   {{ app()->getLocale() === $code
                         ? 'text-labwhite underline decoration-bluelab decoration-2 underline-offset-[6px]'
-                        : 'text-kraft/60 hover:text-labwhite' }}">{{ $label }}</a>
+                        : 'text-kraft/70 hover:text-labwhite' }}">{{ $label }}</a>
         @unless ($loop->last)<span class="text-kraft/25" aria-hidden="true">/</span>@endunless
     @endforeach
 </div>

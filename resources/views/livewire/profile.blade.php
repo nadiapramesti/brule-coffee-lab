@@ -1,7 +1,7 @@
 <div class="krm-auth mx-auto max-w-[860px] px-6 pb-24 pt-12 md:pt-16">
     @php $u = auth()->user(); @endphp
 
-    <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/60" data-reveal>{{ __('AKUN') }}</p>
+    <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/70" data-reveal>{{ __('AKUN') }}</p>
     <h1 class="krm-h2 mt-2 font-bold" data-reveal style="--d:60ms">{{ __('Profil') }}</h1>
 
     <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3 rounded border border-kraft/20 bg-surface px-5 py-4" data-reveal style="--d:120ms">

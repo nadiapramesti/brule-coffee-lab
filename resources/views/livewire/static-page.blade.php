@@ -1,19 +1,19 @@
 <div class="mx-auto max-w-[860px] px-6 pb-24 pt-12 md:pt-16">
     <h1 class="krm-h2 font-bold" data-reveal>{{ $c['title'] }}</h1>
     <p class="mt-3 max-w-[58ch] text-[14.5px] leading-relaxed text-kraft/75">{{ $c['intro'] }}</p>
-    @isset($c['updated'])<p class="krm-readout mt-2 text-[11.5px] text-kraft/45">{{ $c['updated'] }}</p>@endisset
+    @isset($c['updated'])<p class="krm-readout mt-2 text-[11.5px] text-kraft/70">{{ $c['updated'] }}</p>@endisset
 
     @if ($page === 'faq')
         <div class="mt-10 space-y-10">
             @foreach ($c['groups'] as $g)
                 <section aria-labelledby="g{{ $loop->index }}">
-                    <h2 id="g{{ $loop->index }}" class="krm-readout text-[11.5px] tracking-[0.16em] text-kraft/55">{{ mb_strtoupper($g['title']) }}</h2>
+                    <h2 id="g{{ $loop->index }}" class="krm-readout text-[11.5px] tracking-[0.16em] text-kraft/70">{{ mb_strtoupper($g['title']) }}</h2>
                     <div class="mt-3 divide-y divide-kraft/15 rounded border border-kraft/20">
                         @foreach ($g['items'] as $it)
                             <details class="group px-5 py-4">
                                 <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-[15px] font-semibold marker:hidden [&::-webkit-details-marker]:hidden">
                                     <span>{{ $it['q'] }}</span>
-                                    <svg viewBox="0 0 20 20" class="h-4 w-4 shrink-0 text-kraft/55 transition-transform group-open:rotate-45" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
+                                    <svg viewBox="0 0 20 20" class="h-4 w-4 shrink-0 text-kraft/70 transition-transform group-open:rotate-45" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M10 4v12M4 10h12"/></svg>
                                 </summary>
                                 <p class="mt-3 max-w-[64ch] text-[14px] leading-relaxed text-kraft/75">{{ $it['a'] }}</p>
                             </details>

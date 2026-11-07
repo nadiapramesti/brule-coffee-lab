@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-end justify-between gap-3">
         <div>
             <h1 class="font-display text-[1.45rem] font-bold leading-tight">{{ __('Kelola perlengkapan') }}</h1>
-            <p class="mt-0.5 text-[12.5px] text-kraft/55">{{ __('Tambah, ubah, atur stok, dan tampilkan/sembunyikan alat seduh dan merchandise di toko.') }}</p>
+            <p class="mt-0.5 text-[12.5px] text-kraft/70">{{ __('Tambah, ubah, atur stok, dan tampilkan/sembunyikan alat seduh dan merchandise di toko.') }}</p>
         </div>
         <button type="button" wire:click="openForm" class="rounded bg-bluelab px-4 py-2.5 font-display text-[13.5px] font-semibold transition-colors hover:bg-[#234E94]">+ {{ __('Produk baru') }}</button>
     </div>
@@ -22,20 +22,20 @@
             <div class="-mx-1 flex w-full gap-1 overflow-x-auto px-1 [scrollbar-width:none] sm:mx-0 sm:w-auto sm:px-0 [&::-webkit-scrollbar]:hidden" role="tablist">
                 @foreach (['' => __('Semua'), 'active' => __('Tampil'), 'hidden' => __('Tersembunyi'), 'low' => __('Stok tipis')] as $k => $label)
                     <button type="button" role="tab" aria-selected="{{ $show === $k ? 'true' : 'false' }}" wire:click="$set('show', '{{ $k }}')"
-                            class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-3 py-1.5 text-[12.5px] transition-colors {{ $show === $k ? 'bg-bluelab/20 text-labwhite' : 'text-kraft/60 hover:text-labwhite' }}">
-                        {{ $label }}<span class="krm-readout text-[11px] text-kraft/50">{{ $this->counts[$k] }}</span>
+                            class="flex shrink-0 items-center gap-1.5 whitespace-nowrap rounded px-3 py-1.5 text-[12.5px] transition-colors {{ $show === $k ? 'bg-bluelab/20 text-labwhite' : 'text-kraft/70 hover:text-labwhite' }}">
+                        {{ $label }}<span class="krm-readout text-[11px] text-kraft/70">{{ $this->counts[$k] }}</span>
                     </button>
                 @endforeach
             </div>
             <div class="relative w-full sm:w-72">
-                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/45" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
+                <svg viewBox="0 0 24 24" class="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-kraft/70" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4-4"/></svg>
                 <label class="sr-only" for="q">{{ __('Cari produk') }}</label>
                 <input id="q" type="search" wire:model.live.debounce.300ms="search" placeholder="{{ __('Cari nama, cth: V60') }}"
                        class="w-full rounded border border-kraft/25 bg-transparent py-2 pl-9 pr-3 text-[13px] placeholder:text-kraft/35 focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
             </div>
         </div>
 
-        <div class="hidden gap-3 border-y border-kraft/10 px-4 py-2 text-[10.5px] uppercase tracking-[0.12em] text-kraft/45 md:grid {{ $cols }} krm-readout">
+        <div class="hidden gap-3 border-y border-kraft/10 px-4 py-2 text-[10.5px] uppercase tracking-[0.12em] text-kraft/70 md:grid {{ $cols }} krm-readout">
             <span>{{ __('Produk') }}</span><span>{{ __('Kategori') }}</span><span>{{ __('Stok (unit)') }}</span><span>{{ __('Harga') }}</span><span class="text-center">{{ __('Tampil') }}</span><span class="text-right">{{ __('Aksi') }}</span>
         </div>
 
@@ -48,7 +48,7 @@
                             <x-product-thumb :product="$c" class="h-[42px] w-[42px]" />
                             <div class="min-w-0">
                                 <p class="truncate text-[13.5px] font-semibold">{{ $c->name }}</p>
-                                <p class="krm-readout truncate text-[10.5px] text-kraft/45">{{ $c->slug }}@if ($c->hasOptions()) · {{ count($c->optionList()) }} {{ __('pilihan') }}@endif</p>
+                                <p class="krm-readout truncate text-[10.5px] text-kraft/70">{{ $c->slug }}@if ($c->hasOptions()) · {{ count($c->optionList()) }} {{ __('pilihan') }}@endif</p>
                             </div>
                         </div>
                         <button type="button" role="switch" aria-checked="{{ $c->is_active ? 'true' : 'false' }}" aria-label="{{ __('Tampilkan di toko') }}" wire:click="toggle({{ $c->id }})"
@@ -67,7 +67,7 @@
                         </div>
                         <form x-show="add" x-cloak x-transition.opacity.duration.120ms wire:submit="addStock({{ $c->id }})"
                               class="absolute right-0 top-full z-20 mt-1.5 w-56 rounded border border-kraft/30 bg-surface p-2.5 shadow-[0_14px_30px_-10px_rgb(var(--shadow)/.9)]">
-                            <label for="rs-{{ $c->id }}" class="text-[11.5px] text-kraft/60">{{ __('Tambah stok (unit)') }}</label>
+                            <label for="rs-{{ $c->id }}" class="text-[11.5px] text-kraft/70">{{ __('Tambah stok (unit)') }}</label>
                             <div class="mt-1.5 flex gap-1.5">
                                 <input x-ref="g" id="rs-{{ $c->id }}" type="number" inputmode="numeric" min="1" wire:model="restock.{{ $c->id }}" placeholder="{{ __('Contoh: 10') }}"
                                        class="krm-readout min-w-0 flex-1 rounded border border-kraft/25 bg-transparent px-2.5 py-1.5 text-[12.5px] placeholder:text-kraft/30 focus:border-bluelab focus:outline-none focus:ring-1 focus:ring-bluelab/50">
@@ -98,7 +98,7 @@
                     </div>
                 </li>
             @empty
-                <li class="px-4 py-10 text-center text-[13px] text-kraft/45">{{ __('Tidak ada produk yang cocok.') }}</li>
+                <li class="px-4 py-10 text-center text-[13px] text-kraft/70">{{ __('Tidak ada produk yang cocok.') }}</li>
             @endforelse
         </ul>
     </section>

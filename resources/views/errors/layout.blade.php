@@ -26,8 +26,8 @@
     </header>
 
     <main class="mx-auto flex w-full max-w-[1180px] flex-1 flex-col justify-center px-6 pb-24 pt-8">
-        <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/55">{{ __('KODE GALAT') }} · {{ $code }}</p>
-        <p class="mt-2 font-display text-[clamp(5rem,18vw,11rem)] font-bold leading-none tracking-tight text-bluelab" aria-hidden="true">{{ $code }}</p>
+        <p class="krm-readout text-[12px] tracking-[0.18em] text-kraft/70">{{ __('KODE GALAT') }} · {{ $code }}</p>
+        <p class="mt-2 font-display text-[clamp(5rem,18vw,11rem)] font-bold leading-none tracking-tight text-bluetext" aria-hidden="true">{{ $code }}</p>
         <h1 class="krm-h2 mt-4 max-w-[20ch] font-semibold">{{ $heading }}</h1>
         <p class="mt-3 max-w-[52ch] text-[15px] leading-relaxed text-kraft/75">{{ $body }}</p>
 

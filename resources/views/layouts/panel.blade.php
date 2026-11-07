@@ -82,7 +82,7 @@
             @foreach ($groups as $group => $items)
                 @php $items = array_filter($items, fn ($i) => ! $i[4] || $u->isAdmin()); @endphp
                 @continue(! count($items))
-                <p class="krm-readout px-3 pb-1.5 pt-3 text-[10.5px] uppercase tracking-[0.18em] text-kraft/40 lg:[.mini_&]:hidden">{{ $group }}</p>
+                <p class="krm-readout px-3 pb-1.5 pt-3 text-[10.5px] uppercase tracking-[0.18em] text-kraft/70 lg:[.mini_&]:hidden">{{ $group }}</p>
                 <div class="mx-3 my-2 hidden border-t border-kraft/10 lg:[.mini_&]:block"></div>
                 @foreach ($items as [$route, $url, $label, $icon, , $badge])
                     @php $on = request()->routeIs($route); @endphp
@@ -96,7 +96,7 @@
                 @endforeach
             @endforeach
 
-            <p class="krm-readout px-3 pb-1.5 pt-6 text-[10.5px] uppercase tracking-[0.18em] text-kraft/40 lg:[.mini_&]:hidden">{{ __('Pintasan') }}</p>
+            <p class="krm-readout px-3 pb-1.5 pt-6 text-[10.5px] uppercase tracking-[0.18em] text-kraft/70 lg:[.mini_&]:hidden">{{ __('Pintasan') }}</p>
             <div class="mx-3 my-2 hidden border-t border-kraft/10 lg:[.mini_&]:block"></div>
             <a href="{{ route('landing') }}" title="{{ __('Lihat toko') }}" class="flex items-center gap-3 rounded px-3 py-2.5 lg:[.mini_&]:justify-center lg:[.mini_&]:px-0 text-[13.5px] text-kraft/70 transition-colors hover:bg-labwhite/[.04] hover:text-labwhite">
                 <svg viewBox="0 0 24 24" class="h-[17px] w-[17px]" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8"/></svg><span class="lg:[.mini_&]:hidden">{{ __('Lihat toko') }}</span>
@@ -117,15 +117,15 @@
             </button>
 
             <nav aria-label="breadcrumb" class="flex min-w-0 items-center gap-2 text-[13.5px]">
-                <span class="hidden text-kraft/45 sm:inline">{{ $u->isAdmin() ? 'Admin' : 'Roastery' }}</span>
+                <span class="hidden text-kraft/70 sm:inline">{{ $u->isAdmin() ? 'Admin' : 'Roastery' }}</span>
                 @foreach ($crumbs as $i => $c)
                     <span class="hidden text-kraft/30 sm:inline" aria-hidden="true">/</span>
-                    <span class="truncate {{ $loop->last ? 'font-medium text-labwhite' : 'hidden text-kraft/55 sm:inline' }}">{{ $c }}</span>
+                    <span class="truncate {{ $loop->last ? 'font-medium text-labwhite' : 'hidden text-kraft/70 sm:inline' }}">{{ $c }}</span>
                 @endforeach
             </nav>
 
             <div class="ml-auto flex items-center gap-2 sm:gap-3">
-                <span class="krm-readout hidden text-[12px] text-kraft/50 md:block">{{ now()->translatedFormat('D, j M Y') }}</span>
+                <span class="krm-readout hidden text-[12px] text-kraft/70 md:block">{{ now()->translatedFormat('D, j M Y') }}</span>
                 <x-lang-switch class="flex" />
                 <x-theme-toggle />
                 <livewire:notifications />
@@ -136,12 +136,12 @@
                             <span class="block max-w-[130px] truncate text-[12.5px] font-medium">{{ $u->name }}</span>
                             <span class="krm-readout block text-[9.5px] uppercase tracking-wider text-bluetext">{{ $u->role }}</span>
                         </span>
-                        <svg viewBox="0 0 20 20" class="hidden h-3.5 w-3.5 text-kraft/55 transition-transform sm:block" :class="o && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
+                        <svg viewBox="0 0 20 20" class="hidden h-3.5 w-3.5 text-kraft/70 transition-transform sm:block" :class="o && 'rotate-180'" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8l5 5 5-5"/></svg>
                     </button>
                     <div x-show="o" x-cloak x-transition.opacity.duration.150ms role="menu" class="absolute right-0 top-[calc(100%+8px)] z-50 w-[220px] overflow-hidden rounded-[10px] border border-kraft/25 bg-surface shadow-[0_20px_50px_-15px_rgb(var(--shadow)/.9)]">
                         <div class="border-b border-kraft/15 px-4 py-3">
                             <p class="truncate text-[13.5px] font-medium">{{ $u->name }}</p>
-                            <p class="truncate text-[12px] text-kraft/55">{{ $u->email }}</p>
+                            <p class="truncate text-[12px] text-kraft/70">{{ $u->email }}</p>
                             <span class="krm-readout mt-2 inline-block rounded-[6px] border border-bluelab/60 px-2 py-0.5 text-[10px] uppercase tracking-wider text-bluetext">{{ $u->role }}</span>
                         </div>
                         <a href="{{ route('profile') }}" role="menuitem" class="flex items-center gap-2.5 px-4 py-2.5 text-[13.5px] text-kraft/80 transition-colors hover:bg-labwhite/[.05] hover:text-labwhite">

@@ -23,7 +23,7 @@
          class="fixed inset-x-3 top-16 z-50 overflow-hidden rounded-[10px] border border-kraft/25 bg-surface shadow-[0_20px_50px_-15px_rgb(var(--shadow)/.9)] sm:absolute sm:inset-x-auto sm:right-0 sm:top-[calc(100%+8px)] sm:w-[380px]">
         <div class="flex items-center justify-between border-b border-kraft/15 px-4 py-3">
             <p class="text-[13.5px] font-medium">{{ __('Notifikasi') }}
-                @if ($this->unread)<span class="krm-readout ml-1.5 text-[11px] text-kraft/50">{{ $this->unread }} {{ __('baru') }}</span>@endif
+                @if ($this->unread)<span class="krm-readout ml-1.5 text-[11px] text-kraft/70">{{ $this->unread }} {{ __('baru') }}</span>@endif
             </p>
             @if ($this->unread)
                 <button type="button" wire:click="markAllRead" class="text-[12.5px] text-bluetext transition-colors hover:text-labwhite">{{ __('Tandai semua dibaca') }}</button>
@@ -41,15 +41,15 @@
                     <span class="min-w-0 flex-1">
                         <span class="flex items-baseline justify-between gap-3">
                             <span class="truncate text-[13.5px] {{ $n->read_at ? 'text-kraft/70' : 'font-medium text-labwhite' }}">{{ $n->titleText() }}</span>
-                            <span class="krm-readout shrink-0 text-[10.5px] text-kraft/45">{{ $n->created_at->locale(app()->getLocale())->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE, parts: 1) }}</span>
+                            <span class="krm-readout shrink-0 text-[10.5px] text-kraft/70">{{ $n->created_at->locale(app()->getLocale())->diffForHumans(syntax: \Carbon\CarbonInterface::DIFF_ABSOLUTE, parts: 1) }}</span>
                         </span>
-                        @if ($n->bodyText())<span class="mt-0.5 block text-[12.5px] leading-snug text-kraft/55 [overflow-wrap:anywhere]">{{ $n->bodyText() }}</span>@endif
+                        @if ($n->bodyText())<span class="mt-0.5 block text-[12.5px] leading-snug text-kraft/70 [overflow-wrap:anywhere]">{{ $n->bodyText() }}</span>@endif
                     </span>
                 </button>
             @empty
                 <div class="px-4 py-10 text-center">
                     <p class="text-[13.5px] text-kraft/70">{{ __('Belum ada notifikasi') }}</p>
-                    <p class="mt-1 text-[12.5px] text-kraft/45">{{ __('Kabar pesanan dan stok akan muncul di sini.') }}</p>
+                    <p class="mt-1 text-[12.5px] text-kraft/70">{{ __('Kabar pesanan dan stok akan muncul di sini.') }}</p>
                 </div>
             @endforelse
         </div>

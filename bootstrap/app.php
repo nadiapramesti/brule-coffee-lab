@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Di belakang tunnel/reverse proxy (Cloudflare Tunnel, ngrok, hosting) skema asli ada di header
         // X-Forwarded-*; tanpa ini URL aset dan Livewire terbentuk http:// dan diblokir browser (mixed content).
         $middleware->trustProxies(at: '*');
-        $middleware->web(append: [\App\Http\Middleware\SetLocale::class, \App\Http\Middleware\EnsureNotBlocked::class]);
+        $middleware->web(append: [\App\Http\Middleware\SecurityHeaders::class, \App\Http\Middleware\SetLocale::class, \App\Http\Middleware\EnsureNotBlocked::class]);
         $middleware->api(append: [\App\Http\Middleware\ApiLocale::class]);
         $middleware->validateCsrfTokens(except: ['midtrans/notification']);
         $middleware->alias([
@@ -25,6 +25,10 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
+        // Pemantauan galat: ringkasan error ke webhook (bila ERROR_WEBHOOK_URL diisi). Tidak mengganggu pencatatan ke log.
+        $exceptions->report(function (\Throwable $e): void {
+            \App\Support\ErrorNotifier::notify($e);
+        });
         $exceptions->shouldRenderJsonWhen(
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );

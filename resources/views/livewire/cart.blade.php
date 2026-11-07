@@ -49,7 +49,7 @@
                                         <span class="krm-readout w-7 text-center text-[13px]" aria-live="polite">{{ $l->qty }}</span>
                                         <button type="button" wire:click="step('{{ $l->id }}', 1)" @disabled($l->qty >= \App\Support\Cart::MAX_QTY) aria-label="{{ __('Tambah') }}" class="grid h-8 w-8 place-items-center text-[16px] text-kraft/80 transition-colors hover:text-labwhite disabled:opacity-30">+</button>
                                     </div>
-                                    <button type="button" wire:click="remove('{{ $l->id }}')" class="text-[12.5px] text-kraft/55 underline-offset-4 transition-colors hover:text-redtext hover:underline">{{ __('Hapus') }}</button>
+                                    <button type="button" wire:click="remove('{{ $l->id }}')" class="text-[12.5px] text-kraft/70 underline-offset-4 transition-colors hover:text-redtext hover:underline">{{ __('Hapus') }}</button>
                                 </div>
                             </div>
                         </li>
@@ -61,7 +61,7 @@
 
             <aside class="lg:sticky lg:top-24 lg:self-start">
                 <div class="space-y-2.5 rounded border border-kraft/25 bg-surface p-6 text-[13.5px]">
-                    <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/55">{{ __('RINGKASAN') }}</p>
+                    <p class="krm-readout text-[11px] tracking-[0.16em] text-kraft/70">{{ __('RINGKASAN') }}</p>
                     <div class="flex justify-between pt-3"><span class="text-kraft/65">{{ __('Barang') }} ({{ $this->lines->sum('qty') }})</span><span class="krm-readout">Rp{{ number_format($this->subtotal, 0, ',', '.') }}</span></div>
                     <div class="flex justify-between"><span class="text-kraft/65">{{ __('Ongkir') }}</span>
                         <span class="krm-readout">{{ $this->shipping ? 'Rp'.number_format($this->shipping, 0, ',', '.') : __('Gratis') }}</span></div>
@@ -75,7 +75,7 @@
                     @else
                         <a href="{{ route('checkout') }}" wire:navigate class="mt-3 hidden w-full rounded bg-bluelab py-4 text-center font-display text-[15px] font-semibold text-paper transition-all hover:bg-[#234E94] lg:block">{{ __('Checkout') }}</a>
                     @endif
-                    <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/50">{{ __('Voucher dipakai di langkah checkout.') }}</p>
+                    <p class="pt-1 text-center text-[12px] leading-relaxed text-kraft/70">{{ __('Voucher dipakai di langkah checkout.') }}</p>
                 </div>
             </aside>
         </div>
@@ -84,7 +84,7 @@
         <div class="fixed inset-x-0 bottom-0 z-30 border-t border-labwhite/15 bg-surface/95 px-4 py-3 backdrop-blur lg:hidden">
             <div class="mx-auto flex max-w-[1080px] items-center justify-between gap-4">
                 <div class="min-w-0">
-                    <p class="text-[12px] text-kraft/60">{{ __('Total') }} · {{ $this->lines->sum('qty') }} {{ __('bungkus') }}</p>
+                    <p class="text-[12px] text-kraft/70">{{ __('Total') }} · {{ $this->lines->sum('qty') }} {{ __('bungkus') }}</p>
                     <p class="krm-readout text-[1.15rem] leading-tight">Rp{{ number_format($this->subtotal + $this->shipping, 0, ',', '.') }}</p>
                 </div>
                 @if ($this->problem)
