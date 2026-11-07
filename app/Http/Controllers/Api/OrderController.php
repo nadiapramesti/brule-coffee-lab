@@ -177,6 +177,8 @@ class OrderController extends Controller
 
         return array_merge($this->payload($order), [
             'can_pay' => false, 'can_cancel' => false, 'recipient' => [], 'card_message' => null, 'voucher_code' => null,
+            // Lacak tanpa login: kode pesanan saja tidak boleh membuka invoice (isinya data penerima).
+            'invoice_url' => null,
         ]);
     }
 
@@ -264,6 +266,8 @@ class OrderController extends Controller
             'is_paid'         => $o->isPaid(),
             'can_pay'         => $o->payment_method === 'online' && $o->status === 'pending_payment',
             'can_cancel'      => in_array($o->status, ['pending_payment', 'queued'], true),
+            // Link invoice bertanda tangan: hanya untuk pesanan yang boleh dicetak (lunas atau COD, bukan batal).
+            'invoice_url'     => $o->canPrint() ? $o->invoiceUrl() : null,
             'tracking_number' => $o->tracking_number,
             'subtotal'        => $o->subtotal,
             'shipping_cost'   => $o->shipping_cost,
