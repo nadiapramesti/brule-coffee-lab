@@ -77,6 +77,17 @@
                 </ol>
             @endif
 
+            @if ($this->canManage && ($o->canPrint() || $o->status === 'queued'))
+                <div class="flex flex-wrap gap-3 border-t border-kraft/15 px-6 py-4">
+                    @if ($o->canPrint())
+                        <a href="{{ $o->invoiceUrl() }}" target="_blank" rel="noopener" class="rounded border border-kraft/30 px-5 py-2.5 text-[14px] text-kraft/85 transition-colors hover:border-kraft/60">{{ __('Unduh invoice') }}</a>
+                    @endif
+                    @if ($o->status === 'queued')
+                        <button wire:click="cancel" wire:confirm="{{ __('Batalkan pesanan ini? Pesanan yang sudah disangrai tidak bisa dibatalkan.') }}" class="rounded border border-kraft/30 px-5 py-2.5 text-[14px] text-kraft/85 transition-colors hover:border-kraft/60">{{ __('Batalkan pesanan') }}</button>
+                    @endif
+                </div>
+            @endif
+
             <div class="border-t border-kraft/15 p-6">
                 @foreach ($o->groupedItems() as $item)
                     <div class="flex flex-wrap items-baseline justify-between gap-x-4 text-[14px]">

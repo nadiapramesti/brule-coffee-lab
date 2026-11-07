@@ -29,3 +29,6 @@
 {{ $o->shipping_address }}
 
 {{ $kind === 'placed' && ! $o->isCod() ? __('Bayar pesanan') : __('Lacak pesanan') }}: {{ $url }}
+@if ($o->canPrint() && ($kind !== 'placed' || $o->isCod()))
+{{ __('Unduh invoice') }}: {{ $o->invoiceUrl() }}
+@endif

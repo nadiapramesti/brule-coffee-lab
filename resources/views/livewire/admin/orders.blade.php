@@ -193,7 +193,8 @@
                         <h3 class="text-[12.5px] font-semibold">{{ __('Penerima & pengiriman') }}</h3>
                         <p class="mt-2.5 font-semibold">{{ $o->recipient_name }}</p>
                         <p class="krm-readout text-[12.5px] text-kraft/70">{{ $o->recipient_phone }}
-                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">WhatsApp ↗</a></p>
+                            <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">WhatsApp ↗</a>
+                            @if ($o->canPrint())<a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}?text={{ rawurlencode(__('Halo :name, terima kasih sudah memesan di BRÛLÉ. Invoice pesanan :code: :url', ['name' => \Illuminate\Support\Str::before($o->recipient_name, ' '), 'code' => $o->order_code, 'url' => $o->invoiceUrl()])) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">{{ __('Kirim invoice via WA') }} ↗</a>@endif</p>
                         <p class="mt-2 whitespace-pre-line text-kraft/80">{{ $o->shipping_address }}</p>
                         @if ($o->user)<p class="mt-3 border-t border-kraft/10 pt-2.5 text-[12px] text-kraft/70">{{ __('Akun') }}: {{ $o->user->name }} · {{ $o->user->email }}</p>@endif
                         @if ($o->tracking_number)<p class="mt-1 text-[12px] text-kraft/70">{{ __('Resi') }}: <span class="krm-readout text-labwhite">{{ $o->tracking_number }}</span></p>@endif

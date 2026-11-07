@@ -41,6 +41,9 @@
             <a href="{{ $url }}" style="display:inline-block;background:{{ $blue }};color:#FFFFFF;text-decoration:none;font-weight:700;font-size:15px;padding:13px 24px;border-radius:6px;">
                 {{ $kind === 'placed' && ! $o->isCod() ? __('Bayar pesanan') : __('Lacak pesanan') }}
             </a>
+            @if ($o->canPrint() && ($kind !== 'placed' || $o->isCod()))
+                <a href="{{ $o->invoiceUrl() }}" style="display:inline-block;margin-left:8px;border:1px solid {{ $blue }};color:{{ $blue }};text-decoration:none;font-weight:700;font-size:15px;padding:12px 22px;border-radius:6px;">{{ __('Unduh invoice') }}</a>
+            @endif
         </td></tr></table>
 
         <p style="margin:30px 0 8px;font-size:12px;letter-spacing:0.14em;color:{{ $muted }};font-family:Consolas,Menlo,monospace;">{{ __('RINCIAN PESANAN') }}</p>
