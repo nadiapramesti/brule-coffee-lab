@@ -42,9 +42,7 @@ class Cart extends Component
     #[Computed]
     public function freeShippingGap(): int
     {
-        $from = \App\Models\Setting::int('free_shipping_from');
-
-        return $from > 0 && $this->subtotal < $from ? $from - $this->subtotal : 0;
+        return Order::freeShippingGap($this->subtotal);
     }
 
     #[Computed]

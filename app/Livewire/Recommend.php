@@ -93,12 +93,23 @@ class Recommend extends Component
     #[Computed]
     public function results(): Collection
     {
-        if (count($this->answers) < 3) {
+        return self::rank($this->answers);
+    }
+
+    /**
+     * Logika peringkat tanpa state Livewire, dipakai juga oleh API.
+     *
+     * @param  array<string,string>  $answers  drink, taste, acid
+     * @return Collection<int,array{coffee:Coffee,profile:RoastProfile,score:int,why:string}>
+     */
+    public static function rank(array $answers): Collection
+    {
+        if (count($answers) < 3) {
             return collect();
         }
 
-        $keys = self::TASTE[$this->answers['taste']];
-        $target = min(4, self::ACID[$this->answers['acid']] + self::DRINK[$this->answers['drink']]);
+        $keys = self::TASTE[$answers['taste']];
+        $target = min(4, self::ACID[$answers['acid']] + self::DRINK[$answers['drink']]);
         $order = array_keys(RoastProfile::LEVELS);
 
         return Coffee::active()->with('traceability', 'roastProfiles')->orderBy('id')->get()

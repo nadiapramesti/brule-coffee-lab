@@ -215,6 +215,14 @@ class Order extends Model
         return $free > 0 && $subtotal >= $free ? 0 : Setting::int('shipping_flat');
     }
 
+    /** Sisa belanja agar ongkir gratis; 0 bila sudah gratis atau promo gratis ongkir dimatikan (batas 0). */
+    public static function freeShippingGap(int $subtotal): int
+    {
+        $from = Setting::int('free_shipping_from');
+
+        return $from > 0 && $subtotal < $from ? $from - $subtotal : 0;
+    }
+
     /** Panjang maksimal pesan kartu ucapan (karakter). */
     public const CARD_MAX = 160;
 

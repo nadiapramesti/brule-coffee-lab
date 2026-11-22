@@ -28,6 +28,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/staff/orders/{code}', [StaffController::class, 'show']);
     Route::post('/staff/orders/{code}/advance', [StaffController::class, 'advance']);
     Route::post('/staff/orders/{code}/ship', [StaffController::class, 'ship']);
+    Route::post('/staff/orders/{code}/cancel-request/approve', [AdminController::class, 'approveCancelRequest']);
+    Route::post('/staff/orders/{code}/cancel-request/reject', [AdminController::class, 'rejectCancelRequest']);
 
     // Khusus admin
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);

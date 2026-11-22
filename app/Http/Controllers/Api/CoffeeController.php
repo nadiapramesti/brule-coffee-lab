@@ -37,10 +37,8 @@ class CoffeeController extends Controller
 
     private function payload(Coffee $coffee, Request $request): array
     {
-<<<<<<< Updated upstream
-                $en = app()->getLocale() === 'en' || $request->query('lang') === 'en';
-        	$t = $coffee->traceability;
->>>>>>> Stashed changes
+        $en = app()->getLocale() === 'en' || $request->query('lang') === 'en';
+        $t = $coffee->traceability;
 
         return [
             'id'              => $coffee->id,

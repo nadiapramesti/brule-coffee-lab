@@ -127,6 +127,31 @@ class AdminController extends Controller
         return response()->json($staff->detail($order->fresh(['items', 'user']), $request));
     }
 
+    /** Admin menyetujui permintaan batal: pesanan dibatalkan, biji yang sudah disangrai tidak kembali ke stok. */
+    public function approveCancelRequest(Request $request, string $code)
+    {
+        return $this->resolveCancelRequest($request, $code, true);
+    }
+
+    /** Admin menolak permintaan batal: pesanan lanjut seperti biasa. */
+    public function rejectCancelRequest(Request $request, string $code)
+    {
+        return $this->resolveCancelRequest($request, $code, false);
+    }
+
+    private function resolveCancelRequest(Request $request, string $code, bool $approve)
+    {
+        $this->admin($request);
+        $staff = new StaffController;
+        $order = $staff->find($code);
+
+        if (! $order->resolveCancelRequest($approve)) {
+            return response()->json(['message' => 'Tidak ada permintaan batal yang bisa diproses untuk pesanan ini.'], 422);
+        }
+
+        return response()->json($staff->detail($order->fresh(['items', 'user']), $request));
+    }
+
     public function stock(Request $request)
     {
         // Roaster juga boleh melihat stok biji (sama seperti panel roastery di web).

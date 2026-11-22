@@ -167,6 +167,19 @@ class OrderController extends Controller
         return response()->json($this->payload($order->fresh('items')));
     }
 
+    /** Pelanggan mengajukan pembatalan untuk pesanan yang sudah masuk dapur; admin yang memutuskan. */
+    public function requestCancel(Request $request, string $code)
+    {
+        $data = $request->validate(['reason' => ['nullable', 'string', 'max:160']]);
+        $order = $this->mine($request, $code);
+
+        if (! $order->requestCancel($data['reason'] ?? null)) {
+            return response()->json(['message' => 'Pesanan ini tidak bisa diajukan pembatalannya.'], 422);
+        }
+
+        return response()->json($this->payload($order->fresh('items')));
+    }
+
     /** Lacak lewat kode tanpa login (sama seperti halaman Lacak di web): tahapan dan isi, tanpa data penerima. */
     public function track(string $code)
     {
@@ -177,6 +190,8 @@ class OrderController extends Controller
 
         return array_merge($this->payload($order), [
             'can_pay' => false, 'can_cancel' => false, 'recipient' => [], 'card_message' => null, 'voucher_code' => null,
+            // Lacak tanpa login: tidak ada aksi batal, dan alasan tulisan pelanggan tidak ikut keluar.
+            'can_request_cancel' => false, 'cancel_request_reason' => null,
             // Lacak tanpa login: kode pesanan saja tidak boleh membuka invoice (isinya data penerima).
             'invoice_url' => null,
         ]);
@@ -266,6 +281,10 @@ class OrderController extends Controller
             'is_paid'         => $o->isPaid(),
             'can_pay'         => $o->payment_method === 'online' && $o->status === 'pending_payment',
             'can_cancel'      => in_array($o->status, ['pending_payment', 'queued'], true),
+            // Pesanan sudah di dapur (roasting sampai packing): tidak bisa batal langsung, tapi boleh diajukan ke admin.
+            'can_request_cancel'    => $o->canRequestCancel(),
+            'cancel_requested_at'   => $o->cancel_requested_at?->toIso8601String(),
+            'cancel_request_reason' => $o->cancel_request_reason,
             // Link invoice bertanda tangan: hanya untuk pesanan yang boleh dicetak (lunas atau COD, bukan batal).
             'invoice_url'     => $o->canPrint() ? $o->invoiceUrl() : null,
             'tracking_number' => $o->tracking_number,

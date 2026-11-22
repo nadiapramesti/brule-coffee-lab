@@ -195,6 +195,11 @@ class StaffController extends Controller
             'admin_note'   => $o->admin_note,
             'can_complete' => $isAdmin && $o->status === 'shipped',
             'can_cancel'   => $isAdmin && in_array($o->status, ['pending_payment', 'queued'], true),
+            // Permintaan batal dari pelanggan menunggu jawaban admin.
+            'can_resolve_cancel' => $isAdmin && $o->cancel_requested_at !== null
+                && ! in_array($o->status, ['cancelled', 'shipped', 'completed'], true),
+            // Halaman lacak tanpa login (dipakai tombol "Kirim resi via WA").
+            'track_url'    => route('track', $o->order_code),
         ];
     }
 }

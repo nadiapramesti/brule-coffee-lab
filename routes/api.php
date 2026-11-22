@@ -2,8 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CoffeeController;
+use App\Http\Controllers\Api\FavoriteController;
 use App\Http\Controllers\Api\GearController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Api\RecommendController;
+use App\Http\Controllers\Api\StoreController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:6,1');
@@ -15,6 +18,9 @@ Route::get('/coffees/{slug}', [CoffeeController::class, 'show']);
 Route::get('/gear', [GearController::class, 'index']);
 Route::get('/gear/{slug}', [GearController::class, 'show']);
 Route::get('/track/{code}', [OrderController::class, 'track'])->middleware('throttle:30,1');
+Route::post('/recommend', [RecommendController::class, 'store'])->middleware('throttle:30,1');
+Route::get('/cart/shipping', [StoreController::class, 'shipping']);
+Route::get('/store', [StoreController::class, 'show']);
 Route::get('/help/{page}', [\App\Http\Controllers\Api\HelpController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -27,6 +33,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/orders/{code}/pay', [OrderController::class, 'pay']);
     Route::post('/orders/{code}/sync', [OrderController::class, 'sync']);
     Route::post('/orders/{code}/cancel', [OrderController::class, 'cancel']);
+    Route::post('/orders/{code}/cancel-request', [OrderController::class, 'requestCancel']);
+
+    Route::get('/favorites', [FavoriteController::class, 'index']);
+    Route::post('/favorites/{coffee}', [FavoriteController::class, 'toggle']);
     Route::post('/orders/{code}/reorder', [OrderController::class, 'reorder']);
 });
 require __DIR__.'/api_account.php';
