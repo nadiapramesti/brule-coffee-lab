@@ -37,12 +37,14 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 **Toko (pembeli)**
 - Landing dengan katalog kartu produk: harga mulai dari, status stok, rating, pencarian, sortir, dan filter proses.
 - Roast builder dengan flavor wheel dan kromatogram aroma; kantong kemasan dirender SVG per kopi.
+- **Temukan kopimu** (`/rekomendasi`): kuis tiga pertanyaan (cara minum, rasa favorit, toleransi asam) yang mencocokkan selera dengan profil rasa tiap sangrai, lalu menaut ke Roast Builder dengan kopi dan level yang sudah terpilih.
 - Keranjang multi-item (tamu di session, user login di database; keranjang tamu digabung saat login).
 - Roast builder: 14 biji demo (6 proses, termasuk Carbonic Maceration), 4 level sangrai, 6 gilingan, berat 100 g / 200 g / 250 g / 500 g / 1 kg.
 - **Blend builder**: campur dua biji dengan level sangrai sama (70/30, 60/40, 50/50); harga dan stok dihitung per biji.
 - **Perlengkapan** (`/perlengkapan`): 10 produk non-kopi (alat seduh, penggiling, filter, merchandise, aksesori) dengan foto per varian, detail produk, badge stok, dan filter kategori. Pesanan yang hanya berisi barang non-kopi melewati tahap sangrai dan giling.
 - Checkout dengan add-on opsional (kemasan hadiah, kartu ucapan; harga diatur admin, disimpan per pesanan), voucher, ongkir (gratis di atas batas tertentu), bayar online (simulasi) atau COD (bisa dimatikan / dibatasi nominalnya).
 - Lacak pesanan per tahap produksi, riwayat pesanan + "Beli lagi", buku alamat, ulasan pembeli terverifikasi.
+- Invoice untuk pelanggan: tombol Unduh invoice di email lunas/dikirim dan halaman lacak (link bertanda tangan, bisa disimpan sebagai PDF), plus pembatalan pesanan selama masih antre.
 - Email transaksi (pesanan diterima, lunas, dikirim + resi, dibatalkan), notifikasi dalam aplikasi, login Google/Facebook (opsional).
 - FAQ dan kebijakan (ID/EN), tema terang/gelap, dua bahasa ID/EN, halaman error bermerek, SEO dasar + sitemap.
 
@@ -96,7 +98,7 @@ Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pe
 php artisan test
 ```
 
-Suite Pest (279 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, hak akses admin, header keamanan, dan pemantauan galat.
+Suite Pest (284 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, hak akses admin, header keamanan, dan pemantauan galat.
 
 **Tes browser end-to-end dan aksesibilitas** (Playwright + axe-core, folder `e2e/`) berjalan terhadap server yang hidup:
 

@@ -17,12 +17,13 @@ Route::get('/syarat-ketentuan', \App\Livewire\StaticPage::class)->defaults('page
 Route::get('/kebijakan-privasi', \App\Livewire\StaticPage::class)->defaults('page', 'privacy')->name('policy.privacy');
 Route::get('/sitemap.xml', function () {
     $urls = collect([
-        route('landing'), route('builder'), route('gear'), route('track'), route('help'),
+        route('landing'), route('builder'), route('recommend'), route('gear'), route('track'), route('help'),
         route('policy.shipping'), route('policy.terms'), route('policy.privacy'),
     ])->merge(\App\Models\Coffee::active()->orderBy('id')->pluck('slug')->map(fn ($s) => route('builder', ['kopi' => $s])));
 
     return response()->view('sitemap', ['urls' => $urls])->header('Content-Type', 'application/xml');
 })->name('sitemap');
+Route::get('/rekomendasi', \App\Livewire\Recommend::class)->name('recommend');
 Route::get('/perlengkapan', \App\Livewire\Gear::class)->name('gear');
 Route::get('/keranjang', Cart::class)->name('cart');
 Route::get('/checkout', Checkout::class)->middleware('auth')->name('checkout');

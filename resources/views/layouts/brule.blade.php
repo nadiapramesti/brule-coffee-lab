@@ -65,6 +65,7 @@
             <nav class="hidden items-center gap-8 text-[14px] md:flex">
                 <a href="{{ route('landing') }}#biji" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Biji') }}</a>
                 <a href="{{ route('builder') }}" class="text-kraft/80 transition-colors hover:text-labwhite">Roast builder</a>
+                <a href="{{ route('recommend') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Temukan kopimu') }}</a>
                 <a href="{{ route('gear') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Perlengkapan') }}</a>
             </nav>
 
@@ -137,6 +138,7 @@
              class="border-t border-kraft/12 px-6 py-3 md:hidden">
             <a href="{{ route('landing') }}#biji" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Biji') }}</a>
             <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
+            <a href="{{ route('recommend') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Temukan kopimu') }}</a>
             <a href="{{ route('gear') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Perlengkapan') }}</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Akun saya')) }}</a>
@@ -180,6 +182,7 @@
                     <ul class="space-y-2.5 text-[14px]">
                         <li><a href="{{ route('landing') }}#biji" class="transition-colors hover:text-labwhite">{{ __('Biji') }}</a></li>
                         <li><a href="{{ route('builder') }}" class="transition-colors hover:text-labwhite">Roast builder</a></li>
+                        <li><a href="{{ route('recommend') }}" class="transition-colors hover:text-labwhite">{{ __('Temukan kopimu') }}</a></li>
                         <li><a href="{{ route('gear') }}" class="transition-colors hover:text-labwhite">{{ __('Perlengkapan') }}</a></li>
                         <li><a href="{{ route('track') }}" class="transition-colors hover:text-labwhite">{{ __('Lacak pesanan') }}</a></li>
                         <li><a href="{{ route('help') }}" class="transition-colors hover:text-labwhite">FAQ</a></li>
