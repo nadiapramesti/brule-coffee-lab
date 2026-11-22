@@ -39,6 +39,7 @@ Toko kopi specialty **roast-on-demand**: biji baru disangrai setelah pesanan mas
 - Roast builder dengan flavor wheel dan kromatogram aroma; kantong kemasan dirender SVG per kopi.
 - **Temukan kopimu** (`/rekomendasi`): kuis tiga pertanyaan (cara minum, rasa favorit, toleransi asam) yang mencocokkan selera dengan profil rasa tiap sangrai, lalu menaut ke Roast Builder dengan kopi dan level yang sudah terpilih.
 - Keranjang multi-item (tamu di session, user login di database; keranjang tamu digabung saat login).
+- Pelanggan dibantu di keranjang dengan petunjuk "belanja Rp X lagi untuk gratis ongkir" (plus bilah progres), dan tombol chat WhatsApp mengambang di seluruh toko.
 - Roast builder: 14 biji demo (6 proses, termasuk Carbonic Maceration), 4 level sangrai, 6 gilingan, berat 100 g / 200 g / 250 g / 500 g / 1 kg.
 - **Blend builder**: campur dua biji dengan level sangrai sama (70/30, 60/40, 50/50); harga dan stok dihitung per biji.
 - **Perlengkapan** (`/perlengkapan`): 10 produk non-kopi (alat seduh, penggiling, filter, merchandise, aksesori) dengan foto per varian, detail produk, badge stok, dan filter kategori. Pesanan yang hanya berisi barang non-kopi melewati tahap sangrai dan giling.
@@ -98,7 +99,7 @@ Voucher contoh: `KOPIBARU10`. Ganti semua password dan kontak toko (Admin → Pe
 php artisan test
 ```
 
-Suite Pest (285 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, hak akses admin, header keamanan, dan pemantauan galat.
+Suite Pest (287 tes) mencakup alur pesanan, blend, perlengkapan, keranjang, pembayaran COD/online, stok, voucher, akun dan alamat, ulasan, email, halaman statis, hak akses admin, header keamanan, dan pemantauan galat.
 
 **Tes browser end-to-end dan aksesibilitas** (Playwright + axe-core, folder `e2e/`) berjalan terhadap server yang hidup:
 

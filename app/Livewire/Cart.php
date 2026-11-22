@@ -38,6 +38,15 @@ class Cart extends Component
         return Order::shippingFor($this->subtotal);
     }
 
+    /** Sisa belanja agar ongkir gratis; 0 bila sudah gratis atau tidak ada promo gratis ongkir. */
+    #[Computed]
+    public function freeShippingGap(): int
+    {
+        $from = \App\Models\Setting::int('free_shipping_from');
+
+        return $from > 0 && $this->subtotal < $from ? $from - $this->subtotal : 0;
+    }
+
     #[Computed]
     public function problem(): ?string
     {

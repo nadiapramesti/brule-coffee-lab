@@ -216,5 +216,12 @@
             </div>
         </div>
     </footer>
+    @if (\App\Models\Setting::get('contact_whatsapp'))
+        <a href="{{ \App\Models\Setting::whatsappUrl() }}?text={{ rawurlencode(__('Halo BRÛLÉ, saya mau tanya soal kopi.')) }}" target="_blank" rel="noopener"
+           class="fixed bottom-20 right-4 z-20 inline-flex items-center gap-2 rounded-full bg-[#0B7A6B] px-4 py-3 font-display text-[14px] font-semibold text-white shadow-lg transition-colors hover:bg-[#095f53] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 print:hidden lg:bottom-6 lg:right-6">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></svg>
+            {{ __('Chat kami') }}
+        </a>
+    @endif
 </body>
 </html>
