@@ -226,7 +226,7 @@
                         :aria-pressed="onlyFav"
                         :class="onlyFav ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
                         class="ml-auto rounded border px-3.5 py-1.5 text-[13px] transition-colors">
-                    ♥ {{ __('Favorit saya') }} <span class="krm-readout ml-1 text-[11px] opacity-90" x-text="favs.length">{{ count($this->favoriteIds) }}</span>
+                    <span aria-hidden="true">♥</span> {{ __('Favorit saya') }} <span class="krm-readout ml-1 text-[11px] opacity-90" x-text="favs.length">{{ count($this->favoriteIds) }}</span>
                 </button>
             </div>
 
@@ -270,10 +270,9 @@
                                 <span class="krm-readout shrink-0 text-[13px] text-bluetext" title="{{ __('Skor cupping') }}">{{ number_format($bean->cupping_score, 1) }}</span>
                             </div>
                             <button type="button" @click="toggleFav({{ $bean->id }})" :aria-pressed="favs.includes({{ $bean->id }})"
-                                    aria-label="{{ __('Favorit') }}: {{ $bean->name }}"
                                     :class="favs.includes({{ $bean->id }}) ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
                                     class="mt-2 self-start rounded border px-3 py-1 text-[12.5px] transition-colors">
-                                ♥ <span x-text="favs.includes({{ $bean->id }}) ? @js(__('Favorit')) : @js(__('Simpan favorit'))">{{ __('Simpan favorit') }}</span>
+                                <span aria-hidden="true">♥</span> <span x-text="favs.includes({{ $bean->id }}) ? @js(__('Favorit')) : @js(__('Simpan favorit'))">{{ __('Simpan favorit') }}</span><span class="sr-only"> {{ $bean->name }}</span>
                             </button>
                             <p class="mt-1 text-[13px] text-kraft/70">
                                 {{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}
