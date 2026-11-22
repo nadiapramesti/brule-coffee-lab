@@ -138,3 +138,15 @@ it('renders a printable invoice for a paid order', function () {
     $this->actingAs($this->admin)->get(route('admin.orders.print', $o))
         ->assertOk()->assertSee($o->order_code)->assertSee('Jl. Merdeka No. 10');
 });
+
+it('offers a WhatsApp link with the tracking number once shipped, and the track page works without login', function () {
+    $o = newOrder($this);
+    $o->markPaid();
+    $o->update(['status' => 'packing']);
+
+    $c = Livewire::actingAs($this->admin)->test(Orders::class)->call('show', $o->order_code)->assertDontSee('Kirim resi via WA');
+    $c->set('tracking', 'JNE1234567890')->call('ship')->assertSee('Kirim resi via WA')->assertSee('JNE1234567890', false);
+
+    auth()->logout();
+    $this->get(route('track', $o->order_code))->assertOk()->assertSee('JNE1234567890');
+});

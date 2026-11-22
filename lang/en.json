@@ -1014,5 +1014,9 @@
     "Belum ada kopi yang tersedia saat ini.": "No coffee is available right now.",
     "PALING COCOK": "BEST MATCH",
     "Rasa:": "Notes:",
-    "Ulangi kuis": "Retake quiz"
+    "Ulangi kuis": "Retake quiz",
+    "Kirim resi via WA": "Send tracking number via WhatsApp",
+    "Halo :name, pesanan :code sudah dikirim. Nomor resi: :resi. Lacak tanpa login: :url": "Hi :name, order :code has shipped. Tracking number: :resi. Track without logging in: :url",
+    "Kirim invoice via WA": "Send invoice via WhatsApp",
+    "Halo :name, terima kasih sudah memesan di BRÛLÉ. Invoice pesanan :code: :url": "Hi :name, thanks for ordering from BRÛLÉ. Invoice for order :code: :url"
 }
