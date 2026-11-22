@@ -24,6 +24,26 @@ class Landing extends Component
             ->get();
     }
 
+    /** @return array<int,int> id kopi favorit pengguna yang login (kosong untuk tamu). */
+    #[Computed]
+    public function favoriteIds(): array
+    {
+        return auth()->user()?->favorites()->pluck('coffees.id')->all() ?? [];
+    }
+
+    /** Tandai atau lepas favorit. Hanya untuk pengguna login; tamu diarahkan ke halaman masuk. */
+    public function toggleFavorite(int $coffeeId)
+    {
+        $user = auth()->user();
+        if (! $user) {
+            return $this->redirectRoute('login', navigate: true);
+        }
+        if (Coffee::active()->whereKey($coffeeId)->exists()) {
+            $user->favorites()->toggle($coffeeId);
+        }
+        unset($this->favoriteIds);
+    }
+
     /**
      * Puncak untuk kromatogram di hero.
      *

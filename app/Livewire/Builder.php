@@ -39,6 +39,12 @@ class Builder extends Component
 
         $this->coffeeId = $first?->id;
         $this->levelIndex = (int) floor(max(0, $this->levels->count() - 1) / 2);
+
+        // Tautan dari kuis rekomendasi: ?level=light langsung memilih level itu bila tersedia.
+        $want = $this->levels->search(fn ($p) => $p->level === request()->query('level'));
+        if ($want !== false) {
+            $this->levelIndex = (int) $want;
+        }
     }
 
     // =========================================================

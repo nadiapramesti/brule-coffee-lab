@@ -236,3 +236,19 @@ it('logs in through the real form and keeps the guest cart', function () {
     $this->assertAuthenticatedAs($this->customer);
     expect(Store::count())->toBe(1)->and(session()->has(Store::KEY))->toBeFalse();
 });
+
+it('tells the customer how much more to spend for free shipping', function () {
+    \App\Models\Setting::put(['free_shipping_from' => '5000000']);
+    Store::add($this->p1->id, 200, 'v60');
+
+    $c = Livewire::test(Cart::class);
+    expect($c->instance()->freeShippingGap)->toBeGreaterThan(0);
+    $c->assertSee('untuk gratis ongkir');
+
+    \App\Models\Setting::put(['free_shipping_from' => '1']);
+    Livewire::test(Cart::class)->assertSee('ongkir kamu gratis');
+});
+
+it('shows a floating WhatsApp chat button in the shop', function () {
+    $this->get(route('landing'))->assertOk()->assertSee('Chat kami')->assertSee('wa.me/6281200000000', false);
+});

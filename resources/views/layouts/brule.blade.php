@@ -65,6 +65,7 @@
             <nav class="hidden items-center gap-8 text-[14px] md:flex">
                 <a href="{{ route('landing') }}#biji" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Biji') }}</a>
                 <a href="{{ route('builder') }}" class="text-kraft/80 transition-colors hover:text-labwhite">Roast builder</a>
+                <a href="{{ route('recommend') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Temukan kopimu') }}</a>
                 <a href="{{ route('gear') }}" class="text-kraft/80 transition-colors hover:text-labwhite">{{ __('Perlengkapan') }}</a>
             </nav>
 
@@ -137,6 +138,7 @@
              class="border-t border-kraft/12 px-6 py-3 md:hidden">
             <a href="{{ route('landing') }}#biji" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Biji') }}</a>
             <a href="{{ route('builder') }}" class="block py-2.5 text-[15px] text-kraft/85">Roast builder</a>
+            <a href="{{ route('recommend') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Temukan kopimu') }}</a>
             <a href="{{ route('gear') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ __('Perlengkapan') }}</a>
             @auth
                 <a href="{{ route('dashboard') }}" class="block py-2.5 text-[15px] text-kraft/85">{{ auth()->user()->isAdmin() ? 'Dashboard' : (auth()->user()->isRoaster() ? __('Antrian') : __('Akun saya')) }}</a>
@@ -180,6 +182,7 @@
                     <ul class="space-y-2.5 text-[14px]">
                         <li><a href="{{ route('landing') }}#biji" class="transition-colors hover:text-labwhite">{{ __('Biji') }}</a></li>
                         <li><a href="{{ route('builder') }}" class="transition-colors hover:text-labwhite">Roast builder</a></li>
+                        <li><a href="{{ route('recommend') }}" class="transition-colors hover:text-labwhite">{{ __('Temukan kopimu') }}</a></li>
                         <li><a href="{{ route('gear') }}" class="transition-colors hover:text-labwhite">{{ __('Perlengkapan') }}</a></li>
                         <li><a href="{{ route('track') }}" class="transition-colors hover:text-labwhite">{{ __('Lacak pesanan') }}</a></li>
                         <li><a href="{{ route('help') }}" class="transition-colors hover:text-labwhite">FAQ</a></li>
@@ -213,5 +216,12 @@
             </div>
         </div>
     </footer>
+    @if (\App\Models\Setting::get('contact_whatsapp'))
+        <a href="{{ \App\Models\Setting::whatsappUrl() }}?text={{ rawurlencode(__('Halo BRÛLÉ, saya mau tanya soal kopi.')) }}" target="_blank" rel="noopener"
+           class="fixed bottom-20 right-4 z-20 inline-flex items-center gap-2 rounded-full bg-[#0B7A6B] px-4 py-3 font-display text-[14px] font-semibold text-white shadow-lg transition-colors hover:bg-[#095f53] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 print:hidden lg:bottom-6 lg:right-6">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5" fill="currentColor"><path d="M4 4h16a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z"/></svg>
+            {{ __('Chat kami') }}
+        </a>
+    @endif
 </body>
 </html>

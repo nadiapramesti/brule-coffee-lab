@@ -47,7 +47,7 @@ class Order extends Model
         'subtotal', 'shipping_cost', 'gift_wrap', 'card_message', 'addon_cost', 'discount', 'voucher_id', 'voucher_code', 'total',
         'recipient_name', 'recipient_phone', 'shipping_address',
         'tracking_number', 'admin_note', 'roaster_id',
-        'paid_at', 'roasted_at', 'shipped_at', 'completed_at', 'cancelled_at',
+        'paid_at', 'roasted_at', 'shipped_at', 'completed_at', 'cancelled_at', 'cancel_requested_at', 'cancel_request_reason',
     ];
 
     protected function casts(): array
@@ -60,6 +60,7 @@ class Order extends Model
             'shipped_at' => 'datetime',
             'completed_at' => 'datetime',
             'cancelled_at' => 'datetime',
+            'cancel_requested_at' => 'datetime',
         ];
     }
 
@@ -581,6 +582,64 @@ class Order extends Model
             $this->update(['status' => 'cancelled', 'cancelled_at' => now()]);
             ActivityLog::record('order.cancelled', $this, $reason ? 'Pesanan dibatalkan: :r' : 'Pesanan dibatalkan', ['r' => $reason]);
             Notice::send($this->user, 'cancel', 'Pesanan dibatalkan', $reason ? ':code · :r' : 'Pesanan :code dibatalkan.', ['code' => $this->order_code, 'r' => $reason], route('track', $this->order_code, false));
+        });
+
+        \App\Support\OrderMailer::send($this, 'cancelled');
+
+        return true;
+    }
+
+    /** Pesanan sudah masuk dapur: tidak bisa batal langsung, tapi pelanggan boleh mengajukan. */
+    public function canRequestCancel(): bool
+    {
+        return in_array($this->status, ['roasting', 'grinding', 'packing'], true) && ! $this->cancel_requested_at;
+    }
+
+    /** Pelanggan mengajukan pembatalan untuk pesanan yang sudah disangrai; admin yang memutuskan. */
+    public function requestCancel(?string $reason = null): bool
+    {
+        if (! $this->canRequestCancel()) {
+            return false;
+        }
+
+        $reason = $reason !== null && trim($reason) !== '' ? mb_substr(trim($reason), 0, 160) : null;
+        $this->update(['cancel_requested_at' => now(), 'cancel_request_reason' => $reason]);
+        ActivityLog::record('order.cancel_requested', $this, $reason ? 'Pelanggan mengajukan pembatalan: :r' : 'Pelanggan mengajukan pembatalan', ['r' => $reason]);
+        Notice::send(Notice::admins(), 'cancel', 'Permintaan batal pesanan', ':code minta dibatalkan.', ['code' => $this->order_code], route('admin.orders', [], false));
+
+        return true;
+    }
+
+    /**
+     * Admin menjawab permintaan batal. Setuju: pesanan dibatalkan tanpa mengembalikan biji mentah
+     * (sudah disangrai); stok produk non-kopi tetap dikembalikan. Tolak: pesanan lanjut seperti biasa.
+     */
+    public function resolveCancelRequest(bool $approve, ?string $note = null): bool
+    {
+        if (! $this->cancel_requested_at || in_array($this->status, ['cancelled', 'shipped', 'completed'], true)) {
+            return false;
+        }
+
+        if (! $approve) {
+            $this->update(['cancel_requested_at' => null, 'cancel_request_reason' => null]);
+            ActivityLog::record('order.cancel_rejected', $this, 'Permintaan batal ditolak');
+            Notice::send($this->user, 'cancel', 'Permintaan batal ditolak', 'Pesanan :code sudah diproses dan tetap dilanjutkan.', ['code' => $this->order_code], route('track', $this->order_code, false));
+
+            return true;
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($note) {
+            foreach ($this->items()->with('product')->get() as $item) {
+                if ($item->product_id) {
+                    $item->product?->increment('stock');
+                }
+            }
+            if ($this->voucher_id) {
+                Voucher::where('id', $this->voucher_id)->where('used_count', '>', 0)->decrement('used_count');
+            }
+            $this->update(['status' => 'cancelled', 'cancelled_at' => now(), 'cancel_requested_at' => null]);
+            ActivityLog::record('order.cancelled', $this, 'Pembatalan disetujui (biji sudah disangrai, tidak dikembalikan ke stok)');
+            Notice::send($this->user, 'cancel', 'Pesanan dibatalkan', 'Permintaan batal :code disetujui.', ['code' => $this->order_code], route('track', $this->order_code, false));
         });
 
         \App\Support\OrderMailer::send($this, 'cancelled');

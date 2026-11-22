@@ -141,18 +141,18 @@
         @endphp
 
         <div class="mt-10" x-data="{
-                f: 'semua', q: '', sort: 'default', items: @js($catalog),
+                f: 'semua', q: '', sort: 'default', onlyFav: false, favs: @js($this->favoriteIds), loggedIn: @js(auth()->check()), items: @js($catalog),
                 res: [], posMap: {}, limit: 9, step: 9,
                 init() {
                     // Banyaknya kartu per tampilan mengikuti lebar layar: HP 4, tablet 6, laptop 9.
                     this.step = innerWidth < 640 ? 4 : (innerWidth < 1024 ? 6 : 9);
                     this.limit = this.step;
                     this.recalc();
-                    ['f', 'q', 'sort'].forEach(k => this.$watch(k, () => { this.limit = this.step; this.recalc(); }));
+                    ['f', 'q', 'sort', 'onlyFav'].forEach(k => this.$watch(k, () => { this.limit = this.step; this.recalc(); }));
                 },
                 recalc() {
                     const words = this.q.trim().toLowerCase().split(/\s+/).filter(Boolean);
-                    let l = this.items.filter(i => (this.f === 'semua' || i.process === this.f) && words.every(w => i.hay.includes(w)));
+                    let l = this.items.filter(i => (this.f === 'semua' || i.process === this.f) && (!this.onlyFav || this.favs.includes(i.id)) && words.every(w => i.hay.includes(w)));
                     const by = {
                         price_asc: (a, b) => a.price - b.price,
                         price_desc: (a, b) => b.price - a.price,
@@ -167,7 +167,14 @@
                 show(id) { const p = this.posMap[id]; return p !== undefined && p < this.limit },
                 pos(id) { return this.posMap[id] ?? 0 },
                 more() { this.limit += this.step },
-                reset() { this.f = 'semua'; this.q = ''; this.sort = 'default' },
+                reset() { this.f = 'semua'; this.q = ''; this.sort = 'default'; this.onlyFav = false },
+                toggleFav(id) {
+                    if (this.loggedIn) {
+                        this.favs = this.favs.includes(id) ? this.favs.filter(x => x !== id) : [...this.favs, id];
+                        if (this.onlyFav) this.recalc();
+                    }
+                    $wire.toggleFavorite(id);
+                },
                 get remaining() { return Math.max(0, this.res.length - this.limit) },
                 get count() {
                     return this.res.length > this.limit
@@ -215,6 +222,12 @@
                         <span class="krm-readout ml-1 text-[11px] opacity-90">{{ $this->coffees->filter(fn ($c) => $c->traceability?->process === $proc)->count() }}</span>
                     </button>
                 @endforeach
+                <button type="button" @click="loggedIn ? onlyFav = !onlyFav : toggleFav(0)"
+                        :aria-pressed="onlyFav"
+                        :class="onlyFav ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
+                        class="ml-auto rounded border px-3.5 py-1.5 text-[13px] transition-colors">
+                    ♥ {{ __('Favorit saya') }} <span class="krm-readout ml-1 text-[11px] opacity-90" x-text="favs.length">{{ count($this->favoriteIds) }}</span>
+                </button>
             </div>
 
             <p class="krm-readout mt-5 text-[12px] text-kraft/70" aria-live="polite" x-text="count">{{ $this->coffees->count() }}</p>
@@ -256,6 +269,12 @@
                                 <h3 class="krm-h3 min-w-0 font-semibold leading-tight">{{ $bean->name }}</h3>
                                 <span class="krm-readout shrink-0 text-[13px] text-bluetext" title="{{ __('Skor cupping') }}">{{ number_format($bean->cupping_score, 1) }}</span>
                             </div>
+                            <button type="button" @click="toggleFav({{ $bean->id }})" :aria-pressed="favs.includes({{ $bean->id }})"
+                                    aria-label="{{ __('Favorit') }}: {{ $bean->name }}"
+                                    :class="favs.includes({{ $bean->id }}) ? 'border-bluelab bg-bluelab text-paper' : 'border-kraft/25 text-kraft/80 hover:border-kraft/60'"
+                                    class="mt-2 self-start rounded border px-3 py-1 text-[12.5px] transition-colors">
+                                ♥ <span x-text="favs.includes({{ $bean->id }}) ? @js(__('Favorit')) : @js(__('Simpan favorit'))">{{ __('Simpan favorit') }}</span>
+                            </button>
                             <p class="mt-1 text-[13px] text-kraft/70">
                                 {{ collect([$t?->region, $t?->process, $t?->altitude ? number_format($t->altitude).' m' : null])->filter()->implode(' · ') }}
                             </p>

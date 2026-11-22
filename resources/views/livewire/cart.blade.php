@@ -65,6 +65,17 @@
                     <div class="flex justify-between pt-3"><span class="text-kraft/65">{{ __('Barang') }} ({{ $this->lines->sum('qty') }})</span><span class="krm-readout">Rp{{ number_format($this->subtotal, 0, ',', '.') }}</span></div>
                     <div class="flex justify-between"><span class="text-kraft/65">{{ __('Ongkir') }}</span>
                         <span class="krm-readout">{{ $this->shipping ? 'Rp'.number_format($this->shipping, 0, ',', '.') : __('Gratis') }}</span></div>
+                    @php($freeFrom = \App\Models\Setting::int('free_shipping_from'))
+                    @if ($freeFrom > 0 && $this->lines->isNotEmpty())
+                        <div class="rounded bg-bluelab/10 px-3 py-2.5 text-[12.5px]" role="status">
+                            @if ($this->freeShippingGap > 0)
+                                <p>{{ __('Belanja Rp:n lagi untuk gratis ongkir.', ['n' => number_format($this->freeShippingGap, 0, ',', '.')]) }}</p>
+                                <div class="mt-2 h-1.5 overflow-hidden rounded-full bg-kraft/20"><div class="h-full rounded-full bg-bluelab" style="width: {{ min(100, (int) round($this->subtotal / $freeFrom * 100)) }}%"></div></div>
+                            @else
+                                <p>{{ __('Selamat, ongkir kamu gratis.') }}</p>
+                            @endif
+                        </div>
+                    @endif
                     <div class="flex items-end justify-between border-t border-dashed border-kraft/30 pt-4">
                         <span class="text-kraft/65">{{ __('Total') }}</span>
                         <span class="krm-readout text-[1.6rem] leading-none">Rp{{ number_format($this->subtotal + $this->shipping, 0, ',', '.') }}</span>

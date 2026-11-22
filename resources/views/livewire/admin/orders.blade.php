@@ -171,6 +171,18 @@
                                 <p class="text-[13px] text-kraft/70">{{ __('Tidak ada tindakan untuk status ini.') }}</p>
                             @endif
 
+                            @if ($o->cancel_requested_at)
+                                <div class="rounded border border-bluetext/40 bg-bluelab/10 p-3 text-[13px]" role="status">
+                                    <p class="font-semibold">{{ __('Pelanggan minta pesanan dibatalkan') }}</p>
+                                    @if ($o->cancel_request_reason)<p class="mt-1 text-kraft/80">{{ $o->cancel_request_reason }}</p>@endif
+                                    <p class="mt-1 text-[12px] text-kraft/70">{{ __('Biji sudah disangrai, jadi stok biji tidak dikembalikan kalau disetujui.') }}</p>
+                                    <div class="mt-2.5 flex gap-2">
+                                        <button wire:click="approveCancelRequest" wire:confirm="{{ __('Setujui pembatalan?') }}" class="flex-1 rounded bg-redtext/80 py-2 text-[13px] font-semibold hover:bg-red-500">{{ __('Setujui batal') }}</button>
+                                        <button wire:click="rejectCancelRequest" class="flex-1 rounded border border-kraft/30 py-2 text-[13px] hover:border-kraft/60">{{ __('Tolak') }}</button>
+                                    </div>
+                                </div>
+                            @endif
+
                             @if (in_array($o->status, ['pending_payment', 'queued']))
                                 @if (! $confirmCancel)
                                     <button wire:click="$set('confirmCancel', true)" class="w-full rounded border border-redtext/30 py-2 text-[13px] text-redtext transition-colors hover:bg-redtext/10">{{ __('Batalkan pesanan') }}</button>
@@ -194,7 +206,8 @@
                         <p class="mt-2.5 font-semibold">{{ $o->recipient_name }}</p>
                         <p class="krm-readout text-[12.5px] text-kraft/70">{{ $o->recipient_phone }}
                             <a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">WhatsApp ↗</a>
-                            @if ($o->canPrint())<a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}?text={{ rawurlencode(__('Halo :name, terima kasih sudah memesan di BRÛLÉ. Invoice pesanan :code: :url', ['name' => \Illuminate\Support\Str::before($o->recipient_name, ' '), 'code' => $o->order_code, 'url' => $o->invoiceUrl()])) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">{{ __('Kirim invoice via WA') }} ↗</a>@endif</p>
+                            @if ($o->canPrint())<a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}?text={{ rawurlencode(__('Halo :name, terima kasih sudah memesan di BRÛLÉ. Invoice pesanan :code: :url', ['name' => \Illuminate\Support\Str::before($o->recipient_name, ' '), 'code' => $o->order_code, 'url' => $o->invoiceUrl()])) }}" target="_blank" rel="noopener" class="ml-2 font-sans text-[12px] text-bluetext underline-offset-4 hover:underline">{{ __('Kirim invoice via WA') }} ↗</a>@endif
+                            @if ($o->tracking_number)<a href="https://wa.me/{{ preg_replace('/^0/', '62', preg_replace('/\D/', '', $o->recipient_phone)) }}?text={{ rawurlencode(__('Halo :name, pesanan :code sudah dikirim. Nomor resi: :resi. Lacak tanpa login: :url', ['name' => \Illuminate\Support\Str::before($o->recipient_name, ' '), 'code' => $o->order_code, 'resi' => $o->tracking_number, 'url' => route('track', $o->order_code)])) }}" target="_blank" rel="noopener" class="ml-2 rounded border border-bluetext/50 px-2.5 py-1 font-sans text-[12px] text-bluetext transition-colors hover:bg-bluetext/10">{{ __('Kirim resi via WA') }} ↗</a>@endif</p>
                         <p class="mt-2 whitespace-pre-line text-kraft/80">{{ $o->shipping_address }}</p>
                         @if ($o->user)<p class="mt-3 border-t border-kraft/10 pt-2.5 text-[12px] text-kraft/70">{{ __('Akun') }}: {{ $o->user->name }} · {{ $o->user->email }}</p>@endif
                         @if ($o->tracking_number)<p class="mt-1 text-[12px] text-kraft/70">{{ __('Resi') }}: <span class="krm-readout text-labwhite">{{ $o->tracking_number }}</span></p>@endif
