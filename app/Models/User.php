@@ -35,6 +35,12 @@ class User extends Authenticatable
         return $this->hasMany(Review::class);
     }
 
+    /** Kopi yang ditandai favorit di katalog. */
+    public function favorites(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Coffee::class, 'favorites')->withTimestamps();
+    }
+
     public function addresses(): HasMany
     {
         return $this->hasMany(Address::class)->orderByDesc('is_default')->orderBy('id');

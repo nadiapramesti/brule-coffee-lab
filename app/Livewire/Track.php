@@ -16,6 +16,7 @@ class Track extends Component
     public ?string $code = null;
     public string $query = '';
     public ?string $payNotice = null;
+    public string $cancelWhy = '';
 
     public function mount(?string $code = null): void
     {
@@ -108,6 +109,16 @@ class Track extends Component
     {
         abort_unless($this->canManage, 403);
         $this->order->cancelAndRestock();
+        unset($this->order);
+    }
+
+    /** Pesanan sudah disangrai: pelanggan hanya bisa mengajukan, admin yang memutuskan. */
+    public function requestCancel(): void
+    {
+        abort_unless($this->canManage, 403);
+        $this->validate(['cancelWhy' => ['nullable', 'string', 'max:160']]);
+        $this->order->requestCancel($this->cancelWhy);
+        $this->cancelWhy = '';
         unset($this->order);
     }
 

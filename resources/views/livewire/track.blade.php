@@ -77,6 +77,17 @@
                 </ol>
             @endif
 
+            @if ($this->canManage && $o->cancel_requested_at)
+                <p class="border-t border-kraft/15 bg-bluelab/10 px-6 py-4 text-[13.5px]" role="status">{{ __('Permintaan pembatalan sudah dikirim. Admin akan menjawab di sini dan lewat notifikasi.') }}</p>
+            @elseif ($this->canManage && $o->canRequestCancel())
+                <div class="border-t border-kraft/15 px-6 py-4">
+                    <p class="text-[13px] text-kraft/75">{{ __('Kopimu sudah masuk dapur, jadi tidak bisa dibatalkan langsung. Kamu bisa mengajukan, dan admin akan memutuskan.') }}</p>
+                    <label for="cancelWhy" class="sr-only">{{ __('Alasan pembatalan') }}</label>
+                    <input id="cancelWhy" wire:model="cancelWhy" maxlength="160" placeholder="{{ __('Contoh: salah pilih level sangrai') }}" class="mt-2 w-full rounded border border-kraft/30 bg-transparent px-3 py-2 text-[14px] focus:border-bluelab focus:outline-none focus:ring-2 focus:ring-bluelab/40">
+                    <button type="button" wire:click="requestCancel" wire:confirm="{{ __('Ajukan pembatalan pesanan ini?') }}" class="mt-3 rounded border border-kraft/30 px-5 py-2.5 text-[14px] text-kraft/85 transition-colors hover:border-kraft/60">{{ __('Ajukan pembatalan') }}</button>
+                </div>
+            @endif
+
             @if ($this->canManage && ($o->canPrint() || $o->status === 'queued'))
                 <div class="flex flex-wrap gap-3 border-t border-kraft/15 px-6 py-4">
                     @if ($o->canPrint())

@@ -171,6 +171,18 @@
                                 <p class="text-[13px] text-kraft/70">{{ __('Tidak ada tindakan untuk status ini.') }}</p>
                             @endif
 
+                            @if ($o->cancel_requested_at)
+                                <div class="rounded border border-bluetext/40 bg-bluelab/10 p-3 text-[13px]" role="status">
+                                    <p class="font-semibold">{{ __('Pelanggan minta pesanan dibatalkan') }}</p>
+                                    @if ($o->cancel_request_reason)<p class="mt-1 text-kraft/80">{{ $o->cancel_request_reason }}</p>@endif
+                                    <p class="mt-1 text-[12px] text-kraft/70">{{ __('Biji sudah disangrai, jadi stok biji tidak dikembalikan kalau disetujui.') }}</p>
+                                    <div class="mt-2.5 flex gap-2">
+                                        <button wire:click="approveCancelRequest" wire:confirm="{{ __('Setujui pembatalan?') }}" class="flex-1 rounded bg-redtext/80 py-2 text-[13px] font-semibold hover:bg-red-500">{{ __('Setujui batal') }}</button>
+                                        <button wire:click="rejectCancelRequest" class="flex-1 rounded border border-kraft/30 py-2 text-[13px] hover:border-kraft/60">{{ __('Tolak') }}</button>
+                                    </div>
+                                </div>
+                            @endif
+
                             @if (in_array($o->status, ['pending_payment', 'queued']))
                                 @if (! $confirmCancel)
                                     <button wire:click="$set('confirmCancel', true)" class="w-full rounded border border-redtext/30 py-2 text-[13px] text-redtext transition-colors hover:bg-redtext/10">{{ __('Batalkan pesanan') }}</button>

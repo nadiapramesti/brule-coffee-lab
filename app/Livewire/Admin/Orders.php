@@ -148,6 +148,16 @@ class Orders extends Component
         $this->current?->complete() && $this->refreshAfter(__('Pesanan selesai.'));
     }
 
+    public function approveCancelRequest(): void
+    {
+        $this->current?->resolveCancelRequest(true) && $this->refreshAfter(__('Pembatalan disetujui.'));
+    }
+
+    public function rejectCancelRequest(): void
+    {
+        $this->current?->resolveCancelRequest(false) && $this->refreshAfter(__('Permintaan batal ditolak.'));
+    }
+
     public function cancel(): void
     {
         $this->validate(['cancelReason' => ['nullable', 'string', 'max:120']]);
