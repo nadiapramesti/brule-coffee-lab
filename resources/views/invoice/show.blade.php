@@ -6,7 +6,7 @@
         <title>{{ __('Invoice') }} {{ $order->order_code }} - BRÛLÉ</title>
     <style>
         * { box-sizing: border-box; }
-        body { font: 14px/1.5 'IBM Plex Sans', system-ui, sans-serif; color: #111; margin: 0; background: #eee; }
+        body { font: 14px/1.5 'Instrument Sans', system-ui, sans-serif; color: #111; margin: 0; background: #eee; }
         .sheet { width: 780px; max-width: 100%; margin: 24px auto; background: #fff; padding: 36px 40px; }
         h1 { font-size: 20px; letter-spacing: .2em; margin: 0; }
         .row { display: flex; justify-content: space-between; gap: 24px; }

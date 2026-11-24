@@ -70,9 +70,9 @@
     <polyline points="{{ implode(' ', $pts) }}" fill="none" stroke="{{ $accent }}" stroke-width="1" stroke-linejoin="round" transform="translate(0 -2)"/>
     <line x1="50" x2="150" y1="111" y2="111" stroke="#1a1208" stroke-opacity=".35"/>
 
-    <text x="100" y="143" text-anchor="middle" font-family="'IBM Plex Sans Condensed', system-ui, sans-serif" font-weight="700" font-size="{{ $size1 }}" fill="#1a1208">{{ $line1 }}</text>
+    <text x="100" y="143" text-anchor="middle" font-family="'Fraunces Variable', Georgia, serif" font-weight="700" font-size="{{ $size1 }}" fill="#1a1208">{{ $line1 }}</text>
     @if ($line2 !== '')
-        <text x="100" y="160" text-anchor="middle" font-family="'IBM Plex Sans Condensed', system-ui, sans-serif" font-weight="600" font-size="{{ mb_strlen($line2) > 11 ? 11 : 13 }}" letter-spacing=".5" fill="#1a1208" fill-opacity=".82">{{ $line2 }}</text>
+        <text x="100" y="160" text-anchor="middle" font-family="'Fraunces Variable', Georgia, serif" font-weight="600" font-size="{{ mb_strlen($line2) > 11 ? 11 : 13 }}" letter-spacing=".5" fill="#1a1208" fill-opacity=".82">{{ $line2 }}</text>
     @endif
 
     <line x1="50" x2="150" y1="170" y2="170" stroke="#1a1208" stroke-opacity=".35"/>

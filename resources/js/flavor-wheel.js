@@ -125,7 +125,7 @@ export default function flavorWheel(initialValues = {}, labels = {}) {
                     .attr('fill', LABWHITE)
                     .attr('font-size', 13)
                     .attr('font-weight', 600)
-                    .attr('font-family', "'IBM Plex Sans Condensed', sans-serif")
+                    .attr('font-family', "'Fraunces Variable', Georgia, serif")
                     .text(axis.label);
 
                 // Angkanya ikut ditulis: radar tanpa skala cuma bentuk,

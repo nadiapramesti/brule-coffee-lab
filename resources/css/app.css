@@ -1,11 +1,11 @@
 /* Font ikut dibundel, bukan diambil dari server Google.
    Halaman tidak bergantung pada koneksi ke pihak ketiga dan
    tidak ada lompatan tampilan saat font baru datang. */
-@import '@fontsource/ibm-plex-sans-condensed/400.css';
-@import '@fontsource/ibm-plex-sans-condensed/600.css';
-@import '@fontsource/ibm-plex-sans-condensed/700.css';
-@import '@fontsource/ibm-plex-sans/400.css';
-@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource/instrument-sans/400.css';
+@import '@fontsource/instrument-sans/500.css';
+@import '@fontsource/instrument-sans/600.css';
+@import '@fontsource/instrument-sans/700.css';
 @import '@fontsource/ibm-plex-mono/400.css';
 @import '@fontsource/ibm-plex-mono/500.css';
 
@@ -83,13 +83,14 @@ body { transition: background-color .25s ease, color .25s ease; }
     }
 
     body {
-        font-family: 'IBM Plex Sans', system-ui, sans-serif;
+        font-family: 'Instrument Sans', system-ui, sans-serif;
     }
 
-    /* Judul & teks besar: Plex Sans Condensed. Sempit, tegas,
-       dirancang untuk dokumen teknis. */
+    /* Judul & teks besar: Fraunces, serif bertekstur hangat seperti
+       label kantong kopi sangrai; kontras dengan angka lab (mono). */
     h1, h2, h3, .krm-display {
-        font-family: 'IBM Plex Sans Condensed', system-ui, sans-serif;
+        font-family: 'Fraunces Variable', Georgia, serif;
+        font-optical-sizing: auto;
     }
 
     /* Monospace HANYA untuk angka hasil ukur: retention time,
@@ -274,7 +275,7 @@ header[data-site-header] { view-transition-name: krm-header; }
 .krm-auth input[type=checkbox]:focus { box-shadow: 0 0 0 3px rgba(42, 93, 176, .4); }
 .krm-auth button[type=submit] {
     background: #2A5DB0; color: #FFFBF2; border: 0; border-radius: 10px;
-    padding: .9rem 1.4rem; font-family: "IBM Plex Sans Condensed", system-ui, sans-serif;
+    padding: .9rem 1.4rem; font-family: "Fraunces Variable", Georgia, serif;
     font-size: 15px; font-weight: 600; letter-spacing: 0; text-transform: none;
     transition: background .2s, box-shadow .2s;
 }
@@ -298,7 +299,7 @@ header[data-site-header] { view-transition-name: krm-header; }
 .krm-auth button.bg-white:hover { background: rgb(var(--c-fg) / .05); }
 .krm-auth div.bg-white { background: rgb(var(--c-surface)); border: 1px solid rgb(var(--c-muted) / .25); border-radius: 10px; color: rgb(var(--c-fg)); }
 .krm-auth .bg-gray-500 { background: rgb(var(--c-bg) / .8); }
-.krm-auth h2.text-lg { font-family: "IBM Plex Sans Condensed", system-ui, sans-serif; font-size: 1.3rem; font-weight: 600; letter-spacing: -.01em; }
+.krm-auth h2.text-lg { font-family: "Fraunces Variable", Georgia, serif; font-size: 1.3rem; font-weight: 600; letter-spacing: -.01em; }
 .krm-auth h2.text-lg + p { color: rgb(var(--c-muted) / .7); }
 .krm-auth section header p { font-size: 14px; line-height: 1.6; }
 

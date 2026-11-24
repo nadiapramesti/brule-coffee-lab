@@ -32,8 +32,8 @@ export default {
                 DEFAULT: '10px',
             },
             fontFamily: {
-                display: ['IBM Plex Sans Condensed', 'system-ui', 'sans-serif'],
-                sans:    ['IBM Plex Sans', 'system-ui', 'sans-serif'],
+                display: ['"Fraunces Variable"', 'Georgia', 'serif'],
+                sans:    ['"Instrument Sans"', 'system-ui', 'sans-serif'],
                 mono:    ['IBM Plex Mono', 'ui-monospace', 'monospace'],
             },
         },

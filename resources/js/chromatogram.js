@@ -152,7 +152,7 @@ export default function chromatogram(peaks = [], text = {}) {
                     .attr('x', x).attr('y', Math.max(18, apex - 32))
                     .attr('text-anchor', 'middle')
                     .attr('fill', 'rgb(var(--c-fg))')
-                    .attr('font-family', "'IBM Plex Sans Condensed', sans-serif")
+                    .attr('font-family', "'Fraunces Variable', Georgia, serif")
                     .attr('font-size', narrow ? 13 : 15)
                     .attr('font-weight', 600)
                     .text(p.reads);
